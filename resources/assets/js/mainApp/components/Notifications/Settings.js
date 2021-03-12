@@ -260,9 +260,11 @@ class Settings extends Component {
                   Disable Account
                 </button>
               )}
-              <button type='button' className='sponsorsAction' onClick={() => this.sponsorsAction()}>
-                Manage your Sponsors
-              </button>
+              {this.state.feature_on && (
+                <button type='button' className='sponsorsAction' onClick={() => this.sponsorsAction()}>
+                  Manage your Sponsors
+                </button>
+              )}
               <button type='button' className='deleteAcccount' onClick={() => this.deleteAcccount()}>
                 Delete Account
               </button>

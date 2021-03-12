@@ -18,6 +18,10 @@ export default class MangeSponsors extends React.Component {
       media_url: '',
       aws_key_id: '',
       file_keys: '',
+      linkValue_2: '',
+      media_url_2: '',
+      aws_key_id_2: '',
+      file_keys_2: '',
     }
     this.fileInputRef = React.createRef()
   }
@@ -91,6 +95,15 @@ export default class MangeSponsors extends React.Component {
     }
   }
 
+  handleLinkChange_2 = (e) => {
+    const data = e.target.value
+    if (data == '') {
+      this.setState({ linkValue_2: data, saveButtonDisabled: true })
+    } else {
+      this.setState({ linkValue_2: data })
+    }
+  }
+
   handleImageChange = (e) => {
     if (!this.state.uploading) {
       this.fileInputRef.current.click()
@@ -141,9 +154,61 @@ export default class MangeSponsors extends React.Component {
     this.setState({ uploading: false })
   }
 
+  handleSelectFile_2 = (e) => {
+    const fileList = e.target.files
+    if (fileList.length > 0) {
+      let type = fileList[0].type.split('/')
+      let name = `Sponsor_${type}_${+new Date()}_${fileList[0].name}`
+      let pattern = /image-*/
+
+      if (!fileList[0].type.match(pattern)) {
+        toast.error(<Toast_style text={'Opps, Invalid file format! '} />)
+        return
+      }
+      this.doUploadS3(fileList[0], name)
+    }
+  }
+
+  doUploadS3_2 = async (file, name) => {
+    this.setState({ uploading: true })
+    try {
+      if (file.size < 10485760) {
+        const { sponsor = {} } = this.props
+        let post = null
+
+        if (sponsor.id) {
+          post = await Upload_to_S3(file, name, 10, sponsor.id)
+        } else {
+          post = await Upload_to_S3(file, name, 0, null)
+        }
+
+        if (post != false) {
+          this.setState({
+            media_url_2: [post.data.Location],
+            file_keys_2: post.data.Key,
+            aws_key_id_2: [post.data.aws_key_id],
+          })
+        }
+      } else {
+        toast.error(<Toast_style text={'Opps, file size can not be excced more than 10MB '} />)
+      }
+    } catch (error) {
+      toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file.'} />)
+    }
+    this.setState({ uploading: false })
+  }
+
   render() {
     const { sponsors = [] } = this.props
-    const { saveButtonDisabled = true, linkValue = '', media_url = '', modalStatus = true, uploading = false } = this.state
+    const {
+      saveButtonDisabled = true,
+      linkValue = '',
+      media_url = '',
+      linkValue_2 = '',
+      media_url_2 = '',
+      modalStatus = true,
+      uploading = false,
+    } = this.state
 
     return (
       <div className={`modal-container View__Member__modal ${modalStatus ? 'modal--show' : ''}`}>
@@ -208,11 +273,11 @@ export default class MangeSponsors extends React.Component {
                         type='file'
                         accept='image/jpeg,image/jpg,image/png,image/gif'
                         ref={this.fileInputRef}
-                        onChange={this.handleSelectFile}
+                        onChange={this.handleSelectFile_2}
                         name='insert__images'
                       />
                       <img
-                        src={media_url == '' ? 'https://myG.gg/platform_images/Dashboard/BTN_Attach_Image.svg' : media_url}
+                        src={media_url_2 == '' ? 'https://myG.gg/platform_images/Dashboard/BTN_Attach_Image.svg' : media_url_2}
                         onError={this.addDefaultSrc}
                       />
                     </div>
@@ -227,8 +292,8 @@ export default class MangeSponsors extends React.Component {
                     <div className='Sponsor__link__input'>
                       <input
                         type='text'
-                        onChange={this.handleLinkChange}
-                        value={linkValue == '' ? '' : linkValue}
+                        onChange={this.handleLinkChange_2}
+                        value={linkValue_2 == '' ? '' : linkValue_2}
                         placeholder='Enter link here'
                         onKeyDown={this.onKeyDown}
                       />
