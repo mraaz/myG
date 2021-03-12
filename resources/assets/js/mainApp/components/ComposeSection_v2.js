@@ -111,6 +111,7 @@ export default class ComposeSection extends Component {
       group_id: [],
       value_tags: [],
       visibility: 1,
+      video: '',
     })
   }
 
@@ -169,6 +170,7 @@ export default class ComposeSection extends Component {
           selected_group: [],
           group_id: [],
           open_compose_textTab: true,
+          video: '',
         },
         () => {
           media_url = []
@@ -419,9 +421,13 @@ export default class ComposeSection extends Component {
                 placeholder="What's up... "
                 id={`composeTextarea`}
               />
+            </div>
+          )}
+          {open_compose_textTab && (
+            <div className='video_box'>
               <input
-                className="video-input"
-                placeholder="Enter a video URL here"
+                className='video-input'
+                placeholder='Enter link to video here'
                 value={this.state.video}
                 onChange={(event) => this.setState({ video: event.target.value })}
               />
