@@ -197,7 +197,7 @@ export default class IndividualPost extends Component {
     } catch (e) {}
     const self = this
 
-    const getComments = async function () {
+    const getComments = async function() {
       try {
         const myComments = await axios.get(`/api/comments/${post_id}`)
         self.setState({
@@ -343,7 +343,7 @@ export default class IndividualPost extends Component {
     const self = this
     var post_id = this.props.post.id
 
-    const editPost = async function () {
+    const editPost = async function() {
       try {
         const myEditPost = await axios.post(`/api/post/update/${post_id}`, {
           content: self.state.value2,
@@ -463,7 +463,7 @@ export default class IndividualPost extends Component {
       dropdown: false,
     })
     setTimeout(
-      function () {
+      function() {
         //Start the timer
         this.focusTextInput2()
       }.bind(this),
@@ -664,14 +664,6 @@ export default class IndividualPost extends Component {
                     </p>
                   </Fragment>
                 )}
-                {!!this.props.post.video && (
-                  <ReactPlayer
-                    width={'100%'}
-                    height={360}
-                    url={this.props.post.video}
-                    controls={true}
-                  />
-                )}
                 {this.state.edit_post && (
                   <div className='post_content_editbox'>
                     <textarea
@@ -689,6 +681,7 @@ export default class IndividualPost extends Component {
               </div>
             </div>
             <div className='media'>
+              {!!this.props.post.video && <ReactPlayer width={'100%'} height={360} url={this.props.post.video} controls={true} />}
               {galleryItems.length > 0 && (
                 <ImageGallery
                   items={[...galleryItems]}
