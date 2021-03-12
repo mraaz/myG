@@ -155,25 +155,6 @@ const CommunityView = (props) => {
               </div>
             )
           })}
-        {Sponsors.length < 2 &&
-          [...new Array((props.level < 25 ? 1 : 2) - Sponsors.length)].map((Sponsor, index) => {
-            return (
-              <div className='Sponsors' key={index}>
-                <div
-                  className='Sponsors__image'
-                  // style={{ backgroundImage: `url(${sponsor.media_url}), url(${defaultSponsorImage})` }}
-                  onClick={() => {
-                    return
-                  }}
-                />
-                {/* {[0, 1].includes(current_user_permission) && (
-                  <div className='Sponsors__edit' onClick={(e) => handleSponsorClick({})}>
-                    Edit
-                  </div>
-                )} */}
-              </div>
-            )
-          })}
       </div>
     )
   }

@@ -51,6 +51,7 @@ export class Banner extends React.Component {
           updateProfile={this.props.updateProfile}
           onlyProfile={this.props.onlyProfile}
         />
+        <div className="profile-banner-shadow"></div> 
       </div>
     );
   }
