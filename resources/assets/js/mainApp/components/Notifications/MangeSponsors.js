@@ -2,13 +2,16 @@ import React from 'react'
 import axios from 'axios'
 import Modal from 'react-modal'
 import { Link } from 'react-router-dom'
+import { connect } from 'react-redux'
+import get from 'lodash.get'
 import SweetAlert from '../common/MyGSweetAlert'
 import { toast } from 'react-toastify'
 import { Toast_style } from '../Utility_Function'
 import { Upload_to_S3, Remove_file } from '../AWS_utilities'
 import { MyGButton } from '../common'
+import { fetchProfileInfoAction } from '../../../redux/actions/profileAction'
 
-export default class MangeSponsors extends React.Component {
+class MangeSponsors extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -20,6 +23,10 @@ export default class MangeSponsors extends React.Component {
       file_keys: '',
     }
     this.fileInputRef = React.createRef()
+  }
+
+  async componentDidMount() {
+    await this.props.fetchProfile(this.props.alias)
   }
 
   addDefaultSrc = (ev) => {
@@ -142,77 +149,72 @@ export default class MangeSponsors extends React.Component {
   }
 
   render() {
-    const { sponsors = [] } = this.props
+    const { profile } = this.props
+    const sponsors = profile.sponsors || []
     const { saveButtonDisabled = true, linkValue = '', media_url = '', modalStatus = true, uploading = false } = this.state
 
     return (
-      <div className={`modal-container View__Member__modal ${modalStatus ? 'modal--show' : ''}`}>
-        <div className='modal-wrap'>
-          <div className='modal__header'>
-            <div className='tabs___header'>
-              <span className={`setting__tab  notHand`}>Edit Media</span>
-            </div>
-            <div className='modal__close' onClick={(e) => this.handleClose()}>
-              <img src='https://myG.gg/platform_images/Dashboard/X_icon.svg' />
-            </div>
-          </div>
-
-          <div className='modal__body Sponsor__edit'>
-            {sponsors.map((sponsor, index) => {
-              return (
-                <div className='Sponsor__edit-list'>
-                  <div className='text'>Custom Sponsor {index + 1}</div>
-                  <div className='Sponsor__media__input' onClick={this.handleImageChange}>
-                    <input
-                      type='file'
-                      accept='image/jpeg,image/jpg,image/png,image/gif'
-                      ref={this.fileInputRef}
-                      onChange={this.handleSelectFile}
-                      name='insert__images'
-                    />
-                    <img
-                      src={
-                        media_url == '' ? sponsor.media_url || 'https://myG.gg/platform_images/Dashboard/BTN_Attach_Image.svg' : media_url
-                      }
-                      onError={this.addDefaultSrc}
-                    />
-                  </div>
-                  <div className='text__tap'>
-                    Or <span>Click/Tap here</span> to select
-                  </div>
-                  {uploading && (
-                    <div className='text'>
-                      <span>Uploading... </span>
-                    </div>
-                  )}
-                  <div className='Sponsor__link__input'>
-                    <input
-                      type='text'
-                      onChange={this.handleLinkChange}
-                      value={linkValue == '' ? sponsor.link : linkValue}
-                      placeholder='Enter link here'
-                      onKeyDown={this.onKeyDown}
-                    />
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-
-          <div className='modal__footer'>
-            <MyGButton
-              customStyles={{ color: '#fff', border: '2px solid #fff', background: '#000' }}
-              onClick={() => this.handleClose()}
-              text='Cancel'
-            />
-            <button type='button' disabled={saveButtonDisabled} onClick={() => this.handleSave(true)}>
-              Save
-            </button>
-          </div>
+      <div className={`Sponsor__edit`}>
+        <div className='SponsorSave__action'>
+          <button type='button' onClick={this.handleSave}>
+            Save
+          </button>
         </div>
-
-        <div className='modal-overlay' onClick={(e) => this.handleClose()}></div>
+        {sponsors.map((sponsor, index) => {
+          return (
+            <div className='Sponsor__edit-list'>
+              <div className='text'>Custom Sponsor {index + 1}</div>
+              <div className='Sponsor__media__input' onClick={this.handleImageChange}>
+                <input
+                  type='file'
+                  accept='image/jpeg,image/jpg,image/png,image/gif'
+                  ref={this.fileInputRef}
+                  onChange={this.handleSelectFile}
+                  name='insert__images'
+                />
+                <img
+                  src={media_url == '' ? sponsor.media_url || 'https://myG.gg/platform_images/Dashboard/BTN_Attach_Image.svg' : media_url}
+                  onError={this.addDefaultSrc}
+                />
+              </div>
+              <div className='text__tap'>
+                Or <span>Click/Tap here</span> to select
+              </div>
+              {uploading && (
+                <div className='text'>
+                  <span>Uploading... </span>
+                </div>
+              )}
+              <div className='Sponsor__link__input'>
+                <input
+                  type='text'
+                  onChange={this.handleLinkChange}
+                  value={linkValue == '' ? sponsor.link : linkValue}
+                  placeholder='Enter link here'
+                  onKeyDown={this.onKeyDown}
+                />
+              </div>
+            </div>
+          )
+        })}
       </div>
     )
   }
 }
+
+function mapStateToProps(state, props) {
+  const profile = get(state, `profile.profiles[${state.user.alias}]`, {})
+  return {
+    userId: state.user.userId,
+    alias: state.user.alias,
+    profile,
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    fetchProfile: (alias) => dispatch(fetchProfileInfoAction(alias)),
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(MangeSponsors)
