@@ -184,65 +184,18 @@ class Settings extends Component {
                 <input type='checkbox' defaultChecked={true} id='switch-orange' onChange={() => {}} className='switch' />
               </div>
             </div>
-          </div>
-        )}
-        <div className='sponsors__action'>
-          <button type='button' className='sponsors__action-btn' onClick={() => this.sponsorsAction()}>
-            Manage your Sponsors
-          </button>
-        </div>
-        <div className='option'>
-          <div className='title'>Browser notifications</div>
-          <div className='button__switch browser__notification'>
-            <input 
-              id='switch-orange'
-              type='checkbox'
-              className='switch' 
-              value={this.props.pushNotificationsEnabled}
-              defaultChecked={this.props.pushNotificationsEnabled}
-              onChange={() => this.props.togglePushNotifications(this.props.userId)}
-            />
-          </div>
-        </div>
-        <div className='option'>
-          <div className='title'>Sound notifications</div>
-          <div className='button__switch sound__notification'>
-            <input 
-              id='switch-orange'
-              type='checkbox'
-              className='switch' 
-              value={!this.props.notificationSoundsDisabled}
-              defaultChecked={!this.props.notificationSoundsDisabled}
-              onClick={() => this.props.toggleNotificationSounds(!this.props.notificationSoundsDisabled)}
-            />
-          </div>
-        </div>
-        <div className='option'>
-          <div className='title'>
-            <a
-              style={{ 'text-decoration': 'none', color: '#FFFFFF' }}
-              rel='noopener noreferrer'
-              href='https://github.com/mraaz/myG_RoadMap'
-              target='_blank'>
-              Report bugs or request features{' '}
-            </a>
-          </div>
-        </div>
-        <div className='option via__email-container'>
-          <div className='title'>Notify via E-mail</div>
-          <div className='via__email'>
-            <div>
-              <label className='container'>
-                Nay, Nope, Never
+            <div className='option'>
+              <div className='title'>Sound notifications</div>
+              <div className='button__switch sound__notification'>
                 <input
+                  id='switch-orange'
                   type='checkbox'
-                  name='never'
-                  checked={this.state.viaEmail == 0}
-                  onChange={(e) => this.handleNotifyViaEmailChange(e, 0)}
-                  value={0}
+                  className='switch'
+                  value={!this.props.notificationSoundsDisabled}
+                  defaultChecked={!this.props.notificationSoundsDisabled}
+                  onClick={() => this.props.toggleNotificationSounds(!this.props.notificationSoundsDisabled)}
                 />
-                <span className='checkmark'></span>
-              </label>
+              </div>
             </div>
             <div className='option'>
               <div className='title'>
@@ -271,43 +224,72 @@ class Settings extends Component {
                     <span className='checkmark'></span>
                   </label>
                 </div>
-                <div>
-                  <label className='container'>
-                    Mnimalist (Weekly)
-                    <input
-                      type='checkbox'
-                      name='minimal'
-                      checked={this.state.viaEmail == 1}
-                      onChange={(e) => this.handleNotifyViaEmailChange(e, 1)}
-                      value={1}
-                    />
-                    <span className='checkmark'></span>
-                  </label>
+                <div className='option'>
+                  <div className='title'>
+                    <a
+                      style={{ 'text-decoration': 'none', color: '#FFFFFF' }}
+                      rel='noopener noreferrer'
+                      href='https://github.com/mraaz/myG_RoadMap'
+                      target='_blank'>
+                      Report bugs or request features{' '}
+                    </a>
+                  </div>
                 </div>
-                <div>
-                  <label className='container'>
-                    Maximalist (Daily)
-                    <input
-                      type='checkbox'
-                      name='always'
-                      checked={this.state.viaEmail == 2}
-                      onChange={(e) => this.handleNotifyViaEmailChange(e, 2)}
-                      value={2}
-                    />
-                    <span className='checkmark'></span>
-                  </label>
+                <div className='option via__email-container'>
+                  <div className='title'>Notify via E-mail</div>
+                  <div className='via__email'>
+                    <div>
+                      <label className='container'>
+                        Nay, Nope, Never
+                        <input
+                          type='checkbox'
+                          name='never'
+                          checked={this.state.viaEmail == 0}
+                          onChange={(e) => this.handleNotifyViaEmailChange(e, 0)}
+                          value={0}
+                        />
+                        <span className='checkmark'></span>
+                      </label>
+                    </div>
+                    <div>
+                      <label className='container'>
+                        Mnimalist (Weekly)
+                        <input
+                          type='checkbox'
+                          name='minimal'
+                          checked={this.state.viaEmail == 1}
+                          onChange={(e) => this.handleNotifyViaEmailChange(e, 1)}
+                          value={1}
+                        />
+                        <span className='checkmark'></span>
+                      </label>
+                    </div>
+                    <div>
+                      <label className='container'>
+                        Maximalist (Daily)
+                        <input
+                          type='checkbox'
+                          name='always'
+                          checked={this.state.viaEmail == 2}
+                          onChange={(e) => this.handleNotifyViaEmailChange(e, 2)}
+                          value={2}
+                        />
+                        <span className='checkmark'></span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <div className='setting_actions'>
+                  {this.state.feature_on && (
+                    <button type='button' className='disableAcccount' onClick={this.disableAcccount}>
+                      Disable Account
+                    </button>
+                  )}
+                  <button type='button' className='deleteAcccount' onClick={() => this.deleteAcccount()}>
+                    Delete Account
+                  </button>
                 </div>
               </div>
-            </div>
-            <div className='setting_actions'>
-              {this.state.feature_on && (
-                <button type='button' className='disableAcccount' onClick={this.disableAcccount}>
-                  Disable Account
-                </button>
-              )}
-              <button type='button' className='deleteAcccount' onClick={() => this.deleteAcccount()}>
-                Delete Account
-              </button>
             </div>
           </div>
         )}
@@ -316,7 +298,6 @@ class Settings extends Component {
   }
 }
 
-
 function mapStateToProps(state) {
   return {
     userId: state.user.userId,
@@ -324,7 +305,6 @@ function mapStateToProps(state) {
     pushNotificationsEnabled: state.user.pushNotificationsEnabled,
   }
 }
-
 
 function mapDispatchToProps(dispatch) {
   return {
