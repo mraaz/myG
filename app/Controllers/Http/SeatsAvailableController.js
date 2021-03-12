@@ -6,6 +6,8 @@ const SeatsAvailable = use('App/Models/SeatsAvailable')
 const ExtraSeatsCodes = use('App/Models/ExtraSeatsCodes')
 const SeatsAvailableEmail = use('App/Models/SeatsAvailableEmail')
 
+const LoggingRepository = require('../../Repositories/Logging')
+
 const Database = use('Database')
 
 class SeatsAvailableController {
@@ -15,27 +17,41 @@ class SeatsAvailableController {
   }
 
   async checkExtraSeatsCode({ req, params, response }) {
-    const ip = getIp(req)
-    const failedAttempts = await RedisRepository.getRecentFailedLoginAttempts(ip)
-    if (failedAttempts > 5) return response.send('LIMIT_EXCEEED')
-    const code = params.code
-    const hasCode = await ExtraSeatsCodes.query()
-      .where('code', code)
-      .select('*')
-      .first()
-
-    if (hasCode == undefined) {
-      await RedisRepository.registerFailedLoginAttempt(ip)
-      return response.send('false')
-    } else {
-      const counter = parseInt(hasCode.counter)
-      const max_counter = parseInt(hasCode.max_counter)
-      if (counter > max_counter) {
+    try {
+      const ip = getIp(req)
+      const failedAttempts = await RedisRepository.getRecentFailedLoginAttempts(ip)
+      if (failedAttempts > 5) return response.send('LIMIT_EXCEEED')
+      const code = params.code
+      console.log(code, '<<<CODE')
+      const hasCode = await ExtraSeatsCodes.query()
+        .where('code', code)
+        .select('*')
+        .first()
+      console.log(hasCode, '<<<hasCode')
+      if (hasCode == undefined) {
+        console.log('Failed')
         await RedisRepository.registerFailedLoginAttempt(ip)
-        return response.send('COUNTER_EXCEEED')
+        return response.send('false')
+      } else {
+        const counter = parseInt(hasCode.counter)
+        const max_counter = parseInt(hasCode.max_counter)
+        if (counter > max_counter) {
+          await RedisRepository.registerFailedLoginAttempt(ip)
+          return response.send('COUNTER_EXCEEED')
+        }
       }
+      console.log('Got here Code')
+      return response.send(!!hasCode)
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
+      return response.send('false')
     }
-    return response.send(!!hasCode)
   }
 
   async storeSeatsAvailableEmail({ params, response }) {

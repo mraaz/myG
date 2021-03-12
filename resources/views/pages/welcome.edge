@@ -195,8 +195,10 @@
         document.getElementById('extra-seats-code-hint').innerText = "Sorry! This code " + code.toUpperCase() + " has reached its limit. Please try a new code";
         document.getElementById('extra-seats-code-hint').style = "color: #ce2b35";
       }
-      else document.getElementById('extra-seats-code-hint').innerText = "Fair dinkum, this code " + code.toUpperCase() + " is garbage :(";
-      document.getElementById('extra-seats-code-hint').style = "color: #ce2b35";
+      else{
+        document.getElementById('extra-seats-code-hint').innerText = "This code " + code.toUpperCase() + " is not valid!";
+        document.getElementById('extra-seats-code-hint').style = "color: #ce2b35";
+      }
     }
   }
 
