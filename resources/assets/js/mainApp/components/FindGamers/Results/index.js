@@ -96,16 +96,6 @@ export default class Results extends React.Component {
             <span className="value">Lv. {gamer.level || 1}</span>
             <span className="title">Experience Pts.</span>
             <span className="value">{gamer.experience || 0} pts</span>
-            <span className="title">Country</span>
-            <span className="value">{gamer.country || 'None'}</span>
-          </div>
-          <div className="info">
-            <span className="title">Professional Team</span>
-            <span className="value">{gamer.team || 'None'}</span>
-            <span className="title">Looking for Work</span>
-            <span className="value">{gamer.lookingForWork ? 'Yes' : 'No'}</span>
-            <span className="title">Languages</span>
-            <span className="value">{(gamer.languages || []).join(', ') || 'None'}</span>
           </div>
         </div>
         <Experiences alias={gamer.alias} gameExperiences={gamer.gameExperiences || []} />
