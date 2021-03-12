@@ -88,7 +88,6 @@ export class Profile extends React.Component {
     sponsorsPositions.push({ id: this.props.level >= 5 ? 'empty-2' : 'empty-locked-2' });
     const sponsorsIndexes = this.props.profile.isSelf ? sponsorsPositions : null;
     const sponsors = sponsorsIndexes ? sponsorsIndexes.map((sponsor, index) => profileSponsors[index] || sponsor) : profileSponsors;
-    console.log('this.props.profile.isSelf  ',this.props.profile.isSelf);
     
     if (this.props.onboarding) {
       if (this.props.step === 1) {
