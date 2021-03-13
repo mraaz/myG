@@ -135,19 +135,21 @@ class GroupCreation extends React.Component {
   }
 
   renderGameInput = () => {
+    const hasGameIcon = this.state.selectedGame && this.state.selectedGame.icon;
     return (
       <div className='chat-group-creation-contact-input-container' onClick={() => this.inputRef.current.focus()}>
         <input
+          style={hasGameIcon ? { paddingLeft: 36 } : {}}
           ref={this.inputRef}
           className={`chat-group-creation-contact-input`}
           placeholder={'Game Name'}
           value={this.state.selectedGame ? this.state.selectedGame.name : this.state.gameInput}
           onChange={(event) => this.onGameSearch(event.target.value)}></input>
-        {this.state.selectedGame && this.state.selectedGame.icon && this.renderGameIcon(this.state.selectedGame)}
+        {hasGameIcon && this.renderGameIcon(this.state.selectedGame)}
         <Dropdown
           show={this.state.gameInput.length}
           position={{ top: '-6px' }}
-          items={this.props.foundGames.map((game) => (game.icon ? { ...game, render: this.renderGameIcon(game, true) } : game))}
+          items={this.props.foundGames}
           onItemClick={(item) => this.setState({ selectedGame: this.props.foundGames.find((game) => game.name === item), gameInput: '' })}
           emptyMessage={'no games found'}
         />

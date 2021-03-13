@@ -20,7 +20,8 @@ class Section extends React.Component {
   }
 
   static getDerivedStateFromProps(props, state) {
-    if (props.contacts.length > state.previousCount) return { page: state.page + 1, previousCount: props.contacts.length, canShowLoader: true }
+    if (props.contacts.length > state.previousCount)
+      return { page: state.page + 1, previousCount: props.contacts.length, canShowLoader: true }
     else return { canShowLoader: false }
   }
 
@@ -104,7 +105,12 @@ class Section extends React.Component {
     return (
       <div className='messenger-body-section' key={this.props.status}>
         <div className='messenger-body-section-header clickable' onClick={this.expand}>
-          <p className='messenger-body-section-header-name'>{this.props.status}</p>
+          <p className='messenger-body-section-header-name'>
+            {!!this.props.color && (
+              <div style={{ width: 12, height: 12, marginRight: 8, backgroundColor: this.props.color, borderRadius: 1000 }} />
+            )}
+            {this.props.status}
+          </p>
           <div className='messenger-body-section-header-info'>
             <span className='messenger-body-section-header-count'>({this.props.count})</span>
             <div
@@ -143,7 +149,8 @@ export function mapStateToProps(state, props) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    fetchContactsPaginated: (page, status, gameId, search, refresh) => dispatch(fetchContactsPaginatedAction(page, status, gameId, search, refresh)),
+    fetchContactsPaginated: (page, status, gameId, search, refresh) =>
+      dispatch(fetchContactsPaginatedAction(page, status, gameId, search, refresh)),
   }
 }
 
