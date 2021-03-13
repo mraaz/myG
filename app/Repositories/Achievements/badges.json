@@ -17,7 +17,7 @@
   },
   {
     "type": "follow",
-    "label": "Attain {value} followers",
+    "label": "Obtain {value} followers",
     "values": [100, 1000, 2000, 5000],
     "experiences": [1200, 12000, 24000, 60000],
     "activeIcon": "ic_badge_follow_yellow",
