@@ -318,12 +318,12 @@ export default class MainInfo extends React.Component {
 
   unnestDynamicField = (field) => {
     let dynamicField = get(this.props, `experience.dynamic.${field.id}`) || {}
-    if (dynamicField.map) dynamicField = dynamicField[0]
-    if (dynamicField.value) dynamicField = dynamicField.value
-    if (dynamicField.map) dynamicField = dynamicField[0]
-    if (dynamicField.value) dynamicField = dynamicField.value
-    if (dynamicField.map) dynamicField = dynamicField[0]
-    if (dynamicField.value) dynamicField = dynamicField.value
+    if (dynamicField && dynamicField.map) dynamicField = dynamicField[0]
+    if (dynamicField && dynamicField.value) dynamicField = dynamicField.value
+    if (dynamicField && dynamicField.map) dynamicField = dynamicField[0]
+    if (dynamicField && dynamicField.value) dynamicField = dynamicField.value
+    if (dynamicField && dynamicField.map) dynamicField = dynamicField[0]
+    if (dynamicField && dynamicField.value) dynamicField = dynamicField.value
     return dynamicField
   }
 
