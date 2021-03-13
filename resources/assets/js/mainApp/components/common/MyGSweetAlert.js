@@ -34,7 +34,7 @@ export default class MyGSweetAlert extends React.Component {
           marginRight: 16,
           boxShadow: null,
           textTransform: "lowercase",
-          fontFamily: "Montserrat Alternates",
+          fontFamily: "Montserrat",
           outline: 'none',
         }}
         confirmBtnStyle={{
@@ -48,7 +48,7 @@ export default class MyGSweetAlert extends React.Component {
           marginLeft: 16,
           boxShadow: null,
           textTransform: "lowercase",
-          fontFamily: "Montserrat Alternates",
+          fontFamily: "Montserrat",
           outline: 'none',
         }}
       >

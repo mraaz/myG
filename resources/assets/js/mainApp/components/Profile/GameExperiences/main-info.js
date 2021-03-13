@@ -154,7 +154,7 @@ export default class MainInfo extends React.Component {
             disabled={!this.props.isSelf}
           />
         </div>
-        {!!this.props.onboarding && <span className='required onboarding'>*</span>}
+        {!!this.props.onboarding && <span className='required-onboarding'>*</span>}
       </div>
     )
   }
@@ -206,7 +206,7 @@ export default class MainInfo extends React.Component {
           onChange={(level) => this.props.storeExperience({ level })}
           value={this.props.experience.level}
         />
-        {!!this.props.onboarding && <span className='required onboarding'>*</span>}
+        {!!this.props.onboarding && <span className='required-onboarding'>*</span>}
       </div>
     )
   }
@@ -224,7 +224,7 @@ export default class MainInfo extends React.Component {
           onChange={(experience) => this.props.storeExperience({ experience })}
           value={this.props.experience.experience}
         />
-        {!!this.props.onboarding && <span className='required onboarding'>*</span>}
+        {!!this.props.onboarding && <span className='required-onboarding'>*</span>}
       </div>
     )
   }
@@ -385,11 +385,11 @@ export default class MainInfo extends React.Component {
         true
       )
     const validation = field.values && field.values[0] && new RegExp(field.values[0])
-    const required = !this.props.onboarding && field.values && field.values[1]
+    const showLink = field.id === 'stats_link'
+    const required = !this.props.onboarding && field.values && field.values[1] && field.id !== 'stats_link'
     const isValid = validation
       ? validation.test(get(this.props, `experience.dynamic.${field.id}.value`, get(this.props, `experience.dynamic.${field.id}`)))
       : true
-    const showLink = field.id === 'stats_link'
     return (
       <React.Fragment>
         <span className='hint'>{field.label}</span>
@@ -491,7 +491,7 @@ export default class MainInfo extends React.Component {
       const value = get(this.props, `experience.dynamic.${field.id}.value`, get(this.props, `experience.dynamic.${field.id}`))
       const validation = field.values && field.values[0] && new RegExp(field.values[0])
       const isOnboarding = !!this.props.onboarding;
-      const isRequiredAndMissing = !isOnboarding && field.values && field.values[1] && !value
+      const isRequiredAndMissing = !isOnboarding && field.values && field.values[1] && field.id !== 'stats_link' && !value
       const isValid = validation && value ? validation.test(value) : true
       return isRequiredAndMissing || !isValid
     })
@@ -534,7 +534,7 @@ export default class MainInfo extends React.Component {
         <div className='input-container-row'>
           <input className='input' value={disabledValue} disabled={true}></input>
         </div>
-        {!!required && <span className='required onboarding'>*</span>}
+        {!!required && <span className='required-onboarding'>*</span>}
       </React.Fragment>
     )
     if (skipRow) return disabledField
