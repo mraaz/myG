@@ -494,7 +494,7 @@
             padding: 0 20px;
             font-size: 12px;
             font-weight: bold;
-            font-family: 'Montserrat';
+            font-family: 'Montserrat' !important;
             display: flex;
             align-items: center;
             @media screen and (max-width: 568px) {
@@ -779,7 +779,7 @@
       letter-spacing: 0px;
       color: #000000;
       opacity: 1;
-      font-family: 'Montserrat';
+      font-family: 'Montserrat' !important;
       font-size: 0.65em;
       font-weight: 500;
       color: #000;
@@ -867,7 +867,7 @@
     padding: 2em 2em !important;
     .text {
       font-size: 14px/20px;
-      font-family: 'Montserrat';
+      font-family: 'Montserrat' !important;
       font-weight: Bold;
       color: #fff;
       width: 100%;
@@ -882,7 +882,7 @@
     }
     .text__tap {
       font-size: 14px/20px;
-      font-family: 'Montserrat';
+      font-family: 'Montserrat' !important;
       font-weight: Bold;
       color: #fff;
       width: 100%;

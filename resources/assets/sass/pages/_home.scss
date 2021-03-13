@@ -648,6 +648,7 @@ section#content-container {
             color: $veryLightText;
             font-size: 0.9rem;
             margin-left: 20px;
+            margin-bottom: 12px;
             cursor: pointer;
           }
           .comments-stats {
@@ -920,7 +921,7 @@ section#content-container {
     }
     .post__container {
       margin: 40px 25px;
-      font-family: 'Montserrat';
+      font-family: 'Montserrat' !important;
       position: relative;
       .threedots__backdrop {
         position: fixed;
@@ -1267,6 +1268,7 @@ section#content-container {
           width: 16px;
           height: 16px;
           margin-left: 20px;
+          margin-bottom: 12px;
           display: flex;
           img {
             width: 16px;
@@ -1298,6 +1300,7 @@ section#content-container {
         font-weight: bold;
         color: #fff;
         margin-left: 20px;
+        margin-bottom: 12px;
       }
       .comments-stats {
         float: right;
@@ -1424,11 +1427,10 @@ section#content-container {
         }
         .send__btn {
           position: relative;
-          top: 18px;
-          height: 40px;
           cursor: pointer;
+          width: 42px;
           img {
-            height: 40px;
+            position: relative;
           }
         }
         .profile__image {

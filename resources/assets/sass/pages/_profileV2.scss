@@ -78,7 +78,7 @@
     padding: 4px 12px;
     font-size: 12px;
     margin: 12px 4px;
-    font-family: 'Montserrat';
+    font-family: 'Montserrat' !important;
     white-space: nowrap;
   }
 
@@ -91,7 +91,7 @@
     padding: 2px 6px;
     font-size: 10px;
     margin: 16px 4px;
-    font-family: 'Montserrat';
+    font-family: 'Montserrat' !important;
     white-space: nowrap;
   }
 
@@ -128,7 +128,7 @@
     font-weight: bold;
     padding: 16px 16px 24px 16px;
     margin-top: 48px;
-    font-family: 'Montserrat';
+    font-family: 'Montserrat' !important;
   }
 
   .share-button {
@@ -602,6 +602,8 @@
       .buttons {
         display: flex;
         flex-direction: row;
+        margin-bottom: 5px;
+        font-weight: 700;
         .button {
           border-radius: unset !important;
           font-family: Montserrat, sans-serif;
@@ -744,7 +746,7 @@
                 .alias {
                   font-size: 16px;
                   font-weight: bold;
-                  font-family: 'Montserrat';
+                  font-family: 'Montserrat' !important;
                   color: white;
                   margin: 0 0 4px 0;
                   padding: 0;
@@ -752,7 +754,7 @@
 
                 .level {
                   font-size: 14px;
-                  font-family: 'Montserrat';
+                  font-family: 'Montserrat' !important;
                   color: white;
                   margin: 0;
                   padding: 0;
@@ -1020,7 +1022,6 @@
     .headers {
       display: flex;
       flex-direction: row;
-      // margin: 0px 32px;
       padding: 12px;
       font-size: 18px;
       color: white;
@@ -1033,6 +1034,7 @@
         align-items: center;
         justify-content: center;
         padding-bottom: 8px;
+        font-family: 'Montserrat' !important;
         flex: 1;
       }
 
@@ -1360,6 +1362,10 @@
     margin: 0;
   }
 
+  .onboarding-content {
+    height: fit-content;
+  }
+
   #profile-game-main-info {
     display: flex;
     flex-direction: column;
@@ -1442,7 +1448,7 @@
       letter-spacing: 0px;
       color: #000000;
       opacity: 1;
-      font-family: 'Montserrat';
+      font-family: 'Montserrat' !important;
       font-size: 0.65em;
       font-weight: 500;
       color: #000;
@@ -1501,7 +1507,7 @@
       padding: 0;
       color: #f0f0f0;
       font-weight: 500;
-      font-family: 'Montserrat';
+      font-family: 'Montserrat' !important;
     }
 
     .sponsor {
