@@ -88,19 +88,19 @@ export class Profile extends React.Component {
     sponsorsPositions.push({ id: this.props.level >= 5 ? 'empty-2' : 'empty-locked-2' });
     const sponsorsIndexes = this.props.profile.isSelf ? sponsorsPositions : null;
     const sponsors = sponsorsIndexes ? sponsorsIndexes.map((sponsor, index) => profileSponsors[index] || sponsor) : profileSponsors;
-    
+
     if (this.props.onboarding) {
       if (this.props.step === 1) {
         return(
           <div id="profile" ref={this.contentAreaRef}>
             <EditGameExperience
-              onboarding={this.props.onboarding} 
+              onboarding={this.props.onboarding}
               alias={this.props.alias}
               profile={this.props.profile}
               isSelf={this.props.profile.isSelf}
               updateGame={this.props.updateGame}
-              setOnboardingStep={this.props.setOnboardingStep} 
-              skipOnboarding={this.props.skipOnboarding} 
+              setOnboardingStep={this.props.setOnboardingStep}
+              skipOnboarding={this.props.skipOnboarding}
             />
           </div>
         );
@@ -108,15 +108,15 @@ export class Profile extends React.Component {
       if (this.props.step === 3) {
         return(
           <div id="profile" ref={this.contentAreaRef}>
-            <GamerSuggestions 
-              onboarding={this.props.onboarding} 
+            <GamerSuggestions
+              onboarding={this.props.onboarding}
               noTitle profile={this.props.profile}
               sendFriendRequest={this.props.sendFriendRequest}
               cancelFriendRequest={this.props.cancelFriendRequest}
               follow={this.props.follow}
               unfollow={this.props.unfollow}
-              setOnboardingStep={this.props.setOnboardingStep} 
-              skipOnboarding={this.props.skipOnboarding} 
+              setOnboardingStep={this.props.setOnboardingStep}
+              skipOnboarding={this.props.skipOnboarding}
             />
           </div>
         );
@@ -124,10 +124,10 @@ export class Profile extends React.Component {
       return null;
     }
     return(
-      <div id="profile" ref={this.contentAreaRef}> 
+      <div id="profile" ref={this.contentAreaRef}>
         <Banner profile={this.props.profile} updateProfile={this.props.updateProfile} />
         <ProfileInfo alias={this.props.alias} profile={this.props.profile} updateProfile={this.props.updateProfile} />
-        {!!sponsors.length && <Sponsors isSelf={this.props.profile.isSelf} alias={this.props.alias} profile={this.props.profile} sponsors={sponsors} refetchSponsors={() => this.props.fetchProfile(this.props.alias)} />}
+        {/*  {!!sponsors.length && <Sponsors isSelf={this.props.profile.isSelf} alias={this.props.alias} profile={this.props.profile} sponsors={sponsors} refetchSponsors={() => this.props.fetchProfile(this.props.alias)} />} */}
         <GameExperiences userId={this.props.userId} selectedGame={this.props.gameId} commendUser={this.commendUser} deleteExperience={this.deleteExperience} alias={this.props.alias} profile={this.props.profile} updateGame={this.props.updateGame} />
         {!!this.props.profile.isSelf && <GamerSuggestions profile={this.props.profile} sendFriendRequest={this.props.sendFriendRequest} cancelFriendRequest={this.props.cancelFriendRequest} follow={this.props.follow} unfollow={this.props.unfollow}  /> }
         {!!this.props.profile.isSelf && <MyPosts initialData={this.props.initialData} /> }
