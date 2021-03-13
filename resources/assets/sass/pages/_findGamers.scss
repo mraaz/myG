@@ -96,13 +96,13 @@
       color: white;
       font-size: 16px;
       font-weight: bold;
-      font-family: 'Montserrat';
+      font-family: 'Montserrat' !important;
     }
 
     .experience {
       color: #f0f0f0;
       font-size: 14px;
-      font-family: 'Montserrat';
+      font-family: 'Montserrat' !important;
       margin-top: 6px;
       margin-bottom: 8px;
     }
@@ -114,7 +114,7 @@
       border-radius: 30px;
       text-align: center;
       font-size: 14px;
-      font-family: 'Montserrat';
+      font-family: 'Montserrat' !important;
       padding: 4px 8px;
     }
 
@@ -125,7 +125,7 @@
       border-radius: 30px;
       text-align: center;
       font-size: 14px;
-      font-family: 'Montserrat';
+      font-family: 'Montserrat' !important;
       padding: 4px 8px;
     }
 
@@ -136,7 +136,7 @@
       border-radius: 30px;
       text-align: center;
       font-size: 14px;
-      font-family: 'Montserrat';
+      font-family: 'Montserrat' !important;
       padding: 4px 8px;
     }
   }
@@ -193,7 +193,7 @@
 
   .top-bar {
     font-size: 18px;
-    font-family: 'Montserrat';
+    font-family: 'Montserrat' !important;
     font-weight: bold;
     text-align: center;
     color: #fafafa;
@@ -248,7 +248,7 @@
     padding: 4px 12px;
     font-size: 12px;
     margin: 12px 4px;
-    font-family: 'Montserrat';
+    font-family: 'Montserrat' !important;
     white-space: nowrap;
   }
 
@@ -356,7 +356,7 @@
   
         .filter-label {
           font-size: 16px;
-          font-family: 'Montserrat';
+          font-family: 'Montserrat' !important;
           color: #fff;
           margin: 8px 0 2px 0;
         }
@@ -407,7 +407,7 @@
     }
     .label {
       font-size: 20px;
-      font-family: 'Montserrat';
+      font-family: 'Montserrat' !important;
       color: #fff;
     }
     .add-filter {
@@ -422,7 +422,7 @@
         padding: 8px 0;
         color: #e6c846;
         font-size: 14px;
-        font-family: 'Montserrat';
+        font-family: 'Montserrat' !important;
         cursor: pointer;
         .text {
           padding: 4px 8px;
@@ -439,7 +439,7 @@
           justify-content: center;
           align-items: center;
           font-size: 12px;
-          font-family: 'Montserrat';
+          font-family: 'Montserrat' !important;
           text-align: center;
           color: #fff;
           font-weight: bold;
@@ -455,7 +455,7 @@
           .option {
             text-align: left;
             font-size: 12px;
-            font-family: 'Montserrat';
+            font-family: 'Montserrat' !important;
             color: #fff;
             font-weight: bold;
             white-space: nowrap;
@@ -508,7 +508,7 @@
       display: flex;
       flex-direction: row;
       margin: 12px 36px;
-      font-family: 'Montserrat';
+      font-family: 'Montserrat' !important;
 
       .row {
         width: 100%;
@@ -574,13 +574,13 @@
           color: white;
           font-size: 16px;
           font-weight: bold;
-          font-family: 'Montserrat';
+          font-family: 'Montserrat' !important;
         }
 
         .title {
           color: #606060;
           font-size: 10px;
-          font-family: 'Montserrat';
+          font-family: 'Montserrat' !important;
           margin: 4px 0 0 0;
           padding: 0;
         }
@@ -588,7 +588,7 @@
         .value {
           color: #f0f0f0;
           font-size: 12px;
-          font-family: 'Montserrat';
+          font-family: 'Montserrat' !important;
         }
       }
     }
