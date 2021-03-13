@@ -18,7 +18,10 @@ export class Banner extends React.Component {
   renderBannerUploader = () => {
     if (!this.props.profile.isSelf || !this.state.hoveringBanner) return;
     return(
-      <div className="hover-banner">Update Background Image</div>
+      <div className="hover-banner clickable" onClick={() => {
+        const uploader = document.querySelector('.uploader > input');
+        if (uploader) uploader.click();
+      }}>Update Background Image</div>
     );
   }
 

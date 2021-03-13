@@ -893,6 +893,9 @@
             width: 37px;
             height: 37px;
             border-radius: 50%;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
             z-index: 2;
           }
         }
@@ -1357,6 +1360,9 @@
               width: 35px;
               height: 35px;
               border-radius: 50%;
+              background-repeat: no-repeat;
+              background-position: center;
+              background-size: cover;
               .online__status {
                 border: 7px solid #68bd45;
                 border-radius: 50%;
@@ -1632,6 +1638,9 @@
           border-radius: 50%;
           z-index: 12;
           top: 3px;
+          background-repeat: no-repeat;
+          background-position: center;
+          background-size: cover;
           .online__status {
             border: 7px solid #68bd45;
             border-radius: 50%;
@@ -2956,6 +2965,9 @@ $transition-default: 0.25s ease-out 0.1s;
         height: 37px;
         border-radius: 50%;
         z-index: 2;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: cover;
       }
     }
   }
@@ -3122,6 +3134,9 @@ $transition-default: 0.25s ease-out 0.1s;
         border-radius: 50%;
         z-index: 12;
         top: 3px;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: cover;
 
         .online__status {
           border: 7px solid #68bd45;
@@ -3281,6 +3296,7 @@ $transition-default: 0.25s ease-out 0.1s;
           &.active {
             visibility: visible;
             opacity: 1;
+            
           }
           .edit {
             font-size: 10px;
@@ -3298,6 +3314,9 @@ $transition-default: 0.25s ease-out 0.1s;
           background: #ff00ff;
           width: 35px;
           height: 35px;
+          background-repeat: no-repeat;
+          background-position: center;
+          background-size: cover;
           border-radius: 50%;
           .online__status {
             border: 7px solid #68bd45;

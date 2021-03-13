@@ -28,9 +28,7 @@ class UserController {
     var friend = undefined,
       following = undefined
     try {
-      const user = await User.query()
-        .where('id', '=', request.params.id)
-        .fetch()
+      const user = await User.query().where('id', '=', request.params.id).fetch()
       if (auth.user.id != request.params.id) {
         friend = await Database.from('friends').where({
           user_id: auth.user.id,
@@ -61,9 +59,7 @@ class UserController {
 
   async profile_with_alias({ auth, request, response }) {
     try {
-      const user = await Database.from('users')
-        .where('alias', '=', request.params.alias)
-        .first()
+      const user = await Database.from('users').where('alias', '=', request.params.alias).first()
       const friend = await Database.from('friends').where({
         user_id: auth.user.id,
         friend_id: user.id,
@@ -245,9 +241,7 @@ class UserController {
           return
         }
 
-        const transferGames = await GameName.query()
-          .where('user_id', '=', auth.user.id)
-          .update({ user_id: 1 })
+        const transferGames = await GameName.query().where('user_id', '=', auth.user.id).update({ user_id: 1 })
 
         const byebyebye = await Database.table('users')
           .where({
@@ -281,6 +275,9 @@ class UserController {
           .where('id', '=', auth.user.id)
           .update({ profile_img: request.input('profile_img') })
 
+        const { profile } = await ProfileRepository.fetchProfileInfo({ requestingUserId: auth.user.id, id: auth.user.id })
+        await ElasticsearchRepository.storeUser({ user: profile })
+
         return response.status(200).json({ success: true })
       } catch (error) {
         return response.status(200).json({ success: false })
@@ -300,6 +297,9 @@ class UserController {
         const saveUser = await User.query()
           .where('id', '=', auth.user.id)
           .update({ profile_bg: request.input('profile_bg') })
+
+        const { profile } = await ProfileRepository.fetchProfileInfo({ requestingUserId: auth.user.id, id: auth.user.id })
+        await ElasticsearchRepository.storeUser({ user: profile })
         return response.status(200).json({ success: true })
       } catch (error) {
         return response.status(200).json({ success: false })
