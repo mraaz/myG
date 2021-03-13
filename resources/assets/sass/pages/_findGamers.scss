@@ -3,35 +3,35 @@
   flex-direction: column;
   overflow-y: scroll;
   flex: 1;
-  font-family: 'Montserrat Alternates', sans-serif;
+  font-family: 'Montserrat', sans-serif;
 
   .filter__control {
     background-color: #4d565a !important;
     border: none !important;
-    font-family: 'Montserrat Alternates', sans-serif !important;
+    font-family: 'Montserrat', sans-serif !important;
   }
 
   .filter__single-value {
     color: #fff !important;
-    font-family: 'Montserrat Alternates', sans-serif !important;
+    font-family: 'Montserrat', sans-serif !important;
   }
 
   .filter__menu {
     background-color: #4d565a !important;
     color: #fff !important;
-    font-family: 'Montserrat Alternates', sans-serif !important;
+    font-family: 'Montserrat', sans-serif !important;
   }
 
   .filter__option {
     background-color: #0b0f14 !important;
     color: #fff !important;
-    font-family: 'Montserrat Alternates', sans-serif !important;
+    font-family: 'Montserrat', sans-serif !important;
   }
 
   .filter__option:hover {
     background-color: rgba(0, 0, 0, 0) !important;
     color: #0b0f14 !important;
-    font-family: 'Montserrat Alternates', sans-serif !important;
+    font-family: 'Montserrat', sans-serif !important;
   }
 
   .filter__control--is-focused {

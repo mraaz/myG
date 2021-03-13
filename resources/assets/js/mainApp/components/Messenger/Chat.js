@@ -61,6 +61,7 @@ export class Chat extends React.Component {
     document.addEventListener('wheel', this.handleMessageListScroll, { passive: true })
     this.props.prepareChat(this.props.chatId, this.props.userId, this.props.contactId, this.props.isGroup)
     if (!this.props.isGuest) this.props.checkSelfDestruct(this.props.chatId)
+    if (this.props.isGroup && !this.props.privateKey && this.props.isGroupOwner && this.props.messages.length <= 1) this.resetGroupKey();
   }
 
   componentWillUnmount() {
@@ -513,10 +514,10 @@ export class Chat extends React.Component {
     const noUserKeyText = 'Please inform your encryption key to read the contents of this chat.'
     const noGroupKeyText = `Unable to retrieve E2E key from an active member. Please wait for a group chat member to come online.`
     const noGroupKeySubtext = this.props.isGuest
-      ? 'Alternatively, create an account @ myG.gg'
-      : this.props.isGroupOwner
-      ? 'Alternatively, click here to reset the encryption key.'
-      : ''
+    ? 'Alternatively, create an account @ myG.gg'
+    : this.props.isGroupOwner
+    ? 'Alternatively, click here to reset the encryption key.'
+    : ''
     const canResetKey = isGroupWithoutKey && this.props.isGroupOwner
     return (
       <div key={this.props.chatId} id='chat-component-base'>

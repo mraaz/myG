@@ -27,7 +27,9 @@ export class Banner extends React.Component {
   }
 
   render() {
-    const background = this.props.profile.background ? { backgroundImage: `url('${this.props.profile.background}')` } : {};
+    const background = this.props.profile.background ? 
+      { backgroundImage: `url('${this.props.profile.background}')` } : 
+      { backgroundImage: `url(https://myg.gg/platform_images/Profile/Silver-Stamping-Logo-MockUp.jpg)` };
     return(
       <div id="profile-banner" className={`background ${this.props.isSelf && 'clickable'}`} style={background}  
         onMouseEnter={() => this.setState({ hoveringBanner: true })}

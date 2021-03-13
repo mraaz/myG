@@ -80,12 +80,12 @@ export default class ProfileInfo extends React.Component {
             {this.renderPod('Games currently playing', this.state.mostPlayedGames, 'left')}
           </div>
           <div className="column center">
-            {this.renderPod('Professional Team', this.state.team, 'center')}
-            {this.renderPod('Contact', this.state.email, 'center')}
+            {this.renderPod('Professional Team', this.state.team, 'left')}
+            {this.renderPod('Contact', this.state.email, 'left')}
           </div>
           <div className="column right">
-            {this.renderPod('Languages', this.state.languages, 'right')}
-            {this.renderPod('Relationship status', this.state.relationship, 'right')}
+            {this.renderPod('Languages', this.state.languages, 'left')}
+            {this.renderPod('Relationship status', this.state.relationship, 'left')}
           </div>
         </div>
         {this.renderEditButton()}

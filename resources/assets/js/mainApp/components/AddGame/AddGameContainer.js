@@ -239,7 +239,7 @@ const AddGameContainer = ({ level }) => {
         </div>
         <div className={styles.listedBottomContentContainer}>
           <Link to='/addScheduleGames' replace>
-            <MyGButton customStyles={{ color: '#fff', border: '2px solid' }} text='Done' />
+            <MyGButton customStyles={{ color: '#fff', border: '2px solid', padding: '0px 20px 20px 20px' }} text='Done' />
           </Link>
         </div>
       </MyGModal>
@@ -258,7 +258,7 @@ const AddGameContainer = ({ level }) => {
         </div>
         <div className={styles.listedBottomContentContainer}>
           <Link to='/addScheduleGames' replace>
-            <MyGButton customStyles={{ color: '#fff', border: '2px solid' }} text='Done' />
+            <MyGButton customStyles={{ color: '#fff', border: '2px solid', padding: 'padding: 0px 20px 20px 20px' }} text='Done' />
           </Link>
         </div>
       </MyGModal>
