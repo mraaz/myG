@@ -4,6 +4,7 @@ const Database = use('Database')
 const Reported = use('App/Models/Reported')
 
 const LoggingRepository = require('../../Repositories/Logging')
+const ElasticsearchRepository = require('../../Repositories/Elasticsearch')
 
 class ReportedController {
   async store(userId, report_description, type) {
@@ -126,7 +127,7 @@ class ReportedController {
             id: request.params.id,
           })
           .delete()
-
+          await ElasticsearchRepository.removeUser({ id: request.params.id })
         return 'Deleted successfully'
       } catch (error) {
         LoggingRepository.log({
