@@ -90,7 +90,7 @@
     background-color: #1d2326;
     border-radius: 12px;
     margin: 20px 0 20px 20px;
-    max-width: 33%;
+    width: 33%;
 
     .name {
       color: white;
@@ -144,12 +144,13 @@
   .headers {
     display: flex;
     flex-direction: row;
-    margin: 0px 150px;
     padding: 12px;
     font-size: 18px;
     color: white;
     align-items: center;
     justify-content: space-around;
+    width: 80%;
+    margin: 0 auto;
 
     .header {
       border-bottom: 2px solid #1e2326;
@@ -329,8 +330,10 @@
   }
 
   #find-gamers-search {
-    padding: 0 64px;
+    padding: 0 10px;
     max-width: 1800px;
+    width: 80%;
+    margin: 0 auto;
   }
 
   #find-gamers-filter {
@@ -338,7 +341,7 @@
     display: flex;
     flex-direction: column;
     padding: 0 16px;
-    margin: -32px 64px 0 64px;
+    margin: -32px 64px 20px 64px;
     max-width: 1800px;
     border-left: 2px solid #344953;
 
@@ -353,14 +356,14 @@
         flex-direction: column;
         margin-bottom: 8px;
         width: 50%;
-  
+
         .filter-label {
           font-size: 16px;
           font-family: 'Montserrat' !important;
           color: #fff;
           margin: 8px 0 2px 0;
         }
-  
+
         .filter-text {
           width: 100%;
           margin: 0;
@@ -377,7 +380,7 @@
             color: #808080;
           }
         }
-  
+
         .filter-select {
           width: 100%;
           margin: 0;
@@ -490,7 +493,8 @@
   .find-gamers-results {
     display: flex;
     flex-direction: column;
-    padding: 12px;
+    padding: 0 40px;
+    border-top: 2px solid #273137;
 
     .loading {
       display: flex;
@@ -565,7 +569,7 @@
         flex-direction: column;
         padding: 8px;
         justify-content: center;
-        width: 120px;
+        width: 200px;
         overflow-x: scroll;
         scrollbar-width: none; /* Firefox */
         -ms-overflow-style: none; /* IE and Edge */
@@ -597,11 +601,10 @@
 
 @media screen and (max-width: 575px) {
   #find-gamers {
-    
     &.menuAtTop {
       padding: 85px 0 0;
     }
-    
+
     #find-gamers-search {
       padding: 0;
       margin: 0 8px;
@@ -622,7 +625,7 @@
     #find-gamers-banner {
       display: none;
     }
-    #find-gamers-filter {    
+    #find-gamers-filter {
       margin: 24px 8px;
       .filter-row {
         width: 100%;
@@ -646,8 +649,8 @@
           margin-left: 24px !important;
         }
         .icon {
-          left: 8px!important;
-          top: 8px!important;
+          left: 8px !important;
+          top: 8px !important;
           width: 48px !important;
           height: 48px !important;
           margin: 0 !important;
@@ -657,4 +660,3 @@
     }
   }
 }
-

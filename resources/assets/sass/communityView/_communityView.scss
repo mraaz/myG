@@ -13,7 +13,6 @@
     width: 100%;
     position: relative;
     margin-bottom: 1em;
-    max-width: 1200px;
     margin-left: auto;
     margin-right: auto;
     @media screen and (max-width: 998px) {
@@ -65,7 +64,7 @@
       cursor: pointer;
       border-radius: 8px;
       max-height: 320px;
-      object-fit: contain;
+      object-fit: cover;
 
       &.nothand {
         cursor: default;

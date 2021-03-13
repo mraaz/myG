@@ -45,7 +45,7 @@ export default class Results extends React.Component {
     lastScrollPosition = scrollPosition;
     this.props.showMore();
   }
-  
+
   cancelFriendRequest = () => this.props.cancelFriendRequest(this.props.profile.alias, this.props.profile.profileId)
 
   renderLoading = () => {
@@ -65,7 +65,7 @@ export default class Results extends React.Component {
 
   renderGamer = (gamer) => {
     const isHovering = this.state.hovering === gamer.profileId;
-    const aliasTooLong = gamer.alias && gamer.alias.length > 10;
+    const aliasTooLong = gamer.alias && gamer.alias.length > 11;
     return(
       <div className="find-gamer-result" key={gamer.profileId}>
         <div className={`gamer ${isHovering ? 'hover' : ''}`}
@@ -77,14 +77,14 @@ export default class Results extends React.Component {
           <div className="alias-info info">
             {gamer.alias && (
               aliasTooLong ? (
-                <WithTooltip position={{ 
+                <WithTooltip position={{
                   width: '120px',
                   padding: '4px 8px',
                   bottom: '-12px',
                   left: '-12px',
                   fontSize: '12px',
                  }} text={`@${gamer.alias}`}>
-                  <span className="alias">{`@${gamer.alias}`.slice(0, 8) + '...'}</span>
+                  <span className="alias">{`@${gamer.alias}`.slice(0, 10) + '...'}</span>
                 </WithTooltip>
               ) : (
                 <span className="alias">@{gamer.alias}</span>
