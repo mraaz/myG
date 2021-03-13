@@ -133,7 +133,7 @@
 
               .title {
                 font-size: 18px;
-                font-family: 'Montserrat';
+                font-family: 'Montserrat' !important;
                 color: #fff;
                 white-space: nowrap;
                 text-overflow: ellipsis;
@@ -142,7 +142,7 @@
               }
 
               .owner {
-                font-family: 'Montserrat';
+                font-family: 'Montserrat' !important;
                 font-weight: bold;
                 color: #fff;
                 display: flex;
@@ -193,7 +193,7 @@
                   text-overflow: ellipsis;
                   margin-right: 12px !important;
                   font-weight: 600;
-                  font-family: 'Montserrat';
+                  font-family: 'Montserrat' !important;
                   font-size: 12px;
                 }
               }

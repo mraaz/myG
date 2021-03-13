@@ -118,7 +118,7 @@ $transition-default: 0.25s ease-out 0.1s;
       margin-right: 5px;
       font-size: 1em;
       font-weight: 700;
-      font-family: 'Montserrat';
+      font-family: 'Montserrat' !important;
     }
   }
   .app-container.home-page .notifications-page .notifications-container .gameList__box .mygames .game__attributes .first__row .game__name {
@@ -1324,7 +1324,7 @@ $transition-default: 0.25s ease-out 0.1s;
       letter-spacing: 0px;
       color: #000000;
       opacity: 1;
-      font-family: 'Montserrat';
+      font-family: 'Montserrat' !important;
       font-size: 0.65em;
       font-weight: 500;
       color: #000;
@@ -1432,7 +1432,7 @@ $transition-default: 0.25s ease-out 0.1s;
       }
       .text {
         font-size: 14px/20px;
-        font-family: 'Montserrat';
+        font-family: 'Montserrat' !important;
         font-weight: Bold;
         color: #fff;
         width: 100%;
@@ -1447,7 +1447,7 @@ $transition-default: 0.25s ease-out 0.1s;
       }
       .text__tap {
         font-size: 14px/20px;
-        font-family: 'Montserrat';
+        font-family: 'Montserrat' !important;
         font-weight: Bold;
         color: #fff;
         width: 100%;
