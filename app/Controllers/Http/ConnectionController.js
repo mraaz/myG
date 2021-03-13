@@ -10,7 +10,6 @@ const CommonController = use('./CommonController')
 
 class ConnectionController {
   async master_controller({ auth }) {
-
     if (auth.user) {
       const getRunTime = await Database.from('settings')
         .select('gamer_connection_last_runtime', 'id')
@@ -25,6 +24,12 @@ class ConnectionController {
             .slice(0, 19)
             .replace('T', ' '),
         })
+        this.check_if_same_games_in_profile({ auth })
+        this.check_if_in_same_communities({ auth })
+        this.check_if_in_same_location({ auth })
+        this.myCommon_friends({ auth })
+        this.calc_communities_you_might_know({ auth })
+        this.have_we_played_together({ auth })
         return
       }
 
@@ -239,7 +244,6 @@ class ConnectionController {
 
         const common_Controller = new CommonController()
         myArr = await common_Controller.shuffle(myArr)
-
         if (myArr.length < 10) {
           let random_grps = await Database.from('groups')
             .leftJoin('usergroups', 'usergroups.group_id', 'groups.id')
