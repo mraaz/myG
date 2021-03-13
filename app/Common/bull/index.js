@@ -138,7 +138,7 @@ function getJobs(Queue, bullConfig, ioCluster, uuidv4, runEveryJobOnStart) {
       payload: {},
       schedule: { repeat: { cron: '0 23 * * *' } },
       runOnSchedule: true,
-      runOnStart: runEveryJobOnStart ? true : false,
+      runOnStart: true, //runEveryJobOnStart ? true : false,
       enabled: true,
     },
     {
@@ -149,7 +149,7 @@ function getJobs(Queue, bullConfig, ioCluster, uuidv4, runEveryJobOnStart) {
       payload: {},
       schedule: { repeat: { cron: '0 0 * * 1' } },
       runOnSchedule: true,
-      runOnStart: runEveryJobOnStart ? true : false,
+      runOnStart: true, //runEveryJobOnStart ? true : false,
       enabled: true,
     },
     {
@@ -160,7 +160,7 @@ function getJobs(Queue, bullConfig, ioCluster, uuidv4, runEveryJobOnStart) {
       payload: {},
       schedule: { repeat: { cron: '0 0 1 * *' } },
       runOnSchedule: true,
-      runOnStart: runEveryJobOnStart ? true : false,
+      runOnStart: true,//runEveryJobOnStart ? true : false,
       enabled: true,
     },
     {
