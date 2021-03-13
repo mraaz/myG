@@ -61,7 +61,6 @@ export class Chat extends React.Component {
     document.addEventListener('wheel', this.handleMessageListScroll, { passive: true })
     this.props.prepareChat(this.props.chatId, this.props.userId, this.props.contactId, this.props.isGroup)
     if (!this.props.isGuest) this.props.checkSelfDestruct(this.props.chatId)
-    console.log('on mount', this.props.isGroup, !this.props.privateKey, this.props.isGroupOwner, this.props.messages);
     if (this.props.isGroup && !this.props.privateKey && this.props.isGroupOwner && this.props.messages.length <= 1) this.resetGroupKey();
   }
 
