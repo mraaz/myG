@@ -840,7 +840,7 @@
     flex-direction: column;
     border-radius: 8px;
     background-color: #0a0f14;
-    border: 1px solid #1D2326;
+    border: 1px solid #1d2326;
     margin: 24px 15%;
     padding: 8px 0 0 0;
     font-family: 'Montserrat', sans-serif;
@@ -1372,9 +1372,10 @@
     width: 80%;
     border-bottom-left-radius: 0px;
     border-bottom-right-radius: 0px;
-    padding: 0;
+    padding: 30px 10px 10px 10px;
     margin: 0;
     overflow-y: scroll;
+    min-height: 400px;
 
     .image-uploader {
       background-color: #1d2326;
