@@ -9,7 +9,7 @@
     },
     "placeholders": {
       "dota2_server_regions": "Select what region/s you can play",
-      "dota2_medal_ranks": "Please advise what Medal Rank/s you are looking for?",
+      "dota2_medal_ranks": "What Medal Rank/s you are looking for?",
       "dota2_roles": "Select the role/s you wish to apply for"
     },
     "profile_placeholders": {
@@ -47,7 +47,7 @@
     },
     "placeholders": {
       "lol_server_regions": "Select what region/s you can play",
-      "lol_ranks": "Please advise what Rank/s you are looking for?",
+      "lol_ranks": "What Rank/s you are looking for?",
       "lol_roles": "Select the role/s you wish to apply for"
     },
     "profile_placeholders": {
@@ -83,7 +83,7 @@
       "value_three": "mlbb_levels"
     },
     "placeholders": {
-      "mlbb_ranks": "Please advise what Rank/s you are looking for?",
+      "mlbb_ranks": "What Rank/s you are looking for?",
       "mlbb_classes": "Select the class/es you wish to apply for",
       "mlbb_levels": "Please select your level"
     },

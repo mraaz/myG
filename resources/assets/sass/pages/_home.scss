@@ -647,6 +647,7 @@ section#content-container {
             width: 30%;
             color: $veryLightText;
             font-size: 0.9rem;
+            margin-left: 20px;
             cursor: pointer;
           }
           .comments-stats {
@@ -1265,6 +1266,7 @@ section#content-container {
           font-family: Montserrat, sans-serif;
           width: 16px;
           height: 16px;
+          margin-left: 20px;
           display: flex;
           img {
             width: 16px;
@@ -1295,6 +1297,7 @@ section#content-container {
         cursor: pointer;
         font-weight: bold;
         color: #fff;
+        margin-left: 20px;
       }
       .comments-stats {
         float: right;
@@ -1425,7 +1428,7 @@ section#content-container {
           height: 40px;
           cursor: pointer;
           img {
-            height: 44px;
+            height: 40px;
           }
         }
         .profile__image {
@@ -1631,9 +1634,11 @@ section#content-container {
                 float: right;
                 font-size: 12px;
                 color: #fff;
+                cursor: pointer;
               }
               .comment-panel-liked {
                 padding-left: 15px;
+                cursor: pointer;
               }
               .comment-panel-reply {
                 float: right;
@@ -1641,6 +1646,7 @@ section#content-container {
                 padding-left: 15px;
                 border-left: 1px solid #384952;
                 color: #fff;
+                cursor: pointer;
               }
               .divider {
                 margin-left: 10px;
@@ -1759,6 +1765,7 @@ section#content-container {
   position: relative;
   margin-left: auto;
   margin-right: auto;
+  margin-bottom: 24px;
   border-radius: 8px;
   width: 80%;
 
@@ -2245,6 +2252,7 @@ section#content-container {
     .postCompose__container {
       margin: 0 auto;
       width: 90% !important;
+      margin-bottom: 24px;
       border-radius: 10px;
     }
     .people_group_list {

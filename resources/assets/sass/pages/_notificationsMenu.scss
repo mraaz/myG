@@ -54,6 +54,7 @@ $transition-default: 0.25s ease-out 0.1s;
 
   .postCompose__container {
     border: none !important;
+    margin-bottom: 24px;
   }
   .notification__container {
     background: #0b0f14;
@@ -132,6 +133,7 @@ $transition-default: 0.25s ease-out 0.1s;
   width: 97%;
   .postCompose__container {
     width: inherit !important;
+    margin-bottom: 24px;
     padding: 0;
   }
 
@@ -1074,6 +1076,7 @@ $transition-default: 0.25s ease-out 0.1s;
 
   .postCompose__container {
     border: none !important;
+    margin-bottom: 24px;
   }
   .notification__container {
     background: #0b0f14;

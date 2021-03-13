@@ -201,7 +201,7 @@ const JoinStatus = (props) => {
           <button type='button' onClick={handleJoinGame}>{`${joinButtonText}`}</button>
         </div>
       ) : (
-        <div className='game__action__buttton'>
+        <div className='game__action__buttton' onBlur={() => setTimeout(() => setLeaveButtonStatus(false), 100)}>
           <button type='button' onClick={handleJoindButtonClick} className={`${leaveButtonStatus ? 'open' : 'open'}`}>
             {`${joinButtonText}`}
             <img src='https://myG.gg/platform_images/View+Game/Down+Carrot_black.svg' />
