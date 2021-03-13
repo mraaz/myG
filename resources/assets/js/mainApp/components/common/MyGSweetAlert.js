@@ -4,6 +4,12 @@ import SweetAlert from 'react-bootstrap-sweetalert';
 import { getAssetUrl } from '../../../common/assets';
 
 export default class MyGSweetAlert extends React.Component {
+  componentDidMount() {
+    // Inject class into SweetAlert text box.
+    const sweetAlertTextBox = document.querySelector('#popup-alert > div > div > div > div:nth-child(4)')
+    if (sweetAlertTextBox) sweetAlertTextBox.classList.add("sweet-alert-text-box")
+  }
+
   render() {
     const customIcon = this.props.info ?
       getAssetUrl('ic_sweet_alert_info') : this.props.danger ?
