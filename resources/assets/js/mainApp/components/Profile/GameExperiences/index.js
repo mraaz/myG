@@ -32,6 +32,11 @@ export default class GameExperiences extends React.Component {
     return { gameExperiences, isSelf };
   }
 
+  deleteExperience = (id) => {
+    this.setState({ page: 0 });
+    this.props.deleteExperience(id);
+  }
+
   changePage = (direction) => {
     const page = this.state.page;
     const newPage = direction === 'left' ? (page - 1) < 0 ? page : page - 1 : (page + 1) > this.filterGameExperiences().length - this.getGamesPerPage() ? page : page + 1;
@@ -134,7 +139,7 @@ export default class GameExperiences extends React.Component {
             {this.state.isSelf && (
               <div className="hover-button clickable" onClick={() => 
                 showMessengerAlert(`Are you sure you want to delete your game experience for ${gameName}?`,
-                () => this.props.deleteExperience(id),
+                () => this.deleteExperience(id),
                 null,
                 'Make it so',
               )}>

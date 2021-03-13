@@ -652,6 +652,8 @@
   }
 
   .messenger-body-section-header-name {
+    display: flex;
+    align-items: center;
     color: white;
     font-size: 14px;
     font-weight: 1000;

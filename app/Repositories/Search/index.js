@@ -42,7 +42,7 @@ class SearchRepository {
     if (input.includes('experience:')) targetedQueries.push({ field: 'gameExperiences.experience.keyword', value: input.split('experience:')[1].trim().split(' ')[0].split('_').join(' ') });
     if (input.includes('career:')) targetedQueries.push({ field: 'gameExperiences.level.keyword', value: input.split('career:')[1].trim().split(' ')[0].split('_').join(' ').replace('Professional', 'Pro Gamer') });
     dynamicFields.forEach((field) => {
-      if (input.includes(`${field}:`)) {
+      if (input.includes(` ${field}:`)) {
         targetedQueries.push({ 
           field: `gameExperiences.${field.split('_').join(' ')}.keyword`, 
           value: input.split(`${field}:`)[1].trim().split(' ')[0].split('_').join(' '),
