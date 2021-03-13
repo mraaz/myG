@@ -1631,9 +1631,11 @@ section#content-container {
                 float: right;
                 font-size: 12px;
                 color: #fff;
+                cursor: pointer;
               }
               .comment-panel-liked {
                 padding-left: 15px;
+                cursor: pointer;
               }
               .comment-panel-reply {
                 float: right;
@@ -1641,6 +1643,7 @@ section#content-container {
                 padding-left: 15px;
                 border-left: 1px solid #384952;
                 color: #fff;
+                cursor: pointer;
               }
               .divider {
                 margin-left: 10px;

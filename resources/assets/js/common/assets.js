@@ -80,6 +80,8 @@ const assets = {
   ic_badge_connect_gray: 'ic_badge_connect_gray.svg',
   ic_badge_like_yellow: 'ic_badge_like_yellow.svg',
   ic_badge_like_gray: 'ic_badge_like_gray.svg',
+  ic_badge_give_like_yellow: 'ic_badge_give_like_yellow.svg',
+  ic_badge_give_like_gray: 'ic_badge_give_like_gray.svg',
   ic_badge_follow_yellow: 'ic_badge_follow_yellow.svg',
   ic_badge_follow_gray: 'ic_badge_follow_gray.svg',
   ic_badge_community_yellow: 'ic_badge_community_yellow.svg',

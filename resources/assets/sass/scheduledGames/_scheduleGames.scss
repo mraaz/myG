@@ -1378,15 +1378,18 @@
               margin-right: 15px;
               float: right;
               font-size: 12px;
+              cursor: pointer;
             }
             .comment-panel-liked {
               padding-left: 15px;
+              cursor: pointer;
             }
             .comment-panel-reply {
               float: right;
               font-size: 12px;
               padding-left: 15px;
               border-left: 1px solid #384952;
+              cursor: pointer;
             }
             .divider {
               margin-left: 10px;
@@ -3319,6 +3322,7 @@ $transition-default: 0.25s ease-out 0.1s;
           margin-right: 5px;
           float: right;
           font-size: 12px;
+          cursor: pointer;
 
           @media (min-width: 575px) {
             margin-right: 15px;
@@ -3326,10 +3330,12 @@ $transition-default: 0.25s ease-out 0.1s;
         }
         .comment-panel-liked {
           padding-left: 15px;
+          cursor: pointer;
         }
         .comment-panel-reply {
           float: right;
           font-size: 12px;
+          cursor: pointer;
 
           @media (min-width: 575px) {
             border-left: 1px solid #384952;
