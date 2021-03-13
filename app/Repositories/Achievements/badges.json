@@ -16,8 +16,16 @@
     "inactiveIcon": "ic_badge_like_gray"
   },
   {
+    "type": "givenLikes",
+    "label": "Give {value} likes",
+    "values": [50, 100, 200, 500, 1000],
+    "experiences": [50, 100, 200, 500, 1000],
+    "activeIcon": "ic_badge_give_like_yellow",
+    "inactiveIcon": "ic_badge_give_like_gray"
+  },
+  {
     "type": "follow",
-    "label": "Attain {value} followers",
+    "label": "Obtain {value} followers",
     "values": [100, 1000, 2000, 5000],
     "experiences": [1200, 12000, 24000, 60000],
     "activeIcon": "ic_badge_follow_yellow",

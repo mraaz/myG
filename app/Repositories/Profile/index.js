@@ -325,13 +325,10 @@ class ProfileRepository {
     return { profile };
   }
 
-  async verifyGameUpdates({ game, level, experience, dynamic }) {
+  async verifyGameUpdates({ game, level, experience }) {
     if (!game) throw new Error('No game was selected.');
     if (!level) throw new Error('No level was selected.');
     if (!experience) throw new Error('No experience was selected.');
-    const dynamicFields = await this.fetchDynamicFields({ gameId: game });
-    const requiresLink = Object.keys(dynamicFields).includes('stats_link');
-    if (requiresLink && !get(dynamic, 'stats_link')) throw new Error('No stats link was selected.');
   }
 
   async updateGame({ requestingUserId, id, imageKey, imageSource, mainFields, game, gameName, nickname, level, experience, team, tags, rating, dynamic, background }) {
@@ -351,7 +348,7 @@ class ProfileRepository {
       }
     }
 
-    await this.verifyGameUpdates({ game, level, experience, dynamic });
+    await this.verifyGameUpdates({ game, level, experience });
 
     const gameExperience = id ? await GameExperience.find(id) : new GameExperience();
     gameExperience.user_id = requestingUserId;

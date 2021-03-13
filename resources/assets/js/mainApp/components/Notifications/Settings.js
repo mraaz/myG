@@ -228,7 +228,7 @@ class Settings extends Component {
                 </div>
                 <div>
                   <label className='container'>
-                    Mnimalist (Weekly)
+                    Minimalist (Weekly)
                     <input
                       type='checkbox'
                       name='minimal'
