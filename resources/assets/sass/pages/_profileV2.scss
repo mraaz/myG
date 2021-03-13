@@ -5,36 +5,36 @@
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE and Edge */
   flex: 1;
-  font-family: 'Montserrat Alternates', sans-serif;
+  font-family: 'Montserrat', sans-serif;
 
   .filter__control {
     // background-color: #4d565a !important;
     border: none !important;
-    font-family: 'Montserrat Alternates', sans-serif !important;
+    font-family: 'Montserrat', sans-serif !important;
   }
 
   .filter__single-value {
     color: #fff !important;
-    font-family: 'Montserrat Alternates', sans-serif !important;
+    font-family: 'Montserrat', sans-serif !important;
   }
 
   .filter__menu {
     // background-color: #4d565a !important;
     // color: #fff !important;
-    font-family: 'Montserrat Alternates', sans-serif !important;
+    font-family: 'Montserrat', sans-serif !important;
     z-index: 1000;
   }
 
   .filter__option {
     // background-color: #0b0f14 !important;
     // color: #fff !important;
-    font-family: 'Montserrat Alternates', sans-serif !important;
+    font-family: 'Montserrat', sans-serif !important;
   }
 
   .filter__option:hover {
     // background-color: rgba(0, 0, 0, 0) !important;
     color: #0b0f14 !important;
-    font-family: 'Montserrat Alternates', sans-serif !important;
+    font-family: 'Montserrat', sans-serif !important;
   }
 
   .filter__control {
@@ -486,7 +486,7 @@
     width: 100%;
     height: 130px;
     z-index: 2;
-    font-family: 'Montserrat Alternates', sans-serif;
+    font-family: 'Montserrat', sans-serif;
     position: relative;
     .profile-banner-shadow {
       position: absolute;
@@ -833,7 +833,7 @@
     border: 1px solid #657172;
     margin: 24px 15%;
     padding: 8px 0 0 0;
-    font-family: 'Montserrat Alternates', sans-serif;
+    font-family: 'Montserrat', sans-serif;
     position: relative;
 
     .row {
@@ -932,7 +932,7 @@
     margin: 0;
     background-color: rgba(0, 0, 0, 0.6);
     z-index: 900;
-    font-family: 'Montserrat Alternates', sans-serif;
+    font-family: 'Montserrat', sans-serif;
 
     .container {
       @extend .base-container;
@@ -1268,7 +1268,7 @@
     margin: 0;
     background-color: rgba(0, 0, 0, 0.6);
     z-index: 900;
-    font-family: 'Montserrat Alternates', sans-serif;
+    font-family: 'Montserrat', sans-serif;
 
     .container {
       @extend .base-container;
