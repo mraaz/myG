@@ -630,3 +630,9 @@ a:visited {
 .sweet-alert-text-box {
   padding: 10px 20px 40px 20px !important;
 }
+.profile-image {
+  background-repeat: no-repeat !important;
+  background-position: center center !important;
+  background-size: cover !important;
+  object-fit: cover !important;
+}

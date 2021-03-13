@@ -109,7 +109,7 @@ const Approved_gamers = (props) => {
                     <div className='list__item'>
                       <div className='gamer__name gamer'>
                         <Link to={`/profile/${attendee.alias}`}>
-                          <div className='default_circle'>
+                          <div className='default_circle profile-image'>
                             <img
                               onError={addDefaultSrc}
                               src={attendee.profile_img ? attendee.profile_img : defaultUserImage}

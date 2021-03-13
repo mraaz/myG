@@ -165,7 +165,7 @@ class LeftMenu extends Component {
         {isExpanded && (
           <Link to={`/profile/${alias}`}>
             <div className='lm-user-info-main'>
-              <img onError={this.addDefaultSrc} src={profileImage} className='img-fluid' alt='user-picture' />
+              <img onError={this.addDefaultSrc} src={profileImage} className='profile-image img-fluid' alt='user-picture' />
               <div className='lm-username'>@{alias}</div>
             </div>
           </Link>
