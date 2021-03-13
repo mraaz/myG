@@ -57,7 +57,7 @@ class ConnectionController {
 
       return
     } else {
-      return 'You are not logged In!'
+      return 'You are not Logged In!'
     }
   }
 
