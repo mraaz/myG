@@ -129,8 +129,8 @@ const CommunityView = (props) => {
         )}
         {Sponsors.length > 0 &&
           Sponsors.map((Sponsor) => {
-            const hasSponsor = !!sponsor.link
-            const hasMediaUrl = !!sponsor.media_url
+            const hasSponsor = !!Sponsor.link
+            const hasMediaUrl = !!Sponsor.media_url
             if (!hasMediaUrl) return null
             return (
               <div className='Sponsors' key={Sponsor.id}>

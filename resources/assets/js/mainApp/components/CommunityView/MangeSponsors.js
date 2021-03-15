@@ -18,6 +18,7 @@ export default class MangeSponsors extends React.Component {
       media_url: '',
       aws_key_id: '',
       file_keys: '',
+      sponsors: this.props.sponsors,
     }
     this.fileInputRef = React.createRef()
   }
@@ -39,12 +40,12 @@ export default class MangeSponsors extends React.Component {
   }
 
   handleSave = (e) => {
-    const { sponsor = {} } = this.props
-    if (sponsor.id) {
-      this.updateSponsor()
-    } else {
-      this.createSponsor()
-    }
+    // const { sponsor = {} } = this.props
+    // if (sponsor.id) {
+    //   this.updateSponsor()
+    // } else {
+    this.createSponsor()
+    // }
   }
 
   handleClose = (e) => {
@@ -82,12 +83,19 @@ export default class MangeSponsors extends React.Component {
     this.props.handleModalStatus(true)
   }
 
-  handleLinkChange = (e) => {
+  handleLinkChange = (e, counter) => {
     const data = e.target.value
+    const { sponsors = [] } = this.state
+    const sponsorData = [...sponsors]
+    sponsorData[counter - 1] = {
+      ...sponsorData[counter - 1],
+      linkValue: data,
+    }
+
     if (data == '') {
-      this.setState({ linkValue: data, saveButtonDisabled: true })
+      this.setState({ sponsors: sponsorData, saveButtonDisabled: true })
     } else {
-      this.setState({ linkValue: data, saveButtonDisabled: false })
+      this.setState({ sponsors: sponsorData, saveButtonDisabled: false })
     }
   }
 
@@ -97,7 +105,7 @@ export default class MangeSponsors extends React.Component {
     }
   }
 
-  handleSelectFile = (e) => {
+  handleSelectFile = (e, counter) => {
     const fileList = e.target.files
     if (fileList.length > 0) {
       let type = fileList[0].type.split('/')
@@ -108,16 +116,17 @@ export default class MangeSponsors extends React.Component {
         toast.error(<Toast_style text={'Opps, Invalid file format! '} />)
         return
       }
-      this.doUploadS3(fileList[0], name)
+      this.doUploadS3(fileList[0], name, counter)
     }
   }
 
-  doUploadS3 = async (file, name) => {
+  doUploadS3 = async (file, name, counter) => {
     this.setState({ uploading: true })
     try {
       if (file.size < 10485760) {
-        const { sponsor = {} } = this.props
+        const { sponsors = [] } = this.state
         let post = null
+        const sponsor = sponsors[counter - 1]
 
         if (sponsor.id) {
           post = await Upload_to_S3(file, name, 10, sponsor.id)
@@ -126,11 +135,19 @@ export default class MangeSponsors extends React.Component {
         }
 
         if (post != false) {
-          this.setState({
-            media_url: [post.data.Location],
-            file_keys: post.data.Key,
-            aws_key_id: [post.data.aws_key_id],
+          const sponsorData = sponsors.map((sponsor, index) => {
+            if (index == counter - 1) {
+              return {
+                ...sponsor,
+                media_url: [post.data.Location],
+                file_keys: post.data.Key,
+                aws_key_id: [post.data.aws_key_id],
+              }
+            } else {
+              return sponsor
+            }
           })
+          this.setState({ sponsors: sponsorData })
         }
       } else {
         toast.error(<Toast_style text={'Opps, file size can not be excced more than 10MB '} />)
@@ -142,8 +159,7 @@ export default class MangeSponsors extends React.Component {
   }
 
   render() {
-    const { sponsors = [] } = this.props
-    const { saveButtonDisabled = true, linkValue = '', media_url = '', modalStatus = true, uploading = false } = this.state
+    const { saveButtonDisabled = true, linkValue = '', media_url = '', modalStatus = true, uploading = false, sponsors = [] } = this.state
 
     return (
       <div className={`modal-container View__Member__modal ${modalStatus ? 'modal--show' : ''}`}>
@@ -160,15 +176,16 @@ export default class MangeSponsors extends React.Component {
           <div className='modal__body Sponsor__edit'>
             {sponsors.length > 0 &&
               sponsors.map((sponsor, index) => {
+                const counter = index + 1
                 return (
                   <div className='Sponsor__edit-list'>
-                    <div className='text'>Custom Sponsor {index + 1}</div>
-                    <div className='Sponsor__media__input' onClick={this.handleImageChange}>
+                    <div className='text'>Custom Sponsor {counter}</div>
+                    <div className='Sponsor__media__input' onClick={(e) => this.handleImageChange(e, counter)}>
                       <input
                         type='file'
                         accept='image/jpeg,image/jpg,image/png,image/gif'
                         ref={this.fileInputRef}
-                        onChange={this.handleSelectFile}
+                        onChange={(e) => this.handleSelectFile(e, counter)}
                         name='insert__images'
                       />
                       <img
@@ -189,7 +206,7 @@ export default class MangeSponsors extends React.Component {
                     <div className='Sponsor__link__input'>
                       <input
                         type='text'
-                        onChange={this.handleLinkChange}
+                        onChange={(e) => this.handleLinkChange(e, counter)}
                         value={linkValue == '' ? sponsor.link : linkValue}
                         placeholder='Enter link here'
                         onKeyDown={this.onKeyDown}
@@ -200,15 +217,16 @@ export default class MangeSponsors extends React.Component {
               })}
             {sponsors.length < 2 &&
               [...new Array((this.props.level < 25 ? 1 : 2) - sponsors.length)].map((sponsor, index) => {
+                const counter = sponsors.length + index + 1
                 return (
                   <div className='Sponsor__edit-list'>
-                    <div className='text'>Custom Sponsor {index + 1}</div>
-                    <div className='Sponsor__media__input' onClick={this.handleImageChange}>
+                    <div className='text'>Custom Sponsor {counter}</div>
+                    <div className='Sponsor__media__input' onClick={(e) => this.handleImageChange(e, counter)}>
                       <input
                         type='file'
                         accept='image/jpeg,image/jpg,image/png,image/gif'
                         ref={this.fileInputRef}
-                        onChange={this.handleSelectFile}
+                        onChange={(e) => this.handleSelectFile(e, counter)}
                         name='insert__images'
                       />
                       <img
@@ -227,7 +245,7 @@ export default class MangeSponsors extends React.Component {
                     <div className='Sponsor__link__input'>
                       <input
                         type='text'
-                        onChange={this.handleLinkChange}
+                        onChange={(e) => this.handleLinkChange(e, counter)}
                         value={linkValue == '' ? '' : linkValue}
                         placeholder='Enter link here'
                         onKeyDown={this.onKeyDown}

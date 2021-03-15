@@ -1423,7 +1423,7 @@ $transition-default: 0.25s ease-out 0.1s;
       padding: 2em 2em !important;
       width: 100%;
       overflow: scroll;
-      height: 600px;
+      min-height: 600px;
       @media screen and (max-width: 998px) {
         padding: 2em 0em !important;
       }

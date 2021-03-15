@@ -30,24 +30,30 @@ class Settings extends Component {
   }
 
   componentDidMount = () => {
-    document.title = 'myG - Notification'
+    let params = new URLSearchParams(window.location.search)
+    let activeTab = params.get('sponsor')
+    if (activeTab) {
+      this.setState({ modalStatus: true })
+    } else {
+      document.title = 'myG - Notification'
 
-    window.scrollTo(0, 0)
+      window.scrollTo(0, 0)
 
-    const self = this
+      const self = this
 
-    const getSettings = async function () {
-      try {
-        const getSettings = await axios.get('/api/settings')
-        self.setState({
-          viaEmail: getSettings.data.mySettings[0].email_notification,
-        })
-      } catch (error) {
-        logToElasticsearch('error', 'Settings', 'Failed getSettings:' + ' ' + error)
+      const getSettings = async function () {
+        try {
+          const getSettings = await axios.get('/api/settings')
+          self.setState({
+            viaEmail: getSettings.data.mySettings[0].email_notification,
+          })
+        } catch (error) {
+          logToElasticsearch('error', 'Settings', 'Failed getSettings:' + ' ' + error)
+        }
       }
-    }
 
-    getSettings()
+      getSettings()
+    }
   }
 
   handleNotifyViaEmailChange = (event, viaEmail) => {
