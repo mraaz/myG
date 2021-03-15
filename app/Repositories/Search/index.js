@@ -28,7 +28,7 @@ class SearchRepository {
     const targetedQueries = [query];
     if (input.includes('alias:')) targetedQueries.push({ field: 'alias', value: input.split('alias:')[1].trim().split(' ')[0] });
     if (input.includes('country:')) targetedQueries.push({ field: 'country', value: input.split('country:')[1].trim().split(' ')[0] });
-    if (input.includes('relationship:')) targetedQueries.push({ field: 'relationship', value: input.split('relationship:')[1].trim().split(' ')[0] });
+    if (input.includes('relationship:')) targetedQueries.push({ field: 'relationship', value: input.split('relationship:')[1].trim().split(' ')[0].replace('_', ' ') });
     if (input.includes('commendations:')) targetedQueries.push({ field: 'commendations', value: input.split('commendations:')[1].trim().split(' ')[0] });
     if (input.includes('commend:')) targetedQueries.push({ field: 'commendations', value: input.split('commend:')[1].trim().split(' ')[0] });
     if (input.includes('team:')) targetedQueries.push({ field: 'team', value: input.split('team:')[1].trim().split(' ')[0] });
