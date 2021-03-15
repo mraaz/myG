@@ -138,7 +138,7 @@ class AchievementsRepository {
   async registerAccess({ requestingUserId }) {
     const user = await Database.from('users').where('id', requestingUserId).select(['last_seen']);
     const datesAreOnSameDay = (first, second) => first.getFullYear() === second.getFullYear() && first.getMonth() === second.getMonth() && first.getDate() === second.getDate();
-    const hasAccessedToday = datesAreOnSameDay(new Date(), user[0].last_seen);
+    const hasAccessedToday = datesAreOnSameDay(new Date(), user[0].last_seen || new Date(0));
     if (hasAccessedToday) return;
     await this.registerQuestStep({ user_id: requestingUserId, type: 'login' });
   }
