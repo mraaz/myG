@@ -19,6 +19,8 @@ const CommunityView = (props) => {
   const [singleSponsor, setSingleSponsor] = useState({})
   const contentAreaRef = useRef()
 
+  const [feature_on, setFeature_on] = useState(false)
+
   useEffect(() => {
     const getcommunityDetails = async () => {
       const { match } = props.routeProps
@@ -33,6 +35,14 @@ const CommunityView = (props) => {
 
       document.title = 'myG - ' + getOne.name
       setCommunityDetails({ ...getOne })
+
+      const environment = window.location.href.includes('localhost')
+        ? 'development'
+        : window.location.href.includes('myG.gg')
+        ? 'production'
+        : 'staging'
+
+      if (environment == 'development') setFeature_on(true)
     }
 
     getcommunityDetails()
@@ -84,6 +94,7 @@ const CommunityView = (props) => {
     setSingleSponsor(data)
     setShowSponsorModal(true)
   }
+
   const hideSponsorModal = async (data) => {
     if (data === true) {
       const { match } = props.routeProps
@@ -116,48 +127,48 @@ const CommunityView = (props) => {
   //   toast.success(<Toast_style text={'Yup, yup, yup... deleted successfully!'} />)
   // }
 
-  // const renderSponsors = (Sponsors = []) => {
-  //   if (props.level < 15) return <p className='locked-sponsors'>Community Sponsors are unlocked at Lvl. 15</p>
-  //   if (props.level < 25) Sponsors = Sponsors.slice ? Sponsors.slice(0, 1) : []
-  //   const { current_user_permission } = communityDetails
-  //   return (
-  //     <div className='Sponsors__container'>
-  //       {[0, 1].includes(current_user_permission) && (
-  //         <button type='button' class='sponsors__btn' onClick={(e) => handleSponsorClick(Sponsors)}>
-  //           Manage your Sponsors
-  //         </button>
-  //       )}
-  //       {Sponsors.length > 0 &&
-  //         Sponsors.map((Sponsor) => {
-  //           const hasSponsor = !!sponsor.link
-  //           const hasMediaUrl = !!sponsor.media_url
-  //           if (!hasMediaUrl) return null
-  //           return (
-  //             <div className='Sponsors' key={Sponsor.id}>
-  //               <div
-  //                 className='Sponsors__image'
-  //                 // style={{ backgroundImage: `url(${sponsor.media_url}), url(${defaultSponsorImage})` }}
-  //                 onClick={() => {
-  //                   if (!hasSponsor) return
-  //                   window.open(sponsorLink, '_blank')
-  //                 }}
-  //               />
-  //               {/* {[0, 1].includes(current_user_permission) && (
-  //                 <div className='Sponsors__edit' onClick={(e) => handleSponsorClick(Sponsor)}>
-  //                   Edit
-  //                 </div>
-  //               )} */}
-  //               {/* {[0, 1].includes(current_user_permission) && (
-  //                 <div className='Sponsors__delete' onClick={(e) => handleDeleteSponsor(Sponsor.id)}>
-  //                   Delete
-  //                 </div>
-  //               )} */}
-  //             </div>
-  //           )
-  //         })}
-  //     </div>
-  //   )
-  //}
+  const renderSponsors = (Sponsors = []) => {
+    if (props.level < 15) return <p className='locked-sponsors'>Community Sponsors are unlocked at Lvl. 15</p>
+    if (props.level < 25) Sponsors = Sponsors.slice ? Sponsors.slice(0, 1) : []
+    const { current_user_permission } = communityDetails
+    return (
+      <div className='Sponsors__container'>
+        {[0, 1].includes(current_user_permission) && (
+          <button type='button' class='sponsors__btn' onClick={(e) => handleSponsorClick(Sponsors)}>
+            Manage your Sponsors
+          </button>
+        )}
+        {Sponsors.length > 0 &&
+          Sponsors.map((Sponsor) => {
+            const hasSponsor = !!sponsor.link
+            const hasMediaUrl = !!sponsor.media_url
+            if (!hasMediaUrl) return null
+            return (
+              <div className='Sponsors' key={Sponsor.id}>
+                <div
+                  className='Sponsors__image'
+                  // style={{ backgroundImage: `url(${sponsor.media_url}), url(${defaultSponsorImage})` }}
+                  onClick={() => {
+                    if (!hasSponsor) return
+                    window.open(sponsorLink, '_blank')
+                  }}
+                />
+                {/* {[0, 1].includes(current_user_permission) && (
+                  <div className='Sponsors__edit' onClick={(e) => handleSponsorClick(Sponsor)}>
+                    Edit
+                  </div>
+                )} */}
+                {/* {[0, 1].includes(current_user_permission) && (
+                  <div className='Sponsors__delete' onClick={(e) => handleDeleteSponsor(Sponsor.id)}>
+                    Delete
+                  </div>
+                )} */}
+              </div>
+            )
+          })}
+      </div>
+    )
+  }
 
   return (
     <div className='communityName__container' ref={contentAreaRef}>
@@ -171,8 +182,8 @@ const CommunityView = (props) => {
           </div>
         </div>
       )}
-      {/* {renderSponsors(communityDetails.sponsors)} */}
-      {/* {showSponsorModal && <MangeSponsors sponsors={singleSponsor} handleModalStatus={hideSponsorModal} group_id={communityDetails.id} />} */}
+      {feature_on && renderSponsors(communityDetails.sponsors)}
+      {showSponsorModal && <MangeSponsors sponsors={singleSponsor} handleModalStatus={hideSponsorModal} group_id={communityDetails.id} />}
       {communityDetails.id && (
         <GamePosts {...props} group_id={communityDetails.id} current_user_permission={communityDetails.current_user_permission} />
       )}

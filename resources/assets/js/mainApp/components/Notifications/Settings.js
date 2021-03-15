@@ -36,6 +36,18 @@ class Settings extends Component {
 
     const self = this
 
+    const environment = window.location.href.includes('localhost')
+      ? 'development'
+      : window.location.href.includes('myG.gg')
+      ? 'production'
+      : 'staging'
+
+    if (environment == 'development') {
+      this.setState({
+        feature_on: true,
+      })
+    }
+
     const getSettings = async function() {
       try {
         const getSettings = await axios.get('/api/settings')

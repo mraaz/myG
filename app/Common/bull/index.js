@@ -180,9 +180,9 @@ function getJobs(Queue, bullConfig, ioCluster, uuidv4, runEveryJobOnStart) {
       action: require('./tasks/send-daily-emails'),
       options: { jobId: uuidv4() },
       payload: { delay: 60000 },
-      schedule: { repeat: { cron: '40 0 * * *' } },
+      schedule: { repeat: { cron: '0 0 * * *' } },
       runOnSchedule: true,
-      runOnStart: runEveryJobOnStart ? true : false,
+      runOnStart: false,
       enabled: true,
     },
     {
@@ -193,7 +193,7 @@ function getJobs(Queue, bullConfig, ioCluster, uuidv4, runEveryJobOnStart) {
       payload: { delay: 60000 },
       schedule: { repeat: { cron: '0 0 * * 0' } },
       runOnSchedule: true,
-      runOnStart: runEveryJobOnStart ? true : false,
+      runOnStart: false,
       enabled: true,
     },
     {
@@ -218,17 +218,17 @@ function getJobs(Queue, bullConfig, ioCluster, uuidv4, runEveryJobOnStart) {
       runOnStart: runEveryJobOnStart ? true : false,
       enabled: true,
     },
-    // {
-    //   name: 'Auto accept official communities',
-    //   queue: new Queue('Auto accept official communities', prefixedConfig('{auto-accept-official-communities}')),
-    //   action: require('./tasks/auto-accept-official-communities'),
-    //   options: { jobId: uuidv4() },
-    //   payload: {},
-    //   schedule: { repeat: { cron: '0 0 * * *' } },
-    //   runOnSchedule: true,
-    //   runOnStart: runEveryJobOnStart ? true : false,
-    //   enabled: false,
-    // },
+    {
+      name: 'Auto accept official communities',
+      queue: new Queue('Auto accept official communities', prefixedConfig('{auto-accept-official-communities}')),
+      action: require('./tasks/auto-accept-official-communities'),
+      options: { jobId: uuidv4() },
+      payload: { delay: 50000 },
+      schedule: { repeat: { cron: '0 * * * *' } },
+      runOnSchedule: true,
+      runOnStart: runEveryJobOnStart ? true : false,
+      enabled: true,
+    },
   ];
 }
 
