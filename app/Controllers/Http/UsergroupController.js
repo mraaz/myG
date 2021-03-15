@@ -632,6 +632,36 @@ class UsergroupController {
       })
     }
   }
+
+  async autoApproveOfficialCommunities({ auth, request, response }) {
+    try {
+      console.log('here')
+
+      const updated_permission = await Usergroup.query()
+        .where({ group_id: request.params.grp_id, user_id: request.params.user_id })
+        .update({ permission_level: 3 })
+
+      const noti = new NotificationController_v2()
+      noti.add_approved_group_attendee({ auth }, request.params.grp_id, request.params.user_id)
+
+      const userStatController = new UserStatTransactionController()
+      userStatController.update_total_number_of(request.params.user_id, 'total_number_of_communities')
+
+      //delete this notification
+      auth.user.id = request.params.user_id
+      noti.delete_group_invites({ auth }, request.params.grp_id)
+
+      return 'Saved successfully'
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
+    }
+  }
 }
 
 module.exports = UsergroupController

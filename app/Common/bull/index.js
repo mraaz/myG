@@ -218,6 +218,17 @@ function getJobs(Queue, bullConfig, ioCluster, uuidv4, runEveryJobOnStart) {
       runOnStart: runEveryJobOnStart ? true : false,
       enabled: true,
     },
+    // {
+    //   name: 'Auto accept official communities',
+    //   queue: new Queue('Auto accept official communities', prefixedConfig('{auto-accept-official-communities}')),
+    //   action: require('./tasks/auto-accept-official-communities'),
+    //   options: { jobId: uuidv4() },
+    //   payload: {},
+    //   schedule: { repeat: { cron: '0 0 * * *' } },
+    //   runOnSchedule: true,
+    //   runOnStart: runEveryJobOnStart ? true : false,
+    //   enabled: false,
+    // },
   ];
 }
 

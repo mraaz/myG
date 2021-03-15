@@ -89,7 +89,7 @@ Route.post('/api/user/keywordSearchResults', 'UserController.keywordSearchResult
 Route.put('/api/user/notification_sounds', 'UserController.toggleNotificationSounds')
 Route.put('/api/user/auto_self_destruct', 'UserController.toggleAutoSelfDestruct')
 
-Route.post('/api/users_additional_infos/', 'UsersAdditionalInfoController.store')
+Route.get('/api/users_additional_infos/', 'UsersAdditionalInfoController.process_ip')
 
 Route.post('/api/GameExperiences/commend/:game_exp_id', 'GameExperienceController.updateCommend')
 Route.get('/api/GameExperiences/exp/:id', 'GameExperienceController.myShow')
