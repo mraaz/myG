@@ -81,7 +81,7 @@ spec:
             - name: NATS_SERVER
               value: {{ .Values.mygame.natsServer }}
             - name: LOGS_ON
-              value: "NATS|USER|CHAT|GUEST|GAME|CRON|PAGINATION|ANALYTICS"
+              value: ""
             - name: CLAMAV_HOST
               value: {{ .Values.mygame.clamavHost }}
             - name: CLAMAV_PORT
@@ -113,7 +113,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name:  {{ template "mygame.fullname" . }}
-                  key: facebooksecret 
+                  key: facebooksecret
             - name: AWS_SECRET_ACCESS_KEY
               valueFrom:
                 secretKeyRef:

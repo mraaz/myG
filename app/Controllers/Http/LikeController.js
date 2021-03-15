@@ -32,12 +32,7 @@ class LikeController {
 
             if (post_owner.user_id != auth.user.id) {
               let noti = new NotificationController_v2()
-
-              if (post_owner.schedule_games_id != null) {
-                noti.addPostLike({ auth }, null, post_owner.user_id, request.input('post_id'), post_owner.schedule_games_id)
-              } else if (post_owner.post_id != null) {
-                noti.addPostLike({ auth }, post_owner.id, post_owner.user_id, request.input('post_id'), null)
-              }
+              await noti.addPostLike({ auth }, post_owner.id, post_owner.user_id)
             }
           }
         }

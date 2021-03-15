@@ -77,7 +77,7 @@ class Layout extends Component {
         if (initialData.data.userInfo == 1981 && !window.location.href.includes('/link')) {
           window.location.href = '/logout'
         }
-
+        
         if (initialData.data.userInfo.has_additional != '1'){
           Update_ip_settings()
         }

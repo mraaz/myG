@@ -1,9 +1,11 @@
 import axios from 'axios';
 
 export function logToElasticsearch(type, context, message) {
-  const environment = window.location.href.includes('localhost') ? 'development' 
-    : window.location.href.includes('stage') ? 'staging' 
-    : 'production';
+  const environment = window.location.href.includes('localhost')
+    ? 'development'
+    : window.location.href.includes('myG.gg')
+    ? 'production'
+    : 'staging'
   const source = 'frontend';
   const browser = getBrowserInfo();
   const system = getSystemInfo();
@@ -20,7 +22,7 @@ export function logToElasticsearch(type, context, message) {
 
 // https://stackoverflow.com/questions/5916900/how-can-you-detect-the-version-of-a-browser
 function getBrowserInfo() {
-  var ua = navigator.userAgent, tem, 
+  var ua = navigator.userAgent, tem,
       M = ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
   if (/trident/i.test(M[1])){
       tem = /\brv[ :]+(\d+)/g.exec(ua) || [];

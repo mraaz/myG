@@ -8,7 +8,7 @@ class Import_dummy_post_data_Schema extends Schema {
     //reserve the 1st 100 posts for official myG buisness
     var i = 1
     this
-    .raw(`INSERT INTO posts VALUES (${i},'Welcome to myG! Try to find some of your friends or jump into a match. 🥳🎮🥳\n\nGLHF','','text','[\"https://myG.gg/stock_images/yt1s.com+-+Intro+to+myG_360p.mp4\"]',1,NULL,NULL,1,0,'2021-03-13','2021-03-13')`)
+    .raw(`INSERT INTO posts VALUES (${i},'Welcome to myG! Try to find some of your friends or jump into a match. 🥳🎮🥳\n\nGLHF','https://www.youtube.com/watch?v=vW0cBH0RmAY&t=1s&ab_channel=myG-gg','text','',1,NULL,NULL,1,0,'2021-03-13','2021-03-13')`)
 
     i = 2
     this
@@ -20,7 +20,7 @@ class Import_dummy_post_data_Schema extends Schema {
 
     for (var i = 4; i < 101; i++) {
       this
-      .raw(`INSERT INTO posts VALUES (${i},'Welcome to myG! Try to find some of your friends or jump into a match. 🥳🎮🥳\n\nGLHF','','text','[\"https://myG.gg/user_files/101_1614603065710_bC0Xoz_post_video_1614603065331_yt1s.com+-+Intro+to+myG_360p.mp4\"]',1,NULL,NULL,0,0,'2021-03-13','2021-03-13')`)
+      .raw(`INSERT INTO posts VALUES (${i},'Welcome to myG! Try to find some of your friends or jump into a match. 🥳🎮🥳\n\nGLHF','https://www.youtube.com/watch?v=vW0cBH0RmAY&t=1s&ab_channel=myG-gg','text','',1,NULL,NULL,1,0,'2021-03-13','2021-03-13')`)
     }
   }
 
