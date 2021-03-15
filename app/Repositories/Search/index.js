@@ -12,7 +12,7 @@ class SearchRepository {
     if (!previous) previous = { query: { bool: { must: [] } } };
     if (!field || !value) return previous;
     if (previous.field) previous = this.buildTargetedUsersQuery(null, previous.field, previous.value);
-    const hasFuzziness = !['languages', 'hasMic', 'underage', 'gameExperiences.experience.keyword'].includes(field);
+    const hasFuzziness = !['languages', 'level', 'hasMic', 'underage', 'gameExperiences.experience.keyword'].includes(field);
     const query = { query: value };
     if (hasFuzziness) query.fuzziness = "auto";
     previous.query.bool.must.push({ match: { [field]: query } });
@@ -41,6 +41,7 @@ class SearchRepository {
     if (input.includes('hasMic:')) targetedQueries.push({ field: 'hasMic', value: input.split('hasMic:')[1].trim().split(' ')[0] });
     if (input.includes('experience:')) targetedQueries.push({ field: 'gameExperiences.experience.keyword', value: input.split('experience:')[1].trim().split(' ')[0].split('_').join(' ') });
     if (input.includes('career:')) targetedQueries.push({ field: 'gameExperiences.level.keyword', value: input.split('career:')[1].trim().split(' ')[0].split('_').join(' ').replace('Professional', 'Pro Gamer') });
+    if (input.includes('level:') && parseInt(input.split('level:')[1], 10)) targetedQueries.push({ field: 'level', value: parseInt(input.split('level:')[1], 10) });
     dynamicFields.forEach((field) => {
       if (input.includes(` ${field}:`)) {
         targetedQueries.push({ 
