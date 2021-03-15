@@ -647,6 +647,8 @@ section#content-container {
             width: 30%;
             color: $veryLightText;
             font-size: 0.9rem;
+            margin-left: 20px;
+            margin-bottom: 12px;
             cursor: pointer;
           }
           .comments-stats {
@@ -919,7 +921,7 @@ section#content-container {
     }
     .post__container {
       margin: 40px 25px;
-      font-family: 'Montserrat';
+      font-family: 'Montserrat' !important;
       position: relative;
       .threedots__backdrop {
         position: fixed;
@@ -1058,6 +1060,9 @@ section#content-container {
           width: 50px;
           height: 50px;
           border-radius: 50%;
+          background-repeat: no-repeat;
+          background-position: center;
+          background-size: cover;
           .online__status {
             border: 7px solid #68bd45;
             border-radius: 50%;
@@ -1073,6 +1078,9 @@ section#content-container {
           top: -10px;
           width: 50px;
           height: 50px;
+          background-repeat: no-repeat;
+          background-position: center;
+          background-size: cover;
           cursor: pointer;
         }
         .user__details {
@@ -1202,6 +1210,9 @@ section#content-container {
           width: 50px;
           height: 50px;
           border-radius: 50%;
+          background-repeat: no-repeat;
+          background-position: center;
+          background-size: cover;
           .online__status {
             border: 7px solid #68bd45;
             border-radius: 50%;
@@ -1228,6 +1239,9 @@ section#content-container {
             color: #fff;
             margin-left: auto;
           }
+        }
+        .update-stats2 {
+          margin-bottom: 10px;
         }
         .sponsor-section {
           cursor: pointer;
@@ -1262,6 +1276,8 @@ section#content-container {
           font-family: Montserrat, sans-serif;
           width: 16px;
           height: 16px;
+          margin-left: 20px;
+          margin-bottom: 12px;
           display: flex;
           img {
             width: 16px;
@@ -1292,6 +1308,8 @@ section#content-container {
         cursor: pointer;
         font-weight: bold;
         color: #fff;
+        margin-left: 20px;
+        margin-bottom: 12px;
       }
       .comments-stats {
         float: right;
@@ -1418,11 +1436,11 @@ section#content-container {
         }
         .send__btn {
           position: relative;
-          top: 18px;
-          height: 40px;
           cursor: pointer;
+          width: 42px;
+          top: 20px;
           img {
-            height: 44px;
+            position: relative;
           }
         }
         .profile__image {
@@ -1434,6 +1452,9 @@ section#content-container {
           height: 30px;
           border-radius: 50%;
           z-index: 12;
+          background-repeat: no-repeat;
+          background-position: center;
+          background-size: cover;
           .online__status {
             border: 7px solid #68bd45;
             border-radius: 50%;
@@ -1607,6 +1628,9 @@ section#content-container {
                 width: 35px;
                 height: 35px;
                 border-radius: 50%;
+                background-repeat: no-repeat;
+                background-position: center;
+                background-size: cover;
                 .online__status {
                   border: 7px solid #68bd45;
                   border-radius: 50%;
@@ -1628,9 +1652,11 @@ section#content-container {
                 float: right;
                 font-size: 12px;
                 color: #fff;
+                cursor: pointer;
               }
               .comment-panel-liked {
                 padding-left: 15px;
+                cursor: pointer;
               }
               .comment-panel-reply {
                 float: right;
@@ -1638,6 +1664,7 @@ section#content-container {
                 padding-left: 15px;
                 border-left: 1px solid #384952;
                 color: #fff;
+                cursor: pointer;
               }
               .divider {
                 margin-left: 10px;
@@ -1756,6 +1783,7 @@ section#content-container {
   position: relative;
   margin-left: auto;
   margin-right: auto;
+  margin-bottom: 24px;
   border-radius: 8px;
   width: 80%;
 
@@ -2242,6 +2270,7 @@ section#content-container {
     .postCompose__container {
       margin: 0 auto;
       width: 90% !important;
+      margin-bottom: 24px;
       border-radius: 10px;
     }
     .people_group_list {

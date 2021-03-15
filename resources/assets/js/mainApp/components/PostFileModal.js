@@ -212,7 +212,7 @@ export default class PostFileModal extends Component {
                     }
                     return (
                       <div className='list__item' key={`${group_in.name}_${group_in.id}_${index}`}>
-                        <div className='default_circle'>
+                        <div className='default_circle profile-image'>
                           <img
                             onError={this.addDefaultSrc}
                             src={group_in.group_img ? group_in.group_img : 'invalid link'}

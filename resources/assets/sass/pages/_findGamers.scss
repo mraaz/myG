@@ -3,35 +3,35 @@
   flex-direction: column;
   overflow-y: scroll;
   flex: 1;
-  font-family: 'Montserrat Alternates', sans-serif;
+  font-family: 'Montserrat', sans-serif;
 
   .filter__control {
     background-color: #4d565a !important;
     border: none !important;
-    font-family: 'Montserrat Alternates', sans-serif !important;
+    font-family: 'Montserrat', sans-serif !important;
   }
 
   .filter__single-value {
     color: #fff !important;
-    font-family: 'Montserrat Alternates', sans-serif !important;
+    font-family: 'Montserrat', sans-serif !important;
   }
 
   .filter__menu {
     background-color: #4d565a !important;
     color: #fff !important;
-    font-family: 'Montserrat Alternates', sans-serif !important;
+    font-family: 'Montserrat', sans-serif !important;
   }
 
   .filter__option {
     background-color: #0b0f14 !important;
     color: #fff !important;
-    font-family: 'Montserrat Alternates', sans-serif !important;
+    font-family: 'Montserrat', sans-serif !important;
   }
 
   .filter__option:hover {
     background-color: rgba(0, 0, 0, 0) !important;
     color: #0b0f14 !important;
-    font-family: 'Montserrat Alternates', sans-serif !important;
+    font-family: 'Montserrat', sans-serif !important;
   }
 
   .filter__control--is-focused {
@@ -90,19 +90,19 @@
     background-color: #1d2326;
     border-radius: 12px;
     margin: 20px 0 20px 20px;
-    max-width: 33%;
+    width: 33%;
 
     .name {
       color: white;
       font-size: 16px;
       font-weight: bold;
-      font-family: 'Montserrat';
+      font-family: 'Montserrat' !important;
     }
 
     .experience {
       color: #f0f0f0;
       font-size: 14px;
-      font-family: 'Montserrat';
+      font-family: 'Montserrat' !important;
       margin-top: 6px;
       margin-bottom: 8px;
     }
@@ -114,7 +114,7 @@
       border-radius: 30px;
       text-align: center;
       font-size: 14px;
-      font-family: 'Montserrat';
+      font-family: 'Montserrat' !important;
       padding: 4px 8px;
     }
 
@@ -125,7 +125,7 @@
       border-radius: 30px;
       text-align: center;
       font-size: 14px;
-      font-family: 'Montserrat';
+      font-family: 'Montserrat' !important;
       padding: 4px 8px;
     }
 
@@ -136,7 +136,7 @@
       border-radius: 30px;
       text-align: center;
       font-size: 14px;
-      font-family: 'Montserrat';
+      font-family: 'Montserrat' !important;
       padding: 4px 8px;
     }
   }
@@ -144,12 +144,13 @@
   .headers {
     display: flex;
     flex-direction: row;
-    margin: 0px 150px;
     padding: 12px;
     font-size: 18px;
     color: white;
     align-items: center;
     justify-content: space-around;
+    width: 80%;
+    margin: 0 auto;
 
     .header {
       border-bottom: 2px solid #1e2326;
@@ -193,7 +194,7 @@
 
   .top-bar {
     font-size: 18px;
-    font-family: 'Montserrat';
+    font-family: 'Montserrat' !important;
     font-weight: bold;
     text-align: center;
     color: #fafafa;
@@ -248,7 +249,7 @@
     padding: 4px 12px;
     font-size: 12px;
     margin: 12px 4px;
-    font-family: 'Montserrat';
+    font-family: 'Montserrat' !important;
     white-space: nowrap;
   }
 
@@ -329,8 +330,10 @@
   }
 
   #find-gamers-search {
-    padding: 0 64px;
+    padding: 0 10px;
     max-width: 1800px;
+    width: 80%;
+    margin: 0 auto;
   }
 
   #find-gamers-filter {
@@ -338,7 +341,7 @@
     display: flex;
     flex-direction: column;
     padding: 0 16px;
-    margin: -32px 64px 0 64px;
+    margin: -32px 64px 20px 64px;
     max-width: 1800px;
     border-left: 2px solid #344953;
 
@@ -353,14 +356,14 @@
         flex-direction: column;
         margin-bottom: 8px;
         width: 50%;
-  
+
         .filter-label {
           font-size: 16px;
-          font-family: 'Montserrat';
+          font-family: 'Montserrat' !important;
           color: #fff;
           margin: 8px 0 2px 0;
         }
-  
+
         .filter-text {
           width: 100%;
           margin: 0;
@@ -377,7 +380,7 @@
             color: #808080;
           }
         }
-  
+
         .filter-select {
           width: 100%;
           margin: 0;
@@ -407,7 +410,7 @@
     }
     .label {
       font-size: 20px;
-      font-family: 'Montserrat';
+      font-family: 'Montserrat' !important;
       color: #fff;
     }
     .add-filter {
@@ -422,7 +425,7 @@
         padding: 8px 0;
         color: #e6c846;
         font-size: 14px;
-        font-family: 'Montserrat';
+        font-family: 'Montserrat' !important;
         cursor: pointer;
         .text {
           padding: 4px 8px;
@@ -439,7 +442,7 @@
           justify-content: center;
           align-items: center;
           font-size: 12px;
-          font-family: 'Montserrat';
+          font-family: 'Montserrat' !important;
           text-align: center;
           color: #fff;
           font-weight: bold;
@@ -455,7 +458,7 @@
           .option {
             text-align: left;
             font-size: 12px;
-            font-family: 'Montserrat';
+            font-family: 'Montserrat' !important;
             color: #fff;
             font-weight: bold;
             white-space: nowrap;
@@ -490,7 +493,8 @@
   .find-gamers-results {
     display: flex;
     flex-direction: column;
-    padding: 12px;
+    padding: 0 40px;
+    border-top: 2px solid #273137;
 
     .loading {
       display: flex;
@@ -508,7 +512,7 @@
       display: flex;
       flex-direction: row;
       margin: 12px 36px;
-      font-family: 'Montserrat';
+      font-family: 'Montserrat' !important;
 
       .row {
         width: 100%;
@@ -565,7 +569,7 @@
         flex-direction: column;
         padding: 8px;
         justify-content: center;
-        width: 120px;
+        width: 200px;
         overflow-x: scroll;
         scrollbar-width: none; /* Firefox */
         -ms-overflow-style: none; /* IE and Edge */
@@ -574,13 +578,13 @@
           color: white;
           font-size: 16px;
           font-weight: bold;
-          font-family: 'Montserrat';
+          font-family: 'Montserrat' !important;
         }
 
         .title {
           color: #606060;
           font-size: 10px;
-          font-family: 'Montserrat';
+          font-family: 'Montserrat' !important;
           margin: 4px 0 0 0;
           padding: 0;
         }
@@ -588,7 +592,7 @@
         .value {
           color: #f0f0f0;
           font-size: 12px;
-          font-family: 'Montserrat';
+          font-family: 'Montserrat' !important;
         }
       }
     }
@@ -597,11 +601,10 @@
 
 @media screen and (max-width: 575px) {
   #find-gamers {
-    
     &.menuAtTop {
       padding: 85px 0 0;
     }
-    
+
     #find-gamers-search {
       padding: 0;
       margin: 0 8px;
@@ -622,7 +625,7 @@
     #find-gamers-banner {
       display: none;
     }
-    #find-gamers-filter {    
+    #find-gamers-filter {
       margin: 24px 8px;
       .filter-row {
         width: 100%;
@@ -646,8 +649,8 @@
           margin-left: 24px !important;
         }
         .icon {
-          left: 8px!important;
-          top: 8px!important;
+          left: 8px !important;
+          top: 8px !important;
           width: 48px !important;
           height: 48px !important;
           margin: 0 !important;
@@ -657,4 +660,3 @@
     }
   }
 }
-

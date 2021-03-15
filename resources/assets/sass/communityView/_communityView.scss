@@ -13,7 +13,6 @@
     width: 100%;
     position: relative;
     margin-bottom: 1em;
-    max-width: 1200px;
     margin-left: auto;
     margin-right: auto;
     @media screen and (max-width: 998px) {
@@ -65,7 +64,7 @@
       cursor: pointer;
       border-radius: 8px;
       max-height: 320px;
-      object-fit: contain;
+      object-fit: cover;
 
       &.nothand {
         cursor: default;
@@ -416,6 +415,10 @@
                 font: normal normal bold 12px/14px Montserrat;
               }
 
+              a {
+                color: #fff;
+              }
+
               a:hover {
                 color: #e5c746;
                 text-decoration: none;
@@ -494,7 +497,7 @@
             padding: 0 20px;
             font-size: 12px;
             font-weight: bold;
-            font-family: 'Montserrat';
+            font-family: 'Montserrat' !important;
             display: flex;
             align-items: center;
             @media screen and (max-width: 568px) {
@@ -779,7 +782,7 @@
       letter-spacing: 0px;
       color: #000000;
       opacity: 1;
-      font-family: 'Montserrat';
+      font-family: 'Montserrat' !important;
       font-size: 0.65em;
       font-weight: 500;
       color: #000;
@@ -867,7 +870,7 @@
     padding: 2em 2em !important;
     .text {
       font-size: 14px/20px;
-      font-family: 'Montserrat';
+      font-family: 'Montserrat' !important;
       font-weight: Bold;
       color: #fff;
       width: 100%;
@@ -882,7 +885,7 @@
     }
     .text__tap {
       font-size: 14px/20px;
-      font-family: 'Montserrat';
+      font-family: 'Montserrat' !important;
       font-weight: Bold;
       color: #fff;
       width: 100%;

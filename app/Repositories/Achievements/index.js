@@ -14,9 +14,12 @@ class AchievementsRepository {
   async fetchBadges({ alias }) {
     const controller = new UserStatTransactionController();
     const stats = await controller.master_controller({ requestedAlias: alias });
+    const givenLikes = await this.countGivenLikes({ requestingUserId: stats.userId });
+    stats.givenLikes = givenLikes;
     const redeemed = await this.fetchRedeemedBadges({ userId: stats.userId });
     const badges = this.getBadges(stats, redeemed);
     const joinedBadges = [...badges, ...redeemed];
+    console.log()
     return { badges: joinedBadges, stats, controller, redeemedTotal: redeemed.length, badgesTotal: BADGES.map(({ values }) => values.length).reduce((a, b) => a + b, 0) };
   }
 
@@ -49,11 +52,12 @@ class AchievementsRepository {
   }
 
   getBadges(stats, redeemed) {
-    const { total_number_of_friends, total_number_of_communities, likes, followers, games_played, games_created, community_members, account_age } = stats;
+    const { total_number_of_friends, total_number_of_communities, likes, givenLikes, followers, games_played, games_created, community_members, account_age } = stats;
     const badges = BADGES.map((badge) => {
       switch(badge.type) {
         case "connect": return this.getBadge(JSON.parse(JSON.stringify(badge)), total_number_of_friends, redeemed.filter((badge) => badge.type === 'connect' ).map((badge) => badge.value));
         case "like": return this.getBadge(JSON.parse(JSON.stringify(badge)), likes, redeemed.filter((badge) => badge.type === 'like' ).map((badge) => badge.value));
+        case "givenLikes": return this.getBadge(JSON.parse(JSON.stringify(badge)), givenLikes, redeemed.filter((badge) => badge.type === 'givenLikes' ).map((badge) => badge.value));
         case "follow": return this.getBadge(JSON.parse(JSON.stringify(badge)), followers, redeemed.filter((badge) => badge.type === 'follow' ).map((badge) => badge.value));
         case "play-games": return this.getBadge(JSON.parse(JSON.stringify(badge)), games_played, redeemed.filter((badge) => badge.type === 'play-games' ).map((badge) => badge.value));
         case "create-games": return this.getBadge(JSON.parse(JSON.stringify(badge)), games_created, redeemed.filter((badge) => badge.type === 'create-games' ).map((badge) => badge.value));
@@ -134,7 +138,7 @@ class AchievementsRepository {
   async registerAccess({ requestingUserId }) {
     const user = await Database.from('users').where('id', requestingUserId).select(['last_seen']);
     const datesAreOnSameDay = (first, second) => first.getFullYear() === second.getFullYear() && first.getMonth() === second.getMonth() && first.getDate() === second.getDate();
-    const hasAccessedToday = datesAreOnSameDay(new Date(), user[0].last_seen);
+    const hasAccessedToday = datesAreOnSameDay(new Date(), user[0].last_seen || new Date(0));
     if (hasAccessedToday) return;
     await this.registerQuestStep({ user_id: requestingUserId, type: 'login' });
   }
@@ -214,6 +218,28 @@ class AchievementsRepository {
     await Database.table(table).insert({ user_id: requestingUserId, type: 'collect' });
     
     return fetchFunction({ requestingUserId });
+  }
+
+  async countGivenLikes({ requestingUserId }) {
+    const posts = await Database.from('likes')
+      .innerJoin('posts', 'posts.id', 'likes.post_id')
+      .whereNot('posts.user_id', '=', requestingUserId)
+      .where('likes.user_id', '=', requestingUserId)
+      .select('likes.id')
+      .count('likes.id as total_count')
+    const comments = await Database.from('likes')
+      .innerJoin('comments', 'comments.id', 'likes.comment_id')
+      .whereNot('comments.user_id', '=', requestingUserId)
+      .where('likes.user_id', '=', requestingUserId)
+      .select('likes.id')
+      .count('likes.id as total_count')
+    const replies = await Database.from('likes')
+      .innerJoin('replies', 'replies.id', 'likes.reply_id')
+      .whereNot('replies.user_id', '=', requestingUserId)
+      .where('likes.user_id', '=', requestingUserId)
+      .select('likes.id')
+      .count('likes.id as total_count')
+    return posts[0].total_count + comments[0].total_count + replies[0].total_count;
   }
 }
 

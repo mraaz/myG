@@ -5,36 +5,36 @@
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE and Edge */
   flex: 1;
-  font-family: 'Montserrat Alternates', sans-serif;
+  font-family: 'Montserrat', sans-serif;
 
   .filter__control {
     // background-color: #4d565a !important;
     border: none !important;
-    font-family: 'Montserrat Alternates', sans-serif !important;
+    font-family: 'Montserrat', sans-serif !important;
   }
 
   .filter__single-value {
     color: #fff !important;
-    font-family: 'Montserrat Alternates', sans-serif !important;
+    font-family: 'Montserrat', sans-serif !important;
   }
 
   .filter__menu {
     // background-color: #4d565a !important;
     // color: #fff !important;
-    font-family: 'Montserrat Alternates', sans-serif !important;
+    font-family: 'Montserrat', sans-serif !important;
     z-index: 1000;
   }
 
   .filter__option {
     // background-color: #0b0f14 !important;
     // color: #fff !important;
-    font-family: 'Montserrat Alternates', sans-serif !important;
+    font-family: 'Montserrat', sans-serif !important;
   }
 
   .filter__option:hover {
     // background-color: rgba(0, 0, 0, 0) !important;
     color: #0b0f14 !important;
-    font-family: 'Montserrat Alternates', sans-serif !important;
+    font-family: 'Montserrat', sans-serif !important;
   }
 
   .filter__control {
@@ -78,7 +78,7 @@
     padding: 4px 12px;
     font-size: 12px;
     margin: 12px 4px;
-    font-family: 'Montserrat';
+    font-family: 'Montserrat' !important;
     white-space: nowrap;
   }
 
@@ -91,7 +91,7 @@
     padding: 2px 6px;
     font-size: 10px;
     margin: 16px 4px;
-    font-family: 'Montserrat';
+    font-family: 'Montserrat' !important;
     white-space: nowrap;
   }
 
@@ -99,9 +99,9 @@
     position: absolute;
     left: 0;
     right: 0;
-    top: 196px;
-    padding: 20px;
-    pointer-events: none;
+    top: 210px;
+    z-index: 1;
+    padding: 24px;
     opacity: 0.5;
     display: flex;
     align-items: center;
@@ -127,7 +127,7 @@
     font-weight: bold;
     padding: 16px 16px 24px 16px;
     margin-top: 48px;
-    font-family: 'Montserrat';
+    font-family: 'Montserrat' !important;
   }
 
   .share-button {
@@ -245,6 +245,7 @@
       background-position: center;
       width: 100%;
       min-height: 100px;
+      margin: 60px;
     }
 
     .fields {
@@ -389,9 +390,17 @@
 
     .required {
       color: #ee4338;
-      margin-left: -8px;
+      align-self: center;
       margin-right: 20px;
       font-size: 25px;
+    }
+
+    .required-onboarding {
+      color: #ee4338;
+      align-self: center;
+      margin-right: 20px;
+      font-size: 25px;
+      margin-left: auto;
     }
 
     .full-width {
@@ -484,7 +493,7 @@
     width: 100%;
     height: 130px;
     z-index: 2;
-    font-family: 'Montserrat Alternates', sans-serif;
+    font-family: 'Montserrat', sans-serif;
     position: relative;
     .profile-banner-shadow {
       position: absolute;
@@ -592,6 +601,8 @@
       .buttons {
         display: flex;
         flex-direction: row;
+        margin-bottom: 5px;
+        font-weight: 700;
         .button {
           border-radius: unset !important;
           font-family: Montserrat, sans-serif;
@@ -734,7 +745,7 @@
                 .alias {
                   font-size: 16px;
                   font-weight: bold;
-                  font-family: 'Montserrat';
+                  font-family: 'Montserrat' !important;
                   color: white;
                   margin: 0 0 4px 0;
                   padding: 0;
@@ -742,7 +753,7 @@
 
                 .level {
                   font-size: 14px;
-                  font-family: 'Montserrat';
+                  font-family: 'Montserrat' !important;
                   color: white;
                   margin: 0;
                   padding: 0;
@@ -828,10 +839,10 @@
     flex-direction: column;
     border-radius: 8px;
     background-color: #0a0f14;
-    border: 1px solid #657172;
+    border: 1px solid #1d2326;
     margin: 24px 15%;
     padding: 8px 0 0 0;
-    font-family: 'Montserrat Alternates', sans-serif;
+    font-family: 'Montserrat', sans-serif;
     position: relative;
 
     .row {
@@ -930,7 +941,7 @@
     margin: 0;
     background-color: rgba(0, 0, 0, 0.6);
     z-index: 900;
-    font-family: 'Montserrat Alternates', sans-serif;
+    font-family: 'Montserrat', sans-serif;
 
     .container {
       @extend .base-container;
@@ -1010,7 +1021,6 @@
     .headers {
       display: flex;
       flex-direction: row;
-      // margin: 0px 32px;
       padding: 12px;
       font-size: 18px;
       color: white;
@@ -1023,6 +1033,7 @@
         align-items: center;
         justify-content: center;
         padding-bottom: 8px;
+        font-family: 'Montserrat' !important;
         flex: 1;
       }
 
@@ -1266,7 +1277,7 @@
     margin: 0;
     background-color: rgba(0, 0, 0, 0.6);
     z-index: 900;
-    font-family: 'Montserrat Alternates', sans-serif;
+    font-family: 'Montserrat', sans-serif;
 
     .container {
       @extend .base-container;
@@ -1350,15 +1361,20 @@
     margin: 0;
   }
 
+  .onboarding-content {
+    height: fit-content;
+  }
+
   #profile-game-main-info {
     display: flex;
     flex-direction: column;
     width: 80%;
     border-bottom-left-radius: 0px;
     border-bottom-right-radius: 0px;
-    padding: 0;
+    padding: 30px 10px 10px 10px;
     margin: 0;
     overflow-y: scroll;
+    min-height: 400px;
 
     .image-uploader {
       background-color: #1d2326;
@@ -1432,7 +1448,7 @@
       letter-spacing: 0px;
       color: #000000;
       opacity: 1;
-      font-family: 'Montserrat';
+      font-family: 'Montserrat' !important;
       font-size: 0.65em;
       font-weight: 500;
       color: #000;
@@ -1491,7 +1507,7 @@
       padding: 0;
       color: #f0f0f0;
       font-weight: 500;
-      font-family: 'Montserrat';
+      font-family: 'Montserrat' !important;
     }
 
     .sponsor {

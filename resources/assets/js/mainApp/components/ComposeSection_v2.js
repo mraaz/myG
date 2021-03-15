@@ -533,7 +533,7 @@ export default class ComposeSection extends Component {
               <div className='people_selected_container'>
                 <div className='people_selected_list'>
                   <div
-                    className='default_circle'
+                    className='default_circle profile-image'
                     style={{
                       backgroundImage: `url('${this.state.profile_img}')`,
                       backgroundSize: 'cover',
@@ -544,7 +544,7 @@ export default class ComposeSection extends Component {
                   return (
                     <div className='people_selected_list'>
                       <div
-                        className='default_circle'
+                        className='default_circle profile-image'
                         style={{
                           backgroundImage: `url('${g.group_img}')`,
                           backgroundSize: 'cover',

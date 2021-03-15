@@ -19,6 +19,8 @@ const CommunityView = (props) => {
   const [singleSponsor, setSingleSponsor] = useState({})
   const contentAreaRef = useRef()
 
+  const [feature_on, setFeature_on] = useState(false)
+
   useEffect(() => {
     const getcommunityDetails = async () => {
       const { match } = props.routeProps
@@ -33,6 +35,14 @@ const CommunityView = (props) => {
 
       document.title = 'myG - ' + getOne.name
       setCommunityDetails({ ...getOne })
+
+      const environment = window.location.href.includes('localhost')
+        ? 'development'
+        : window.location.href.includes('myG.gg')
+        ? 'production'
+        : 'staging'
+
+      if (environment == 'development') setFeature_on(true)
     }
 
     getcommunityDetails()
@@ -84,6 +94,7 @@ const CommunityView = (props) => {
     setSingleSponsor(data)
     setShowSponsorModal(true)
   }
+
   const hideSponsorModal = async (data) => {
     if (data === true) {
       const { match } = props.routeProps
@@ -106,15 +117,15 @@ const CommunityView = (props) => {
     ev.target.src = 'https://myG.gg/platform_images/Communities/myG_logo.jpg'
   }
 
-  const handleDeleteSponsor = async (id, index) => {
-    await axios.delete(`/api/sponsor/delete/${id}`)
-    // let tmpSponsors = communityDetails.sponsors
-    // delete tmpSponsors[index]
-    //tmpSponsors[index].media_url = 'https://myG.gg/platform_images/Communities/myG_logo.jpg'
-    //setCommunityDetails({ sponsors: tmpSponsors })
-    hideSponsorModal(true)
-    toast.success(<Toast_style text={'Yup, yup, yup... deleted successfully!'} />)
-  }
+  // const handleDeleteSponsor = async (id, index) => {
+  //   await axios.delete(`/api/sponsor/delete/${id}`)
+  //   // let tmpSponsors = communityDetails.sponsors
+  //   // delete tmpSponsors[index]
+  //   //tmpSponsors[index].media_url = 'https://myG.gg/platform_images/Communities/myG_logo.jpg'
+  //   //setCommunityDetails({ sponsors: tmpSponsors })
+  //   hideSponsorModal(true)
+  //   toast.success(<Toast_style text={'Yup, yup, yup... deleted successfully!'} />)
+  // }
 
   const renderSponsors = (Sponsors = []) => {
     if (props.level < 15) return <p className='locked-sponsors'>Community Sponsors are unlocked at Lvl. 15</p>
@@ -171,7 +182,7 @@ const CommunityView = (props) => {
           </div>
         </div>
       )}
-      {renderSponsors(communityDetails.sponsors)}
+      {feature_on && renderSponsors(communityDetails.sponsors)}
       {showSponsorModal && <MangeSponsors sponsors={singleSponsor} handleModalStatus={hideSponsorModal} group_id={communityDetails.id} />}
       {communityDetails.id && (
         <GamePosts {...props} group_id={communityDetails.id} current_user_permission={communityDetails.current_user_permission} />

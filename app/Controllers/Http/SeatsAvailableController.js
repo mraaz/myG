@@ -22,18 +22,14 @@ class SeatsAvailableController {
       const failedAttempts = await RedisRepository.getRecentFailedLoginAttempts(ip)
       if (failedAttempts > 5) return response.send('LIMIT_EXCEEED')
       const code = params.code
-      console.log(code, '<<<CODE')
       const hasCode = await ExtraSeatsCodes.query()
         .where('code', code)
         .select('*')
         .first()
-      console.log(hasCode, '<<<hasCode')
       if (hasCode == undefined) {
-        console.log('Failed')
         await RedisRepository.registerFailedLoginAttempt(ip)
         return response.send('false')
       } else {
-        console.log('Inside2')
         const counter = parseInt(hasCode.counter)
         const max_counter = parseInt(hasCode.max_counter)
         if (counter > max_counter) {
@@ -41,7 +37,6 @@ class SeatsAvailableController {
           return response.send('COUNTER_EXCEEED')
         }
       }
-      console.log('Got here Code')
       return response.send(!!hasCode)
     } catch (error) {
       LoggingRepository.log({

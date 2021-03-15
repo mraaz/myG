@@ -46,6 +46,7 @@ export default class Contacts extends React.Component {
               <React.Fragment>
                 <Section
                   {...this.props}
+                  color={'#68bd45'}
                   status={STATUS_ENUM.ONLINE}
                   count={this.props.contactCount ? this.props.contactCount[STATUS_ENUM.ONLINE] : 0}
                   expanded={this.state.sectionExpanded[STATUS_ENUM.ONLINE]}
@@ -53,6 +54,7 @@ export default class Contacts extends React.Component {
                 />
                 <Section
                   {...this.props}
+                  color={'#fd323c'}
                   status={STATUS_ENUM.PLAYING}
                   count={this.props.contactCount ? this.props.contactCount[STATUS_ENUM.PLAYING] : 0}
                   expanded={this.state.sectionExpanded[STATUS_ENUM.PLAYING]}
@@ -60,6 +62,7 @@ export default class Contacts extends React.Component {
                 />
                 <Section
                   {...this.props}
+                  color={'#d8bd43'}
                   status={STATUS_ENUM.AFK}
                   count={this.props.contactCount ? this.props.contactCount[STATUS_ENUM.AFK] : 0}
                   expanded={this.state.sectionExpanded[STATUS_ENUM.AFK]}
@@ -67,6 +70,7 @@ export default class Contacts extends React.Component {
                 />
                 <Section
                   {...this.props}
+                  color={'#08507d'}
                   status={STATUS_ENUM.OFFLINE}
                   count={this.props.contactCount ? this.props.contactCount[STATUS_ENUM.OFFLINE] : 0}
                   expanded={this.state.sectionExpanded[STATUS_ENUM.OFFLINE]}

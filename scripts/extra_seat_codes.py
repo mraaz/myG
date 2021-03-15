@@ -31,7 +31,7 @@ current_codes = [code for extra_seats_code in extra_seats_codes for code in extr
 
 for index in range(NUMBER_OF_EXTRA_SEAT_CODES_TO_GENERATE):
   code_to_insert = valid_code(current_codes)
-  sql_cursor.execute("INSERT INTO extra_seats_codes (code) VALUES ('MYG:%s')".replace("%s", code_to_insert))
+  sql_cursor.execute("INSERT INTO extra_seats_codes (code) VALUES ('MYG-%s')".replace("%s", code_to_insert))
 
 mydb.commit()
 

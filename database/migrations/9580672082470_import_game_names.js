@@ -1091,6 +1091,9 @@ class Import_game_names_Schema extends Schema {
     .raw("update game_names set game_img = \"https://myG.gg/platform_images/game_img/Among_us.webp\", game_artwork = \"https://static-cdn.jtvnw.net/ttv-boxart/Among%20Us-90x120.jpg\", game_name_fields_img = \"https://static-cdn.jtvnw.net/ttv-boxart/Among%20Us-390x520.jpg\" where game_name = \"Among Us\"")
     .raw("update game_names set game_img = \"https://myG.gg/platform_images/game_img/Cyberpunk.webp\", game_artwork = \"https://static-cdn.jtvnw.net/ttv-boxart/Cyberpunk%202077-90x120.jpg\", game_name_fields_img = \"https://static-cdn.jtvnw.net/ttv-boxart/Cyberpunk%202077-390x520.jpg\" where game_name = \"Cyberpunk 2077\"")
 
+    .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Diablo III', 1, 1, '1988-08-08', '1988-08-08')")
+    .raw("update game_names set game_img = \"https://static-cdn.jtvnw.net/ttv-boxart/Diablo%20III-144x192.jpg\", game_artwork = \"https://static-cdn.jtvnw.net/ttv-boxart/Diablo%20III-144x192.jpg\", game_name_fields_img = \"https://static-cdn.jtvnw.net/ttv-boxart/Diablo%20III-144x192.jpg\" where game_name = \"Diablo III\"")
+
 
     // .raw("update game_names set game_name_fields = 1 where game_name = \"Dota 2\"")
     // .raw("update game_names set game_name_fields = 1 where game_name = \"Clash Royale\"")

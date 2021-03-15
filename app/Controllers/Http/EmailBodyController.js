@@ -271,7 +271,7 @@ class EmailBodyController {
                     style="margin:0px;background-image:url('https://myG.gg/welcome-email/Welcome-to-myG_3_10.jpg');background-repeat: no-repeat;vertical-align: top;"
                   >
                     <p
-                      style="font-family: 'Montserrat Alternates', sans-serif;font-style: normal;font-weight: 400;font-size: 12px;color: rgba(231, 187, 48, 1);margin: 14px 0px 10px 50px;"
+                      style="font-family: 'Montserrat Alternates', sans-serif;font-style: normal;font-weight: 300;font-size: 10px;color: rgba(231, 187, 48, 1);margin: 14px 0px 10px 50px;"
                     >
                       <b>${code_1}</b>
                     </p>
@@ -283,7 +283,7 @@ class EmailBodyController {
                     style="margin:0px;background-image:url('https://myG.gg/welcome-email/Welcome-to-myG_3_11.jpg');background-repeat: no-repeat;vertical-align: top;"
                   >
                     <p
-                      style="font-family: 'Montserrat Alternates', sans-serif;font-style: normal;font-weight: 400;font-size: 12px;color: rgba(231, 187, 48, 1);margin: 14px 0px 0px 32px;"
+                      style="font-family: 'Montserrat Alternates', sans-serif;font-style: normal;font-weight: 300;font-size: 10px;color: rgba(231, 187, 48, 1);margin: 14px 0px 0px 32px;"
                     >
                       <b>${code_2}</b>
                     </p>
@@ -295,7 +295,7 @@ class EmailBodyController {
                     style="margin:0px;background-image:url('https://myG.gg/welcome-email/Welcome-to-myG_3_12.jpg');background-repeat: no-repeat;vertical-align: top;"
                   >
                     <p
-                      style="font-family: 'Montserrat Alternates', sans-serif;font-style: normal;font-weight: 400;font-size: 12px;color: rgba(231, 187, 48, 1);margin: 14px 0px 0px 34px;"
+                      style="font-family: 'Montserrat Alternates', sans-serif;font-style: normal;font-weight: 300;font-size: 10px;color: rgba(231, 187, 48, 1);margin: 14px 0px 0px 34px;"
                     >
                       <b>${code_3}</b>
                     </p>

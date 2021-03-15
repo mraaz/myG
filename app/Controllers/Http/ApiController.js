@@ -17,7 +17,7 @@ const LoggingRepository = require('../../Repositories/Logging')
 
 const AwsKey = use('App/Models/AwsKey')
 
-const S3_BUCKET_CHAT = 'mygame-media/myG chat/chat_images'
+const S3_BUCKET_CHAT = 'mygame-media/myG_chat/chat_images'
 const S3_BUCKET = 'mygame-media/user_files'
 const S3_BUCKET_DELETE = 'mygame-media'
 

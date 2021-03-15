@@ -632,6 +632,46 @@ class UsergroupController {
       })
     }
   }
+
+  async autoApproveOfficialCommunities({ auth, request, response }) {
+    const lock = await RedisRepository.lock('Auto accept official communities', 1000 * 50 * 1)
+    if (!lock) return
+
+    try {
+      const grp_to_approve = await Database.from('usergroups')
+        .innerJoin('groups', 'groups.id', 'usergroups.group_id')
+        .where('groups.verified', '=', 1)
+        .where('usergroups.permission_level', 42)
+        .select('groups.id as grp_id', 'usergroups.user_id as user_id')
+
+      const noti = new NotificationController_v2()
+      const userStatController = new UserStatTransactionController()
+
+      for (let i = 0; i < grp_to_approve.length; i++) {
+        const updated_permission = await Usergroup.query()
+          .where({ group_id: grp_to_approve[i].grp_id, user_id: grp_to_approve[i].user_id })
+          .update({ permission_level: 3 })
+
+        noti.add_approved_group_attendee({ auth }, grp_to_approve[i].grp_id, grp_to_approve[i].user_id)
+
+        userStatController.update_total_number_of(grp_to_approve[i].user_id, 'total_number_of_communities')
+
+        //delete this notification
+        const auth = { user: { id: grp_to_approve[i].user_id } }
+        noti.delete_group_invites({ auth }, grp_to_approve[i].grp_id)
+      }
+
+      return 'Saved successfully'
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
+    }
+  }
 }
 
 module.exports = UsergroupController

@@ -37,12 +37,12 @@ export class GamerSuggestions extends React.Component {
     const games = profile.mostPlayedGames.length ? profile.mostPlayedGames : profile.gameExperiences.map(({ name }) => name);
     return(
       <div className="game-experience clickable"
-      onClick={() => this.props.onboarding ? this.sendFriendRequest(gamer.alias, gamer.profileId) : window.router.push(`/profile/${profile.alias}`)}
+      onClick={() => this.props.onboarding ? this.sendFriendRequest(profile.alias, profile.profileId) : window.router.push(`/profile/${profile.alias}`)}
       onMouseEnter={() => this.setState({ hovering: profile.alias })}
       onMouseLeave={() => this.setState({ hovering: null })}
     >
       {this.renderHoverBar(profile, isHovering)}
-      <div className="image absolute-top" style={{ backgroundImage: `url(${profile.background}), url(https://myG.gg/default_user/myG_bg.png)` }} />
+      <div className="image absolute-top" style={{ backgroundImage: `url(${profile.background}), url(https://myg.gg/platform_images/Profile/Silver-Stamping-Logo-MockUp.jpg)` }} />
       <div className='icon' style={{ backgroundImage: `url(${profile.image}), url(https://myG.gg/default_user/new-user-profile-picture.png)` }} />
       <span className="name">{profile.alias}</span>
       <div className="field center">

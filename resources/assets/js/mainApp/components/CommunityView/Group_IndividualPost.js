@@ -5,6 +5,7 @@
  */
 import React, { Component, Fragment } from 'react'
 import { Link } from 'react-router-dom'
+import ReactPlayer from 'react-player'
 import axios from 'axios'
 import moment from 'moment'
 
@@ -693,6 +694,7 @@ export default class Group_IndividualPost extends Component {
               </div>
             </div>
             <div className='media'>
+              {!!this.props.post.video && <ReactPlayer width={'100%'} height={360} url={this.props.post.video} controls={true} />}
               {galleryItems.length > 0 && (
                 <ImageGallery items={[...galleryItems]} showFullscreenButton={true} showGalleryFullscreenButton={true} />
               )}

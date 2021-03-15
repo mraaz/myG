@@ -4,7 +4,7 @@
     flex: 1;
     align-items: center;
     justify-content: center;
-    font-family: Montserrat Alternates;
+    font-family: Montserrat;
   }
   .card-container {
     display: flex;
@@ -81,7 +81,7 @@
     @media only screen and (max-width: 768px) {
       /* For mobile phones: */
       font-size: 12px;
-      font-family: Montserrat Alternates;
+      font-family: Montserrat;
     }
   }
   .registration-desc {
@@ -96,6 +96,7 @@
     text-align: center;
     color: #fff;
     margin-top: 20px;
+    line-height: 18px;
   }
   .seats-desc {
     font-size: 18px;
@@ -141,7 +142,7 @@
     margin-top: 12px;
   }
   .extra-seats-code-hint {
-    margin-bottom: 8px;
+    margin-bottom: 16px;
     text-align: center;
   }
   .extra-seats-code-input {

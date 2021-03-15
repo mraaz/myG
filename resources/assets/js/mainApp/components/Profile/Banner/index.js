@@ -18,7 +18,10 @@ export class Banner extends React.Component {
   renderBannerUploader = () => {
     if (!this.props.profile.isSelf || !this.state.hoveringBanner) return;
     return(
-      <div className="hover-banner">Update Background Image</div>
+      <div className="hover-banner clickable" onClick={() => {
+        const uploader = document.querySelector('.uploader > input');
+        if (uploader) uploader.click();
+      }}>Update Background Image</div>
     );
   }
 
@@ -27,7 +30,9 @@ export class Banner extends React.Component {
   }
 
   render() {
-    const background = this.props.profile.background ? { backgroundImage: `url('${this.props.profile.background}')` } : {};
+    const background = this.props.profile.background ? 
+      { backgroundImage: `url('${this.props.profile.background}')` } : 
+      { backgroundImage: `url(https://myg.gg/platform_images/Profile/Silver-Stamping-Logo-MockUp.jpg)` };
     return(
       <div id="profile-banner" className={`background ${this.props.isSelf && 'clickable'}`} style={background}  
         onMouseEnter={() => this.setState({ hoveringBanner: true })}

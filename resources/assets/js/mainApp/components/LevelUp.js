@@ -11,16 +11,16 @@ class LevelUp extends React.Component {
   componentDidMount() {
     if (this.props.levelUpWhileOffline && !this.state.leveledUp) {
       this.setState({ leveledUp: true }, () =>
-        this.loadLevelUpAnimation(`https://myg.gg/animations/lvl_up/myG_Level-up_${this.props.level}.json`)
+        this.loadLevelUpAnimation(`https://myg.gg/animations/lvl_up/myG_Level-up_${this.props.level || 1}.json`)
       )
     }
   }
 
   componentDidUpdate(previous) {
-    const hasLeveledUp = this.props.levelUpWhileOffline || (previous.level !== undefined && this.props.level > previous.level)
+    const hasLeveledUp = this.props.levelUpWhileOffline || (this.props.statsUpdatedFromWebsocket && this.props.level > previous.level)
     if (!hasLeveledUp || this.state.leveledUp) return
     this.setState({ leveledUp: true }, () =>
-      this.loadLevelUpAnimation(`https://myg.gg/animations/lvl_up/myG_Level-up_${this.props.level}.json`)
+      this.loadLevelUpAnimation(`https://myg.gg/animations/lvl_up/myG_Level-up_${this.props.level || 1}.json`)
     )
   }
 
@@ -54,6 +54,7 @@ class LevelUp extends React.Component {
 function mapStateToProps(state) {
   return {
     levelUpWhileOffline: !!state.user.leveled_up_offline,
+    statsUpdatedFromWebsocket: !!state.user.statsUpdatedFromWebsocket,
     level: (state.user.userTransactionStates || {}).user_level,
   }
 }

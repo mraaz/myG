@@ -893,6 +893,9 @@
             width: 37px;
             height: 37px;
             border-radius: 50%;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
             z-index: 2;
           }
         }
@@ -1357,6 +1360,9 @@
               width: 35px;
               height: 35px;
               border-radius: 50%;
+              background-repeat: no-repeat;
+              background-position: center;
+              background-size: cover;
               .online__status {
                 border: 7px solid #68bd45;
                 border-radius: 50%;
@@ -1378,15 +1384,18 @@
               margin-right: 15px;
               float: right;
               font-size: 12px;
+              cursor: pointer;
             }
             .comment-panel-liked {
               padding-left: 15px;
+              cursor: pointer;
             }
             .comment-panel-reply {
               float: right;
               font-size: 12px;
               padding-left: 15px;
               border-left: 1px solid #384952;
+              cursor: pointer;
             }
             .divider {
               margin-left: 10px;
@@ -1614,11 +1623,10 @@
         }
         .send__btn {
           position: relative;
-          top: -2;
-          height: 40px;
           cursor: pointer;
+          width: 42px;
           img {
-            height: 44px;
+            position: relative;
           }
         }
         .profile__image {
@@ -1630,6 +1638,9 @@
           border-radius: 50%;
           z-index: 12;
           top: 3px;
+          background-repeat: no-repeat;
+          background-position: center;
+          background-size: cover;
           .online__status {
             border: 7px solid #68bd45;
             border-radius: 50%;
@@ -2954,6 +2965,9 @@ $transition-default: 0.25s ease-out 0.1s;
         height: 37px;
         border-radius: 50%;
         z-index: 2;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: cover;
       }
     }
   }
@@ -3104,11 +3118,10 @@ $transition-default: 0.25s ease-out 0.1s;
       }
       .send__btn {
         position: relative;
-        top: -2;
-        height: 40px;
         cursor: pointer;
+        width: 42px;
         img {
-          height: 44px;
+          position: relative;
         }
       }
 
@@ -3121,6 +3134,9 @@ $transition-default: 0.25s ease-out 0.1s;
         border-radius: 50%;
         z-index: 12;
         top: 3px;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: cover;
 
         .online__status {
           border: 7px solid #68bd45;
@@ -3280,6 +3296,7 @@ $transition-default: 0.25s ease-out 0.1s;
           &.active {
             visibility: visible;
             opacity: 1;
+            
           }
           .edit {
             font-size: 10px;
@@ -3297,6 +3314,9 @@ $transition-default: 0.25s ease-out 0.1s;
           background: #ff00ff;
           width: 35px;
           height: 35px;
+          background-repeat: no-repeat;
+          background-position: center;
+          background-size: cover;
           border-radius: 50%;
           .online__status {
             border: 7px solid #68bd45;
@@ -3319,6 +3339,7 @@ $transition-default: 0.25s ease-out 0.1s;
           margin-right: 5px;
           float: right;
           font-size: 12px;
+          cursor: pointer;
 
           @media (min-width: 575px) {
             margin-right: 15px;
@@ -3326,10 +3347,12 @@ $transition-default: 0.25s ease-out 0.1s;
         }
         .comment-panel-liked {
           padding-left: 15px;
+          cursor: pointer;
         }
         .comment-panel-reply {
           float: right;
           font-size: 12px;
+          cursor: pointer;
 
           @media (min-width: 575px) {
             border-left: 1px solid #384952;
