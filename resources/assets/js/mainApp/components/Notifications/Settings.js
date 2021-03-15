@@ -41,29 +41,30 @@ class Settings extends Component {
 
       const self = this
 
-    const environment = window.location.href.includes('localhost')
-      ? 'development'
-      : window.location.href.includes('myG.gg')
-      ? 'production'
-      : 'staging'
+      const environment = window.location.href.includes('localhost')
+        ? 'development'
+        : window.location.href.includes('myG.gg')
+        ? 'production'
+        : 'staging'
 
-    if (environment == 'development') {
-      this.setState({
-        feature_on: true,
-      })
-    }
-
-    const getSettings = async function() {
-      try {
-        const getSettings = await axios.get('/api/settings')
-        self.setState({
-          viaEmail: getSettings.data.mySettings[0].email_notification,
+      if (environment == 'development') {
+        this.setState({
+          feature_on: true,
         })
-      } catch (error) {
-        logToElasticsearch('error', 'Settings', 'Failed getSettings:' + ' ' + error)
       }
 
-      getSettings()
+      const getSettings = async function () {
+        try {
+          const getSettings = await axios.get('/api/settings')
+          self.setState({
+            viaEmail: getSettings.data.mySettings[0].email_notification,
+          })
+        } catch (error) {
+          logToElasticsearch('error', 'Settings', 'Failed getSettings:' + ' ' + error)
+        }
+
+        getSettings()
+      }
     }
   }
 
@@ -114,7 +115,7 @@ class Settings extends Component {
     })
   }
 
-  hideAlert(text) {
+  hideAlert = (text) => {
     this.setState({
       alert: null,
     })
