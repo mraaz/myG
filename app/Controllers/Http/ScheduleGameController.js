@@ -652,6 +652,7 @@ class ScheduleGameController {
           }
         }
 
+        await ElasticsearchRepository.removeGame({ id: request.params.id })
         return 'Deleted successfully'
       } catch (error) {
         LoggingRepository.log({
