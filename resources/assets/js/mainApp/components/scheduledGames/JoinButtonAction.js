@@ -89,8 +89,9 @@ const JoinStatus = (props) => {
     setLeaveButtonStatus(!leaveButtonStatus)
   }
   const saveJoinGame = async (query = {}) => {
+    let get_stats = ''
     try {
-      const get_stats = await axios.post('/api/attendees/savemySpot', {
+      get_stats = await axios.post('/api/attendees/savemySpot', {
         schedule_games_id: props.schedule_games_id,
         value_two: null,
         value_three: null,
