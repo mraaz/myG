@@ -22,35 +22,35 @@ const CommunityView = (props) => {
   const [feature_on, setFeature_on] = useState(false)
 
   useEffect(() => {
-    const getcommunityDetails = async () => {
-      const { match } = props.routeProps
-      const groupName = decodeURIComponent(match.params.name)
-      const {
-        data: { getOne = {} },
-      } = await axios.get(`/api/groups/getGroupDetails/${groupName}`)
-      if (Object.keys(getOne).length == 0) {
-        toast.error(<Toast_style text={`Sorry mate, can't find that`} />)
-        props.routeProps.history.push('/?at=communities')
-      }
-
-      document.title = 'myG - ' + getOne.name
-      setCommunityDetails({ ...getOne })
-
-      const environment = window.location.href.includes('localhost')
-        ? 'development'
-        : window.location.href.includes('myG.gg')
-        ? 'production'
-        : 'staging'
-
-      if (environment == 'development') setFeature_on(true)
-    }
-
     getcommunityDetails()
     window.addEventListener('scroll', handleScroll, true)
     return () => {
       setCommunityDetails({})
     }
   }, [])
+
+  const getcommunityDetails = async () => {
+    const { match } = props.routeProps
+    const groupName = decodeURIComponent(match.params.name)
+    const {
+      data: { getOne = {} },
+    } = await axios.get(`/api/groups/getGroupDetails/${groupName}`)
+    if (Object.keys(getOne).length == 0) {
+      toast.error(<Toast_style text={`Sorry mate, can't find that`} />)
+      props.routeProps.history.push('/?at=communities')
+    }
+
+    document.title = 'myG - ' + getOne.name
+    setCommunityDetails({ ...getOne })
+
+    const environment = window.location.href.includes('localhost')
+      ? 'development'
+      : window.location.href.includes('myG.gg')
+      ? 'production'
+      : 'staging'
+
+    if (environment == 'development') setFeature_on(true)
+  }
 
   const handleScroll = () => {
     let lastScrollY = window.scrollY
@@ -87,6 +87,7 @@ const CommunityView = (props) => {
     setModalStatus(!modalStatus)
     if (label == true) {
       hideSponsorModal(true)
+      getcommunityDetails()
     }
   }
 

@@ -19,8 +19,10 @@ export default class MangeSponsors extends React.Component {
       aws_key_id: '',
       file_keys: '',
       sponsors: this.props.sponsors,
+      uploading: [],
     }
-    this.fileInputRef = React.createRef()
+
+    this.fileInputRef = []
   }
 
   addDefaultSrc = (ev) => {
@@ -30,22 +32,19 @@ export default class MangeSponsors extends React.Component {
   onKeyDown = (event) => {
     const code = event.keyCode || event.which
     if (code === 13) {
-      const { sponsor = {} } = this.props
-      if (sponsor.id) {
-        this.updateSponsor()
-      } else {
-        this.createSponsor()
-      }
+      this.handleSave()
     }
   }
 
   handleSave = (e) => {
-    // const { sponsor = {} } = this.props
-    // if (sponsor.id) {
-    //   this.updateSponsor()
-    // } else {
-    this.createSponsor()
-    // }
+    const { sponsors = [] } = this.state
+    sponsors.map((sponsor) => {
+      if (sponsor.id) {
+        this.updateSponsor(sponsor)
+      } else {
+        this.createSponsor(sponsor)
+      }
+    })
   }
 
   handleClose = (e) => {
@@ -55,29 +54,28 @@ export default class MangeSponsors extends React.Component {
     this.props.handleModalStatus(false)
   }
 
-  updateSponsor = async (e) => {
-    const { sponsor = {}, groups_id } = this.props
-    const { linkValue, media_url } = this.state
+  updateSponsor = async (sponsor = {}) => {
+    const { groups_id } = this.props
 
     await axios.post('/api/sponsor/update', {
       group_id: groups_id,
       id: sponsor.id,
-      media_url: media_url == '' ? sponsor.media_url : media_url,
-      link: linkValue == '' ? sponsor.link : linkValue,
+      media_url: sponsor.media_url ? sponsor.media_url : '',
+      link: sponsor.link ? sponsor.link : '',
     })
     toast.error(<Toast_style text={'Epic! Saved successfully!'} />)
     this.props.handleModalStatus(true)
   }
 
-  createSponsor = async () => {
-    const { sponsor = {}, group_id } = this.props
+  createSponsor = async (sponsor = {}) => {
+    const { group_id } = this.props
     const { linkValue, media_url, aws_key_id = '' } = this.state
     await axios.post('/api/sponsor/create', {
       group_id: group_id,
       type: 2,
-      media_url: media_url == '' ? sponsor.media_url : media_url,
-      link: linkValue == '' ? sponsor.link : linkValue,
-      aws_key_id: aws_key_id,
+      media_url: sponsor.media_url ? sponsor.media_url : '',
+      link: sponsor.link ? sponsor.link : '',
+      aws_key_id: sponsor.aws_key_id ? sponsor.aws_key_id : '',
     })
     toast.error(<Toast_style text={'Great, Created successfully!'} />)
     this.props.handleModalStatus(true)
@@ -89,7 +87,7 @@ export default class MangeSponsors extends React.Component {
     const sponsorData = [...sponsors]
     sponsorData[counter - 1] = {
       ...sponsorData[counter - 1],
-      linkValue: data,
+      link: data,
     }
 
     if (data == '') {
@@ -99,9 +97,9 @@ export default class MangeSponsors extends React.Component {
     }
   }
 
-  handleImageChange = (e) => {
-    if (!this.state.uploading) {
-      this.fileInputRef.current.click()
+  handleImageChange = (e, counter) => {
+    if (!this.state.uploading[counter]) {
+      this.fileInputRef[counter].click()
     }
   }
 
@@ -121,7 +119,9 @@ export default class MangeSponsors extends React.Component {
   }
 
   doUploadS3 = async (file, name, counter) => {
-    this.setState({ uploading: true })
+    const { uploading = [] } = this.state
+    uploading[counter] = true
+    this.setState({ uploading })
     try {
       if (file.size < 10485760) {
         const { sponsors = [] } = this.state
@@ -155,12 +155,12 @@ export default class MangeSponsors extends React.Component {
     } catch (error) {
       toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file.'} />)
     }
-    this.setState({ uploading: false })
+    uploading[counter] = false
+    this.setState({ uploading })
   }
 
   render() {
-    const { saveButtonDisabled = true, linkValue = '', media_url = '', modalStatus = true, uploading = false, sponsors = [] } = this.state
-
+    const { saveButtonDisabled = true, linkValue = '', media_url = '', modalStatus = true, uploading = [], sponsors = [] } = this.state
     return (
       <div className={`modal-container View__Member__modal ${modalStatus ? 'modal--show' : ''}`}>
         <div className='modal-wrap'>
@@ -178,13 +178,13 @@ export default class MangeSponsors extends React.Component {
               sponsors.map((sponsor, index) => {
                 const counter = index + 1
                 return (
-                  <div className='Sponsor__edit-list'>
+                  <div className='Sponsor__edit-list' key={`${sponsors.length}_${counter}`}>
                     <div className='text'>Custom Sponsor {counter}</div>
                     <div className='Sponsor__media__input' onClick={(e) => this.handleImageChange(e, counter)}>
                       <input
                         type='file'
                         accept='image/jpeg,image/jpg,image/png,image/gif'
-                        ref={this.fileInputRef}
+                        ref={(ref) => (this.fileInputRef[counter] = ref)}
                         onChange={(e) => this.handleSelectFile(e, counter)}
                         name='insert__images'
                       />
@@ -198,7 +198,7 @@ export default class MangeSponsors extends React.Component {
                     <div className='text__tap'>
                       Or <span>Click/Tap here</span> to select
                     </div>
-                    {uploading && (
+                    {uploading[counter] && (
                       <div className='text'>
                         <span>Uploading... </span>
                       </div>
@@ -207,7 +207,7 @@ export default class MangeSponsors extends React.Component {
                       <input
                         type='text'
                         onChange={(e) => this.handleLinkChange(e, counter)}
-                        value={linkValue == '' ? sponsor.link : linkValue}
+                        value={sponsor.link}
                         placeholder='Enter link here'
                         onKeyDown={this.onKeyDown}
                       />
@@ -219,13 +219,13 @@ export default class MangeSponsors extends React.Component {
               [...new Array((this.props.level < 25 ? 1 : 2) - sponsors.length)].map((sponsor, index) => {
                 const counter = sponsors.length + index + 1
                 return (
-                  <div className='Sponsor__edit-list'>
+                  <div className='Sponsor__edit-list' key={`${sponsors.length}_${counter}`}>
                     <div className='text'>Custom Sponsor {counter}</div>
                     <div className='Sponsor__media__input' onClick={(e) => this.handleImageChange(e, counter)}>
                       <input
                         type='file'
                         accept='image/jpeg,image/jpg,image/png,image/gif'
-                        ref={this.fileInputRef}
+                        ref={(ref) => (this.fileInputRef[counter] = ref)}
                         onChange={(e) => this.handleSelectFile(e, counter)}
                         name='insert__images'
                       />
@@ -237,7 +237,7 @@ export default class MangeSponsors extends React.Component {
                     <div className='text__tap'>
                       Or <span>Click/Tap here</span> to select
                     </div>
-                    {uploading && (
+                    {uploading[counter] && (
                       <div className='text'>
                         <span>Uploading... </span>
                       </div>
@@ -246,7 +246,7 @@ export default class MangeSponsors extends React.Component {
                       <input
                         type='text'
                         onChange={(e) => this.handleLinkChange(e, counter)}
-                        value={linkValue == '' ? '' : linkValue}
+                        value={sponsor.link}
                         placeholder='Enter link here'
                         onKeyDown={this.onKeyDown}
                       />
