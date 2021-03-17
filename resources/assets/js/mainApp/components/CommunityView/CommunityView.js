@@ -10,6 +10,7 @@ import MangeSponsors from './MangeSponsors'
 import { registerSponsorClick } from '../../../integration/http/quests'
 
 import { Toast_style } from '../Utility_Function'
+const defaultSponsorImage = 'https://myG.gg/platform_images/Communities/myG_logo.jpg'
 
 const CommunityView = (props) => {
   const [communityDetails, setCommunityDetails] = useState({})
@@ -148,12 +149,14 @@ const CommunityView = (props) => {
               <div className='Sponsors' key={Sponsor.id}>
                 <div
                   className='Sponsors__image'
-                  // style={{ backgroundImage: `url(${sponsor.media_url}), url(${defaultSponsorImage})` }}
+                  style={{ backgroundImage: `url(${Sponsor.media_url}), url(${defaultSponsorImage})` }}
                   onClick={() => {
                     if (!hasSponsor) return
                     window.open(sponsorLink, '_blank')
                   }}
                 />
+                {/* <img src={Sponsor.media_url} style={{ width: '100%', height: '100%' }} /> */}
+                {/* </div> */}
                 {/* {[0, 1].includes(current_user_permission) && (
                   <div className='Sponsors__edit' onClick={(e) => handleSponsorClick(Sponsor)}>
                     Edit
