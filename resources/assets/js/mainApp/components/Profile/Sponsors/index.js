@@ -44,7 +44,7 @@ export default class Sponsors extends React.Component {
             registerSponsorClick();
             window.open(sponsorLink, '_blank');
           }}
-        />
+        /> 
           {/* <img src={sponsor.media_url} style={{ width: '100%', height: '100%' }} /> */}
       {/* </div> */}
         <div className="hover-bar">

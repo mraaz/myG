@@ -1380,7 +1380,7 @@ $transition-default: 0.25s ease-out 0.1s;
         background: #fff;
         background-repeat: no-repeat;
         background-position: center center;
-        background-size: cover;
+        background-size: contain;
       }
       .Sponsors__edit {
         position: absolute;
