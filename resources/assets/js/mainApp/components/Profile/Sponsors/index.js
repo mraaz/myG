@@ -36,17 +36,17 @@ export default class Sponsors extends React.Component {
         onMouseEnter={() => this.setState({ hovering: this.props.profile.isSelf && sponsor.id })}
         onMouseLeave={() => this.setState({ hovering: null })}
       >
-        <div
+        <div 
           className='image'
-          style={{ backgroundImage: `url(${sponsor.media_url}), url(${defaultSponsorImage})` }}
+          // style={{ backgroundImage: `url(${sponsor.media_url}), url(${defaultSponsorImage})` }}
           onClick={() => {
             if (!hasSponsor) return;
             registerSponsorClick();
             window.open(sponsorLink, '_blank');
           }}
-        /> 
-          {/* <img src={sponsor.media_url} style={{ width: '100%', height: '100%' }} /> */}
-      {/* </div> */}
+        >  
+          <img src={sponsor.media_url} style={{ height: '100%' }} />
+      </div>
         <div className="hover-bar">
           {/* {!!isHovering && <div className={`tiny-button ${!isLocked && 'clickable'}`} onClick={() => !isLocked && this.editSponsor(sponsor.id)}>{isLocked ? 'Unlock at Lvl 5' : 'Edit'}</div>} */}
           {!!isHovering && !isEmpty && <div className="tiny-button clickable" onClick={() => this.deleteSponsor(sponsor.id)}>Delete</div>}

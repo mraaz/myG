@@ -150,14 +150,13 @@ const CommunityView = (props) => {
               <div className='Sponsors' key={`${Sponsors.length}_${index}}`}>
                 <div
                   className='Sponsors__image'
-                  style={{ backgroundImage: `url(${Sponsor.media_url}), url(${defaultSponsorImage})` }}
+                  // style={{ backgroundImage: `url(${Sponsor.media_url}), url(${defaultSponsorImage})` }}
                   onClick={() => {
                     if (!hasSponsor) return
                     window.open(sponsorLink, '_blank')
-                  }}
-                />
-                {/* <img src={Sponsor.media_url} style={{ width: '100%', height: '100%' }} /> */}
-                {/* </div> */}
+                  }}>
+                  <img src={Sponsor.media_url} style={{ width: '100%', height: '100%' }} />
+                </div>
                 {/* {[0, 1].includes(current_user_permission) && (
                   <div className='Sponsors__edit' onClick={(e) => handleSponsorClick(Sponsor)}>
                     Edit

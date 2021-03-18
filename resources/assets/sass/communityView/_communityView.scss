@@ -831,10 +831,9 @@
       .Sponsors__image {
         width: 100%;
         height: 100%;
-        background: #fff;
-        background-repeat: no-repeat;
-        background-position: center center;
-        background-size: contain;
+        background: #1d2326;
+        justify-content: center;
+        display: flex;
       }
       .Sponsors__edit {
         position: absolute;

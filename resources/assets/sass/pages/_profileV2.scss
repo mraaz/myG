@@ -1532,11 +1532,9 @@
       .image {
         display: flex;
         flex: 1;
-        background-repeat: no-repeat;
-        background-position: center center;
-        background-size: contain;
         width: 100%;
-        background: #fff;
+        background: #1d2326;
+        justify-content: center;
       }
     }
   }
