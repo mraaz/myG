@@ -228,7 +228,7 @@ class MangeSponsors extends React.Component {
           [...new Array(2 - sponsors.length)].map((sponsor, index) => {
             const counter = sponsors.length + index + 1
             return (
-              <div className='Sponsor__edit-list'>
+              <div className='Sponsor__edit-list' key={`${sponsor.length}_${index}}`}>
                 <div className='text'>Custom Sponsor {index + 1}</div>
                 <div className='Sponsor__media__input' onClick={(e) => this.handleImageChange(e, counter)}>
                   <input
