@@ -25,6 +25,19 @@ export default class MangeSponsors extends React.Component {
     this.fileInputRef = []
   }
 
+  componentDidMount() {
+    const { sponsors = [] } = this.state
+    sponsors.length < 2 &&
+      [...new Array(2 - sponsors.length)].map((sponsor, index) => {
+        sponsors.push({
+          group_id: null,
+          id: '',
+          media_url: '',
+          link: '',
+        })
+      })
+  }
+
   addDefaultSrc = (ev) => {
     ev.target.src = 'https://myG.gg/default_user/universe.jpg'
   }
@@ -56,29 +69,40 @@ export default class MangeSponsors extends React.Component {
 
   updateSponsor = async (sponsor = {}) => {
     const { group_id } = this.props
-
-    await axios.post('/api/sponsor/update', {
-      group_id: group_id,
-      id: sponsor.id,
-      media_url: sponsor ? (sponsor.media_url ? sponsor.media_url : '') : '',
-      link: sponsor ? (sponsor.link ? sponsor.link : '') : '',
-    })
-    toast.error(<Toast_style text={'Epic! Saved successfully!'} />)
-    this.props.handleModalStatus(true)
+    const linkValue = sponsor ? (sponsor.link ? sponsor.link : '') : ''
+    const media_url = sponsor ? (sponsor.media_url ? sponsor.media_url : '') : ''
+    if (linkValue && media_url) {
+      await axios.post('/api/sponsor/update', {
+        group_id: group_id,
+        id: sponsor.id,
+        media_url: sponsor ? (sponsor.media_url ? sponsor.media_url : '') : '',
+        link: sponsor ? (sponsor.link ? sponsor.link : '') : '',
+      })
+      toast.error(<Toast_style text={'Epic! Saved successfully!'} />)
+      this.props.handleModalStatus(true)
+    } else {
+      toast.error(<Toast_style text={'ah, Please update Image/ Url !'} />)
+    }
   }
 
   createSponsor = async (sponsor = {}) => {
     const { group_id } = this.props
     const { linkValue, media_url, aws_key_id = '' } = this.state
-    await axios.post('/api/sponsor/create', {
-      group_id: group_id,
-      type: 2,
-      media_url: sponsor ? (sponsor.media_url ? sponsor.media_url : '') : '',
-      link: sponsor ? (sponsor.link ? sponsor.link : '') : '',
-      aws_key_id: sponsor ? (sponsor.aws_key_id ? sponsor.aws_key_id : '') : '',
-    })
-    toast.error(<Toast_style text={'Great, Created successfully!'} />)
-    this.props.handleModalStatus(true)
+    const linkValue = sponsor ? (sponsor.link ? sponsor.link : '') : ''
+    const media_url = sponsor ? (sponsor.media_url ? sponsor.media_url : '') : ''
+    if (linkValue && media_url) {
+      await axios.post('/api/sponsor/create', {
+        group_id: group_id,
+        type: 2,
+        media_url: sponsor ? (sponsor.media_url ? sponsor.media_url : '') : '',
+        link: sponsor ? (sponsor.link ? sponsor.link : '') : '',
+        aws_key_id: sponsor ? (sponsor.aws_key_id ? sponsor.aws_key_id : '') : '',
+      })
+      toast.success(<Toast_style text={'Great, Created successfully!'} />)
+      this.props.handleModalStatus(true)
+    } else {
+      toast.error(<Toast_style text={'ah, Please update Image/ Url !'} />)
+    }
   }
 
   handleLinkChange = (e, counter) => {
