@@ -36,6 +36,7 @@ export default class MangeSponsors extends React.Component {
           link: '',
         })
       })
+    this.setState({ sponsors, saveButtonDisabled: true })
   }
 
   addDefaultSrc = (ev) => {
@@ -51,11 +52,11 @@ export default class MangeSponsors extends React.Component {
 
   handleSave = (e) => {
     const { sponsors = [] } = this.state
-    sponsors.map((sponsor) => {
+    sponsors.map((sponsor, index) => {
       if (sponsor.id) {
-        this.updateSponsor(sponsor)
+        this.updateSponsor(sponsor, index)
       } else {
-        this.createSponsor(sponsor)
+        this.createSponsor(sponsor, index)
       }
     })
   }
@@ -67,7 +68,7 @@ export default class MangeSponsors extends React.Component {
     this.props.handleModalStatus(false)
   }
 
-  updateSponsor = async (sponsor = {}) => {
+  updateSponsor = async (sponsor = {}, index) => {
     const { group_id } = this.props
     const linkValue = sponsor ? (sponsor.link ? sponsor.link : '') : ''
     const media_url = sponsor ? (sponsor.media_url ? sponsor.media_url : '') : ''
@@ -81,11 +82,11 @@ export default class MangeSponsors extends React.Component {
       toast.error(<Toast_style text={'Epic! Saved successfully!'} />)
       this.props.handleModalStatus(true)
     } else {
-      toast.error(<Toast_style text={'ah, Please update Image/ Url !'} />)
+      toast.error(<Toast_style text={`oh, Please update Image/ Url for Custom Sponsor ${index + 1}!`} />)
     }
   }
 
-  createSponsor = async (sponsor = {}) => {
+  createSponsor = async (sponsor = {}, index) => {
     const { group_id } = this.props
     const linkValue = sponsor ? (sponsor.link ? sponsor.link : '') : ''
     const media_url = sponsor ? (sponsor.media_url ? sponsor.media_url : '') : ''
@@ -100,7 +101,7 @@ export default class MangeSponsors extends React.Component {
       toast.success(<Toast_style text={'Great, Created successfully!'} />)
       this.props.handleModalStatus(true)
     } else {
-      toast.error(<Toast_style text={'ah, Please update Image/ Url !'} />)
+      toast.error(<Toast_style text={`oh, Please update Image/ Url for Custom Sponsor ${index + 1}!`} />)
     }
   }
 
@@ -112,12 +113,7 @@ export default class MangeSponsors extends React.Component {
       ...sponsorData[counter - 1],
       link: data,
     }
-
-    if (data == '') {
-      this.setState({ sponsors: sponsorData, saveButtonDisabled: true })
-    } else {
-      this.setState({ sponsors: sponsorData, saveButtonDisabled: false })
-    }
+    this.setState({ sponsors: sponsorData, saveButtonDisabled: false })
   }
 
   handleImageChange = (e, counter) => {
@@ -238,7 +234,7 @@ export default class MangeSponsors extends React.Component {
                   </div>
                 )
               })}
-            {sponsors.length < 2 &&
+            {/* {sponsors.length < 2 &&
               [...new Array((this.props.level < 25 ? 1 : 2) - sponsors.length)].map((sponsor, index) => {
                 const counter = sponsors.length + index + 1
                 return (
@@ -276,7 +272,7 @@ export default class MangeSponsors extends React.Component {
                     </div>
                   </div>
                 )
-              })}
+              })} */}
           </div>
 
           <div className='modal__footer'>

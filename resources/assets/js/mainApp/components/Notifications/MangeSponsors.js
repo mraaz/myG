@@ -68,6 +68,7 @@ class MangeSponsors extends React.Component {
         this.createSponsor(sponsor)
       }
     })
+    this.setState({ saveButtonDisabled: true })
   }
 
   handleClose = (e) => {
@@ -192,7 +193,7 @@ class MangeSponsors extends React.Component {
       toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file.'} />)
     }
     uploading[counter] = false
-    this.setState({ uploading })
+    this.setState({ uploading, saveButtonDisabled: false })
   }
 
   render() {
@@ -201,7 +202,7 @@ class MangeSponsors extends React.Component {
     return (
       <div className={`Sponsor__edit`}>
         <div className='SponsorSave__action'>
-          <button type='button' className='Sponsoraction' onClick={this.handleSave}>
+          <button type='button' className='Sponsoraction' disabled={saveButtonDisabled} onClick={this.handleSave}>
             Save
           </button>
         </div>
