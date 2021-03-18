@@ -234,45 +234,6 @@ export default class MangeSponsors extends React.Component {
                   </div>
                 )
               })}
-            {/* {sponsors.length < 2 &&
-              [...new Array((this.props.level < 25 ? 1 : 2) - sponsors.length)].map((sponsor, index) => {
-                const counter = sponsors.length + index + 1
-                return (
-                  <div className='Sponsor__edit-list' key={`${sponsors.length}_${counter}`}>
-                    <div className='text'>Custom Sponsor {counter}</div>
-                    <div className='Sponsor__media__input' onClick={(e) => this.handleImageChange(e, counter)}>
-                      <input
-                        type='file'
-                        accept='image/jpeg,image/jpg,image/png,image/gif'
-                        ref={(ref) => (this.fileInputRef[counter] = ref)}
-                        onChange={(e) => this.handleSelectFile(e, counter)}
-                        name='insert__images'
-                      />
-                      <img
-                        src={media_url == '' ? 'https://myG.gg/platform_images/Dashboard/BTN_Attach_Image.svg' : media_url}
-                        onError={this.addDefaultSrc}
-                      />
-                    </div>
-                    <div className='text__tap'>
-                      Or <span>Click/Tap here</span> to select
-                    </div>
-                    {uploading[counter] && (
-                      <div className='text'>
-                        <span>Uploading... </span>
-                      </div>
-                    )}
-                    <div className='Sponsor__link__input'>
-                      <input
-                        type='text'
-                        onChange={(e) => this.handleLinkChange(e, counter)}
-                        value={sponsor ? sponsor.link : ''}
-                        placeholder='Enter link here'
-                        onKeyDown={this.onKeyDown}
-                      />
-                    </div>
-                  </div>
-                )
-              })} */}
           </div>
 
           <div className='modal__footer'>
