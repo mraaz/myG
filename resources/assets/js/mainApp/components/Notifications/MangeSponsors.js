@@ -27,7 +27,7 @@ class MangeSponsors extends React.Component {
   }
 
   componentDidMount() {
-    fetchProfileData()
+    this.fetchProfileData()
   }
 
   fetchProfileData = async () => {
