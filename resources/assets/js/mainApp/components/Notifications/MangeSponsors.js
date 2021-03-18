@@ -35,6 +35,15 @@ class MangeSponsors extends React.Component {
     const { data = {} } = profileData
     const { profile = {} } = data
     const { sponsors = [] } = profile
+    sponsors.length < 2 &&
+      [...new Array(2 - sponsors.length)].map((sponsor, index) => {
+        sponsors.push({
+          group_id: null,
+          id: '',
+          media_url: '',
+          link: '',
+        })
+      })
     this.setState({ sponsors })
   }
 
@@ -59,6 +68,7 @@ class MangeSponsors extends React.Component {
         this.createSponsor(sponsor)
       }
     })
+    this.setState({ saveButtonDisabled: true })
   }
 
   handleClose = (e) => {
@@ -69,27 +79,41 @@ class MangeSponsors extends React.Component {
 
   updateSponsor = async (sponsor = {}) => {
     const { groups_id } = this.props
-
-    await axios.post('/api/sponsor/update', {
-      group_id: groups_id,
-      id: sponsor.id,
-      media_url: sponsor.media_url ? sponsor.media_url : '',
-      link: sponsor.link ? sponsor.link : '',
-    })
-    toast.error(<Toast_style text={'Epic! Saved successfully!'} />)
+    const linkValue = sponsor ? (sponsor.link ? sponsor.link.trim() : '') : ''
+    const media_url = sponsor ? (sponsor.media_url ? sponsor.media_url : '') : ''
+    if (linkValue && media_url) {
+      await axios.post('/api/sponsor/update', {
+        group_id: groups_id,
+        id: sponsor.id,
+        media_url: media_url,
+        link: linkValue,
+      })
+      toast.error(<Toast_style text={'Epic! Saved successfully!'} />)
+    } else {
+      if (!linkValue && media_url) {
+        toast.error(<Toast_style text={'ah, Please update Image/ Url !'} />)
+      }
+    }
   }
 
   createSponsor = async (sponsor = {}) => {
     const { group_id } = this.props
-    const { linkValue, media_url, aws_key_id = '' } = this.state
-    await axios.post('/api/sponsor/create', {
-      group_id: group_id,
-      type: 2,
-      media_url: sponsor.media_url ? sponsor.media_url : '',
-      link: sponsor.link ? sponsor.link : '',
-      aws_key_id: sponsor.aws_key_id ? sponsor.aws_key_id : '',
-    })
-    toast.error(<Toast_style text={'Great, Created successfully!'} />)
+    const linkValue = sponsor ? (sponsor.link ? sponsor.link.trim() : '') : ''
+    const media_url = sponsor ? (sponsor.media_url ? sponsor.media_url : '') : ''
+    if (linkValue && media_url) {
+      await axios.post('/api/sponsor/create', {
+        group_id: group_id,
+        type: 2,
+        media_url: media_url,
+        link: linkValue,
+        aws_key_id: sponsor ? (sponsor.aws_key_id ? sponsor.aws_key_id : '') : '',
+      })
+      toast.error(<Toast_style text={'Great, Created successfully!'} />)
+    } else {
+      if (!linkValue && media_url) {
+        toast.error(<Toast_style text={'ah, Please update Image/ Url !'} />)
+      }
+    }
   }
 
   handleLinkChange = (e, counter) => {
@@ -107,11 +131,7 @@ class MangeSponsors extends React.Component {
       }
     })
 
-    if (data == '') {
-      this.setState({ sponsors: sponsorData, saveButtonDisabled: true })
-    } else {
-      this.setState({ sponsors: sponsorData, saveButtonDisabled: false })
-    }
+    this.setState({ sponsors: sponsorData, saveButtonDisabled: false })
   }
 
   handleImageChange = (e, counter) => {
@@ -173,7 +193,7 @@ class MangeSponsors extends React.Component {
       toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file.'} />)
     }
     uploading[counter] = false
-    this.setState({ uploading })
+    this.setState({ uploading, saveButtonDisabled: false })
   }
 
   render() {
@@ -182,14 +202,14 @@ class MangeSponsors extends React.Component {
     return (
       <div className={`Sponsor__edit`}>
         <div className='SponsorSave__action'>
-          <button type='button' className='Sponsoraction' onClick={this.handleSave}>
+          <button type='button' className='Sponsoraction' disabled={saveButtonDisabled} onClick={this.handleSave}>
             Save
           </button>
         </div>
         {sponsors.map((sponsor, index) => {
           const counter = index + 1
           return (
-            <div className='Sponsor__edit-list' key={`${sponsor.length}_${index}}`}>
+            <div className='Sponsor__edit-list' key={`${sponsors.length}_${index}}`}>
               <div className='text'>Custom Sponsor {counter}</div>
               <div className='Sponsor__media__input' onClick={(e) => this.handleImageChange(e, counter)}>
                 <input
@@ -224,45 +244,6 @@ class MangeSponsors extends React.Component {
             </div>
           )
         })}
-        {sponsors.length < 2 &&
-          [...new Array(2 - sponsors.length)].map((sponsor, index) => {
-            const counter = sponsors.length + index + 1
-            return (
-              <div className='Sponsor__edit-list'>
-                <div className='text'>Custom Sponsor {index + 1}</div>
-                <div className='Sponsor__media__input' onClick={(e) => this.handleImageChange(e, counter)}>
-                  <input
-                    type='file'
-                    accept='image/jpeg,image/jpg,image/png,image/gif'
-                    ref={(ref) => (this.fileInputRef[counter] = ref)}
-                    onChange={(e) => this.handleSelectFile(e, counter)}
-                    name='insert__images'
-                  />
-                  <img
-                    src={media_url == '' ? 'https://myG.gg/platform_images/Dashboard/BTN_Attach_Image.svg' : media_url}
-                    onError={this.addDefaultSrc}
-                  />
-                </div>
-                <div className='text__tap'>
-                  Or <span>Click/Tap here</span> to select
-                </div>
-                {uploading[counter] && (
-                  <div className='text'>
-                    <span>Uploading... </span>
-                  </div>
-                )}
-                <div className='Sponsor__link__input'>
-                  <input
-                    type='text'
-                    onChange={(e) => this.handleLinkChange(e, counter)}
-                    value={sponsor ? sponsor.link : ''}
-                    placeholder='Enter link here'
-                    onKeyDown={this.onKeyDown}
-                  />
-                </div>
-              </div>
-            )
-          })}
       </div>
     )
   }

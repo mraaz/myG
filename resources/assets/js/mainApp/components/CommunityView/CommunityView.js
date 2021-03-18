@@ -119,15 +119,16 @@ const CommunityView = (props) => {
     ev.target.src = 'https://myG.gg/platform_images/Communities/myG_logo.jpg'
   }
 
-  // const handleDeleteSponsor = async (id, index) => {
-  //   await axios.delete(`/api/sponsor/delete/${id}`)
-  //   // let tmpSponsors = communityDetails.sponsors
-  //   // delete tmpSponsors[index]
-  //   //tmpSponsors[index].media_url = 'https://myG.gg/platform_images/Communities/myG_logo.jpg'
-  //   //setCommunityDetails({ sponsors: tmpSponsors })
-  //   hideSponsorModal(true)
-  //   toast.success(<Toast_style text={'Yup, yup, yup... deleted successfully!'} />)
-  // }
+  const handleDeleteSponsor = async (id, index) => {
+    await axios.delete(`/api/sponsor/delete/${id}`)
+    // let tmpSponsors = communityDetails.sponsors
+    // delete tmpSponsors[index]
+    //tmpSponsors[index].media_url = 'https://myG.gg/platform_images/Communities/myG_logo.jpg'
+    //setCommunityDetails({ sponsors: tmpSponsors })
+    hideSponsorModal(true)
+    // getcommunityDetails()
+    toast.success(<Toast_style text={'Yup, yup, yup... deleted successfully!'} />)
+  }
 
   const renderSponsors = (Sponsors = []) => {
     if (props.level < 15) return <p className='locked-sponsors'>Community Sponsors are unlocked at Lvl. 15</p>
@@ -141,32 +142,31 @@ const CommunityView = (props) => {
           </button>
         )}
         {Sponsors.length > 0 &&
-          Sponsors.map((Sponsor) => {
+          Sponsors.map((Sponsor, index) => {
             const hasSponsor = !!Sponsor.link
             const hasMediaUrl = !!Sponsor.media_url
             if (!hasMediaUrl) return null
             return (
-              <div className='Sponsors' key={Sponsor.id}>
+              <div className='Sponsors' key={`${Sponsors.length}_${index}}`}>
                 <div
                   className='Sponsors__image'
-                  style={{ backgroundImage: `url(${Sponsor.media_url}), url(${defaultSponsorImage})` }}
+                  // style={{ backgroundImage: `url(${Sponsor.media_url}), url(${defaultSponsorImage})` }}
                   onClick={() => {
                     if (!hasSponsor) return
                     window.open(sponsorLink, '_blank')
-                  }}
-                />
-                {/* <img src={Sponsor.media_url} style={{ width: '100%', height: '100%' }} /> */}
-                {/* </div> */}
+                  }}>
+                  <img src={Sponsor.media_url} style={{ width: '100%', height: '100%' }} />
+                </div>
                 {/* {[0, 1].includes(current_user_permission) && (
                   <div className='Sponsors__edit' onClick={(e) => handleSponsorClick(Sponsor)}>
                     Edit
                   </div>
                 )} */}
-                {/* {[0, 1].includes(current_user_permission) && (
+                {[0, 1].includes(current_user_permission) && (
                   <div className='Sponsors__delete' onClick={(e) => handleDeleteSponsor(Sponsor.id)}>
                     Delete
                   </div>
-                )} */}
+                )}
               </div>
             )
           })}

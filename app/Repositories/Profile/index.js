@@ -224,7 +224,7 @@ class ProfileRepository {
   }
 
   async fetchSponsors({ profileId }) {
-    return Database.table('sponsors').where('sponsors.user_id', profileId).select();
+    return Database.table('sponsors').where('sponsors.user_id', profileId).where('sponsors.group_id', 'is', null ).select();
   }
 
   async hasSentFriendRequest({ isSelf, requestingUserId, profileId }) {
