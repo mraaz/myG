@@ -131,11 +131,7 @@ class MangeSponsors extends React.Component {
       }
     })
 
-    if (data == '') {
-      this.setState({ sponsors: sponsorData, saveButtonDisabled: true })
-    } else {
-      this.setState({ sponsors: sponsorData, saveButtonDisabled: false })
-    }
+    this.setState({ sponsors: sponsorData, saveButtonDisabled: false })
   }
 
   handleImageChange = (e, counter) => {
