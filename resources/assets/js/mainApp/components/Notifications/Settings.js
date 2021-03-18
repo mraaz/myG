@@ -153,8 +153,12 @@ class Settings extends Component {
       <div className='settings__container'>
         {this.state.modalStatus && (
           <div className='Sponsors__container'>
-            <a className='mGameDetailsBackButton' onClick={this.handleModalStatus}>
-              <img className='mGameDetailsCaretImg' src='https://myG.gg/platform_images/View+Game/Down+Carrot.svg' />
+            <a className='mGameDetailsBackButton'>
+              <img
+                className='mGameDetailsCaretImg'
+                src='https://myG.gg/platform_images/View+Game/Down+Carrot.svg'
+                onClick={this.handleModalStatus}
+              />
               <span>{` Sponsors `}</span>
             </a>
             <MangeSponsors handleModalStatus={this.handleModalStatus} />
