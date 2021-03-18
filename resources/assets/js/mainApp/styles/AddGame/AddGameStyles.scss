@@ -202,6 +202,9 @@
     align-items: center;
     border: 0.1px solid #344953;
     justify-content: flex-end;
+    @media screen and (max-width: 575px) {
+      height: 200px;
+    }
   }
   &__footer-cancel-button {
     color: #fff;
