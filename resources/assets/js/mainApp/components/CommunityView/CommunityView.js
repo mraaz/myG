@@ -119,15 +119,16 @@ const CommunityView = (props) => {
     ev.target.src = 'https://myG.gg/platform_images/Communities/myG_logo.jpg'
   }
 
-  // const handleDeleteSponsor = async (id, index) => {
-  //   await axios.delete(`/api/sponsor/delete/${id}`)
-  //   // let tmpSponsors = communityDetails.sponsors
-  //   // delete tmpSponsors[index]
-  //   //tmpSponsors[index].media_url = 'https://myG.gg/platform_images/Communities/myG_logo.jpg'
-  //   //setCommunityDetails({ sponsors: tmpSponsors })
-  //   hideSponsorModal(true)
-  //   toast.success(<Toast_style text={'Yup, yup, yup... deleted successfully!'} />)
-  // }
+  const handleDeleteSponsor = async (id, index) => {
+    await axios.delete(`/api/sponsor/delete/${id}`)
+    // let tmpSponsors = communityDetails.sponsors
+    // delete tmpSponsors[index]
+    //tmpSponsors[index].media_url = 'https://myG.gg/platform_images/Communities/myG_logo.jpg'
+    //setCommunityDetails({ sponsors: tmpSponsors })
+    hideSponsorModal(true)
+    // getcommunityDetails()
+    toast.success(<Toast_style text={'Yup, yup, yup... deleted successfully!'} />)
+  }
 
   const renderSponsors = (Sponsors = []) => {
     if (props.level < 15) return <p className='locked-sponsors'>Community Sponsors are unlocked at Lvl. 15</p>
@@ -162,11 +163,11 @@ const CommunityView = (props) => {
                     Edit
                   </div>
                 )} */}
-                {/* {[0, 1].includes(current_user_permission) && (
+                {[0, 1].includes(current_user_permission) && (
                   <div className='Sponsors__delete' onClick={(e) => handleDeleteSponsor(Sponsor.id)}>
                     Delete
                   </div>
-                )} */}
+                )}
               </div>
             )
           })}
