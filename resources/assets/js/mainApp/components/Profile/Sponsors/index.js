@@ -36,7 +36,7 @@ export default class Sponsors extends React.Component {
         onMouseEnter={() => this.setState({ hovering: this.props.profile.isSelf && sponsor.id })}
         onMouseLeave={() => this.setState({ hovering: null })}
       >
-        <div 
+        <div
           className='image'
           // style={{ backgroundImage: `url(${sponsor.media_url}), url(${defaultSponsorImage})` }}
           onClick={() => {
