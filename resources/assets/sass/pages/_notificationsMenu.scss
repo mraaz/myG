@@ -1438,6 +1438,10 @@ $transition-default: 0.25s ease-out 0.1s;
           font-weight: bold;
           cursor: pointer;
           margin-bottom: 10px;
+          &:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+          }
         }
       }
       .text {
