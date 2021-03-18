@@ -13,6 +13,8 @@ import { exitGameGroup } from '../../../common/group'
 import { openChatForGame } from '../../../common/chat'
 import { GoogleAnalytics } from '../../../common/analytics'
 
+import { logToElasticsearch } from '../../../integration/http/logger'
+
 const buttonStatus = {
   '0': 'Join',
   '1': 'Joined',
@@ -87,15 +89,21 @@ const JoinStatus = (props) => {
     setLeaveButtonStatus(!leaveButtonStatus)
   }
   const saveJoinGame = async (query = {}) => {
-    const get_stats = await axios.post('/api/attendees/savemySpot', {
-      schedule_games_id: props.schedule_games_id,
-      value_two: null,
-      value_three: null,
-      value_one: null,
-      value_four: null,
-      value_five: null,
-      ...query,
-    })
+    let get_stats = ''
+    try {
+      get_stats = await axios.post('/api/attendees/savemySpot', {
+        schedule_games_id: props.schedule_games_id,
+        value_two: null,
+        value_three: null,
+        value_one: null,
+        value_four: null,
+        value_five: null,
+        ...query,
+      })
+    } catch (error) {
+      logToElasticsearch('error', 'JoinButtonAction', 'Failed saveJoinGame:' + ' ' + error)
+    }
+
     if (get_stats.data == 'Limit Reached') {
       toast.success(<Toast_style text={'Sorry mate, the spot got filled up! You are NOT in :('} />)
     } else if (get_stats == false) {
@@ -164,7 +172,7 @@ const JoinStatus = (props) => {
       setSelectValues(values)
       keys = {}
     } catch (error) {
-      console.log('Select Change Join button  error ', error)
+      logToElasticsearch('error', 'JoinButtonAction', 'Failed handleSelectChange:' + ' ' + error)
     }
   }
   const getFinalValueToSubmit = (data) => {
@@ -201,7 +209,7 @@ const JoinStatus = (props) => {
           <button type='button' onClick={handleJoinGame}>{`${joinButtonText}`}</button>
         </div>
       ) : (
-        <div className='game__action__buttton' onBlur={() => setTimeout(() => setLeaveButtonStatus(false), 100)}>
+        <div className='game__action__buttton'>
           <button type='button' onClick={handleJoindButtonClick} className={`${leaveButtonStatus ? 'open' : 'open'}`}>
             {`${joinButtonText}`}
             <img src='https://myG.gg/platform_images/View+Game/Down+Carrot_black.svg' />
