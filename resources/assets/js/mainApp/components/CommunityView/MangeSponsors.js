@@ -60,8 +60,8 @@ export default class MangeSponsors extends React.Component {
     await axios.post('/api/sponsor/update', {
       group_id: groups_id,
       id: sponsor.id,
-      media_url: sponsor.media_url ? sponsor.media_url : '',
-      link: sponsor.link ? sponsor.link : '',
+      media_url: sponsor ? (sponsor.media_url ? sponsor.media_url : '') : '',
+      link: sponsor ? (sponsor.link ? sponsor.link : '') : '',
     })
     toast.error(<Toast_style text={'Epic! Saved successfully!'} />)
     this.props.handleModalStatus(true)
@@ -73,9 +73,9 @@ export default class MangeSponsors extends React.Component {
     await axios.post('/api/sponsor/create', {
       group_id: group_id,
       type: 2,
-      media_url: sponsor.media_url ? sponsor.media_url : '',
-      link: sponsor.link ? sponsor.link : '',
-      aws_key_id: sponsor.aws_key_id ? sponsor.aws_key_id : '',
+      media_url: sponsor ? (sponsor.media_url ? sponsor.media_url : '') : '',
+      link: sponsor ? (sponsor.link ? sponsor.link : '') : '',
+      aws_key_id: sponsor ? (sponsor.aws_key_id ? sponsor.aws_key_id : '') : '',
     })
     toast.error(<Toast_style text={'Great, Created successfully!'} />)
     this.props.handleModalStatus(true)

@@ -141,12 +141,12 @@ const CommunityView = (props) => {
           </button>
         )}
         {Sponsors.length > 0 &&
-          Sponsors.map((Sponsor) => {
+          Sponsors.map((Sponsor, index) => {
             const hasSponsor = !!Sponsor.link
             const hasMediaUrl = !!Sponsor.media_url
             if (!hasMediaUrl) return null
             return (
-              <div className='Sponsors' key={Sponsor.id}>
+              <div className='Sponsors' key={`${Sponsors.length}_${index}}`}>
                 <div
                   className='Sponsors__image'
                   style={{ backgroundImage: `url(${Sponsor.media_url}), url(${defaultSponsorImage})` }}
