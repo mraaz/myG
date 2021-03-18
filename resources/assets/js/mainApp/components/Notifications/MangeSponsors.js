@@ -255,7 +255,7 @@ class MangeSponsors extends React.Component {
                   <input
                     type='text'
                     onChange={(e) => this.handleLinkChange(e, counter)}
-                    value={linkValue == '' ? '' : linkValue}
+                    value={sponsor ? sponsor.link : ''}
                     placeholder='Enter link here'
                     onKeyDown={this.onKeyDown}
                   />
