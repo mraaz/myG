@@ -3,7 +3,6 @@ import axios from 'axios';
 import { ignoreFunctions } from '../../../../common/render'
 import notifyToast from '../../../../common/toast'
 import { registerSponsorClick } from '../../../../integration/http/quests'
-import ManageSponsors from '../../CommunityView/MangeSponsors'
 
 const defaultSponsorImage = 'https://myG.gg/platform_images/Communities/myG_logo.jpg';
 export default class Sponsors extends React.Component {
@@ -12,7 +11,11 @@ export default class Sponsors extends React.Component {
   }
 
   state = { hovering: null, editing: null }
-  editSponsor = (editing) => this.setState({ editing })
+  editSponsor = (editing) => {
+    window.location.href = '/?at=notifications&submenu=6&sponsor=true'
+    window.history.pushState('myG', 'myG', `/?at=notifications&submenu=6&sponsor=true`)
+    // this.setState({ editing })
+  }
   deleteSponsor = (id) => {
     axios.delete(`/api/sponsor/delete/${id}`).then(this.props.refetchSponsors)
     notifyToast('Yup, yup, yup... deleted successfully!')
@@ -35,13 +38,15 @@ export default class Sponsors extends React.Component {
       >
         <div
           className='image'
-          // style={{ backgroundImage: `url(${sponsor.media_url}), url(${defaultSponsorImage})` }}
+          style={{ backgroundImage: `url(${sponsor.media_url}), url(${defaultSponsorImage})` }}
           onClick={() => {
             if (!hasSponsor) return;
             registerSponsorClick();
             window.open(sponsorLink, '_blank');
           }}
-        />
+        /> 
+          {/* <img src={sponsor.media_url} style={{ width: '100%', height: '100%' }} /> */}
+      {/* </div> */}
         <div className="hover-bar">
           {/* {!!isHovering && <div className={`tiny-button ${!isLocked && 'clickable'}`} onClick={() => !isLocked && this.editSponsor(sponsor.id)}>{isLocked ? 'Unlock at Lvl 5' : 'Edit'}</div>} */}
           {/* {!!isHovering && !isEmpty && <div className="tiny-button clickable" onClick={() => this.deleteSponsor(sponsor.id)}>Delete</div>} */}
@@ -50,18 +55,18 @@ export default class Sponsors extends React.Component {
     );
   }
 
-  renderEditSponsor = () => {
-    if (!this.state.editing) return null;
-    return(
-      <div className="communityName__container">
-        <ManageSponsors 
-          sponsors={this.props.sponsors}
-          userId={this.props.profile.id}
-          handleModalStatus={this.onEdit}
-        />
-      </div>
-    );
-  }
+  // renderEditSponsor = () => {
+  //   if (!this.state.editing) return null;
+  //   return(
+  //     <div className="communityName__container">
+  //       <ManageSponsors 
+  //         sponsors={this.props.sponsors}
+  //         userId={this.props.profile.id}
+  //         handleModalStatus={this.onEdit}
+  //       />
+  //     </div>
+  //   );
+  // }
 
   render() {
     const {sponsors=[]} = this.props;
@@ -69,7 +74,7 @@ export default class Sponsors extends React.Component {
         {this.props.isSelf &&<button type="button" className="sponsors__btn" onClick={() =>this.editSponsor(sponsors)}>Manage your Sponsors</button>}
         <div className="profile__sponsors-container">
         <div id="profile-sponsors"> 
-          {this.renderEditSponsor(sponsors)}
+          {/* {this.renderEditSponsor(sponsors)} */}
           {sponsors.map((sponsor)=> {
             if(!sponsor.media_url) return null
             return this.renderSponsor(sponsor)

@@ -21,12 +21,16 @@ class MangeSponsors extends React.Component {
       media_url: '',
       aws_key_id: '',
       file_keys: '',
-      profile: {},
+      uploading: [],
     }
-    this.fileInputRef = React.createRef()
+    this.fileInputRef = []
   }
 
-  async componentDidMount() {
+  componentDidMount() {
+    this.fetchProfileData()
+  }
+
+  fetchProfileData = async () => {
     const profileData = await axios.get(`/api/profile/${this.props.alias}`)
     const { data = {} } = profileData
     const { profile = {} } = data
@@ -41,43 +45,51 @@ class MangeSponsors extends React.Component {
   onKeyDown = (event) => {
     const code = event.keyCode || event.which
     if (code === 13) {
-      const { sponsor = {} } = this.props
-      if (sponsor.id) {
-        this.updateSponsor()
-      } else {
-        this.createSponsor()
-      }
+      this.handleSave()
+      this.fetchProfileData()
     }
   }
 
   handleSave = (e) => {
-    // const { sponsor = {} } = this.props
-    // if (sponsor.id) {
-    //   this.updateSponsor()
-    // } else {
-    this.createSponsor()
-    // }
+    const { sponsors = [] } = this.state
+    sponsors.map((sponsor) => {
+      if (sponsor.id) {
+        this.updateSponsor(sponsor)
+      } else {
+        this.createSponsor(sponsor)
+      }
+    })
   }
 
   handleClose = (e) => {
     if (this.state.aws_key_id != '') {
       const delete_file = Remove_file(this.state.file_keys, this.state.aws_key_id)
     }
-    this.props.handleModalStatus(false)
   }
 
-  updateSponsor = async (e) => {
-    const { sponsors = [] } = this.state
-    await axios.post('/api/sponsor/update', sponsors)
+  updateSponsor = async (sponsor = {}) => {
+    const { groups_id } = this.props
+
+    await axios.post('/api/sponsor/update', {
+      group_id: groups_id,
+      id: sponsor.id,
+      media_url: sponsor.media_url ? sponsor.media_url : '',
+      link: sponsor.link ? sponsor.link : '',
+    })
     toast.error(<Toast_style text={'Epic! Saved successfully!'} />)
-    this.props.handleModalStatus(true)
   }
 
-  createSponsor = async () => {
-    const { sponsors = [] } = this.state
-    await axios.post('/api/sponsor_bulk/update', sponsors)
+  createSponsor = async (sponsor = {}) => {
+    const { group_id } = this.props
+    const { linkValue, media_url, aws_key_id = '' } = this.state
+    await axios.post('/api/sponsor/create', {
+      group_id: group_id,
+      type: 2,
+      media_url: sponsor.media_url ? sponsor.media_url : '',
+      link: sponsor.link ? sponsor.link : '',
+      aws_key_id: sponsor.aws_key_id ? sponsor.aws_key_id : '',
+    })
     toast.error(<Toast_style text={'Great, Created successfully!'} />)
-    this.props.handleModalStatus(true)
   }
 
   handleLinkChange = (e, counter) => {
@@ -103,8 +115,8 @@ class MangeSponsors extends React.Component {
   }
 
   handleImageChange = (e, counter) => {
-    if (!this.state.uploading) {
-      this.fileInputRef.current.click()
+    if (!this.state.uploading[counter]) {
+      this.fileInputRef[counter].click()
     }
   }
 
@@ -124,7 +136,9 @@ class MangeSponsors extends React.Component {
   }
 
   doUploadS3 = async (file, name, counter) => {
-    this.setState({ uploading: true })
+    const { uploading = [] } = this.state
+    uploading[counter] = true
+    this.setState({ uploading })
     try {
       if (file.size < 10485760) {
         const { sponsors = [] } = this.state
@@ -158,11 +172,12 @@ class MangeSponsors extends React.Component {
     } catch (error) {
       toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file.'} />)
     }
-    this.setState({ uploading: false })
+    uploading[counter] = false
+    this.setState({ uploading })
   }
 
   render() {
-    const { saveButtonDisabled = true, linkValue = '', media_url = '', modalStatus = true, uploading = false, sponsors = [] } = this.state
+    const { saveButtonDisabled = true, linkValue = '', media_url = '', modalStatus = true, uploading = [], sponsors = [] } = this.state
 
     return (
       <div className={`Sponsor__edit`}>
@@ -180,7 +195,7 @@ class MangeSponsors extends React.Component {
                 <input
                   type='file'
                   accept='image/jpeg,image/jpg,image/png,image/gif'
-                  ref={this.fileInputRef}
+                  ref={(ref) => (this.fileInputRef[counter] = ref)}
                   onChange={(e) => this.handleSelectFile(e, counter)}
                   name='insert__images'
                 />
@@ -192,7 +207,7 @@ class MangeSponsors extends React.Component {
               <div className='text__tap'>
                 Or <span>Click/Tap here</span> to select
               </div>
-              {uploading && (
+              {uploading[counter] && (
                 <div className='text'>
                   <span>Uploading... </span>
                 </div>
@@ -219,7 +234,7 @@ class MangeSponsors extends React.Component {
                   <input
                     type='file'
                     accept='image/jpeg,image/jpg,image/png,image/gif'
-                    ref={this.fileInputRef}
+                    ref={(ref) => (this.fileInputRef[counter] = ref)}
                     onChange={(e) => this.handleSelectFile(e, counter)}
                     name='insert__images'
                   />
@@ -231,7 +246,7 @@ class MangeSponsors extends React.Component {
                 <div className='text__tap'>
                   Or <span>Click/Tap here</span> to select
                 </div>
-                {uploading && (
+                {uploading[counter] && (
                   <div className='text'>
                     <span>Uploading... </span>
                   </div>

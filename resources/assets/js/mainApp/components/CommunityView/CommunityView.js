@@ -10,6 +10,7 @@ import MangeSponsors from './MangeSponsors'
 import { registerSponsorClick } from '../../../integration/http/quests'
 
 import { Toast_style } from '../Utility_Function'
+const defaultSponsorImage = 'https://myG.gg/platform_images/Communities/myG_logo.jpg'
 
 const CommunityView = (props) => {
   const [communityDetails, setCommunityDetails] = useState({})
@@ -22,35 +23,35 @@ const CommunityView = (props) => {
   const [feature_on, setFeature_on] = useState(false)
 
   useEffect(() => {
-    const getcommunityDetails = async () => {
-      const { match } = props.routeProps
-      const groupName = decodeURIComponent(match.params.name)
-      const {
-        data: { getOne = {} },
-      } = await axios.get(`/api/groups/getGroupDetails/${groupName}`)
-      if (Object.keys(getOne).length == 0) {
-        toast.error(<Toast_style text={`Sorry mate, can't find that`} />)
-        props.routeProps.history.push('/?at=communities')
-      }
-
-      document.title = 'myG - ' + getOne.name
-      setCommunityDetails({ ...getOne })
-
-      const environment = window.location.href.includes('localhost')
-        ? 'development'
-        : window.location.href.includes('myG.gg')
-        ? 'production'
-        : 'staging'
-
-      if (environment == 'development') setFeature_on(true)
-    }
-
     getcommunityDetails()
     window.addEventListener('scroll', handleScroll, true)
     return () => {
       setCommunityDetails({})
     }
   }, [])
+
+  const getcommunityDetails = async () => {
+    const { match } = props.routeProps
+    const groupName = decodeURIComponent(match.params.name)
+    const {
+      data: { getOne = {} },
+    } = await axios.get(`/api/groups/getGroupDetails/${groupName}`)
+    if (Object.keys(getOne).length == 0) {
+      toast.error(<Toast_style text={`Sorry mate, can't find that`} />)
+      props.routeProps.history.push('/?at=communities')
+    }
+
+    document.title = 'myG - ' + getOne.name
+    setCommunityDetails({ ...getOne })
+
+    const environment = window.location.href.includes('localhost')
+      ? 'development'
+      : window.location.href.includes('myG.gg')
+      ? 'production'
+      : 'staging'
+
+    if (environment == 'development') setFeature_on(true)
+  }
 
   const handleScroll = () => {
     let lastScrollY = window.scrollY
@@ -87,6 +88,7 @@ const CommunityView = (props) => {
     setModalStatus(!modalStatus)
     if (label == true) {
       hideSponsorModal(true)
+      getcommunityDetails()
     }
   }
 
@@ -140,19 +142,21 @@ const CommunityView = (props) => {
         )}
         {Sponsors.length > 0 &&
           Sponsors.map((Sponsor) => {
-            const hasSponsor = !!sponsor.link
-            const hasMediaUrl = !!sponsor.media_url
+            const hasSponsor = !!Sponsor.link
+            const hasMediaUrl = !!Sponsor.media_url
             if (!hasMediaUrl) return null
             return (
               <div className='Sponsors' key={Sponsor.id}>
                 <div
                   className='Sponsors__image'
-                  // style={{ backgroundImage: `url(${sponsor.media_url}), url(${defaultSponsorImage})` }}
+                  style={{ backgroundImage: `url(${Sponsor.media_url}), url(${defaultSponsorImage})` }}
                   onClick={() => {
                     if (!hasSponsor) return
                     window.open(sponsorLink, '_blank')
                   }}
                 />
+                {/* <img src={Sponsor.media_url} style={{ width: '100%', height: '100%' }} /> */}
+                {/* </div> */}
                 {/* {[0, 1].includes(current_user_permission) && (
                   <div className='Sponsors__edit' onClick={(e) => handleSponsorClick(Sponsor)}>
                     Edit
