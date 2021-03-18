@@ -55,10 +55,10 @@ export default class MangeSponsors extends React.Component {
   }
 
   updateSponsor = async (sponsor = {}) => {
-    const { groups_id } = this.props
+    const { group_id } = this.props
 
     await axios.post('/api/sponsor/update', {
-      group_id: groups_id,
+      group_id: group_id,
       id: sponsor.id,
       media_url: sponsor ? (sponsor.media_url ? sponsor.media_url : '') : '',
       link: sponsor ? (sponsor.link ? sponsor.link : '') : '',
