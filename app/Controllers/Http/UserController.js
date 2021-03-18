@@ -19,6 +19,16 @@ const LoggingRepository = require('../../Repositories/Logging')
 
 const RedisRepository = require('../../Repositories/Redis')
 
+// const generateRandomString = (length) => {
+//   var result = ''
+//   var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+//   var charactersLength = characters.length
+//   for (var i = 0; i < length; i++) {
+//     result += characters.charAt(Math.floor(Math.random() * charactersLength))
+//   }
+//   return result
+// }
+
 class UserController {
   async profile({ auth, request, response }) {
     if (!auth.user) {
@@ -28,7 +38,9 @@ class UserController {
     var friend = undefined,
       following = undefined
     try {
-      const user = await User.query().where('id', '=', request.params.id).fetch()
+      const user = await User.query()
+        .where('id', '=', request.params.id)
+        .fetch()
       if (auth.user.id != request.params.id) {
         friend = await Database.from('friends').where({
           user_id: auth.user.id,
@@ -59,7 +71,9 @@ class UserController {
 
   async profile_with_alias({ auth, request, response }) {
     try {
-      const user = await Database.from('users').where('alias', '=', request.params.alias).first()
+      const user = await Database.from('users')
+        .where('alias', '=', request.params.alias)
+        .first()
       const friend = await Database.from('friends').where({
         user_id: auth.user.id,
         friend_id: user.id,
@@ -241,7 +255,9 @@ class UserController {
           return
         }
 
-        const transferGames = await GameName.query().where('user_id', '=', auth.user.id).update({ user_id: 1 })
+        const transferGames = await GameName.query()
+          .where('user_id', '=', auth.user.id)
+          .update({ user_id: 1 })
 
         const byebyebye = await Database.table('users')
           .where({
@@ -413,6 +429,171 @@ class UserController {
       })
     }
   }
+
+  // async scrub_data() {
+  //   console.log('<<<RAAAZ')
+  //   console.log(process.env.NODE_ENV, '<<<<process.env.NODE_ENV')
+  //   // const lock = await RedisRepository.lock('Update has_additional Field', 1000 * 60 * 5)
+  //   // if (!lock) return
+  //
+  //   if (process.env.NODE_ENV != 'development') return
+  //
+  //   try {
+  //     const all_users = await Database.from('users').select('id')
+  //     for (var i = 0; i < all_users.length; i++) {
+  //       const random_stuff = await this.haiku()
+  //       await User.query()
+  //         .where('id', '=', all_users[i].id)
+  //         .update({
+  //           email: random_stuff + generateRandomString(6),
+  //         })
+  //     }
+  //   } catch (error) {
+  //     LoggingRepository.log({
+  //       environment: process.env.NODE_ENV,
+  //       type: 'error',
+  //       source: 'backend',
+  //       context: __filename,
+  //       message: (error && error.message) || error,
+  //     })
+  //   }
+  // }
+  // async haiku() {
+  //   var adjs = [
+  //       'autumn',
+  //       'hidden',
+  //       'bitter',
+  //       'misty',
+  //       'silent',
+  //       'empty',
+  //       'dry',
+  //       'dark',
+  //       'summer',
+  //       'icy',
+  //       'delicate',
+  //       'quiet',
+  //       'white',
+  //       'cool',
+  //       'spring',
+  //       'winter',
+  //       'patient',
+  //       'twilight',
+  //       'dawn',
+  //       'crimson',
+  //       'wispy',
+  //       'weathered',
+  //       'blue',
+  //       'billowing',
+  //       'broken',
+  //       'cold',
+  //       'damp',
+  //       'falling',
+  //       'frosty',
+  //       'green',
+  //       'long',
+  //       'late',
+  //       'lingering',
+  //       'bold',
+  //       'little',
+  //       'morning',
+  //       'muddy',
+  //       'old',
+  //       'red',
+  //       'rough',
+  //       'still',
+  //       'small',
+  //       'sparkling',
+  //       'throbbing',
+  //       'shy',
+  //       'wandering',
+  //       'withered',
+  //       'wild',
+  //       'black',
+  //       'young',
+  //       'holy',
+  //       'solitary',
+  //       'fragrant',
+  //       'aged',
+  //       'snowy',
+  //       'proud',
+  //       'floral',
+  //       'restless',
+  //       'divine',
+  //       'polished',
+  //       'ancient',
+  //       'purple',
+  //       'lively',
+  //       'nameless',
+  //     ],
+  //     nouns = [
+  //       'waterfall',
+  //       'river',
+  //       'breeze',
+  //       'moon',
+  //       'rain',
+  //       'wind',
+  //       'sea',
+  //       'morning',
+  //       'snow',
+  //       'lake',
+  //       'sunset',
+  //       'pine',
+  //       'shadow',
+  //       'leaf',
+  //       'dawn',
+  //       'glitter',
+  //       'forest',
+  //       'hill',
+  //       'cloud',
+  //       'meadow',
+  //       'sun',
+  //       'glade',
+  //       'bird',
+  //       'brook',
+  //       'butterfly',
+  //       'bush',
+  //       'dew',
+  //       'dust',
+  //       'field',
+  //       'fire',
+  //       'flower',
+  //       'firefly',
+  //       'feather',
+  //       'grass',
+  //       'haze',
+  //       'mountain',
+  //       'night',
+  //       'pond',
+  //       'darkness',
+  //       'snowflake',
+  //       'silence',
+  //       'sound',
+  //       'sky',
+  //       'shape',
+  //       'surf',
+  //       'thunder',
+  //       'violet',
+  //       'water',
+  //       'wildflower',
+  //       'wave',
+  //       'water',
+  //       'resonance',
+  //       'sun',
+  //       'wood',
+  //       'dream',
+  //       'cherry',
+  //       'tree',
+  //       'fog',
+  //       'frost',
+  //       'voice',
+  //       'paper',
+  //       'frog',
+  //       'smoke',
+  //       'star',
+  //     ]
+  //
+  //   return adjs[Math.floor(Math.random() * (adjs.length - 1))] + '_' + nouns[Math.floor(Math.random() * (nouns.length - 1))]
+  // }
 }
 
 module.exports = UserController
