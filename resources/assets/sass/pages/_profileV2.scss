@@ -65,8 +65,11 @@
     justify-content: center;
     position: absolute;
     bottom: -30px;
-    left: 0;
-    right: 0;
+    right: -15px;
+    top: 60px;
+    @media screen and (max-width: 575px) {
+      top: 25px;
+    }
   }
 
   .small-button {
