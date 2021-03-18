@@ -78,27 +78,37 @@ class MangeSponsors extends React.Component {
 
   updateSponsor = async (sponsor = {}) => {
     const { groups_id } = this.props
-
-    await axios.post('/api/sponsor/update', {
-      group_id: groups_id,
-      id: sponsor.id,
-      media_url: sponsor ? (sponsor.media_url ? sponsor.media_url : '') : '',
-      link: sponsor ? (sponsor.link ? sponsor.link : '') : '',
-    })
-    toast.error(<Toast_style text={'Epic! Saved successfully!'} />)
+    const linkValue = sponsor ? (sponsor.link ? sponsor.link : '') : ''
+    const media_url = sponsor ? (sponsor.media_url ? sponsor.media_url : '') : ''
+    if (linkValue && media_url) {
+      await axios.post('/api/sponsor/update', {
+        group_id: groups_id,
+        id: sponsor.id,
+        media_url: sponsor ? (sponsor.media_url ? sponsor.media_url : '') : '',
+        link: sponsor ? (sponsor.link ? sponsor.link : '') : '',
+      })
+      toast.error(<Toast_style text={'Epic! Saved successfully!'} />)
+    } else {
+      toast.error(<Toast_style text={'ah, Please update Image/ Url !'} />)
+    }
   }
 
   createSponsor = async (sponsor = {}) => {
     const { group_id } = this.props
-    const { linkValue, media_url, aws_key_id = '' } = this.state
-    await axios.post('/api/sponsor/create', {
-      group_id: group_id,
-      type: 2,
-      media_url: sponsor ? (sponsor.media_url ? sponsor.media_url : '') : '',
-      link: sponsor ? (sponsor.link ? sponsor.link : '') : '',
-      aws_key_id: sponsor ? (sponsor.aws_key_id ? sponsor.aws_key_id : '') : '',
-    })
-    toast.error(<Toast_style text={'Great, Created successfully!'} />)
+    const linkValue = sponsor ? (sponsor.link ? sponsor.link : '') : ''
+    const media_url = sponsor ? (sponsor.media_url ? sponsor.media_url : '') : ''
+    if (linkValue && media_url) {
+      await axios.post('/api/sponsor/create', {
+        group_id: group_id,
+        type: 2,
+        media_url: sponsor ? (sponsor.media_url ? sponsor.media_url : '') : '',
+        link: sponsor ? (sponsor.link ? sponsor.link : '') : '',
+        aws_key_id: sponsor ? (sponsor.aws_key_id ? sponsor.aws_key_id : '') : '',
+      })
+      toast.error(<Toast_style text={'Great, Created successfully!'} />)
+    } else {
+      toast.error(<Toast_style text={'ah, Please update Image/ Url !'} />)
+    }
   }
 
   handleLinkChange = (e, counter) => {

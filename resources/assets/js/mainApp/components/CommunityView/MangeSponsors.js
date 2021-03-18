@@ -87,7 +87,6 @@ export default class MangeSponsors extends React.Component {
 
   createSponsor = async (sponsor = {}) => {
     const { group_id } = this.props
-    const { linkValue, media_url, aws_key_id = '' } = this.state
     const linkValue = sponsor ? (sponsor.link ? sponsor.link : '') : ''
     const media_url = sponsor ? (sponsor.media_url ? sponsor.media_url : '') : ''
     if (linkValue && media_url) {
