@@ -35,6 +35,15 @@ class MangeSponsors extends React.Component {
     const { data = {} } = profileData
     const { profile = {} } = data
     const { sponsors = [] } = profile
+    // {sponsors.length < 2 &&
+    //   [...new Array(2 - sponsors.length)].map((sponsor, index) => {
+    //     sponsors.push({
+    //       group_id: null,
+    //       id: '',
+    //       media_url:  '',
+    //       link: '',
+    //     })
+    //   })
     this.setState({ sponsors })
   }
 
