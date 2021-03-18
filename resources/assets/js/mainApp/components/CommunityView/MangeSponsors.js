@@ -82,7 +82,9 @@ export default class MangeSponsors extends React.Component {
       toast.error(<Toast_style text={'Epic! Saved successfully!'} />)
       this.props.handleModalStatus(true)
     } else {
-      toast.error(<Toast_style text={`oh, Please update Image/ Url for Custom Sponsor ${index + 1}!`} />)
+      if (!linkValue && media_url) {
+        toast.error(<Toast_style text={`oh, Please update Image/ Url for Custom Sponsor ${index + 1}!`} />)
+      }
     }
   }
 
@@ -101,7 +103,9 @@ export default class MangeSponsors extends React.Component {
       toast.success(<Toast_style text={'Great, Created successfully!'} />)
       this.props.handleModalStatus(true)
     } else {
-      toast.error(<Toast_style text={`oh, Please update Image/ Url for Custom Sponsor ${index + 1}!`} />)
+      if (!linkValue && media_url) {
+        toast.error(<Toast_style text={`oh, Please update Image/ Url for Custom Sponsor ${index + 1}!`} />)
+      }
     }
   }
 

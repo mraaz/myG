@@ -79,36 +79,40 @@ class MangeSponsors extends React.Component {
 
   updateSponsor = async (sponsor = {}) => {
     const { groups_id } = this.props
-    const linkValue = sponsor ? (sponsor.link ? sponsor.link : '') : ''
+    const linkValue = sponsor ? (sponsor.link ? sponsor.link.trim() : '') : ''
     const media_url = sponsor ? (sponsor.media_url ? sponsor.media_url : '') : ''
     if (linkValue && media_url) {
       await axios.post('/api/sponsor/update', {
         group_id: groups_id,
         id: sponsor.id,
-        media_url: sponsor ? (sponsor.media_url ? sponsor.media_url : '') : '',
-        link: sponsor ? (sponsor.link ? sponsor.link : '') : '',
+        media_url: media_url,
+        link: linkValue,
       })
       toast.error(<Toast_style text={'Epic! Saved successfully!'} />)
     } else {
-      toast.error(<Toast_style text={'ah, Please update Image/ Url !'} />)
+      if (!linkValue && media_url) {
+        toast.error(<Toast_style text={'ah, Please update Image/ Url !'} />)
+      }
     }
   }
 
   createSponsor = async (sponsor = {}) => {
     const { group_id } = this.props
-    const linkValue = sponsor ? (sponsor.link ? sponsor.link : '') : ''
+    const linkValue = sponsor ? (sponsor.link ? sponsor.link.trim() : '') : ''
     const media_url = sponsor ? (sponsor.media_url ? sponsor.media_url : '') : ''
     if (linkValue && media_url) {
       await axios.post('/api/sponsor/create', {
         group_id: group_id,
         type: 2,
-        media_url: sponsor ? (sponsor.media_url ? sponsor.media_url : '') : '',
-        link: sponsor ? (sponsor.link ? sponsor.link : '') : '',
+        media_url: media_url,
+        link: linkValue,
         aws_key_id: sponsor ? (sponsor.aws_key_id ? sponsor.aws_key_id : '') : '',
       })
       toast.error(<Toast_style text={'Great, Created successfully!'} />)
     } else {
-      toast.error(<Toast_style text={'ah, Please update Image/ Url !'} />)
+      if (!linkValue && media_url) {
+        toast.error(<Toast_style text={'ah, Please update Image/ Url !'} />)
+      }
     }
   }
 
