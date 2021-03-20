@@ -1182,18 +1182,15 @@ class ChatRepository {
   }
 
   async handleGameMessages() {
-    log('CRON', `START - HANDLE GAME MESSAGES`);
     const lock = await RedisRepository.lock('HANDLE_GAME_MESSAGES', 1000 * 45);
-    if (!lock) return log('CRON', 'Failed to Acquire HANDLE_GAME_MESSAGES lock');
+    if (!lock) return;
     const { schedule } = await RedisRepository.getGameMessageSchedule();
     const oneHourFromNow = Date.now() + 1000 * 60 * 60;
     const messagesToSend = (schedule || []).filter(entry => new Date(entry.schedule).getTime() < oneHourFromNow);
     if (messagesToSend.length) await this.sendGameMessages(messagesToSend);
-    log('CRON', `END - HANDLE GAME MESSAGES`);
   }
 
   async sendGameMessages(messagesToSend) {
-    log('CRON', `Sending Game Messages for ${JSON.stringify(messagesToSend)}`);
     const chatIds = messagesToSend.map(message => message.chatId);
     chatIds.forEach(chatId => this._notifyChatEvent({ chatId, action: 'gameStarting', payload: chatId }))
     await RedisRepository.clearGameMessageSchedule({ chatIds });
@@ -1201,7 +1198,6 @@ class ChatRepository {
   }
 
   async handleExpiredAttachments() {
-    log('CRON', `START - HANDLE EXPIRED ATTACHMENTS`);
     const fiveDaysAgo = new Date();
     fiveDaysAgo.setDate(fiveDaysAgo.getDate() - 5);
     const expiredAttachmentsRaw = await ChatMessage.query().where('is_attachment', true).andWhere('created_at', '<=', fiveDaysAgo).fetch();
@@ -1211,7 +1207,6 @@ class ChatRepository {
       await keyController.removeChatAttachmentKey(message.chat_id, message.id);
       await this.deleteMessage({ requestingUserId: message.sender_id, requestedChatId: message.chat_id, requestedMessageId: message.id });
     }
-    log('CRON', `END - HANDLE EXPIRED ATTACHMENTS - DELETED ${expiredAttachments.length} ATTACHMENTS`);
   }
 
   async _addChatNotificationModerator({ requestingUserId, requestedChatId, moderators }) {
