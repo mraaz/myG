@@ -16,7 +16,7 @@ const ElasticsearchRepository = require('../../Repositories/Elasticsearch')
 const ChatRepository = require('../../Repositories/Chat')
 const NotificationsRepository = require('../../Repositories/Notifications')
 const LoggingRepository = require('../../Repositories/Logging')
-
+const EncryptionRepository = require('../../Repositories/Encryption')
 const RedisRepository = require('../../Repositories/Redis')
 
 // const generateRandomString = (length) => {
@@ -101,8 +101,8 @@ class UserController {
         await User.query()
           .where('id', '=', auth.user.id)
           .update({
-            first_name: this.encryptField(request.input('first_name_box')),
-            last_name: this.encryptField(request.input('last_name_box')),
+            first_name: await EncryptionRepository.encryptField(request.input('first_name_box')),
+            last_name: await EncryptionRepository.encryptField(request.input('last_name_box')),
             slogan: request.input('slogan'),
             bio: request.input('bio'),
             country: request.input('country'),
@@ -390,24 +390,6 @@ class UserController {
       }
     } else {
       return 'You are not Logged In!'
-    }
-  }
-
-  getEncryptionKeyPair() {
-    const pin = process.env.PROFILE_ENCRYPTION_PIN | 123456
-    this.privateKey = cryptico.generateRSAKey(`${pin}`, 1024)
-    this.publicKey = cryptico.publicKeyString(this.privateKey)
-    return { privateKey: this.privateKey, publicKey: this.publicKey }
-  }
-
-  encryptField(field) {
-    if (!field) return field
-    try {
-      const { privateKey, publicKey } = this.getEncryptionKeyPair()
-      return cryptico.encrypt(field, publicKey, privateKey).cipher
-    } catch (error) {
-      console.error(`Failed to Encrypt: ${field}`, this.privateKey, this.publicKey)
-      return null
     }
   }
 

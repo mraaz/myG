@@ -7,6 +7,7 @@ const ExtraSeatsCodes = use('App/Models/ExtraSeatsCodes')
 const SeatsAvailableEmail = use('App/Models/SeatsAvailableEmail')
 
 const LoggingRepository = require('../../Repositories/Logging')
+const EncryptionRepository = require('../../Repositories/Encryption')
 
 const Database = use('Database')
 
@@ -51,7 +52,7 @@ class SeatsAvailableController {
   }
 
   async storeSeatsAvailableEmail({ params, response }) {
-    const email = params.email
+    const email = await EncryptionRepository.encryptField(params.email)
     const existingEmail = await SeatsAvailableEmail.query()
       .where('email', email)
       .first()

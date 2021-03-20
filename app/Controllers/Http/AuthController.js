@@ -2,6 +2,7 @@
 
 const { validate } = use('Validator')
 const Hash = use('Hash')
+const cryptico = require('cryptico')
 
 const User = use('App/Models/User')
 const Settings = use('App/Models/Setting')
@@ -11,6 +12,7 @@ const ExtraSeatsCodesTran = use('App/Models/ExtraSeatsCodesTran')
 
 const ConnectionController = use('./ConnectionController')
 
+const EncryptionRepository = require('../../Repositories/Encryption')
 const LoggingRepository = require('../../Repositories/Logging')
 
 class AuthController {
@@ -106,11 +108,11 @@ class AuthController {
         }
 
         const newUser = await User.create({
-          email: request.input('email'),
+          email: await EncryptionRepository.encryptField(request.input('email')),
+          first_name: await EncryptionRepository.encryptField(request.input('firstName')),
+          last_name: await EncryptionRepository.encryptField(request.input('lastName')),
           password: request.input('password'),
           alias: request.input('alias'),
-          first_name: request.input('firstName'),
-          last_name: request.input('lastName'),
           profile_img: 'https://myG.gg/default_user/new-user-profile-picture.png',
         })
 
@@ -159,10 +161,15 @@ class AuthController {
       }
       //session.flash({ notification: 'Welcome to myGame!!!' })
 
-      const user = await User.query()
+      const fallbackUser = async () => await User.query()
         .where('email', request.input('email'))
         .first()
-      await auth.login(user)
+
+      const user = await User.query()
+        .where('email', await EncryptionRepository.encryptField(request.input('email')))
+        .first()
+
+      await auth.login(user || await fallbackUser())
 
       return response.redirect(`/setEncryptionParaphrase/${request.input('encryption')}`)
     }
