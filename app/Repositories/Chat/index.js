@@ -175,10 +175,8 @@ class ChatRepository {
 
   async fetchUnreadMessages({ requestingUserId, count }) {
     if (count) {
-      const unreadMessages = await this.countLastMessages({ requestingUserId });
-      const unreadNotifications = await this.countNotifications({ requestingUserId });
-      const unreadSum = (parseInt(unreadMessages) || 0) + (parseInt(unreadNotifications) || 0);
-      return { unreadMessages: unreadSum };
+      const unreadMessages = await this.countNotifications({ requestingUserId });
+      return { unreadMessages };
     }
     const { chats } = await this.fetchChats({ requestingUserId });
     const lastReadsRaw = await ChatLastRead.query().where('user_id', requestingUserId).fetch();
