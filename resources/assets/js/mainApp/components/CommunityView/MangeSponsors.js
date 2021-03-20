@@ -18,8 +18,25 @@ export default class MangeSponsors extends React.Component {
       media_url: '',
       aws_key_id: '',
       file_keys: '',
+      sponsors: this.props.sponsors,
+      uploading: [],
     }
-    this.fileInputRef = React.createRef()
+
+    this.fileInputRef = []
+  }
+
+  componentDidMount() {
+    const { sponsors = [] } = this.state
+    sponsors.length < 2 &&
+      [...new Array(2 - sponsors.length)].map((sponsor, index) => {
+        sponsors.push({
+          group_id: null,
+          id: '',
+          media_url: '',
+          link: '',
+        })
+      })
+    this.setState({ sponsors, saveButtonDisabled: true })
   }
 
   addDefaultSrc = (ev) => {
@@ -29,22 +46,19 @@ export default class MangeSponsors extends React.Component {
   onKeyDown = (event) => {
     const code = event.keyCode || event.which
     if (code === 13) {
-      const { sponsor = {} } = this.props
-      if (sponsor.id) {
-        this.updateSponsor()
-      } else {
-        this.createSponsor()
-      }
+      this.handleSave()
     }
   }
 
   handleSave = (e) => {
-    const { sponsor = {} } = this.props
-    if (sponsor.id) {
-      this.updateSponsor()
-    } else {
-      this.createSponsor()
-    }
+    const { sponsors = [] } = this.state
+    sponsors.map((sponsor, index) => {
+      if (sponsor.id) {
+        this.updateSponsor(sponsor, index)
+      } else {
+        this.createSponsor(sponsor, index)
+      }
+    })
   }
 
   handleClose = (e) => {
@@ -54,50 +68,65 @@ export default class MangeSponsors extends React.Component {
     this.props.handleModalStatus(false)
   }
 
-  updateSponsor = async (e) => {
-    const { sponsor = {}, groups_id } = this.props
-    const { linkValue, media_url } = this.state
-
-    await axios.post('/api/sponsor/update', {
-      group_id: groups_id,
-      id: sponsor.id,
-      media_url: media_url == '' ? sponsor.media_url : media_url,
-      link: linkValue == '' ? sponsor.link : linkValue,
-    })
-    toast.error(<Toast_style text={'Epic! Saved successfully!'} />)
-    this.props.handleModalStatus(true)
-  }
-
-  createSponsor = async () => {
-    const { sponsor = {}, group_id } = this.props
-    const { linkValue, media_url, aws_key_id = '' } = this.state
-    await axios.post('/api/sponsor/create', {
-      group_id: group_id,
-      type: 2,
-      media_url: media_url == '' ? sponsor.media_url : media_url,
-      link: linkValue == '' ? sponsor.link : linkValue,
-      aws_key_id: aws_key_id,
-    })
-    toast.error(<Toast_style text={'Great, Created successfully!'} />)
-    this.props.handleModalStatus(true)
-  }
-
-  handleLinkChange = (e) => {
-    const data = e.target.value
-    if (data == '') {
-      this.setState({ linkValue: data, saveButtonDisabled: true })
+  updateSponsor = async (sponsor = {}, index) => {
+    const { group_id } = this.props
+    const linkValue = sponsor ? (sponsor.link ? sponsor.link : '') : ''
+    const media_url = sponsor ? (sponsor.media_url ? sponsor.media_url : '') : ''
+    if (linkValue && media_url) {
+      await axios.post('/api/sponsor/update', {
+        group_id: group_id,
+        id: sponsor.id,
+        media_url: sponsor ? (sponsor.media_url ? sponsor.media_url : '') : '',
+        link: sponsor ? (sponsor.link ? sponsor.link : '') : '',
+      })
+      toast.error(<Toast_style text={'Epic! Saved successfully!'} />)
+      this.props.handleModalStatus(true)
     } else {
-      this.setState({ linkValue: data, saveButtonDisabled: false })
+      if (!linkValue && media_url) {
+        toast.error(<Toast_style text={`oh, Please update Image/ Url for Custom Sponsor ${index + 1}!`} />)
+      }
     }
   }
 
-  handleImageChange = (e) => {
-    if (!this.state.uploading) {
-      this.fileInputRef.current.click()
+  createSponsor = async (sponsor = {}, index) => {
+    const { group_id } = this.props
+    const linkValue = sponsor ? (sponsor.link ? sponsor.link : '') : ''
+    const media_url = sponsor ? (sponsor.media_url ? sponsor.media_url : '') : ''
+    if (linkValue && media_url) {
+      await axios.post('/api/sponsor/create', {
+        group_id: group_id,
+        type: 2,
+        media_url: sponsor ? (sponsor.media_url ? sponsor.media_url : '') : '',
+        link: sponsor ? (sponsor.link ? sponsor.link : '') : '',
+        aws_key_id: sponsor ? (sponsor.aws_key_id ? sponsor.aws_key_id : '') : '',
+      })
+      toast.success(<Toast_style text={'Great, Created successfully!'} />)
+      this.props.handleModalStatus(true)
+    } else {
+      if (!linkValue && media_url) {
+        toast.error(<Toast_style text={`oh, Please update Image/ Url for Custom Sponsor ${index + 1}!`} />)
+      }
     }
   }
 
-  handleSelectFile = (e) => {
+  handleLinkChange = (e, counter) => {
+    const data = e.target.value
+    const { sponsors = [] } = this.state
+    const sponsorData = [...sponsors]
+    sponsorData[counter - 1] = {
+      ...sponsorData[counter - 1],
+      link: data,
+    }
+    this.setState({ sponsors: sponsorData, saveButtonDisabled: false })
+  }
+
+  handleImageChange = (e, counter) => {
+    if (!this.state.uploading[counter]) {
+      this.fileInputRef[counter].click()
+    }
+  }
+
+  handleSelectFile = (e, counter) => {
     const fileList = e.target.files
     if (fileList.length > 0) {
       let type = fileList[0].type.split('/')
@@ -108,16 +137,19 @@ export default class MangeSponsors extends React.Component {
         toast.error(<Toast_style text={'Opps, Invalid file format! '} />)
         return
       }
-      this.doUploadS3(fileList[0], name)
+      this.doUploadS3(fileList[0], name, counter)
     }
   }
 
-  doUploadS3 = async (file, name) => {
-    this.setState({ uploading: true })
+  doUploadS3 = async (file, name, counter) => {
+    const { uploading = [] } = this.state
+    uploading[counter] = true
+    this.setState({ uploading })
     try {
       if (file.size < 10485760) {
-        const { sponsor = {} } = this.props
+        const { sponsors = [] } = this.state
         let post = null
+        const sponsor = sponsors[counter - 1]
 
         if (sponsor.id) {
           post = await Upload_to_S3(file, name, 10, sponsor.id)
@@ -126,11 +158,19 @@ export default class MangeSponsors extends React.Component {
         }
 
         if (post != false) {
-          this.setState({
-            media_url: [post.data.Location],
-            file_keys: post.data.Key,
-            aws_key_id: [post.data.aws_key_id],
+          const sponsorData = sponsors.map((sponsor, index) => {
+            if (index == counter - 1) {
+              return {
+                ...sponsor,
+                media_url: [post.data.Location],
+                file_keys: post.data.Key,
+                aws_key_id: [post.data.aws_key_id],
+              }
+            } else {
+              return sponsor
+            }
           })
+          this.setState({ sponsors: sponsorData })
         }
       } else {
         toast.error(<Toast_style text={'Opps, file size can not be excced more than 10MB '} />)
@@ -138,13 +178,12 @@ export default class MangeSponsors extends React.Component {
     } catch (error) {
       toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file.'} />)
     }
-    this.setState({ uploading: false })
+    uploading[counter] = false
+    this.setState({ uploading })
   }
 
   render() {
-    const { sponsors = [] } = this.props
-    const { saveButtonDisabled = true, linkValue = '', media_url = '', modalStatus = true, uploading = false } = this.state
-
+    const { saveButtonDisabled = true, linkValue = '', media_url = '', modalStatus = true, uploading = [], sponsors = [] } = this.state
     return (
       <div className={`modal-container View__Member__modal ${modalStatus ? 'modal--show' : ''}`}>
         <div className='modal-wrap'>
@@ -160,15 +199,16 @@ export default class MangeSponsors extends React.Component {
           <div className='modal__body Sponsor__edit'>
             {sponsors.length > 0 &&
               sponsors.map((sponsor, index) => {
+                const counter = index + 1
                 return (
-                  <div className='Sponsor__edit-list'>
-                    <div className='text'>Custom Sponsor {index + 1}</div>
-                    <div className='Sponsor__media__input' onClick={this.handleImageChange}>
+                  <div className='Sponsor__edit-list' key={`${sponsors.length}_${counter}`}>
+                    <div className='text'>Custom Sponsor {counter}</div>
+                    <div className='Sponsor__media__input' onClick={(e) => this.handleImageChange(e, counter)}>
                       <input
                         type='file'
                         accept='image/jpeg,image/jpg,image/png,image/gif'
-                        ref={this.fileInputRef}
-                        onChange={this.handleSelectFile}
+                        ref={(ref) => (this.fileInputRef[counter] = ref)}
+                        onChange={(e) => this.handleSelectFile(e, counter)}
                         name='insert__images'
                       />
                       <img
@@ -181,7 +221,7 @@ export default class MangeSponsors extends React.Component {
                     <div className='text__tap'>
                       Or <span>Click/Tap here</span> to select
                     </div>
-                    {uploading && (
+                    {uploading[counter] && (
                       <div className='text'>
                         <span>Uploading... </span>
                       </div>
@@ -189,46 +229,8 @@ export default class MangeSponsors extends React.Component {
                     <div className='Sponsor__link__input'>
                       <input
                         type='text'
-                        onChange={this.handleLinkChange}
-                        value={linkValue == '' ? sponsor.link : linkValue}
-                        placeholder='Enter link here'
-                        onKeyDown={this.onKeyDown}
-                      />
-                    </div>
-                  </div>
-                )
-              })}
-            {sponsors.length < 2 &&
-              [...new Array((this.props.level < 25 ? 1 : 2) - sponsors.length)].map((sponsor, index) => {
-                return (
-                  <div className='Sponsor__edit-list'>
-                    <div className='text'>Custom Sponsor {index + 1}</div>
-                    <div className='Sponsor__media__input' onClick={this.handleImageChange}>
-                      <input
-                        type='file'
-                        accept='image/jpeg,image/jpg,image/png,image/gif'
-                        ref={this.fileInputRef}
-                        onChange={this.handleSelectFile}
-                        name='insert__images'
-                      />
-                      <img
-                        src={media_url == '' ? 'https://myG.gg/platform_images/Dashboard/BTN_Attach_Image.svg' : media_url}
-                        onError={this.addDefaultSrc}
-                      />
-                    </div>
-                    <div className='text__tap'>
-                      Or <span>Click/Tap here</span> to select
-                    </div>
-                    {uploading && (
-                      <div className='text'>
-                        <span>Uploading... </span>
-                      </div>
-                    )}
-                    <div className='Sponsor__link__input'>
-                      <input
-                        type='text'
-                        onChange={this.handleLinkChange}
-                        value={linkValue == '' ? '' : linkValue}
+                        onChange={(e) => this.handleLinkChange(e, counter)}
+                        value={sponsor.link}
                         placeholder='Enter link here'
                         onKeyDown={this.onKeyDown}
                       />

@@ -339,7 +339,7 @@ class EmailBodyController {
                     <p
                       style="text-align: left;font-family: 'Montserrat', sans-serif;font-style: normal;font-weight: 400;font-size: 12px;color: #000000;margin: 10px 0px 0px 24px;line-height: 16px;"
                     >
-                      Everytime you log off, you chat password is cleared and when you log
+                      Everytime you log off, your chat password is cleared and when you log
                       back in, you will need to RE-ENTER this chat password. Failure to do so
                       will disable chat and if a new chat password is generated, you will lose
                       all your previous chat history. This is a true End to End
