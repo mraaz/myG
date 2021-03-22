@@ -3,6 +3,7 @@ const { forceInt, forceString, forceBoolean, forceArray, forceDate } = require('
 class Chat {
   constructor(data) {
     this.chatId = forceInt(data.chatId)
+    this.channelId = forceString(data.channelId)
     this.individualGameId = forceInt(data.individualGameId)
     this.gameId = forceInt(data.gameId)
     this.gameMessage = forceString(data.gameMessage)

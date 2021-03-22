@@ -1,4 +1,4 @@
-#messenger {
+.messenger {
   position: relative;
   width: 16vw;
   min-width: 300px;
@@ -930,7 +930,7 @@
 }
 
 @media (max-width: 1200px) {
-  #messenger {
+  .messenger {
     display: none;
   }
 }

@@ -120,6 +120,48 @@ class ChatRepository {
     return { chat: chatSchema };
   }
 
+  async fetchChannel({ requestedChannelId }) {
+    let channel = (await Database.from('chats').where('channel_id', requestedChannelId).first());
+    if (!channel) {
+      channel = new Chat();
+      channel.channel_id = requestedChannelId;
+      channel.contacts = JSON.stringify([]);
+      channel.guests = JSON.stringify([]);
+      channel.owners = JSON.stringify([]);
+      channel.moderators = JSON.stringify([]);
+      channel.self_destruct = false;
+      channel.isPrivate = false;
+      channel.isGroup = false;
+      await channel.save();
+    }
+    const { messages } = await this.fetchMessages({ requestedChatId: channel.id });
+    const chatSchema = new ChatSchema({
+      messages,
+      chatId: channel.id,
+      channelId: requestedChannelId,
+      muted: channel.muted,
+      isPrivate: channel.isPrivate,
+      isGroup: channel.isGroup,
+      gameId: channel.game_id,
+      gameMessage: channel.game_message,
+      individualGameId: channel.individual_game_id,
+      selfDestruct: channel.self_destruct,
+      deletedMessages: channel.deleted_messages,
+      lastRead: channel.last_read_message_id,
+      lastCleared: channel.last_cleared_message_id,
+      icon: channel.icon,
+      title: channel.title,
+      publicKey: channel.public_key,
+      contacts: channel.contacts,
+      guests: channel.guests,
+      owners: channel.owners,
+      moderators: channel.moderators,
+      createdAt: channel.created_at,
+      updatedAt: channel.updated_at,
+    });
+    return { chat: chatSchema };
+  }
+
   async fetchMessages({ requestedChatId, requestedMessageIds, requestedPage }) {
     let query = ChatMessage.query()
     if (requestedMessageIds) {
@@ -778,7 +820,7 @@ class ChatRepository {
       sender_id: requestingUserId,
       key_receiver: keyReceiver,
       sender_name: senderName,
-      title: chat.isGroup ? chat.title : contact.name,
+      title: chat.isGroup ? chat.title : contact.name || senderName,
       backup: backup,
       content: content,
       attachment: attachment,
@@ -840,6 +882,11 @@ class ChatRepository {
     return this.sendMessageFromMyG({ requestedChatId: chat.chatId, content });
   }
 
+  async publishOnMainChannel(content) {
+    const { chat } = await this.fetchChannel({ requestedChannelId: 'main' });
+    await this.sendMessageFromMyG({ requestedChatId: chat.chatId, content })
+  }
+
   async sendMessageFromMyG({ requestedChatId, content }) {
     const messageData = {
       sender_id: 0,
@@ -858,6 +905,7 @@ class ChatRepository {
       title: message.title,
       keyReceiver: message.key_receiver,
       title: message.sender_name,
+      senderName: messageData.sender_name,
       unencryptedContent: message.unencrypted_content,
       createdAt: message.created_at,
       updatedAt: message.updated_at,
@@ -1239,6 +1287,7 @@ class ChatRepository {
   }
 
   async _addChatNotificationMessage({ requestingUserId, requestedChatId, chat, content }) {
+    if (!chat.contacts) return
     const otherUserId = chat.contacts.filter(contactId => contactId !== requestingUserId)[0];
     const status = (await User.query().where('id', '=', otherUserId).first()).toJSON().status;
     if (status === "offline") {
@@ -1396,6 +1445,9 @@ class ChatRepository {
     if (guestId) return this.broadcast('chat:guest:*', `chat:guest:${guestId}`, `chat:${action}`, payload);
     if (chatId) {
       const chat = (await Chat.find(chatId)).toJSON();
+      if (chat.channel_id) {
+        return this.broadcast('chat:channel:*', `chat:channel:${chat.channel_id}`, `chat:${action}`, payload)
+      }
       const contacts = JSON.parse(chat.contacts);
       const guests = JSON.parse(chat.guests);
       contacts.forEach(contactId => this.broadcast('chat:auth:*', `chat:auth:${contactId}`, `chat:${action}`, payload));

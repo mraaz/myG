@@ -17,6 +17,7 @@ export default class ChatInput extends React.Component {
       input: '',
       isTyping: false,
       lastTyped: 0,
+      disabled: false
     }
     this.input = React.createRef()
   }
@@ -69,6 +70,7 @@ export default class ChatInput extends React.Component {
     this.props.sendMessage(convertEmojisToColons(this.state.input.trim()))
     this.props.setTyping(false)
     this.setState({ input: '' })
+    if (this.props.slowmode) this.setState({ disabled: true }, () => setTimeout(() => this.setState({ disabled: false }), 3000))
   }
 
   onTyping = (input) => {
@@ -126,8 +128,8 @@ export default class ChatInput extends React.Component {
             rows={1}
             maxLength={2000}
             className='chat-component-input'
-            disabled={disabled}
-            placeholder={placeholderText}
+            disabled={disabled || this.state.disabled}
+            placeholder={this.state.disabled ? 'Slowmode is enabled. Can only send one message every 3s.' : placeholderText}
             value={this.state.input}
             onChange={(event) => this.onTyping(event.target.value)}
             onKeyPress={this.onKeyPressed}

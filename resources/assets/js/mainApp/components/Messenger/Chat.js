@@ -520,7 +520,7 @@ export class Chat extends React.Component {
     : ''
     const canResetKey = isGroupWithoutKey && this.props.isGroupOwner
     return (
-      <div key={this.props.chatId} id='chat-component-base'>
+      <div key={this.props.chatId} className='chat-component-base'>
         {this.renderHeader()}
         <div
           className={`chat-component-encryption-warning${canResetKey ? ' clickable' : ''}`}
@@ -544,14 +544,14 @@ export class Chat extends React.Component {
   render() {
     logger.log('RENDER', 'ChatComponent')
     if (!this.state.settings && !this.props.minimised && !this.props.privateKey) return this.renderEncryptedChat()
-    let extraClass = ''
-    if (this.props.maximised) extraClass += 'chat-maximised'
-    if (this.props.minimised) extraClass += 'chat-minimised'
-    if (!this.props.minimised && this.state.settings) extraClass = 'chat-settings'
-    if (this.props.isGuest) extraClass = 'chat-guest'
-    if (this.state.guestChatExpanded) extraClass += '-expanded'
+    let classes = 'chat-component-base'
+    if (this.props.maximised) classes += 'chat-maximised'
+    if (this.props.minimised) classes += 'chat-minimised'
+    if (!this.props.minimised && this.state.settings) classes = 'chat-settings'
+    if (this.props.isGuest) classes = 'chat-guest'
+    if (this.state.guestChatExpanded) classes += '-expanded'
     return (
-      <div key={this.props.chatId} id='chat-component-base' className={extraClass}>
+      <div key={this.props.chatId} className={classes}>
         {this.renderHeader()}
         {!this.state.settings && !this.props.minimised && this.renderMuteBanner()}
         {!this.state.settings && !this.props.minimised && this.renderBlockedBanner()}

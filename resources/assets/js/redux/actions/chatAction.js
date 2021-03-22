@@ -12,6 +12,7 @@ import {
   exitGroup,
   removeFromGroup,
   checkSelfDestruct,
+  fetchChannel,
   fetchMessages,
   fetchUnreadMessages,
   fetchEncryptionMessages,
@@ -316,6 +317,13 @@ export function closeChatAction(chatId) {
   }
 }
 
+export function fetchChannelAction(channelId) {
+  return {
+    type: 'FETCH_CHANNEL',
+    payload: fetchChannel(channelId),
+  }
+}
+
 export function fetchMessagesAction(chatId, page) {
   return {
     type: 'FETCH_CHAT_MESSAGES',
@@ -399,7 +407,7 @@ export function unblockUserAction(blockedUserId) {
 
 export function setTypingAction(chatId, isTyping) {
   return {
-    type: 'DELETE_MESSAGE',
+    type: 'SET_TYPING',
     payload: setTyping(chatId, isTyping),
     meta: { chatId, isTyping },
   }

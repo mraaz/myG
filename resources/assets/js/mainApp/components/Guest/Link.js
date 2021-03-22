@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { registerGuestAction, setGuestLinkAction } from '../../../redux/actions/guestAction'
 import { logoutAction } from '../../../redux/actions/userAction'
 import { fetchLink } from '../../../integration/http/guest'
-import { monitorChats, closeSubscription } from '../../../integration/ws/chat'
+import { monitorChats, closeSubscriptions } from '../../../integration/ws/chat'
 import notifyToast from '../../../common/toast'
 import Chat from './Chat'
 import Register from './Register'
@@ -48,7 +48,7 @@ class GuestLink extends React.Component {
   componentWillUnmount() {
     this.props.logout()
     localStorage.clear()
-    closeSubscription()
+    closeSubscriptions()
   }
 
   componentDidUpdate() {
@@ -76,7 +76,7 @@ class GuestLink extends React.Component {
     const { loaded, validLink } = this.state
     if (!guestId || !chatId || kicked || !loaded || !validLink) return null
     return (
-      <div id='messenger' className='messenger-container'>
+      <div className='messenger messenger-container'>
         <Chat
           key={chatId}
           userId={guestId}

@@ -14,6 +14,7 @@ import { getAssetUrl } from '../../common/assets'
 
 const initialState = {
   chats: [],
+  channels: {},
   contacts: [],
   unreadMessages: [],
   blockedUsers: [],
@@ -215,6 +216,29 @@ export default function reducer(state = initialState, action) {
       return {
         ...state,
         chats,
+      }
+    }
+
+    case 'FETCH_CHANNEL_FULFILLED': {
+      logger.log('CHAT', `Redux -> Fetched Channel: `, action.payload.chat)
+      const chatId = action.payload.chat.chatId
+      const chats = JSON.parse(JSON.stringify(state.chats)).sort((a, b) => a.lastOpened - b.lastOpened)
+      const channels = JSON.parse(JSON.stringify(state.channels))
+      let chat = chats.find((candidate) => candidate.chatId === chatId)
+      if (!chat) {
+        chat = action.payload.chat
+        chats.push(chat)
+      }
+      chat.messages = action.payload.chat.messages
+        .filter((message) => !state.blockedUsers.find((user) => user.userId === message.senderId))
+        .sort((m1, m2) => parseInt(m1.messageId) - parseInt(m2.messageId))
+        .map((message) => prepareMessage(state, chat, message))
+      chat.closed = true
+      channels[action.payload.chat.channelId] = chatId;
+      return {
+        ...state,
+        chats,
+        channels,
       }
     }
 
@@ -945,7 +969,7 @@ function prepareMessage(state, chat, message) {
   const encryptedReplyContent = isSent ? message.replyBackup : message.replyContent
   const privateKey = deserializeKey(isSent ? state.privateKey : chatKey)
   if (!privateKey) return message
-  const content = decryptMessage(encryptedContent, privateKey)
+  const content = decryptMessage(encryptedContent, privateKey) || message.content
   const replyContent = encryptedReplyContent && decryptMessage(encryptedReplyContent, privateKey)
   return { ...message, content, replyContent, decrypted: true }
 }

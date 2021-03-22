@@ -1,5 +1,33 @@
-#messenger {
-  #chat-component-base {
+.messenger {
+  .channel {
+    width: 90% !important;
+    margin: auto !important;
+    height: 400px !important;
+    position: relative !important;
+  }
+
+  .channel-page {
+    width: 100% !important;
+    margin: auto !important;
+    height: 100% !important;
+    position: relative !important;
+  }
+
+  .open-in-new-page {
+    width: 8px;
+    height: 8px;
+    position: absolute;
+    background-repeat: no-repeat;
+    background-size: unset;
+    right: 0;
+    filter: invert(1);
+    background-color: #eae4d9;
+    padding: 16px;
+    background-position: center;
+    border-radius: 8px;
+  }
+
+  .chat-component-base {
     pointer-events: auto;
     background-color: #171a1c;
     display: flex;
@@ -516,4 +544,3 @@
     overflow: hidden;
   }
 }
-
