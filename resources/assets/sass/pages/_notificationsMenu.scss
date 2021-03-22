@@ -1378,6 +1378,9 @@ $transition-default: 0.25s ease-out 0.1s;
         width: 100%;
         height: 100%;
         background: #fff;
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-size: contain;
       }
       .Sponsors__edit {
         position: absolute;
@@ -1394,12 +1397,15 @@ $transition-default: 0.25s ease-out 0.1s;
         position: absolute;
         background: #e7c947;
         cursor: pointer;
-        left: 40px;
-        bottom: -10px;
+        right: -15px;
+        top: 60px;
         padding: 6px;
         font-size: 11px;
         border-radius: 4px;
         display: none;
+        @media screen and (max-width: 575px) {
+          top: 25px;
+        }
       }
       &:hover {
         .Sponsors__delete,
@@ -1417,7 +1423,7 @@ $transition-default: 0.25s ease-out 0.1s;
       padding: 2em 2em !important;
       width: 100%;
       overflow: scroll;
-      height: 600px;
+      min-height: 600px;
       @media screen and (max-width: 998px) {
         padding: 2em 0em !important;
       }
@@ -1432,6 +1438,10 @@ $transition-default: 0.25s ease-out 0.1s;
           font-weight: bold;
           cursor: pointer;
           margin-bottom: 10px;
+          &:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+          }
         }
       }
       .text {

@@ -30,36 +30,42 @@ class Settings extends Component {
   }
 
   componentDidMount = () => {
-    document.title = 'myG - Notification'
+    let params = new URLSearchParams(window.location.search)
+    let activeTab = params.get('sponsor')
+    if (activeTab) {
+      this.setState({ modalStatus: true })
+    } else {
+      document.title = 'myG - Notification'
 
-    window.scrollTo(0, 0)
+      window.scrollTo(0, 0)
 
-    const self = this
+      const self = this
 
-    const environment = window.location.href.includes('localhost')
-      ? 'development'
-      : window.location.href.includes('myG.gg')
-      ? 'production'
-      : 'staging'
+      const environment = window.location.href.includes('localhost')
+        ? 'development'
+        : window.location.href.includes('myG.gg')
+        ? 'production'
+        : 'staging'
 
-    if (environment == 'development') {
-      this.setState({
-        feature_on: true,
-      })
-    }
-
-    const getSettings = async function() {
-      try {
-        const getSettings = await axios.get('/api/settings')
-        self.setState({
-          viaEmail: getSettings.data.mySettings[0].email_notification,
+      if (environment == 'development') {
+        this.setState({
+          feature_on: true,
         })
-      } catch (error) {
-        logToElasticsearch('error', 'Settings', 'Failed getSettings:' + ' ' + error)
+      }
+
+      const getSettings = async function () {
+        try {
+          const getSettings = await axios.get('/api/settings')
+          self.setState({
+            viaEmail: getSettings.data.mySettings[0].email_notification,
+          })
+        } catch (error) {
+          logToElasticsearch('error', 'Settings', 'Failed getSettings:' + ' ' + error)
+        }
+
+        getSettings()
       }
     }
-
-    getSettings()
   }
 
   handleNotifyViaEmailChange = (event, viaEmail) => {
@@ -109,7 +115,7 @@ class Settings extends Component {
     })
   }
 
-  hideAlert(text) {
+  hideAlert = (text) => {
     this.setState({
       alert: null,
     })
@@ -147,8 +153,12 @@ class Settings extends Component {
       <div className='settings__container'>
         {this.state.modalStatus && (
           <div className='Sponsors__container'>
-            <a className='mGameDetailsBackButton' onClick={this.handleModalStatus}>
-              <img className='mGameDetailsCaretImg' src='https://myG.gg/platform_images/View+Game/Down+Carrot.svg' />
+            <a className='mGameDetailsBackButton'>
+              <img
+                className='mGameDetailsCaretImg'
+                src='https://myG.gg/platform_images/View+Game/Down+Carrot.svg'
+                onClick={this.handleModalStatus}
+              />
               <span>{` Sponsors `}</span>
             </a>
             <MangeSponsors handleModalStatus={this.handleModalStatus} />

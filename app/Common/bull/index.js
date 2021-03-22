@@ -229,6 +229,22 @@ function getJobs(Queue, bullConfig, ioCluster, uuidv4, runEveryJobOnStart) {
       runOnStart: runEveryJobOnStart ? true : false,
       enabled: true,
     },
+
+//**** RAAZ created this to scrub email info from local DB's *****/
+    //*** PLS ENSURE THIS NEVER RUNS ON PROD ****
+    //**** TODO: MOVE THIS OUT TO ITS OWN CODEBASE
+
+    // {
+    //   name: 'Scrub data',
+    //   queue: new Queue('Scrub data', prefixedConfig('{scrub-data}')),
+    //   action: require('./tasks/scrub-data'),
+    //   options: { jobId: uuidv4() },
+    //   payload: {},
+    //   schedule: { repeat: { cron: '0 0 * * 0' } },
+    //   runOnSchedule: false,
+    //   runOnStart: false,
+    //   enabled: false,
+    // },
   ];
 }
 

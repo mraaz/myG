@@ -65,8 +65,11 @@
     justify-content: center;
     position: absolute;
     bottom: -30px;
-    left: 0;
-    right: 0;
+    right: -15px;
+    top: 60px;
+    @media screen and (max-width: 575px) {
+      top: 25px;
+    }
   }
 
   .small-button {
@@ -1442,6 +1445,9 @@
     width: 80%;
     margin-left: auto;
     margin-right: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
     .sponsors__btn {
       width: 144px;
       text-align: center;
@@ -1475,7 +1481,8 @@
     @media screen and (max-width: $tablet) {
       padding: inherit;
       margin: 0 auto;
-      width: auto;
+      width: 100%;
+      display: block;
     }
   }
 
@@ -1529,11 +1536,9 @@
       .image {
         display: flex;
         flex: 1;
-        background-repeat: no-repeat;
-        background-position: center center;
-        background-size: contain;
         width: 100%;
-        background: #fff;
+        background: #1d2326;
+        justify-content: center;
       }
     }
   }
