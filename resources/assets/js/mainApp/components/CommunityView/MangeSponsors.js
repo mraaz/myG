@@ -233,6 +233,7 @@ export default class MangeSponsors extends React.Component {
                         value={sponsor.link}
                         placeholder='Enter link here'
                         onKeyDown={this.onKeyDown}
+                        disabled={uploading[counter]}
                       />
                     </div>
                   </div>

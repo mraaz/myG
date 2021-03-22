@@ -239,6 +239,7 @@ class MangeSponsors extends React.Component {
                   value={linkValue == '' ? sponsor.link : linkValue}
                   placeholder='Enter link here'
                   onKeyDown={this.onKeyDown}
+                  disabled={uploading[counter]}
                 />
               </div>
             </div>
