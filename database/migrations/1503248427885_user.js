@@ -10,7 +10,7 @@ class UserSchema extends Schema {
       table.string('alias', 88).notNullable().unique().defaultTo("").index()
       table.text('first_name').nullable().defaultTo("")
       table.text('last_name').nullable().defaultTo("")
-      table.text('email').notNullable()
+      table.text('email').notNullable().unique()
       table.string('password', 60).nullable()
       table.text('country').nullable().defaultTo("")
       table.text('regional').nullable().defaultTo("")
