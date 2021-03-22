@@ -110,7 +110,7 @@ class CommonSaveController {
         'https://www.google.com/recaptcha/api/siteverify',
         querystring.stringify({ secret: Env.get('SECRET_KEY'), response: token })
       )
-      if (false) {
+      if (!process.env.SKIP_CAPTCHA && !data_request.data.success) {
         console.log('Google Recaptcha Verification Failed: ' + data_request.data)
         return response.redirect('/?error=google-recaptcha')
       } else {
@@ -134,7 +134,7 @@ class CommonSaveController {
 
         const { profile } = await ProfileRepository.fetchProfileInfo({ requestingUserId: user.id, id: user.id })
         await ElasticsearchRepository.storeUser({ user: profile })
-        await ChatRepository.publishOnMainChannel(`Introducing a new comer to myG...`)
+        await ChatRepository.publishOnMainChannel(`Introducing a newcomer to myG...`)
         await ChatRepository.publishOnMainChannel(`Please all welcome ${user.alias} !!`)
 
         // Decrease Seats Available upon Registration
