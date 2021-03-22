@@ -1,4 +1,4 @@
-#messenger {
+.messenger {
   #chat-component-message {
     padding: 8px 12px;
     border-bottom-right-radius: 12px;
@@ -387,7 +387,7 @@
   }
 }
 
-#messenger {
+.messenger {
   .recent-message {
     display: flex;
     flex-direction: column;

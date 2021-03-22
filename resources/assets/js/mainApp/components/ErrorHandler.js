@@ -33,8 +33,8 @@ export default class ErrorHandler extends React.PureComponent {
     this.handleError(error, 'SHOULD_RELOAD')
   }
 
-  handleError = (error, reload) => {
-    originalErrorHandler(error)
+  handleError = (error, ...rest) => {
+    originalErrorHandler(error, ...rest)
 
     const stack = (error && error.stack && error.stack.split('at ')[1]) || null
     const message = (error && error.message) || 'Unknown'
@@ -42,15 +42,6 @@ export default class ErrorHandler extends React.PureComponent {
     if (message !== 'Unknown' || context !== 'Unknown') {
       GoogleAnalytics.caughtReactError({ message, context })
       logToElasticsearch('error', context, message)
-    }
-
-    if (reload === 'SHOULD_RELOAD') {
-      store.dispatch({ type: 'REACT_ERROR' })
-      const hasReloadedOnError = window.localStorage.getItem('hasReloadedOnError', 0)
-      if (!window.PREVENT_RELOAD && Date.now() - hasReloadedOnError > 5000) {
-        window.localStorage.setItem('hasReloadedOnError', Date.now())
-        // window.location.reload(true)
-      }
     }
   }
 

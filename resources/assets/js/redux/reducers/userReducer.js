@@ -8,6 +8,7 @@ const initialState = {
   friendRequests: [],
   foundUsers: [],
   notificationSoundsDisabled: false,
+  mainChannelEnabled: true,
   autoSelfDestruct: false,
   pushNotificationsEnabled: true,
   userTransactionStates: { user_level: 1 },
@@ -273,6 +274,14 @@ export default function reducer(
       return {
         ...state,
         pushNotificationsEnabled,
+      }
+    }
+
+    case 'TOGGLE_MAIN_CHANNEL': {
+      logger.log('CHAT', `Redux -> Toggled Main Channel`)
+      return {
+        ...state,
+        mainChannelEnabled: !state.mainChannelEnabled,
       }
     }
 

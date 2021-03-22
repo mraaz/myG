@@ -149,6 +149,13 @@ const Onboarding = Loadable({
   },
 })
 
+const Channel = Loadable({
+  loader: () => import('./components/Channel'),
+  loading: function() {
+    return null
+  },
+})
+
 export {
   Home,
   ProfileContainer,
@@ -171,6 +178,7 @@ export {
   MobileMenu,
   CommunityView,
   Onboarding,
+  Channel,
   HashTagList,
 }
 function newFunction() {

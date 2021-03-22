@@ -34,7 +34,7 @@ class MessengerLoader extends React.Component {
   render() {
     if (!this.state.loaded || this.props.preparingMessenger) {
       return (
-        <section id='messenger'>
+        <section className='messenger'>
           <div className='messenger-loading-container'>
             <p className='messenger-loading-hint-top'>Hang On</p>
             <div className='messenger-loading-indicator'>

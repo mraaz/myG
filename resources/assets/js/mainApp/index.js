@@ -29,7 +29,7 @@ import { Update_ip_settings } from './components/Utility_Function'
 
 import { store, persistor } from '../redux/Store'
 import { loadUserInfoToReduxStore } from '../common/user'
-import { FeatureEnabled, PROFILE_V2 } from '../common/flags'
+import { FeatureEnabled, PROFILE_V2, CHANNEL } from '../common/flags'
 import { fetchNotifications } from '../common/notifications'
 import { registerAccess } from '../integration/http/quests';
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -56,6 +56,7 @@ import {
   MobileMenu,
   CommunityView,
   Onboarding,
+  Channel,
   HashTagList,
 } from './AsyncComponent'
 
@@ -184,6 +185,18 @@ class Layout extends Component {
                           initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
                           key={Math.random()}
                         />
+                      </FeatureEnabled>
+                    </React.Fragment>
+                  )}
+                />
+
+                <Route
+                  exact
+                  path='/myg-chat'
+                  component={() => (
+                    <React.Fragment>
+                      <FeatureEnabled allOf={[CHANNEL]}>
+                        <Channel page channelId="main" key={Math.random()} />
                       </FeatureEnabled>
                     </React.Fragment>
                   )}

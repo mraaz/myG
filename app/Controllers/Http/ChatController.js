@@ -61,6 +61,25 @@ class ChatController {
     }
   }
 
+  async fetchChannel({ auth, params, response }) {
+    try {
+      const requestingUserId = auth.user.id
+      if (!requestingUserId) throw new Error('Auth Error')
+      const requestedChannelId = params.channelId
+      log('CHAT', `User ${requestingUserId} requesting Chat ${requestedChannelId}`)
+      const { chat } = await ChatRepository.fetchChannel({ requestedChannelId })
+      return response.send({ chat })
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
+    }
+  }
+
   async fetchChatByIndividualGameId({ auth, params, response }) {
     try {
       const requestingUserId = auth.user.id

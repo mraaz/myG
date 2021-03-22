@@ -16,6 +16,7 @@ const InGame_fieldsController = use('./InGame_fieldsController')
 const GameTagController = use('./GameTagController')
 const AttendeeController = use('./AttendeeController')
 const LoggingRepository = require('../../Repositories/Logging')
+const ChatRepository = require('../../Repositories/Chat')
 const ElasticsearchRepository = require('../../Repositories/Elasticsearch')
 const AchievementsRepository = require('../../Repositories/Achievements')
 const SearchRepository = require('../../Repositories/Search')
@@ -257,6 +258,8 @@ class ScheduleGameController {
         gameInfo.attendees = await this.getAttendees(gameInfo.id)
         gameInfo.game_artwork = await this.fetchGameImage(gameInfo.game_names_id)
         await ElasticsearchRepository.storeGame({ gameInfo })
+        await ChatRepository.publishOnMainChannel(`Hi all, ${gameInfo.alias} is looking for a match of ${gameInfo.game_name}, are you game?`)
+
         return newScheduleGame
       } catch (error) {
         LoggingRepository.log({
@@ -652,6 +655,7 @@ class ScheduleGameController {
           }
         }
 
+        await ElasticsearchRepository.removeGame({ id: request.params.id })
         return 'Deleted successfully'
       } catch (error) {
         LoggingRepository.log({

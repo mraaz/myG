@@ -4,18 +4,14 @@
  * Email : nitin.1992tyagi@gmail.com
  */
 import React, { Component } from 'react'
-import { Toast_style } from '../Utility_Function'
-import SweetAlert from '../common/MyGSweetAlert'
-
-import axios from 'axios'
-
-import { logToElasticsearch } from '../../../integration/http/logger'
-import { logoutAction, toggleNotificationSoundsAction, togglePushNotificationsAction } from '../../../redux/actions/userAction'
-
 import { toast } from 'react-toastify'
 import { connect } from 'react-redux'
-
-import MangeSponsors from './MangeSponsors'
+import axios from 'axios'
+import { Toast_style } from '../Utility_Function'
+import SweetAlert from '../common/MyGSweetAlert'
+import { logToElasticsearch } from '../../../integration/http/logger'
+import { logoutAction, toggleMainChannelAction, toggleNotificationSoundsAction, togglePushNotificationsAction } from '../../../redux/actions/userAction'
+import { FeatureEnabled, CHANNEL } from '../../../common/flags'
 
 class Settings extends Component {
   constructor() {
@@ -195,6 +191,21 @@ class Settings extends Component {
                 </div>
               </div>
             )}
+            <FeatureEnabled allOf={[CHANNEL]}>    
+              <div className='option'>
+                <div className='title'>Main channel</div>
+                <div className='button__switch browser__notification'>
+                  <input
+                    id='switch-orange'
+                    type='checkbox'
+                    className='switch'
+                    value={this.props.mainChannelEnabled}
+                    defaultChecked={this.props.mainChannelEnabled}
+                    onChange={() => this.props.toggleMainChannel(this.props.userId)}
+                  />
+                </div>
+              </div>
+            </FeatureEnabled>
             <div className='option'>
               <div className='title'>Browser notifications</div>
               <div className='button__switch browser__notification'>
@@ -302,6 +313,7 @@ class Settings extends Component {
 function mapStateToProps(state) {
   return {
     userId: state.user.userId,
+    mainChannelEnabled: state.user.mainChannelEnabled,
     notificationSoundsDisabled: state.user.notificationSoundsDisabled,
     pushNotificationsEnabled: state.user.pushNotificationsEnabled,
   }
@@ -311,6 +323,7 @@ function mapDispatchToProps(dispatch) {
   return {
     logout: () => dispatch(logoutAction()),
     togglePushNotifications: (userId) => dispatch(togglePushNotificationsAction(userId)),
+    toggleMainChannel: (disabled) => dispatch(toggleMainChannelAction(disabled)),
     toggleNotificationSounds: (disabled) => dispatch(toggleNotificationSoundsAction(disabled)),
   }
 }

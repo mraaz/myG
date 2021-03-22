@@ -11,6 +11,8 @@ const axios = use('axios')
 const querystring = use('querystring')
 const Env = use('Env')
 
+const ChatRepository = require('../../Repositories/Chat')
+const EncryptionRepository = require('../../Repositories/Encryption')
 const ProfileRepository = require('../../Repositories/Profile')
 const ElasticsearchRepository = require('../../Repositories/Elasticsearch')
 const LoggingRepository = require('../../Repositories/Logging')
@@ -108,7 +110,7 @@ class CommonSaveController {
         'https://www.google.com/recaptcha/api/siteverify',
         querystring.stringify({ secret: Env.get('SECRET_KEY'), response: token })
       )
-      if (!data_request.data.success) {
+      if (!process.env.SKIP_CAPTCHA && !data_request.data.success) {
         console.log('Google Recaptcha Verification Failed: ' + data_request.data)
         return response.redirect('/?error=google-recaptcha')
       } else {
@@ -121,10 +123,10 @@ class CommonSaveController {
         }
 
         const user = new User()
-        user.first_name = this.encryptField(request.input('firstName'))
-        user.last_name = this.encryptField(request.input('lastName'))
+        user.first_name = await EncryptionRepository.encryptField(request.input('firstName'))
+        user.last_name = await EncryptionRepository.encryptField(request.input('lastName'))
         user.alias = request.input('alias')
-        user.email = request.input('email')
+        user.email = await EncryptionRepository.encryptField(request.input('email'))
         user.provider_id = session.get('provider_id')
         user.profile_img = session.get('profile_img')
         user.provider = session.get('provider')
@@ -132,6 +134,8 @@ class CommonSaveController {
 
         const { profile } = await ProfileRepository.fetchProfileInfo({ requestingUserId: user.id, id: user.id })
         await ElasticsearchRepository.storeUser({ user: profile })
+        await ChatRepository.publishOnMainChannel(`Introducing a newcomer to myG...`)
+        await ChatRepository.publishOnMainChannel(`Please all welcome ${user.alias} !!`)
 
         // Decrease Seats Available upon Registration
         if (seatsAvailable.seats_available > 0) {
@@ -169,24 +173,6 @@ class CommonSaveController {
           `/setEncryptionParaphrase/${request.input('encryption')}?persist=${request.input('persist-password') === 'on'}`
         )
       }
-    }
-  }
-
-  getEncryptionKeyPair() {
-    const pin = process.env.PROFILE_ENCRYPTION_PIN | 123456
-    this.privateKey = cryptico.generateRSAKey(`${pin}`, 1024)
-    this.publicKey = cryptico.publicKeyString(this.privateKey)
-    return { privateKey: this.privateKey, publicKey: this.publicKey }
-  }
-
-  encryptField(field) {
-    if (!field) return field
-    try {
-      const { privateKey, publicKey } = this.getEncryptionKeyPair()
-      return cryptico.encrypt(field, publicKey, privateKey).cipher
-    } catch (error) {
-      console.error(`Failed to Encrypt: ${field}`, this.privateKey, this.publicKey)
-      return null
     }
   }
 }

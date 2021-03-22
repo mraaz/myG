@@ -3,7 +3,7 @@
 import mysql.connector
 
 mydb = mysql.connector.connect(
-    host="192.168.99.102",
+    host="192.168.99.100",
     user="root",
     passwd="root",
     database="mygame"
@@ -51,6 +51,54 @@ sql_cursor.execute(sql, val)
 
 sql = "INSERT INTO users (id, alias, first_name, last_name, email, password, profile_img, status, last_seen, public_key, created_at, updated_at) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
 val = (11, 'john', 'John', 'Alabama', 'john@mygame.com', '$2a$10$JTLVsD59n1jZPN3yGIn.4OUNR0EBRSiT1JrHllsyL0.pz2hh994hm', 'https://myG.gg/default_user/new-user-profile-picture.png', 'online', '2019-12-01 00:00:00', 'lVxjAuGfXnA3KewnMfxuT91Wnz2nqW5XY1kYxrJWlxY41Nm2wmYcSXdsj+35gUAxFL/n/d7azGuX4uks1h+BsB5Z5d0FGSbAhhOpfKcvlrc7DvHISNEFN3jTh9DDa+ClpmBnQ7mz79fWQS2EzFhzactKpNVteL2xNy9uNK9AHKs=', '2019-12-01 00:00:00', '2019-12-01 00:00:00')
+sql_cursor.execute(sql, val)
+
+sql = "INSERT INTO users (id, alias, first_name, last_name, email, password, profile_img, status, last_seen, public_key, created_at, updated_at) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+val = (12, 'mia', 'Mia', 'Albania', 'mia@mygame.com', '$2a$10$JTLVsD59n1jZPN3yGIn.4OUNR0EBRSiT1JrHllsyL0.pz2hh994hm', 'https://myG.gg/default_user/new-user-profile-picture.png', 'online', '2019-12-01 00:00:00', 'lVxjAuGfXnA3KewnMfxuT91Wnz2nqW5XY1kYxrJWlxY41Nm2wmYcSXdsj+35gUAxFL/n/d7azGuX4uks1h+BsB5Z5d0FGSbAhhOpfKcvlrc7DvHISNEFN3jTh9DDa+ClpmBnQ7mz79fWQS2EzFhzactKpNVteL2xNy9uNK9AHKs=', '2019-12-01 00:00:00', '2019-12-01 00:00:00')
+sql_cursor.execute(sql, val)
+
+sql = "INSERT INTO users (id, alias, first_name, last_name, email, password, profile_img, status, last_seen, public_key, created_at, updated_at) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+val = (13, 'max', 'Max', 'Algeria', 'max@mygame.com', '$2a$10$JTLVsD59n1jZPN3yGIn.4OUNR0EBRSiT1JrHllsyL0.pz2hh994hm', 'https://myG.gg/default_user/new-user-profile-picture.png', 'online', '2019-12-01 00:00:00', 'lVxjAuGfXnA3KewnMfxuT91Wnz2nqW5XY1kYxrJWlxY41Nm2wmYcSXdsj+35gUAxFL/n/d7azGuX4uks1h+BsB5Z5d0FGSbAhhOpfKcvlrc7DvHISNEFN3jTh9DDa+ClpmBnQ7mz79fWQS2EzFhzactKpNVteL2xNy9uNK9AHKs=', '2019-12-01 00:00:00', '2019-12-01 00:00:00')
+sql_cursor.execute(sql, val)
+
+sql = "INSERT INTO users (id, alias, first_name, last_name, email, password, profile_img, status, last_seen, public_key, created_at, updated_at) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+val = (14, 'mason', 'Mason', 'Argentina', 'mason@mygame.com', '$2a$10$JTLVsD59n1jZPN3yGIn.4OUNR0EBRSiT1JrHllsyL0.pz2hh994hm', 'https://myG.gg/default_user/new-user-profile-picture.png', 'online', '2019-12-01 00:00:00', 'lVxjAuGfXnA3KewnMfxuT91Wnz2nqW5XY1kYxrJWlxY41Nm2wmYcSXdsj+35gUAxFL/n/d7azGuX4uks1h+BsB5Z5d0FGSbAhhOpfKcvlrc7DvHISNEFN3jTh9DDa+ClpmBnQ7mz79fWQS2EzFhzactKpNVteL2xNy9uNK9AHKs=', '2019-12-01 00:00:00', '2019-12-01 00:00:00')
+sql_cursor.execute(sql, val)
+
+sql = "INSERT INTO users (id, alias, first_name, last_name, email, password, profile_img, status, last_seen, public_key, created_at, updated_at) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+val = (15, 'millie', 'Millie', 'Bahamas', 'millie@mygame.com', '$2a$10$JTLVsD59n1jZPN3yGIn.4OUNR0EBRSiT1JrHllsyL0.pz2hh994hm', 'https://myG.gg/default_user/new-user-profile-picture.png', 'online', '2019-12-01 00:00:00', 'lVxjAuGfXnA3KewnMfxuT91Wnz2nqW5XY1kYxrJWlxY41Nm2wmYcSXdsj+35gUAxFL/n/d7azGuX4uks1h+BsB5Z5d0FGSbAhhOpfKcvlrc7DvHISNEFN3jTh9DDa+ClpmBnQ7mz79fWQS2EzFhzactKpNVteL2xNy9uNK9AHKs=', '2019-12-01 00:00:00', '2019-12-01 00:00:00')
+sql_cursor.execute(sql, val)
+
+sql = "INSERT INTO users (id, alias, first_name, last_name, email, password, profile_img, status, last_seen, public_key, created_at, updated_at) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+val = (16, 'matthew', 'Matthew', 'Bahrain', 'matthew@mygame.com', '$2a$10$JTLVsD59n1jZPN3yGIn.4OUNR0EBRSiT1JrHllsyL0.pz2hh994hm', 'https://myG.gg/default_user/new-user-profile-picture.png', 'online', '2019-12-01 00:00:00', 'lVxjAuGfXnA3KewnMfxuT91Wnz2nqW5XY1kYxrJWlxY41Nm2wmYcSXdsj+35gUAxFL/n/d7azGuX4uks1h+BsB5Z5d0FGSbAhhOpfKcvlrc7DvHISNEFN3jTh9DDa+ClpmBnQ7mz79fWQS2EzFhzactKpNVteL2xNy9uNK9AHKs=', '2019-12-01 00:00:00', '2019-12-01 00:00:00')
+sql_cursor.execute(sql, val)
+
+sql = "INSERT INTO users (id, alias, first_name, last_name, email, password, profile_img, status, last_seen, public_key, created_at, updated_at) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+val = (17, 'michael', 'Michael', 'Barbados', 'michael@mygame.com', '$2a$10$JTLVsD59n1jZPN3yGIn.4OUNR0EBRSiT1JrHllsyL0.pz2hh994hm', 'https://myG.gg/default_user/new-user-profile-picture.png', 'online', '2019-12-01 00:00:00', 'lVxjAuGfXnA3KewnMfxuT91Wnz2nqW5XY1kYxrJWlxY41Nm2wmYcSXdsj+35gUAxFL/n/d7azGuX4uks1h+BsB5Z5d0FGSbAhhOpfKcvlrc7DvHISNEFN3jTh9DDa+ClpmBnQ7mz79fWQS2EzFhzactKpNVteL2xNy9uNK9AHKs=', '2019-12-01 00:00:00', '2019-12-01 00:00:00')
+sql_cursor.execute(sql, val)
+
+sql = "INSERT INTO users (id, alias, first_name, last_name, email, password, profile_img, status, last_seen, public_key, created_at, updated_at) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+val = (18, 'maddie', 'Maddie', 'Belarus', 'maddie@mygame.com', '$2a$10$JTLVsD59n1jZPN3yGIn.4OUNR0EBRSiT1JrHllsyL0.pz2hh994hm', 'https://myG.gg/default_user/new-user-profile-picture.png', 'online', '2019-12-01 00:00:00', 'lVxjAuGfXnA3KewnMfxuT91Wnz2nqW5XY1kYxrJWlxY41Nm2wmYcSXdsj+35gUAxFL/n/d7azGuX4uks1h+BsB5Z5d0FGSbAhhOpfKcvlrc7DvHISNEFN3jTh9DDa+ClpmBnQ7mz79fWQS2EzFhzactKpNVteL2xNy9uNK9AHKs=', '2019-12-01 00:00:00', '2019-12-01 00:00:00')
+sql_cursor.execute(sql, val)
+
+sql = "INSERT INTO users (id, alias, first_name, last_name, email, password, profile_img, status, last_seen, public_key, created_at, updated_at) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+val = (19, 'maggie', 'Maggie', 'Belgium', 'maggie@mygame.com', '$2a$10$JTLVsD59n1jZPN3yGIn.4OUNR0EBRSiT1JrHllsyL0.pz2hh994hm', 'https://myG.gg/default_user/new-user-profile-picture.png', 'online', '2019-12-01 00:00:00', 'lVxjAuGfXnA3KewnMfxuT91Wnz2nqW5XY1kYxrJWlxY41Nm2wmYcSXdsj+35gUAxFL/n/d7azGuX4uks1h+BsB5Z5d0FGSbAhhOpfKcvlrc7DvHISNEFN3jTh9DDa+ClpmBnQ7mz79fWQS2EzFhzactKpNVteL2xNy9uNK9AHKs=', '2019-12-01 00:00:00', '2019-12-01 00:00:00')
+sql_cursor.execute(sql, val)
+
+sql = "INSERT INTO users (id, alias, first_name, last_name, email, password, profile_img, status, last_seen, public_key, created_at, updated_at) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+val = (20, 'magnus', 'Magnus', 'Bosnia', 'magnus@mygame.com', '$2a$10$JTLVsD59n1jZPN3yGIn.4OUNR0EBRSiT1JrHllsyL0.pz2hh994hm', 'https://myG.gg/default_user/new-user-profile-picture.png', 'online', '2019-12-01 00:00:00', 'lVxjAuGfXnA3KewnMfxuT91Wnz2nqW5XY1kYxrJWlxY41Nm2wmYcSXdsj+35gUAxFL/n/d7azGuX4uks1h+BsB5Z5d0FGSbAhhOpfKcvlrc7DvHISNEFN3jTh9DDa+ClpmBnQ7mz79fWQS2EzFhzactKpNVteL2xNy9uNK9AHKs=', '2019-12-01 00:00:00', '2019-12-01 00:00:00')
+sql_cursor.execute(sql, val)
+
+sql = "INSERT INTO users (id, alias, first_name, last_name, email, password, profile_img, status, last_seen, public_key, created_at, updated_at) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+val = (21, 'marcus', 'Marcus', 'Bulgaria', 'marcus@mygame.com', '$2a$10$JTLVsD59n1jZPN3yGIn.4OUNR0EBRSiT1JrHllsyL0.pz2hh994hm', 'https://myG.gg/default_user/new-user-profile-picture.png', 'online', '2019-12-01 00:00:00', 'lVxjAuGfXnA3KewnMfxuT91Wnz2nqW5XY1kYxrJWlxY41Nm2wmYcSXdsj+35gUAxFL/n/d7azGuX4uks1h+BsB5Z5d0FGSbAhhOpfKcvlrc7DvHISNEFN3jTh9DDa+ClpmBnQ7mz79fWQS2EzFhzactKpNVteL2xNy9uNK9AHKs=', '2019-12-01 00:00:00', '2019-12-01 00:00:00')
+sql_cursor.execute(sql, val)
+
+sql = "INSERT INTO users (id, alias, first_name, last_name, email, password, profile_img, status, last_seen, public_key, created_at, updated_at) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+val = (22, 'maxwell', 'Maxwell', 'Cameroon', 'maxwell@mygame.com', '$2a$10$JTLVsD59n1jZPN3yGIn.4OUNR0EBRSiT1JrHllsyL0.pz2hh994hm', 'https://myG.gg/default_user/new-user-profile-picture.png', 'online', '2019-12-01 00:00:00', 'lVxjAuGfXnA3KewnMfxuT91Wnz2nqW5XY1kYxrJWlxY41Nm2wmYcSXdsj+35gUAxFL/n/d7azGuX4uks1h+BsB5Z5d0FGSbAhhOpfKcvlrc7DvHISNEFN3jTh9DDa+ClpmBnQ7mz79fWQS2EzFhzactKpNVteL2xNy9uNK9AHKs=', '2019-12-01 00:00:00', '2019-12-01 00:00:00')
+sql_cursor.execute(sql, val)
+
+sql = "INSERT INTO users (id, alias, first_name, last_name, email, password, profile_img, status, last_seen, public_key, created_at, updated_at) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+val = (23, 'meredith', 'Meredith', 'Canada', 'meredith@mygame.com', '$2a$10$JTLVsD59n1jZPN3yGIn.4OUNR0EBRSiT1JrHllsyL0.pz2hh994hm', 'https://myG.gg/default_user/new-user-profile-picture.png', 'online', '2019-12-01 00:00:00', 'lVxjAuGfXnA3KewnMfxuT91Wnz2nqW5XY1kYxrJWlxY41Nm2wmYcSXdsj+35gUAxFL/n/d7azGuX4uks1h+BsB5Z5d0FGSbAhhOpfKcvlrc7DvHISNEFN3jTh9DDa+ClpmBnQ7mz79fWQS2EzFhzactKpNVteL2xNy9uNK9AHKs=', '2019-12-01 00:00:00', '2019-12-01 00:00:00')
 sql_cursor.execute(sql, val)
 
 # Friends

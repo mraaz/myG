@@ -11,7 +11,7 @@ const ConnectionController = use('./ConnectionController')
 const SeatsAvailable = use('App/Models/SeatsAvailable')
 const ExtraSeatsCodes = use('App/Models/ExtraSeatsCodes')
 const ExtraSeatsCodesTran = use('App/Models/ExtraSeatsCodesTran')
-
+const EncryptionRepository = require('../../Repositories/Encryption')
 const LoggingRepository = require('../../Repositories/Logging')
 
 class DiscordLoginController {
@@ -71,24 +71,10 @@ class DiscordLoginController {
         } else {
           session.put('provider', 'discord')
           session.put('provider_id', json.id)
-          //session.put('alias', json.username)
           session.put('email', json.email)
           session.put('profile_img', '//cdn.discordapp.com/avatars/' + json.id + '/' + json.avatar + '.png')
           return response.redirect('/user/register')
         }
-
-        // const user = new User()
-        // user.first_name = json.username
-        // user.alias = json.username
-        // user.email = json.email
-        // user.provider_id = json.id
-        // user.profile_img = '//cdn.discordapp.com/avatars/'+json.id+'/'+json.avatar+'.png'
-        // user.provider = 'discord'
-
-        // await user.save()
-
-        // await auth.loginViaId(user.id)
-        // return response.redirect('/')
       } catch (error) {
         LoggingRepository.log({
           environment: process.env.NODE_ENV,
@@ -134,11 +120,11 @@ class DiscordLoginController {
       }
 
       const user = new User()
-      user.first_name = userData.getName()
+      user.first_name = await EncryptionRepository.encryptField(userData.getName())
+      user.email = await EncryptionRepository.encryptField(userData.getEmail())
       var alias = userData.getName()
       alias = alias.replace(' ', '')
       user.alias = alias
-      user.email = userData.getEmail()
       user.provider_id = userData.getId()
       user.profile_img = userData.getAvatar()
       user.provider = provider
