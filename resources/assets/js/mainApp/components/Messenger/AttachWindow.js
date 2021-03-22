@@ -36,7 +36,7 @@ export default class AttachWindow extends React.Component {
       <Picker
         color='#2D363A'
         style={{
-          position: 'absolute',
+          position: 'fixed',
           bottom: '-70px',
           marginLeft: ' 20px',
           zIndex: 10,

@@ -25,6 +25,7 @@ const ProfileSchema = require('../../Schemas/Profile');
 const GameBackgroundSchema = require('../../Schemas/GameBackground');
 const CommendationSchema = require('../../Schemas/Commendation');
 
+const EncryptionRepository = require('../Encryption');
 const ElasticsearchRepository = require('../Elasticsearch');
 const AchievementsRepository = require('../Achievements')
 
@@ -41,14 +42,14 @@ class ProfileRepository {
   async fetchProfileInfo({ requestingUserId, id, alias }) {
     const profile = id ? await this.fetchProfileById({ id }) : await this.fetchProfileByAlias({ alias });
     const profileId = profile.id;
-    const firstName = await this.decryptField(profile.first_name);
-    const lastName = await this.decryptField(profile.last_name);
-    const email = profile.email;
+    const firstName = await EncryptionRepository.decryptField(profile.first_name);
+    const lastName = await EncryptionRepository.decryptField(profile.last_name);
+    const email = await EncryptionRepository.decryptField(profile.email);
     const image = profile.profile_img;
     const background = profile.profile_bg;
     const team = profile.team;
-    const regional = await this.decryptField(profile.regional);
-    const country = await this.decryptField(profile.country);
+    const regional = await EncryptionRepository.decryptField(profile.regional);
+    const country = await EncryptionRepository.decryptField(profile.country);
     const relationship = profile.relationship_status;
     const status = profile.status;
     const level = profile.level;
@@ -277,11 +278,11 @@ class ProfileRepository {
 
   async updateProfile({ requestingUserId, firstName, lastName, team, country, relationship, visibilityName, visibilityEmail, visibilityCountry, lookingForWork, hasMic, underage, languages, twitch, discord, steam, youtube, facebook, mostPlayedGames }) {
     const updates = {};
-    if (firstName !== undefined) updates.first_name = await this.encryptField(firstName.trim());
-    if (lastName !== undefined) updates.last_name = await this.encryptField(lastName.trim());
+    if (firstName !== undefined) updates.first_name = await EncryptionRepository.encryptField(firstName.trim());
+    if (lastName !== undefined) updates.last_name = await EncryptionRepository.encryptField(lastName.trim());
     if (team !== undefined) updates.team = team.trim();
-    if (country !== undefined) updates.country = await this.encryptField(country.split(',').slice(-1)[0].trim());
-    if (country !== undefined && country.split(',').length >= 2) updates.regional = await this.encryptField(country.split(',')[0].trim());
+    if (country !== undefined) updates.country = await EncryptionRepository.encryptField(country.split(',').slice(-1)[0].trim());
+    if (country !== undefined && country.split(',').length >= 2) updates.regional = await EncryptionRepository.encryptField(country.split(',')[0].trim());
     if (relationship !== undefined) updates.relationship_status = relationship;
     if (visibilityName !== undefined) updates.name_visibility = visibilityName;
     if (visibilityEmail !== undefined) updates.email_visibility = visibilityEmail;
@@ -475,35 +476,6 @@ class ProfileRepository {
     const { profile } = await this.fetchProfileInfo({ requestingUserId, id: requestingUserId });
     await ElasticsearchRepository.storeUser({ user: profile });
     return { profile };
-  }
-
-  async getEncryptionKeyPair() {
-    if (this.privateKey && this.publicKey) return { privateKey: this.privateKey, publicKey: this.publicKey }
-    const pin = process.env.PROFILE_ENCRYPTION_PIN | 123456;
-    this.privateKey = cryptico.generateRSAKey(`${pin}`, 1024);
-    this.publicKey = cryptico.publicKeyString(this.privateKey);
-    return { privateKey: this.privateKey, publicKey: this.publicKey }
-  }
-
-  async encryptField(field) {
-    try {
-      const { privateKey, publicKey } = await this.getEncryptionKeyPair();
-      return cryptico.encrypt(field, publicKey, privateKey).cipher;
-    } catch(error) {
-      console.error(`Failed to Encrypt: ${field}`, this.privateKey, this.publicKey);
-      return null;
-    }
-  }
-
-  async decryptField(field) {
-    if (!field) return field;
-    try {
-      const { privateKey } = await this.getEncryptionKeyPair();
-      return cryptico.decrypt(field, privateKey).plaintext;
-    } catch(error) {
-      console.error(`Failed to Decrypt: ${field}`, this.privateKey, this.publicKey);
-      return null;
-    }
   }
 
   async syncToElasticsearch() {

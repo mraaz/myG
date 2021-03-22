@@ -6,7 +6,6 @@ function log(context, args) {
     if (context === 'CHAT') console.log('\x1b[33m', context, args, '\x1b[0m')
     if (context === 'GUEST') console.log('\x1b[36m', context, args, '\x1b[0m')
     if (context === 'GAME') console.log('\x1b[37m', context, args, '\x1b[0m')
-    if (context === 'CRON') console.log('\x1b[35m', context, args, '\x1b[0m')
     if (context === 'PROFILE') console.log('\x1b[31m', context, args, '\x1b[0m')
     if (context === 'ELASTICSEARCH') console.log('\x1b[38m', context, args, '\x1b[0m')
   }

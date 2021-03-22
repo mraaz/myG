@@ -6,52 +6,51 @@ import { onNotificationAction } from '../../../redux/actions/notificationAction'
 import socket from '../../../common/socket';
 import logger from '../../../common/logger';
 
-let currentUserId = null;
-let hasDisconnected = false;
-let ws = null;
-let subscription = null;
-let isGuest = false;
+const subscriptions = [];
+const connections = [];
 
 export function monitorSocketConnection() {
   setInterval(() => {
-    if (store.getState().socket.disconnected) attemptSocketConnection();
+    if (store.getState().socket.disconnected) connectToSocket();
   }, 1000);
 }
 
-export function attemptSocketConnection() {
-
-  ws = socket.connect().ws;
-
+function connectToSocket() {
+  const ws = socket.connect().ws;
   ws.on('open', () => {
     store.dispatch(onConnectionStateChangedAction(false));
-    if (!hasDisconnected) return;
-    ws = socket.connect().ws;
-    monitorChats(currentUserId, isGuest);
-    hasDisconnected = false;
   });
-
   ws.on('close', () => {
     store.dispatch(onConnectionStateChangedAction(true));
-    hasDisconnected = true;
-    closeSubscription();
   });
-
 }
 
-attemptSocketConnection();
+connectToSocket();
 
-export function closeSubscription() {
-  if (subscription !== null) subscription.close();
-  subscription = null;
+export function attemptSocketConnections() {
+  subscriptions.forEach(({ id, userId }) => {
+    logger.log('CHAT', `WS`, `Monitoring Socket ${id} for user ${userId}`);
+    connections.push(socket.subscribe(id, event => handleEvent(event, userId)));
+  });
 }
 
-export function monitorChats(userId, _isGuest) {
-  isGuest = _isGuest;
-  currentUserId = userId;
-  if (subscription !== null) return;
-  const subscriptionKey = `chat${isGuest ? ':guest:' : ':auth:'}${userId}`;
-  logger.log('CHAT', `WS`, `Monitoring Chats for User ${userId} with key ${subscriptionKey}`);
-  subscription = socket.subscribe(subscriptionKey, event => handleEvent(event, userId));
+export function closeSubscriptions() {
+  connections.forEach((connection) => connection.close())
+}
+
+export function monitorChats(userId, isGuest) {
+  monitorSocket(`chat${isGuest ? ':guest:' : ':auth:'}${userId}`, userId);
+}
+
+export function monitorChannel(userId, channelId) {
+  if (!userId || !channelId) return;
+  monitorSocket(`chat:channel:${channelId}`, userId);
+}
+
+export function monitorSocket(id, userId) {
+  if (subscriptions.find((subscription) => subscription.id === id)) return;
+  subscriptions.push({ id, userId });
+  attemptSocketConnections();
 }
 
 function handleEvent(event, userId) {

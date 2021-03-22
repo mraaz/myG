@@ -1,14 +1,17 @@
 import React, { Component, Fragment } from 'react'
+import { connect } from 'react-redux'
 import axios from 'axios'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import IndividualPost from './IndividualPost'
 import IndividualSponsoredPost from './IndividualSponsoredPost'
 import ComposeSection from './ComposeSection_v2'
 import GamerSuggestions from './Profile/GamerSuggestions'
+import Channel from './Channel'
 
+import { FeatureEnabled, CHANNEL } from '../../common/flags'
 import { logToElasticsearch } from '../../integration/http/logger'
 
-export default class Posts extends Component {
+class Posts extends Component {
   constructor() {
     super()
     this.state = {
@@ -143,6 +146,11 @@ export default class Posts extends Component {
           </div>
         )}
         <GamerSuggestions />
+        <FeatureEnabled allOf={[CHANNEL]}>
+          {!!this.props.mainChannelEnabled && (
+            <Channel channelId='main' />
+          )}
+        </FeatureEnabled>
         {myPosts.length > 0 && !post_submit_loading && (
           <section id='posts' className={isFetching ? '' : `active`}>
             <InfiniteScroll dataLength={myPosts.length} next={this.fetchMoreData} hasMore={moreplease}>
@@ -154,3 +162,11 @@ export default class Posts extends Component {
     )
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    mainChannelEnabled: state.user.mainChannelEnabled,
+  }
+}
+
+export default connect(mapStateToProps)(Posts)

@@ -408,6 +408,9 @@ Route.get('/api/chat/:chatId/privateKey', 'ChatController.fetchGroupPrivateKeyRe
 Route.post('/api/chat/:chatId/privateKey', 'ChatController.requestGroupPrivateKey')
 Route.delete('/api/chat/:chatId/privateKey', 'ChatController.confirmGroupPrivateKey')
 
+// Channels
+Route.get('/api/channel/:channelId', 'ChatController.fetchChannel')
+
 // Guests
 Route.post('/api/guest/', 'GuestController.register')
 Route.delete('/api/guest/:guestId/chat/:chatId', 'GuestController.unregister')

@@ -14,6 +14,49 @@ sudo sysctl -w vm.max_map_count=262144
 exit
 ```
 
+## Reindex
+This is the process we need to follow when we want to change the mappings, let's say it's for the users index.
+
+# 1. Create new index with the new mappings, in the format of {index-name}_{MM_DD_YYYY} 
+PUT users_03_16_2021
+{ mappings }
+
+# 2. Move data from the previous index to the new one
+POST _reindex
+{
+  "source": {
+    "index": "users_{previous-date}"
+  },
+  "dest": {
+    "index": "users_03_16_2021"
+  }
+}
+
+# 3. Change the users aliasing to point to the new index
+POST /_aliases
+{
+  "actions" : [
+    { "add" : { "index" : "users_03_16_2021", "alias" : "users" } },
+    { "remove" : { "index" : "users_{previous-date}", "alias" : "users" } }
+  ]
+}
+
+# 4. Re-run the reindex to ensure no data was lost
+# 5. Delete the old index
+
+### Things that could go wrong
+You might not know the names/state of the indices and aliases:
+GET _cat/indices
+GET _cat/aliases
+
+The index might be called `users` and you want to create an alias called `users`, in which case you'll need to delete the index before creating the alias in step 3, which means the step 4 and 5 won't happen and you'll lose data if you don't move it to another temporary index first.
+
+The mapping change might be incompatible between indices, in which case you won't be able to migrate the data through reindex.
+In that case, either you make an script to transform the data as needed, or delete all the data and rebuild it from the MySQL database (source of truth), which is much easier.
+
+## Mappings
+Below are the actual mappings we want to use.
+
 ### Users
 PUT users
 {
@@ -78,7 +121,13 @@ PUT users
       "gameExperiences.name": {
         "type": "text",
         "analyzer": "autocomplete",
-        "search_analyzer": "standard"
+        "search_analyzer": "standard",
+        "fields" : {
+          "keyword" : {
+            "type" : "keyword",
+            "ignore_above" : 256
+          }
+        }
       },
       "underage" : {
         "type" : "boolean"

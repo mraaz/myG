@@ -87,6 +87,11 @@ export function inviteUserToGroup(userId, chatId, contactId, publicKey, privateK
   return axios.put(`/api/notifications/inviteToGroup`, { userId: contactId, chatId }).then(response => sendGroupPrivateKey(userId, chatId, [contactId], publicKey, privateKey, userPrivateKey).then(() => response.data));
 }
 
+export function fetchChannel(channelId) {
+  logger.log('CHAT', 'HTTP', `Fetching Channel ${channelId}`);
+  return axios.get(`/api/channel/${channelId}`).then(response => response.data);
+}
+
 export function fetchMessages(chatId, page) {
   logger.log('CHAT', 'HTTP', `Fetching Messages for Chat ${chatId}`);
   return axios.get(`/api/chat/${chatId}/message?page=${page || 1}`).then(response => response.data);

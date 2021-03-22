@@ -1,6 +1,5 @@
 'use strict'
 
-const Email = use('App/Models/Email')
 const ExtraSeatsCodes = use('App/Models/ExtraSeatsCodes')
 const Database = use('Database')
 
@@ -8,7 +7,7 @@ const AWSEmailController = use('./AWSEmailController')
 const NotificationController_v2 = use('./NotificationController_v2')
 const Email_body = use('./EmailBodyController')
 
-const RedisRepository = require('../../Repositories/Redis')
+const EncryptionRepository = require('../../Repositories/Encryption')
 
 //https://html5-editor.net/
 
@@ -48,9 +47,6 @@ class EmailController {
   }
 
   async dailyEmails() {
-    const lock = await RedisRepository.lock('SEND_DAILY_EMAILS', 1000 * 60 * 5)
-    if (!lock) return console.warn('CRON', 'Failed to Acquire SEND_DAILY_EMAILS lock')
-
     const userList = await Database.from('settings')
       .select('user_id')
       .where('email_notification', '=', 2)
@@ -61,9 +57,6 @@ class EmailController {
   }
 
   async weeklyEmails() {
-    const lock = await RedisRepository.lock('SEND_WEEKLY_EMAILS', 1000 * 60 * 5)
-    if (!lock) return console.warn('CRON', 'Failed to Acquire SEND_WEEKLY_EMAILS lock')
-
     const userList = await Database.from('settings')
       .select('user_id')
       .where('email_notification', '=', 1)
@@ -83,7 +76,7 @@ class EmailController {
       return
     }
 
-    const user_deets = await Database.from('users')
+    const user = await Database.from('users')
       .where('id', '=', user_id)
       .select('email', 'alias')
       .first()
@@ -92,8 +85,8 @@ class EmailController {
     const email = new AWSEmailController()
 
     const subject = "myG - The Gamer's platform - Summary: " + new Date(Date.now()).toDateString()
-    const body = await email_summary_email.summary_body(user_deets.alias, myRequests.approvals, myRequests.alerts, myRequests.chats)
-    await email.createEmailnSend(user_deets.email, subject, body)
+    const body = await email_summary_email.summary_body(user.alias, myRequests.approvals, myRequests.alerts, myRequests.chats)
+    await email.createEmailnSend(await EncryptionRepository.decryptField(user.email), subject, body)
   }
 
   async encryption_email(email, pin) {

@@ -2632,7 +2632,7 @@ section#content-container {
 
 @media screen and (max-width: $tablet) {
   #main-sidebar,
-  #messenger,
+  .messenger,
   .social-main,
   .links {
     display: none !important;

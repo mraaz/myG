@@ -151,6 +151,12 @@ export function togglePushNotificationsAction(userId) {
   }
 }
 
+export function toggleMainChannelAction() {
+  return {
+    type: 'TOGGLE_MAIN_CHANNEL'
+  }
+}
+
 export function fetchStatsAction(alias) {
   return {
     type: 'FETCH_STATS',

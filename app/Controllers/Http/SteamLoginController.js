@@ -38,26 +38,10 @@ class SteamLoginController {
           } else {
             session.put('provider', 'steam')
             session.put('provider_id', json.response.players[0].steamid)
-            // var alias = json.response.players[0].personaname
-            // alias = alias.replace(' ', '')
-            // session.put('alias', alias)
             session.put('email', '')
             session.put('profile_img', json.response.players[0].avatar)
             return response.redirect('/user/register')
           }
-
-          // const user = new User()
-          // user.first_name = json.response.players[0].personaname
-          // user.alias = json.response.players[0].personaname
-          // user.email = ''
-          // user.provider_id = json.response.players[0].steamid
-          // user.profile_img = json.response.players[0].avatar
-          // user.provider = 'steam'
-
-          // await user.save()
-
-          // await auth.loginViaId(user.id)
-          // return response.redirect('/')
         } else {
           return response.redirect('/')
         }

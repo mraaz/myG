@@ -13,6 +13,7 @@ const DefaultSchema = require('../../Schemas/Default');
 const GameSchema = require('../../Schemas/Game');
 
 const ChatRepository = require('../Chat');
+const EncryptionRepository = require('../Encryption');
 const EmailController = require('../../Controllers/Http/EmailController');
 
 class UserRepository {
@@ -38,15 +39,15 @@ class UserRepository {
     if (!user.email) return new DefaultSchema({ success: false, error: "User doesn't have an email" });
     const fifteenMinutesAgo = Date.now() - 1000 * 60 * 15
     const newUser = new Date(user.created_at).getTime() > fifteenMinutesAgo;
-    if (newUser) await new EmailController().welcome_email(user.email, pin, user.alias);
-    else await new EmailController().encryption_email(user.email, pin);
+    if (newUser) await new EmailController().welcome_email(await EncryptionRepository.decryptField(user.email), pin, user.alias);
+    else await new EmailController().encryption_email(await EncryptionRepository.decryptField(user.email), pin);
     return new DefaultSchema({ success: true });
   }
 
   async sendEncryptionReminderEmail({ requestingUserId, pin }) {
     const user = (await User.query().where('id', '=', requestingUserId).first()).toJSON();
     if (!user.email) return new DefaultSchema({ success: false, error: "User doesn't have an email" });
-    await new EmailController().encryption_email(user.email, pin);
+    await new EmailController().encryption_email(await EncryptionRepository.decryptField(user.email), pin);
     return new DefaultSchema({ success: true });
   }
 
