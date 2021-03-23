@@ -65,6 +65,7 @@ class Layout extends Component {
     super()
     this.state = {
       name: 'Raaz',
+      once: false
     }
   }
   componentDidMount() {
@@ -75,10 +76,17 @@ class Layout extends Component {
       try {
         const initialData = await axios.get('/api/initialApp')
 
+        if (!this.state.once)
+          await axios.post('/api/userStatTransaction/login_sync', {
+            login: 'LOGIN',
+          })
+
+        this.setState({ once: true })
+
         if (initialData.data.userInfo == 1981 && !window.location.href.includes('/link')) {
           window.location.href = '/logout'
         }
-        
+
         if (initialData.data.userInfo.has_additional != '1'){
           Update_ip_settings()
         }
