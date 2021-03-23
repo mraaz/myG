@@ -17,8 +17,6 @@ class UserStatTransactionController {
   async login_sync({ auth, request, response }) {
     if (auth.user) {
       if (request.input('login') == 'LOGIN') {
-        console.log('RUNNING THIS NOW!!!')
-        console.log(auth.user.id, '<<<auth.user.id')
         this.reCalculate_xp(auth.user.id)
       }
     }
@@ -487,8 +485,6 @@ class UserStatTransactionController {
       .first()
 
     let xp_neg_balance = false
-
-    console.log(xp, '<<<XP')
 
     if (xp < parseInt(getGamerLevels.experience_points) && parseInt(getGamerLevels.level) != 1) {
       if (xp < 0) {
