@@ -69,7 +69,7 @@ const getJobs = (runEveryJobOnStart) => [
     action: require('./tasks/s3-deleteFiles'),
     schedule: '0 0 * * *',
     runOnStart: runEveryJobOnStart ? true : false,
-    enabled: true,
+    enabled: false,
   },
   {
     name: 'Delete Unused Games',
@@ -104,7 +104,7 @@ const getJobs = (runEveryJobOnStart) => [
     action: require('./tasks/sponsored-post-shuffle'),
     schedule: '0 0 * * *',
     runOnStart: runEveryJobOnStart ? true : false,
-    enabled: true,
+    enabled: false,
   },
   {
     name: 'Send Daily Emails',

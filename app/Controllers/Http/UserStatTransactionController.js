@@ -14,6 +14,16 @@ const CUT_OFF_FOR_ATTENDEES_FOR_GAME = 1 //2 OR MORE
 const CUT_OFF_FOR_ATTENDEES_FOR_GREAT_GAME = 4 //5 OR MORE
 
 class UserStatTransactionController {
+  async login_sync({ auth, request, response }) {
+    if (auth.user) {
+      if (request.input('login') == 'LOGIN') {
+        console.log('RUNNING THIS NOW!!!')
+        console.log(auth.user.id, '<<<auth.user.id')
+        this.reCalculate_xp(auth.user.id)
+      }
+    }
+  }
+
   async master_controller({ auth, request, response, requestedAlias }) {
     // Stats to send are:
     // Connection: Friends and communities
@@ -451,7 +461,7 @@ class UserStatTransactionController {
           })
       }
     }
-    this.reCalculate_xp(my_user_id, criteria)
+    this.reCalculate_xp(my_user_id)
   }
 
   async reCalculate_xp(my_user_id) {
@@ -477,6 +487,8 @@ class UserStatTransactionController {
       .first()
 
     let xp_neg_balance = false
+
+    console.log(xp, '<<<XP')
 
     if (xp < parseInt(getGamerLevels.experience_points) && parseInt(getGamerLevels.level) != 1) {
       if (xp < 0) {
@@ -528,16 +540,21 @@ class UserStatTransactionController {
       }
     }
 
-    const currentStats = await Database.from('users').where({ id: my_user_id }).select('level', 'status').first()
-    const currentLevel = currentStats.level;
-    const currentStatus = currentStats.status;
-    const nextLevel = getGamerLevels.level;
-    const leveled_up_offline = nextLevel > currentLevel && currentStatus === 'offline';
+    const currentStats = await Database.from('users')
+      .where({ id: my_user_id })
+      .select('level', 'status')
+      .first()
+    const currentLevel = currentStats.level
+    const currentStatus = currentStats.status
+    const nextLevel = getGamerLevels.level
+    const leveled_up_offline = nextLevel > currentLevel && currentStatus === 'offline'
 
-    const updates = { level: getGamerLevels.level, experience_points: xp, xp_negative_balance: xp_neg_balance };
-    if (leveled_up_offline) updates.leveled_up_offline = true;
+    const updates = { level: getGamerLevels.level, experience_points: xp, xp_negative_balance: xp_neg_balance }
+    if (leveled_up_offline) updates.leveled_up_offline = true
 
-    await User.query().where({ id: my_user_id }).update(updates)
+    await User.query()
+      .where({ id: my_user_id })
+      .update(updates)
 
     await this.publishStats(my_user_id)
   }
@@ -553,8 +570,10 @@ class UserStatTransactionController {
 
   async checkedLevel({ auth }) {
     if (!auth.user.id) return 'You are not logged in!'
-    await User.query().where({ id: auth.user.id }).update({ leveled_up_offline: false })
-  }  
+    await User.query()
+      .where({ id: auth.user.id })
+      .update({ leveled_up_offline: false })
+  }
 }
 
 module.exports = UserStatTransactionController
