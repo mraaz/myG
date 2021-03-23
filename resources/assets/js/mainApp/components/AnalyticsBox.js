@@ -11,7 +11,7 @@ class AnalyticsBox extends React.Component {
 
   async componentDidMount() {
     const hasStats = Object.keys(this.props.userTransactionStates).length
-    const shouldFetchStats = !this.props.isStatsForCurrentUser || parseInt(hasStats) < 10;
+    const shouldFetchStats = !this.props.isStatsForCurrentUser || parseInt(hasStats) < 10
     if (shouldFetchStats) await this.props.fetchStats(this.props.alias)
     this.setState({ loading: false })
   }
