@@ -25,8 +25,8 @@ const MobileMenu = ({ initialData }) => {
   const [notifications, setNotifications] = useState({ alerts: 0, approvals: 0, chats: 0 })
 
   const dispatch = useDispatch()
-  const mobileMenuIsActive = useSelector((state) => state.mobileMenu.mobileMenuIsActive)
-  const mobileMenuIsTop = useSelector((state) => state.mobileMenu.mobileMenuIsTop)
+  const mobileMenuIsActive = useSelector(state => state.mobileMenu.mobileMenuIsActive)
+  const mobileMenuIsTop = useSelector(state => state.mobileMenu.mobileMenuIsTop)
   const direction = useScrollDirection()
 
   const alias = initialData === 'loading' ? '' : initialData.userInfo.alias
@@ -41,7 +41,7 @@ const MobileMenu = ({ initialData }) => {
       if (!mobileMenuIsActive) {
         dispatch(openMobileMenuAction())
       }
-    },
+    }
   })
 
   // This effect is used to control the mobile menus based on scroll events.
@@ -80,7 +80,7 @@ const MobileMenu = ({ initialData }) => {
   // Second useEffect is called only once, required so the API is only called once
   useEffect(() => {
     ref(window)
-    const getNotis = async function() {
+    const getNotis = async function () {
       let _chats = 0
       try {
         const getnoti = await axios.post('/api/notifications_v2/getUnread_count', {
@@ -140,7 +140,7 @@ const MobileMenu = ({ initialData }) => {
                       setHideSearch(false)
                       dispatch(closeMobileMenuAction())
                     }}>
-                    Looking for <b>Games (LFG)</b>
+                    Find <b>Matches</b>
                   </Link>
                 </div>
                 <div className='small-tile'>

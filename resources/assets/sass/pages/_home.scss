@@ -650,9 +650,6 @@ section#content-container {
             margin-left: 20px;
             margin-bottom: 12px;
             cursor: pointer;
-            @media screen and (max-width: $mobile) {
-              margin-left: 0px;
-            }
           }
           .comments-stats {
             display: flex;
@@ -1025,12 +1022,8 @@ section#content-container {
         margin-right: auto;
         border-radius: 8px;
         width: 80%;
-        @media screen and (max-width: $tablet) {
+        @media screen and (min-height: $tablet) {
           padding: 0 5px;
-        }
-        @media screen and (max-width: $mobile) {
-          padding: 0 5px;
-          width: 100%;
         }
         .media {
           margin-bottom: 20px;
@@ -1096,10 +1089,6 @@ section#content-container {
           display: flex;
           margin-left: 20px;
 
-          @media only screen and (max-width: $mobile) {
-            display: grid;
-          }
-
           .author__username {
             display: flex;
             font-size: 14px;
@@ -1151,9 +1140,6 @@ section#content-container {
             font-weight: bold;
             color: #fff;
             margin-left: auto;
-            @media only screen and (max-width: $mobile) {
-              color: #93a4a5;
-            }
           }
         }
         .gamePostExtraOption {
@@ -1252,9 +1238,6 @@ section#content-container {
             font-weight: bold;
             color: #fff;
             margin-left: auto;
-            @media only screen and (max-width: $mobile) {
-              color: #93a4a5;
-            }
           }
         }
         .update-stats2 {
@@ -1300,10 +1283,6 @@ section#content-container {
             width: 16px;
             height: 16px;
           }
-          @media screen and (max-width: $mobile) {
-            width: 100%;
-            margin-left: 0px;
-          }
         }
         .other-users {
           @media (min-width: 575px) {
@@ -1331,10 +1310,6 @@ section#content-container {
         color: #fff;
         margin-left: 20px;
         margin-bottom: 12px;
-        @media screen and (max-width: $mobile) {
-          width: 100%;
-          margin-left: 0px;
-        }
       }
       .comments-stats {
         float: right;
@@ -1981,9 +1956,6 @@ section#content-container {
       width: 50%;
       margin-left: auto;
       margin-right: auto;
-      @media (max-width: $mobile) {
-        width: 100%;
-      }
     }
   }
   .hashTag_section {
