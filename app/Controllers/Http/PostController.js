@@ -15,7 +15,7 @@ const AchievementsRepository = require('../../Repositories/Achievements')
 
 const RedisRepository = require('../../Repositories/Redis')
 
-const { validate } = use('Validator')
+//const { validate } = use('Validator')
 
 const MAX_HASH_TAGS = 21
 
@@ -30,25 +30,23 @@ class PostController {
       }
 
       if (request.input('video') != undefined) {
-        const rules = {
-          video: 'url',
-        }
+        // const rules = {
+        //   video: 'url',
+        // }
+        //
+        // const validation = await validate(request.input('video'), rules)
+        let pattern = new RegExp(
+          '^(https?:\\/\\/)?' + // protocol
+          '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
+          '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+          '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+          '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+            '(\\#[-a-z\\d_]*)?$',
+          'i'
+        ) // fragment locator
 
-        const validation = await validate(request.input('video'), rules)
-        if (validation.fails()) {
-          let pattern = new RegExp(
-            '^(https?:\\/\\/)?' + // protocol
-            '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
-            '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
-            '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
-            '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
-              '(\\#[-a-z\\d_]*)?$',
-            'i'
-          ) // fragment locator
-
-          if (!pattern.test(request.input('video').trim())) {
-            return 'video_link_failed'
-          }
+        if (!pattern.test(request.input('video').trim())) {
+          return 'video_link_failed'
         }
       }
 
