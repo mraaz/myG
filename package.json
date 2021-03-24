@@ -56,7 +56,6 @@
     "bootstrap": "^4.5.0",
     "browser-sync": "^2.26.14",
     "buffer": "^6.0.3",
-    "bull": "^3.20.0",
     "clamscan": "^1.2.0",
     "classnames": "^2.2.6",
     "concurrently": "^5.2.0",

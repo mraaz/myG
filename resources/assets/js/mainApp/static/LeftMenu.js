@@ -37,7 +37,7 @@ const sideBarItems = {
     expanded: false,
     subItems: [
       {
-        header: 'Find <b>Matches</b>',
+        header: 'Looking for <b>Games (LFG)</b>',
         cta: '/scheduledGames',
       },
       {
@@ -54,7 +54,7 @@ const sideBarItems = {
     expanded: false,
     subItems: [
       {
-        header: 'Create <b>Match</b>',
+        header: 'Schedule <b>Game</b>',
         cta: '/addScheduleGames',
       },
       {
