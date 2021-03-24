@@ -192,7 +192,7 @@ const AddGameContainer = ({ level }) => {
         <div
           className={classNames([styles.footerSubmitButton, isButtonDisabled() ? styles.footerSubmitButtonLight : ''])}
           onClick={isSubmitting ? null : onAddGameSubmit}>
-          Schedule Game
+          Create Match
         </div>
       </div>
     )
@@ -301,7 +301,7 @@ const AddGameContainer = ({ level }) => {
 
   return (
     <div className={styles.container}>
-      <PageHeader headerText='Schedule Game' />
+      <PageHeader headerText='Create Match' />
       <AddGame
         state={state}
         updateComponentState={updateComponentState}

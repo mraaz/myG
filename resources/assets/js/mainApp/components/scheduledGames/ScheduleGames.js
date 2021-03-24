@@ -73,7 +73,7 @@ export default class ScheduleGames extends Component {
   }
 
   async componentDidMount() {
-    document.title = 'myG - Looking for Games (LFG)'
+    document.title = 'myG - Find Matches'
 
     const { params = {} } = this.props.routeProps.match
     const { id = '' } = params
@@ -215,7 +215,7 @@ export default class ScheduleGames extends Component {
       <Fragment>
         <section className='desktopView' ref={this.contentAreaRef}>
           <div className='viewGame__header'>
-            <div className='title'>Looking for Games (LFG)</div>
+            <div className='title'>Find Matches</div>
           </div>
           <section className='viewGame__container'>
             {id == '' && <GameFilter handleChange={this.handleChange} />}

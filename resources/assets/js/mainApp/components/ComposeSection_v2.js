@@ -1,3 +1,8 @@
+/*
+ * Author : nitin Tyagi
+ * github  : https://github.com/realinit
+ * Email : nitin.1992tyagi@gmail.com
+ */
 import React, { Component, Fragment } from 'react'
 import axios from 'axios'
 import PostFileModal from './PostFileModal'
@@ -150,10 +155,6 @@ export default class ComposeSection extends Component {
         aws_key_id: aws_key_id.length > 0 ? aws_key_id : '',
         hash_tags: hash_tags,
       })
-      if (post.data == 'video_link_failed') {
-        toast.success(<Toast_style text={`Strewth mate! Invalid video link`} />)
-        return
-      }
 
       this.setState(
         {
