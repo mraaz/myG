@@ -5,7 +5,7 @@
   "description": "myG - Gamer's platform",
   "main": "index.js",
   "scripts": {
-    "start": "npm run watch-server",
+    "start": "node server.js >> myG.log",
     "start:dev": "node server.js",
     "start:1": "PORT=3331 node server.js",
     "start:2": "PORT=3332 node server.js",
@@ -36,7 +36,7 @@
     "@adonisjs/ace": "^5.0.8",
     "@adonisjs/ally": "^2.1.3",
     "@adonisjs/auth": "^3.0.7",
-    "@adonisjs/bodyparser": "^2.0.9",
+    "@adonisjs/bodyparser": "~2.0.9",
     "@adonisjs/cors": "^1.0.7",
     "@adonisjs/fold": "^4.0.9",
     "@adonisjs/framework": "^5.0.9",
