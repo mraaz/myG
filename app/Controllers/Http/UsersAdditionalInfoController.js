@@ -11,6 +11,7 @@ const axios = use('axios')
 
 class UsersAdditionalInfoController {
   async store({ auth }, logged_in_country_code, in_eu, last_logged_in_ip, logged_in_regional) {
+    console.log(logged_in_country_code, '<<<logged_in_country_code')
     if (auth.user) {
       try {
         await Database.table('users_additional_infos').insert({
@@ -41,11 +42,11 @@ class UsersAdditionalInfoController {
           return
         }
       }
-      await User.query()
-        .where('id', '=', auth.user.id)
-        .update({
-          has_additional: true,
-        })
+      // await User.query()
+      //   .where('id', '=', auth.user.id)
+      //   .update({
+      //     has_additional: true,
+      //   })
     } else {
       return 'You are not Logged In!'
     }
@@ -53,9 +54,9 @@ class UsersAdditionalInfoController {
 
   async process_ip({ auth, req, response }) {
     //https://app.nuclino.com/myG/codebase/getting-clients-location-c3e14fd4-d2ed-4033-b298-4f18bc98f0d3
-
+    console.log('GOING IN')
     const ip = getIp(req)
-
+    console.log(ip, '<<<IP')
     if (ip == '127.0.0.1') return
 
     if (auth.user) {
@@ -124,9 +125,11 @@ class UsersAdditionalInfoController {
             last_logged_in_ip = country.data.ip
             logged_in_regional = country.data.city
         }
+        console.log('Asdfasdfdsaf')
 
         this.store({ auth }, logged_in_country_code, in_eu == null ? false : in_eu, last_logged_in_ip, logged_in_regional)
       } catch (error) {
+        console.log('22222')
         LoggingRepository.log({
           environment: process.env.NODE_ENV,
           type: 'error',
