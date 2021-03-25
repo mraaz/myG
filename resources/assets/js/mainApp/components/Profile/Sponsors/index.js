@@ -44,7 +44,7 @@ export default class Sponsors extends React.Component {
             registerSponsorClick();
             window.open(sponsorLink, '_blank');
           }}
-        >  
+        >
           <img src={sponsor.media_url} style={{ height: '100%' }} />
       </div>
         <div className="hover-bar">
@@ -59,7 +59,7 @@ export default class Sponsors extends React.Component {
   //   if (!this.state.editing) return null;
   //   return(
   //     <div className="communityName__container">
-  //       <ManageSponsors 
+  //       <ManageSponsors
   //         sponsors={this.props.sponsors}
   //         userId={this.props.profile.id}
   //         handleModalStatus={this.onEdit}
@@ -71,9 +71,9 @@ export default class Sponsors extends React.Component {
   render() {
     const {sponsors=[]} = this.props;
     return(<div className="profile__sponsors-container1">
-        {this.props.isSelf &&<button type="button" className="sponsors__btn" onClick={() =>this.editSponsor(sponsors)}>Manage your Sponsors</button>}
+        {/* {this.props.isSelf &&<button type="button" className="sponsors__btn" onClick={() =>this.editSponsor(sponsors)}>Manage your Sponsors</button>}*/}
         <div className="profile__sponsors-container">
-        <div id="profile-sponsors"> 
+        <div id="profile-sponsors">
           {/* {this.renderEditSponsor(sponsors)} */}
           {sponsors.map((sponsor)=> {
             if(!sponsor.media_url) return null

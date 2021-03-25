@@ -10,7 +10,12 @@ import axios from 'axios'
 import { Toast_style } from '../Utility_Function'
 import SweetAlert from '../common/MyGSweetAlert'
 import { logToElasticsearch } from '../../../integration/http/logger'
-import { logoutAction, toggleMainChannelAction, toggleNotificationSoundsAction, togglePushNotificationsAction } from '../../../redux/actions/userAction'
+import {
+  logoutAction,
+  toggleMainChannelAction,
+  toggleNotificationSoundsAction,
+  togglePushNotificationsAction,
+} from '../../../redux/actions/userAction'
 import { FeatureEnabled, CHANNEL } from '../../../common/flags'
 
 class Settings extends Component {
@@ -49,7 +54,7 @@ class Settings extends Component {
         })
       }
 
-      const getSettings = async function () {
+      const getSettings = async function() {
         try {
           const getSettings = await axios.get('/api/settings')
           self.setState({
@@ -58,9 +63,8 @@ class Settings extends Component {
         } catch (error) {
           logToElasticsearch('error', 'Settings', 'Failed getSettings:' + ' ' + error)
         }
-
-        getSettings()
       }
+      getSettings()
     }
   }
 
@@ -191,7 +195,7 @@ class Settings extends Component {
                 </div>
               </div>
             )}
-            <FeatureEnabled allOf={[CHANNEL]}>    
+            <FeatureEnabled allOf={[CHANNEL]}>
               <div className='option'>
                 <div className='title'>Main channel</div>
                 <div className='button__switch browser__notification'>

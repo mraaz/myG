@@ -53,7 +53,6 @@ class UsersAdditionalInfoController {
 
   async process_ip({ auth, req, response }) {
     //https://app.nuclino.com/myG/codebase/getting-clients-location-c3e14fd4-d2ed-4033-b298-4f18bc98f0d3
-
     const ip = getIp(req)
 
     if (ip == '127.0.0.1') return
