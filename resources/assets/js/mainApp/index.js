@@ -87,7 +87,9 @@ class Layout extends Component {
           window.location.href = '/logout'
         }
 
+
         if (initialData.data.userInfo.has_additional != '1'){
+          console.log("GOin into settings");
           Update_ip_settings()
         }
 
