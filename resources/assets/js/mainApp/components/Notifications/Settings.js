@@ -18,6 +18,8 @@ import {
 } from '../../../redux/actions/userAction'
 import { FeatureEnabled, CHANNEL } from '../../../common/flags'
 
+import MangeSponsors from './MangeSponsors'
+
 class Settings extends Component {
   constructor() {
     super()
