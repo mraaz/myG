@@ -46,7 +46,6 @@ class SponsorController {
         const create_Sponsor = await Sponsor.create({
           user_id: auth.user.id,
           group_id: request.input('group_id'),
-          type: request.input('type'),
           media_url: request.input('media_url'),
           link: request.input('link'),
         })
@@ -141,7 +140,7 @@ class SponsorController {
       try {
         const update_sponsor = await Sponsor.query()
           .where({ id: request.input('id') })
-          .update({ media_url: request.input('media_url'), link: request.input('link') })
+          .update({ media_url: request.input('media_url'), link: request.input('link'), type: 1 })
 
         return 'Saved successfully'
       } catch (error) {
