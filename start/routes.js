@@ -454,6 +454,8 @@ Route.get('/api/search/gamers', 'SearchController.searchGamers')
 Route.post('/api/sponsor/create', 'SponsorController.store')
 Route.delete('/api/sponsor/delete/:id', 'SponsorController.destroy')
 Route.post('/api/sponsor/update', 'SponsorController.update')
+Route.get('/api/sponsor/show_approval/:counter', 'SponsorController.show_approval')
+Route.post('/api/sponsor/approval_for_sponsor', 'SponsorController.approval_for_sponsor')
 
 //Reports
 Route.post('/api/report/create', 'ReportController.store')

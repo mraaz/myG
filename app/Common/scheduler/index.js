@@ -62,7 +62,7 @@ const getJobs = (runEveryJobOnStart) => [
     action: require('./tasks/game-registerPlays'),
     schedule: '*/5 * * * *',
     runOnStart: runEveryJobOnStart ? true : false,
-    enabled: true,
+    enabled: false,
   },
   {
     name: 'Delete Invalid S3 FilDes',
