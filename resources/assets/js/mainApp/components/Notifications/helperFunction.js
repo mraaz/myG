@@ -174,3 +174,9 @@ export const banGamer = (data) => {
     logToElasticsearch('error', 'Notification HelperFunction', 'Failed banGamer:' + ' ' + error)
   }
 }
+export const clicked_sonsors = (approval, id) => {
+  axios.post('/api/sponsor/approval_for_sponsor', {
+    id,
+    approval,
+  })
+}

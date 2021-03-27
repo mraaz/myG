@@ -66,6 +66,15 @@ class Menu extends Component {
           />
           {isAdmin && (
             <Button
+              title={`Sponsors ${reports ? `(${reports})` : '(0)'}`}
+              active={activeTab == 7}
+              onClick={() => {
+                changeContentTab('', 7)
+              }}
+            />
+          )}
+          {isAdmin && (
+            <Button
               title={`Reports ${reports ? `(${reports})` : '(0)'}`}
               active={activeTab == 4}
               onClick={() => {

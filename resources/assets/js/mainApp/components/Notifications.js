@@ -8,6 +8,7 @@ import Alerts from './Notifications/Alerts'
 import Chat from './Notifications/Chat'
 import Settings from './Notifications/Settings'
 import Reports from './Notifications/Reports'
+import Sponsors from './Notifications/Sponsors'
 import ReportedUser from './Notifications/ReportedUser'
 
 export default class Notifications extends Component {
@@ -97,6 +98,9 @@ export default class Notifications extends Component {
             {activeTab == 1 && <Approvals active={activeTab == 1} setNotificationsCount={this.setNotificationsCount} {...this.props} />}
             {activeTab == 2 && <Alerts active={activeTab == 2} setNotificationsCount={this.setNotificationsCount} {...this.props} />}
             {activeTab == 3 && <Chat active={activeTab == 3} setNotificationsCount={this.setNotificationsCount} {...this.props} />}
+            {activeTab == 7 && isAdmin && (
+              <Sponsors active={activeTab == 7} setNotificationsCount={this.setNotificationsCount} {...this.props} />
+            )}
             {activeTab == 4 && isAdmin && (
               <Reports active={activeTab == 4} setNotificationsCount={this.setNotificationsCount} {...this.props} />
             )}

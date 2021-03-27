@@ -26,7 +26,7 @@ class MobileMenu extends Component {
   }
 
   render() {
-    const { changeContentTab, notificationsCount, activeTab, approvals, alerts, chats } = this.props
+    const { changeContentTab, notificationsCount, activeTab, approvals, alerts, chats, sponsor } = this.props
     const { reports = 0, reportedUser } = this.state
     const dummyData = [
       {
@@ -44,6 +44,10 @@ class MobileMenu extends Component {
       {
         title: `Chat ${chats ? `(${chats})` : '(0)'}`,
         activeTab: 3,
+      },
+      {
+        title: `Sponsors ${sponsor ? `(${sponsor})` : '(0)'}`, //isadmin
+        activeTab: 7,
       },
       {
         title: `Reports ${reports ? `(${reports})` : '(0)'}`, //isadmin
