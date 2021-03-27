@@ -56,7 +56,7 @@ class Settings extends Component {
         })
       }
 
-      const getSettings = async function() {
+      const getSettings = async function () {
         try {
           const getSettings = await axios.get('/api/settings')
           self.setState({
@@ -309,7 +309,6 @@ class Settings extends Component {
               </button>
             </div>
           </div>
-        )}
         )}
       </div>
     )

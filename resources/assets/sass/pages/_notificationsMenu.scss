@@ -1418,6 +1418,28 @@ $transition-default: 0.25s ease-out 0.1s;
     .Sponsor__edit-list {
       padding: 15px 0;
       border-bottom: 1px solid #384952;
+      .sponsor__header-row {
+        display: flex;
+        .count {
+          color: #fff !important;
+        }
+        .status {
+          margin-left: auto;
+          &.Denied {
+            color: red;
+          }
+          &.Pending {
+            color: yellow;
+          }
+          &.Approved {
+            color: green;
+          }
+        }
+        .action {
+          cursor: pointer;
+          color: red !important;
+        }
+      }
     }
     .Sponsor__edit {
       padding: 2em 2em !important;

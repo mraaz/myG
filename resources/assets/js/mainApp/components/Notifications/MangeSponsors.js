@@ -11,6 +11,12 @@ import { Upload_to_S3, Remove_file } from '../AWS_utilities'
 import { MyGButton } from '../common'
 import { fetchProfileInfoAction } from '../../../redux/actions/profileAction'
 
+const typeMapping = {
+  0: 'Denied',
+  1: 'Pending Approval',
+  2: 'Approved',
+}
+
 class MangeSponsors extends React.Component {
   constructor(props) {
     super(props)
@@ -196,6 +202,11 @@ class MangeSponsors extends React.Component {
     this.setState({ uploading, saveButtonDisabled: false })
   }
 
+  deleteSponsor = (id) => {
+    axios.delete(`/api/sponsor/delete/${id}`).then(this.fetchProfileData)
+    notifyToast('Yup, yup, yup... deleted successfully!')
+  }
+
   render() {
     const { saveButtonDisabled = true, linkValue = '', media_url = '', modalStatus = true, uploading = [], sponsors = [] } = this.state
 
@@ -210,7 +221,16 @@ class MangeSponsors extends React.Component {
           const counter = index + 1
           return (
             <div className='Sponsor__edit-list' key={`${sponsors.length}_${index}}`}>
-              <div className='text'>Custom Sponsor {counter}</div>
+              <div className='text sponsor__header-row'>
+                <span className='count'> Custom Sponsor {counter}</span>
+                <span className='status'> {typeMapping[sponsor.type]}</span>
+                {sponsor.id && (
+                  <span className='action' onClick={(e) => this.deleteSponsor(sponsor.id)}>
+                    {' '}
+                    Delete
+                  </span>
+                )}
+              </div>
               <div className='Sponsor__media__input' onClick={(e) => this.handleImageChange(e, counter)}>
                 <input
                   type='file'

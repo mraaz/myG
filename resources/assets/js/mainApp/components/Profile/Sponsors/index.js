@@ -76,7 +76,7 @@ export default class Sponsors extends React.Component {
         <div id="profile-sponsors">
           {/* {this.renderEditSponsor(sponsors)} */}
           {sponsors.map((sponsor)=> {
-            if(!sponsor.media_url) return null
+            if(!sponsor.media_url || sponsor.type != 2) return null
             return this.renderSponsor(sponsor)
           })}
         </div>
