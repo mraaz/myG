@@ -189,7 +189,6 @@ export default class MangeSponsors extends React.Component {
   }
 
   showAlert(id) {
-    this.clickedGamePostExtraOption()
     const getAlert = () => (
       <SweetAlert
         danger
