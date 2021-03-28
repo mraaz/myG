@@ -64,12 +64,10 @@
     align-items: center;
     justify-content: center;
     position: absolute;
-    bottom: -30px;
-    right: -15px;
-    top: 60px;
-    @media screen and (max-width: 575px) {
-      top: 25px;
-    }
+    bottom: -25px;
+    left: 0;
+    right: 0;
+    z-index: 1;
   }
 
   .small-button {
