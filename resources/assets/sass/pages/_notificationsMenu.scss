@@ -1565,7 +1565,9 @@ $transition-default: 0.25s ease-out 0.1s;
     }
   }
   .notification__text {
-    display: inherit;
-    margin-left: 35px;
+    display: inherit !important;
+  }
+  .notification-content {
+    margin-left: 35px !important;
   }
 }
