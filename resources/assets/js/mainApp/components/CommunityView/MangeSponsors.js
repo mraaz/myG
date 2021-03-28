@@ -236,6 +236,7 @@ export default class MangeSponsors extends React.Component {
     } = this.state
     return (
       <div className={`modal-container View__Member__modal ${modalStatus ? 'modal--show' : ''}`}>
+        {alert}
         <div className='modal-wrap'>
           <div className='modal__header'>
             <div className='tabs___header'>
