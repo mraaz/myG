@@ -177,11 +177,11 @@ export default class sponsors extends Component {
                   }`}
                   key={approval.id}
                   onClick={(e) => this.handleClickNotiFication(approval.id, index)}>
-                  {/* <div className='notification-user-avatar'>
+                  <div className='notification-user-avatar'>
                     <Link to={`/profile/${approval.alias}`}>
                       <img onError={this.addDefaultSrc} src={approval.profile_img ? approval.profile_img : defaultUserImage} />
                     </Link>
-                  </div> */}
+                  </div>
                   <div className='notification-content'>
                     <div
                       className={`notification-description ${
