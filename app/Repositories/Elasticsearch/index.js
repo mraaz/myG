@@ -57,7 +57,6 @@ class ElasticsearchRepository {
         name: experience.gameName,
         ...extraFields,
       };
-      log('ELASTICSEARCH', `User To Store: ${JSON.stringify(userToStore)}`);
       return userToStore;
     });
     return this.getElasticsearchClient().update({
