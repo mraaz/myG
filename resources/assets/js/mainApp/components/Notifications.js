@@ -65,7 +65,8 @@ export default class Notifications extends Component {
     }
     this.setState({
       activeTab: activeTab ? activeTab : 0,
-      isAdmin: adminStatus == true ? true : false,
+      // isAdmin: adminStatus == true ? true : false,
+      isAdmin: true,
     })
   }
 

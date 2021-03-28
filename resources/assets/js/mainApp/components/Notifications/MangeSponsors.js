@@ -28,6 +28,7 @@ class MangeSponsors extends React.Component {
       aws_key_id: '',
       file_keys: '',
       uploading: [],
+      alert: null,
     }
     this.fileInputRef = []
   }
@@ -65,6 +66,38 @@ class MangeSponsors extends React.Component {
     }
   }
 
+  showAlert(id) {
+    this.clickedGamePostExtraOption()
+    const getAlert = () => (
+      <SweetAlert
+        danger
+        showCancel
+        title='Are you sure you wish to delete this Sponsor?'
+        confirmBtnText='Make it so!'
+        confirmBtnBsStyle='danger'
+        focusCancelBtn={true}
+        focusConfirmBtn={false}
+        showCloseButton={true}
+        onConfirm={() => this.hideAlert('true', id)}
+        onCancel={() => this.hideAlert('false', id)}>
+        You will not be able to recover this entry!
+      </SweetAlert>
+    )
+
+    this.setState({
+      alert: getAlert(),
+    })
+  }
+
+  hideAlert = (text, id) => {
+    this.setState({
+      alert: null,
+    })
+    if (text == 'true') {
+      this.deleteSponsor(id)
+    }
+  }
+
   handleSave = (e) => {
     const { sponsors = [] } = this.state
     sponsors.map((sponsor) => {
@@ -74,7 +107,9 @@ class MangeSponsors extends React.Component {
         this.createSponsor(sponsor)
       }
     })
-    this.setState({ saveButtonDisabled: true })
+    this.setState({ saveButtonDisabled: true }, () => {
+      this.fetchProfileData()
+    })
   }
 
   handleClose = (e) => {
@@ -208,10 +243,19 @@ class MangeSponsors extends React.Component {
   }
 
   render() {
-    const { saveButtonDisabled = true, linkValue = '', media_url = '', modalStatus = true, uploading = [], sponsors = [] } = this.state
+    const {
+      saveButtonDisabled = true,
+      linkValue = '',
+      media_url = '',
+      modalStatus = true,
+      uploading = [],
+      sponsors = [],
+      alert,
+    } = this.state
 
     return (
       <div className={`Sponsor__edit`}>
+        {alert}
         <div className='SponsorSave__action'>
           <button type='button' className='Sponsoraction' disabled={saveButtonDisabled} onClick={this.handleSave}>
             Save
@@ -225,7 +269,7 @@ class MangeSponsors extends React.Component {
                 <span className='count'> Custom Sponsor {counter}</span>
                 <span className='status'> {typeMapping[sponsor.type]}</span>
                 {sponsor.id && (
-                  <span className='action' onClick={(e) => this.deleteSponsor(sponsor.id)}>
+                  <span className='action' onClick={(e) => this.showAlert(sponsor.id)}>
                     {' '}
                     Delete
                   </span>
