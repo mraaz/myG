@@ -27,14 +27,14 @@ const getJobs = (runEveryJobOnStart) => [
     action: require('./tasks/chat-expiredAttachments'),
     schedule: '0 0 * * *',
     runOnStart: runEveryJobOnStart ? true : false,
-    enabled: true,
+    enabled: false,
   },
   {
     name: 'Chat Game Messages',
     action: require('./tasks/chat-gameMessages'),
     schedule: '* * * * *',
     runOnStart: runEveryJobOnStart ? true : false,
-    enabled: true,
+    enabled: false,
   },
   {
     name: 'Profile Sync To Elasticsearch',
@@ -62,7 +62,7 @@ const getJobs = (runEveryJobOnStart) => [
     action: require('./tasks/game-registerPlays'),
     schedule: '*/5 * * * *',
     runOnStart: runEveryJobOnStart ? true : false,
-    enabled: true,
+    enabled: false,
   },
   {
     name: 'Delete Invalid S3 FilDes',
@@ -76,7 +76,7 @@ const getJobs = (runEveryJobOnStart) => [
     action: require('./tasks/game-deleteUnused'),
     schedule: '0 0 * * *',
     runOnStart: runEveryJobOnStart ? true : false,
-    enabled: true,
+    enabled: false,
   },
   {
     name: 'Quests Clear Dailys',

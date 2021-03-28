@@ -46,7 +46,6 @@ class SponsorController {
         const create_Sponsor = await Sponsor.create({
           user_id: auth.user.id,
           group_id: request.input('group_id'),
-          type: request.input('type'),
           media_url: request.input('media_url'),
           link: request.input('link'),
         })
@@ -124,6 +123,32 @@ class SponsorController {
     }
   }
 
+  async show_approval({ auth }, group_id, user_id) {
+    if (auth.user) {
+      try {
+        // const check = await this.security_check({ auth })
+        //
+        // if (!check) {
+        //   return
+        // }
+
+        const allSponsors = await Database.table('sponsors')
+          .where({ type: 1 })
+          .paginate(request.params.counter, 10)
+
+        return allSponsors.data
+      } catch (error) {
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
+      }
+    }
+  }
+
   async update({ auth, request, response }) {
     if (auth.user) {
       if (request.input('group_id') != undefined && request.input('group_id') != null) {
@@ -141,7 +166,7 @@ class SponsorController {
       try {
         const update_sponsor = await Sponsor.query()
           .where({ id: request.input('id') })
-          .update({ media_url: request.input('media_url'), link: request.input('link') })
+          .update({ media_url: request.input('media_url'), link: request.input('link'), type: 1 })
 
         return 'Saved successfully'
       } catch (error) {
@@ -153,6 +178,44 @@ class SponsorController {
           message: (error && error.message) || error,
         })
       }
+    }
+  }
+
+  async approval_for_sponsor({ auth, request, response }) {
+    if (auth.user) {
+      try {
+        const check = await this.security_check({ auth })
+
+        if (!check) {
+          return
+        }
+
+        const update_sponsor = await Sponsor.query()
+          .where({ id: request.input('id') })
+          .update({ type: parseInt(request.input('approval')) })
+
+        return 'Saved successfully'
+      } catch (error) {
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
+      }
+    }
+  }
+
+  async security_check({ auth }) {
+    const security_check = await Database.from('admins')
+      .where({ user_id: auth.user.id, permission_level: 1 })
+      .first()
+
+    if (security_check == undefined) {
+      return false
+    } else {
+      return true
     }
   }
 }

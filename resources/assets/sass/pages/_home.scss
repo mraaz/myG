@@ -1098,6 +1098,7 @@ section#content-container {
 
           @media only screen and (max-width: $mobile) {
             display: grid;
+            margin-left: -40px;
           }
 
           .author__username {
@@ -1153,6 +1154,7 @@ section#content-container {
             margin-left: auto;
             @media only screen and (max-width: $mobile) {
               color: #93a4a5;
+              font-size: 12px;
             }
           }
         }
