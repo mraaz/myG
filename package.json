@@ -14,7 +14,6 @@
     "test": "node ace test",
     "dev": "npm run build && node server.js",
     "style": "npm run sass && node server.js",
-    "reset": "adonis migration:reset && adonis migration:run && python ./scripts/database.py",
     "production": "./node_modules/.bin/webpack --env production NODE_ENV=production --mode=production",
     "watch": "gulp",
     "watch2": "webpack --watch --mode=development",
@@ -22,8 +21,7 @@
     "watch-server": "adonis serve --dev",
     "sass": "gulp styles",
     "js": "gulp webpack",
-    "build": "npm run sass && npm run js",
-    "db:refresh": "adonis migration:refresh"
+    "build": "npm run sass && npm run js"
   },
   "keywords": [
     "adonisjs",
