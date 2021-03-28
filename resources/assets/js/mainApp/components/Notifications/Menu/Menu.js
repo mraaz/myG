@@ -31,7 +31,7 @@ class Menu extends Component {
   }
 
   render() {
-    const { changeContentTab, notificationsCount, activeTab, approvals, alerts, chats, isAdmin } = this.props
+    const { changeContentTab, notificationsCount = 0, activeTab, approvals, alerts, chats, isAdmin } = this.props
     const { reports = 0, reportedUser } = this.state
     return (
       <div className='notifications-menu'>
@@ -66,7 +66,7 @@ class Menu extends Component {
           />
           {isAdmin && (
             <Button
-              title={`Sponsors ${reports ? `(${reports})` : '(0)'}`}
+              title={`Sponsors ${reports ? `(${reports})` : `(${notificationsCount})`}`}
               active={activeTab == 7}
               onClick={() => {
                 changeContentTab('', 7)

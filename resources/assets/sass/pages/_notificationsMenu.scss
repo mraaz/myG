@@ -749,7 +749,7 @@ $transition-default: 0.25s ease-out 0.1s;
 
   .notification {
     width: 100%;
-    height: 90px;
+    min-height: 90px;
     background-color: #0b0f14;
     border-radius: 4px;
     margin: 0 0 25px 0;
@@ -811,7 +811,6 @@ $transition-default: 0.25s ease-out 0.1s;
             width: 100%;
             height: 100%;
             max-height: 70px;
-            margin-left: 35px;
           }
         }
         .notification-username {
@@ -1551,6 +1550,18 @@ $transition-default: 0.25s ease-out 0.1s;
           color: #93a4a5;
         }
       }
+    }
+  }
+}
+
+.sponsors {
+  .notification .notification-content .notification-options .notification-actions {
+    display: flex;
+    position: absolute;
+    right: 20px;
+    bottom: -5px;
+    @media screen and (max-width: 575px) {
+      bottom: -35px;
     }
   }
 }

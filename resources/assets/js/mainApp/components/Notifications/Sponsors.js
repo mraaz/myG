@@ -12,6 +12,7 @@ import { clicked_sonsors, handleTime, mark_read_status } from './helperFunction'
 import { Toast_style } from '../Utility_Function'
 import { toast } from 'react-toastify'
 import NoRecord from './NoRecord'
+import SweetAlert from '../common/MyGSweetAlert'
 const defaultUserImage = 'https://myG.gg/default_user/new-user-profile-picture.png'
 const tabObj = {
   0: 0,
@@ -97,6 +98,7 @@ export default class sponsors extends Component {
     return (
       <div className='notification__text'>
         <a href={link} target='_blank'>
+          <div>{link}</div>
           <img className='aproval__image' src={media_url} onError={this.addDefaultSrc} />
         </a>
       </div>
@@ -123,14 +125,45 @@ export default class sponsors extends Component {
     }
   }
 
+  showAlert(type, data) {
+    const getAlert = () => (
+      <SweetAlert
+        danger
+        showCancel
+        title={`${type == 2 ? 'Are you sure you wish to Approve this Sponsor?' : 'Are you sure you wish to Decline this Sponsor?'}`}
+        confirmBtnText='Make it so!'
+        confirmBtnBsStyle='danger'
+        focusCancelBtn={true}
+        focusConfirmBtn={false}
+        showCloseButton={true}
+        onConfirm={() => this.hideAlert('true', type, data)}
+        onCancel={() => this.hideAlert('false', type, data)}>
+        You will not be able to recover this entry!
+      </SweetAlert>
+    )
+
+    this.setState({
+      alert: getAlert(),
+    })
+  }
+  hideAlert = (text, type, data) => {
+    this.setState({
+      alert: null,
+    })
+    if (text == 'true') {
+      this.handleActionClick(type, data)
+    }
+  }
+
   render() {
     const { active } = this.props
-    const { fetching, sponsors } = this.state
+    const { fetching, sponsors, alert = null } = this.state
 
     const isActive = active == true ? { display: 'block' } : { display: 'none' }
 
     return (
-      <div style={isActive} className='game__approval'>
+      <div style={isActive} className='game__approval sponsors'>
+        {alert}
         {!sponsors.length && <NoRecord title='No more updates.' linkvisible={false} />}
 
         <div className='gameList__box' style={{ padding: '15px' }} onScroll={this.handleScroll} ref={this.myRef}>
@@ -172,7 +205,7 @@ export default class sponsors extends Component {
                           className='action accept'
                           onClick={(e) => {
                             e.stopPropagation()
-                            this.handleActionClick(2, approval)
+                            this.showAlert(2, approval)
                           }}>
                           <img src='https://myG.gg/platform_images/Dashboard/btn_Like_Feed.svg' />
                           {` Approve`}
@@ -181,7 +214,7 @@ export default class sponsors extends Component {
                           className='action decline'
                           onClick={(e) => {
                             e.stopPropagation()
-                            this.handleActionClick(0, approval)
+                            this.showAlert(0, approval)
                           }}>
                           <img src='https://myG.gg/platform_images/Dashboard/btn_Like_Feed.svg' />
                           {` Decline`}
