@@ -377,6 +377,7 @@ export class Chat extends React.Component {
           messages={this.props.messages}
           messageListRef={this.messageListRef}
           editing={this.state.editing}
+          canDelete={true}
           onEdit={this.onEdit}
           addReaction={this.props.addReaction}
           removeReaction={this.props.removeReaction}

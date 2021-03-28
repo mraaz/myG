@@ -233,6 +233,9 @@ export class DossierInfo extends React.Component {
   }
 
   renderGameInput = (index) => {
+    const mostPlayedGames = this.state.mostPlayedGames || [];
+    const game = mostPlayedGames[index];
+    const value = get(game, 'gameName');
     return (
       <div className='row'>
         <span className='hint'>Game #{index + 1}</span>
@@ -243,8 +246,7 @@ export class DossierInfo extends React.Component {
             isValidNewOption={() => false}
             loadOptions={this.loadOptions}
             onChange={(input) => this.handleDropDownChange(index, input)}
-            isClearable
-            value={getGameLabel(((this.state.mostPlayedGames || [])[index] || {}).gameNameValue || {})}
+            value={value && { label: value, value: value }}
             className='viewGame__name full-width'
             placeholder='Search, select or create game title'
             onInputChange={(inputValue) => (inputValue ? (inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88)) : '')}

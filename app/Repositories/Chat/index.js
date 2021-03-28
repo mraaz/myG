@@ -973,8 +973,10 @@ class ChatRepository {
       createdAt: message.created_at,
       updatedAt: message.updated_at,
     });
-    await new AwsKeyController().removeChatAttachmentKey(requestedChatId, requestedMessageId);
-    if (messageSchema.senderId === requestingUserId) {
+    const security_check = await Database.from('admins').where({ user_id: requestingUserId, permission_level: 1 }).first();
+    const isAdmin = security_check != undefined ? true : false;
+    if (isAdmin || messageSchema.senderId === requestingUserId) {
+      await new AwsKeyController().removeChatAttachmentKey(requestedChatId, requestedMessageId);
       await message.save();
       this._notifyChatEvent({ chatId: requestedChatId, action: 'updateMessage', payload: messageSchema });
     }

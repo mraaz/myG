@@ -432,7 +432,7 @@
   }
   .viewGame__addMoreFilter {
     display: none;
-    justify-content: start;
+    justify-content: flex-start;
     align-items: baseline;
     padding: 20px 40px;
     @media screen and (min-width: 575px) {
@@ -942,7 +942,7 @@
         padding: 10px;
         .mygames {
           display: flex;
-          justify-content: start;
+          justify-content: flex-start;
           min-height: 163px;
           background: #1d2326 0% 0% no-repeat padding-box;
           border-radius: 4px;

@@ -102,7 +102,7 @@ class Layout extends Component {
         }
 
         this.setState({ initialData: initialData.data })
-        loadUserInfoToReduxStore(initialData.data.userInfo)
+        loadUserInfoToReduxStore({ ...initialData.data.userInfo, isAdmin: initialData.data.isAdmin })
         fetchNotifications()
         registerAccess()
         const needsToRedirectToProfile = ['/profile', '/profile/'].includes(window.location.pathname);
