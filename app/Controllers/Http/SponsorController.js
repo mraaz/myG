@@ -123,7 +123,7 @@ class SponsorController {
     }
   }
 
-  async show_approval({ auth }, group_id, user_id) {
+  async show_approval({ auth, request, response }) {
     if (auth.user) {
       try {
         // const check = await this.security_check({ auth })
