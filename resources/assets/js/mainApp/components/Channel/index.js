@@ -42,6 +42,7 @@ export class Channel extends React.Component {
   }
 
   handleMessageListScroll = () => {
+    if (!this.props.chatId) return;
     const messageList = this.messageListRef.current
     if (!messageList) return
     const hasScrolledEnough = messageList.scrollHeight - messageList.scrollTop > 750
@@ -265,20 +266,26 @@ export class Channel extends React.Component {
   }
 }
 
-export function mapStateToProps(state, props) {
-  const userId = state.user.userId;
-  const alias = state.user.alias;
+function getChatState(state, props) {
   const chatId = state.chat.channels[props.channelId]
-  const chat = state.chat.chats.find((chat) => chat.chatId === chatId) || {};
+  const chat = state.chat.chats.find((chat) => chat.chatId === chatId);
+  if (!chat) return {};
   const loadingMessages = chat.loadingMessages || false;
   const noMoreMessages = chat.noMoreMessages || false;
   const typing = chat.typing || [];
   const chatMessages = chat.messages || [];
   const entryLogs = chat.entryLogs || [];
-  const messages = withDatesAndLogsAndLastReads(chatMessages, entryLogs, {}, {}, userId);
+  const messages = withDatesAndLogsAndLastReads(chatMessages, entryLogs, {}, {}, state.user.userId);
+  return { chatId, messages, loadingMessages, noMoreMessages, typing };
+}
+
+export function mapStateToProps(state, props) {
+  const userId = state.user.userId;
+  const alias = state.user.alias;
   const blockedUsers = state.chat.blockedUsers || [];
   const disconnected = state.socket.disconnected;
-  return { chatId, userId, alias, messages, loadingMessages, noMoreMessages, typing, blockedUsers, disconnected }
+  const chat = getChatState(state, props)
+  return { userId, alias, messages: [], typing: [], blockedUsers, disconnected, ...chat };
 }
 
 function mapDispatchToProps(dispatch) {
