@@ -238,7 +238,7 @@ class MangeSponsors extends React.Component {
 
   deleteSponsor = (id) => {
     axios.delete(`/api/sponsor/delete/${id}`).then(this.fetchProfileData)
-    notifyToast('Yup, yup, yup... deleted successfully!')
+    toast.success(<Toast_style text={'Yup, yup, yup... deleted successfully!'} />)
   }
 
   render() {
