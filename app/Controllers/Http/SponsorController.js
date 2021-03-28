@@ -133,7 +133,9 @@ class SponsorController {
         // }
 
         const allSponsors = await Database.table('sponsors')
+          .innerJoin('users', 'users.id', 'sponsors.user_id')
           .where({ type: 1 })
+          .select('sponsors.*', 'users.alias', 'users.profile_img')
           .paginate(request.params.counter, 10)
 
         return allSponsors.data
