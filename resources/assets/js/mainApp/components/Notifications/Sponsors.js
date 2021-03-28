@@ -96,9 +96,9 @@ export default class sponsors extends Component {
     const { link, media_url } = props
     return (
       <div className='notification__text'>
-        <Link to={`${link}`}>
-          <img src={media_url} onError={this.addDefaultSrc} />
-        </Link>
+        <a href={link} target='_blank'>
+          <img className='aproval__image' src={media_url} onError={this.addDefaultSrc} />
+        </a>
       </div>
     )
   }
@@ -144,24 +144,23 @@ export default class sponsors extends Component {
                   }`}
                   key={approval.id}
                   onClick={(e) => this.handleClickNotiFication(approval.id, index)}>
-                  >
-                  <div className='notification-user-avatar'>
+                  {/* <div className='notification-user-avatar'>
                     <Link to={`/profile/${approval.alias}`}>
                       <img onError={this.addDefaultSrc} src={approval.profile_img ? approval.profile_img : defaultUserImage} />
                     </Link>
-                  </div>
+                  </div> */}
                   <div className='notification-content'>
                     <div
                       className={`notification-description ${
                         approval.read == undefined ? (approval.read_status == 0 ? 'unread' : '') : approval.read == false ? 'unread' : ''
                       }`}>
-                      <div className='username__link'>
-                        <Link to={`/profile/${approval.alias}`}>
+                      {/* <div className='username__link'>
+                        <Link to={`/profile/${approval.user_id}`}>
                           <div className='notification-username'>
                             <span> @{approval.alias}</span>
                           </div>
                         </Link>
-                      </div>
+                      </div> */}
                       {this.renderActivityText(approval)}
                     </div>
                     <div className='notification-options'>
@@ -176,7 +175,7 @@ export default class sponsors extends Component {
                             this.handleActionClick(2, approval)
                           }}>
                           <img src='https://myG.gg/platform_images/Dashboard/btn_Like_Feed.svg' />
-                          {` Accept`}
+                          {` Approve`}
                         </button>
                         <button
                           className='action decline'
