@@ -29,7 +29,7 @@ class PostController {
         arrGroups_id = String(request.input('group_id')).split(',')
       }
 
-      if (request.input('video') != undefined) {
+      if (request.input('video') != undefined && request.input('video').trim() != '') {
         // const rules = {
         //   video: 'url',
         // }
@@ -54,7 +54,7 @@ class PostController {
         if (arrGroups_id.length == 0) {
           newPost = await Post.create({
             content: request.input('content'),
-            video: request.input('video'),
+            video: request.input('video').trim() == '' ? null : request.input('video'),
             user_id: auth.user.id,
             type: 'text',
             group_id: null,
@@ -69,7 +69,7 @@ class PostController {
           for (var i = 0; i < arrGroups_id.length; i++) {
             newPost = await Post.create({
               content: request.input('content'),
-              video: request.input('video'),
+              video: request.input('video').trim() == '' ? null : request.input('video'),
               user_id: auth.user.id,
               type: 'text',
               group_id: arrGroups_id[i],
