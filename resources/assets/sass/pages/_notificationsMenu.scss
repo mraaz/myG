@@ -507,7 +507,8 @@ $transition-default: 0.25s ease-out 0.1s;
         max-height: 85vh;
       }
       .notification-content {
-        margin-left: 0;
+        padding: 0 10px 10px;
+        margin-left: 40px;
       }
     }
     .game__report {
