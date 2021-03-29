@@ -1,10 +1,6 @@
-const uniq = require('lodash.uniq');
 const User = use('App/Models/User');
 const ElasticsearchRepository = require('../Elasticsearch');
-const gameNameFields = require('../../../database/fixtures/game_names_fields.json');
-const dynamicFields = uniq([].concat.apply([], 
-  gameNameFields.map((field) => Object.keys(field.labels).map((key) => field.labels[key].split(' ').join('_')))
-));
+const gameLabels = require('./game_labels.json');
 
 class SearchRepository {
 
@@ -43,7 +39,7 @@ class SearchRepository {
     if (input.includes('experience:')) targetedQueries.push({ field: 'gameExperiences.experience.keyword', value: input.split('experience:')[1].trim().split(' ')[0].split('_').join(' ') });
     if (input.includes('career:')) targetedQueries.push({ field: 'gameExperiences.level.keyword', value: input.split('career:')[1].trim().split(' ')[0].split('_').join(' ').replace('Professional', 'Pro Gamer') });
     if (input.includes('level:') && parseInt(input.split('level:')[1], 10)) targetedQueries.push({ field: 'level', value: parseInt(input.split('level:')[1], 10) });
-    dynamicFields.forEach((field) => {
+    gameLabels.forEach((field) => {
       if (input.includes(` ${field}:`)) {
         targetedQueries.push({ 
           field: `gameExperiences.${field.split('_').join(' ')}.keyword`, 
