@@ -26,7 +26,7 @@ class MobileMenu extends Component {
   }
 
   render() {
-    const { changeContentTab, notificationsCount, activeTab, approvals, alerts, chats, sponsor } = this.props
+    const { changeContentTab, notificationsCount = 0, activeTab, approvals, alerts, chats, sponsors } = this.props
     const { reports = 0, reportedUser } = this.state
     const dummyData = [
       {
@@ -46,11 +46,7 @@ class MobileMenu extends Component {
         activeTab: 3,
       },
       {
-        title: `Sponsors ${sponsor ? `(${sponsor})` : '(0)'}`, //isadmin
-        activeTab: 7,
-      },
-      {
-        title: `Reports ${reports ? `(${reports})` : '(0)'}`, //isadmin
+        title: `Reports ${reports ? `(${reports})` : `(${notificationsCount})`}`, //isadmin
         activeTab: 4,
       },
       {
@@ -61,9 +57,13 @@ class MobileMenu extends Component {
         title: 'Settings',
         activeTab: 6,
       },
+      {
+        title: `Sponsors ${sponsors ? `(${sponsors})` : '(0)'}`, //isadmin
+        activeTab: 7,
+      },
     ]
     let prevCount = Number(activeTab) == 0 ? 0 : Number(activeTab) - 1
-    let nextCount = Number(activeTab) > 6 ? 0 : Number(activeTab) + 1
+    let nextCount = Number(activeTab) > 7 ? 0 : Number(activeTab) + 1
 
     return (
       <div className='menu__scroll'>
@@ -78,9 +78,9 @@ class MobileMenu extends Component {
         </div>
         <div className='activeTab__label'>{dummyData[activeTab].title}</div>
         <div
-          className={`next ${activeTab < 6 ? '' : 'hideArrow'}`}
+          className={`next ${activeTab < 7 ? '' : 'hideArrow'}`}
           onClick={() => {
-            if (activeTab < 6) {
+            if (activeTab < 7) {
               changeContentTab('next', Number(activeTab) + 1)
             }
           }}>

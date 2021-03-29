@@ -188,9 +188,9 @@ export default class sponsors extends Component {
                         approval.read == undefined ? (approval.read_status == 0 ? 'unread' : '') : approval.read == false ? 'unread' : ''
                       }`}>
                       {/* <div className='username__link'>
-                        <Link to={`/profile/${approval.user_id}`}>
+                        <Link to={`/profile/${approval.alias}`}>
                           <div className='notification-username'>
-                            <span> @{approval.alias}</span>
+                            <span> @{approval.alias}</span> 
                           </div>
                         </Link>
                       </div> */}
