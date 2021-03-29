@@ -32,11 +32,12 @@ export class GamerSuggestions extends React.Component {
     );
   }
 
-  renderGamerSuggestion = (profile) => {
+  renderGamerSuggestion = (profile, index) => {
     const isHovering = this.state.hovering === profile.alias;
     const games = profile.mostPlayedGames.length ? profile.mostPlayedGames : profile.gameExperiences.map(({ name }) => name);
     return(
       <div className="game-experience clickable"
+      key={`game_experience_${index}`}
       onClick={() => this.props.onboarding ? this.sendFriendRequest(profile.alias, profile.profileId) : window.router.push(`/profile/${profile.alias}`)}
       onMouseEnter={() => this.setState({ hovering: profile.alias })}
       onMouseLeave={() => this.setState({ hovering: null })}
@@ -49,8 +50,8 @@ export class GamerSuggestions extends React.Component {
           <span className="field-title space-right">Level</span>
           <span className="field-value">{profile.level}</span>
       </div>
-      {games.filter(game => !!game).slice(0, 3).map(game => (
-        <div className="field center">
+      {games.filter(game => !!game).slice(0, 3).map((game, index) => (
+        <div className="field center" key={`game_suggestion_${game.name}_${index}`}>
           <WithTooltip text={game} position={{}} disabled={game.length <= 12}>
             <span className='field-value' key={game}>
               {game.slice(0, 12) + (game.length > 12 ? '...' : '')}
@@ -164,7 +165,7 @@ export class GamerSuggestions extends React.Component {
           {!this.props.noTitle && this.renderHeaders()}
           <div className="scroll suggestions-scroll">
             {this.renderPageButtons()}
-            {suggestions.slice(this.state.page, this.state.page + 4).map(this.renderGamerSuggestion)}
+            {suggestions.slice(this.state.page, this.state.page + 4).map((profile, index) => this.renderGamerSuggestion(profile, index))}
             {!suggestions.length && <span className="no-users">Sorry mate, no suggestions found for you at this moment :(</span>}
           </div>
         </div>

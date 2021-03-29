@@ -137,7 +137,7 @@ const CommunityView = (props) => {
     return (
       <div className='Sponsors__container'>
         {[0, 1].includes(current_user_permission) && (
-          <button type='button' class='sponsors__btn' onClick={(e) => handleSponsorClick(Sponsors)}>
+          <button type='button' className='sponsors__btn' onClick={(e) => handleSponsorClick(Sponsors)}>
             Manage your Sponsors
           </button>
         )}

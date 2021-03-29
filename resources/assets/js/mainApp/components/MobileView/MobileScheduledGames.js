@@ -202,7 +202,7 @@ const MobileScheduledGames = (props) => {
             {accept_msg && <div className='gameTime__label'>Accept Message</div>}
             {accept_msg && <div className='gameTime__value'>{accept_msg}</div>}
             {additional_submit_info_fields.length > 0 &&
-              additional_submit_info_fields.map((fields) => {
+              additional_submit_info_fields.map((fields, index) => {
                 let values = ''
                 const Obj = fields[0]
 
@@ -214,8 +214,8 @@ const MobileScheduledGames = (props) => {
                 }
                 return (
                   <Fragment>
-                    <div className='gameTime__label'>{Obj.label}</div>
-                    <div className='gameTime__value'>{values.split(',').join(', ')}</div>
+                    <div className='gameTime__label' key={`label-${index}`}>{Obj.label}</div>
+                    <div className='gameTime__value' key={`value-${index}`}>{values.split(',').join(', ')}</div>
                   </Fragment>
                 )
               })}
@@ -296,7 +296,7 @@ const MobileScheduledGames = (props) => {
             )}
             {id == '' && !myGamesMenu && <GameFilter handleChange={handleChangeFilter} />}
           </div>
-          <div class='mGameResultsFiltersRowTwo'>
+          <div className='mGameResultsFiltersRowTwo'>
             <div className='mGameResultsCount'> {scheduleGames.length} Results</div>
             <div className='mGameResultsFillView'>
               <span>{slideOptionLabel} </span>{' '}

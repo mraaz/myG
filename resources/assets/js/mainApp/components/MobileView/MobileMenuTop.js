@@ -29,10 +29,10 @@ const MobileMenuTop = (props) => {
 
   return (
     <Fragment>
-      <div class={mobileMenuIsActive ? 'menu-tab show' : 'menu-tab hide'}>
-        <img onClick={() => setHideSideMenu(true)} src='https://myG.gg/platform_images/Dashboard/logo.svg' class='img-fluid logo-img' />
-        <div class='toggle-menu-btn'>
-          <img src='https://myG.gg/platform_images/Dashboard/toggle_menu_collapsed.svg' class='img-fluid' />
+      <div className={mobileMenuIsActive ? 'menu-tab show' : 'menu-tab hide'}>
+        <img onClick={() => setHideSideMenu(true)} src='https://myG.gg/platform_images/Dashboard/logo.svg' className='img-fluid logo-img' />
+        <div className='toggle-menu-btn'>
+          <img src='https://myG.gg/platform_images/Dashboard/toggle_menu_collapsed.svg' className='img-fluid' />
         </div>
         <div className={'notification-expanded'}>
           <Link to='/?at=notifications&submenu=1'>
