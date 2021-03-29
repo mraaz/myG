@@ -258,6 +258,34 @@ export default class Alerts extends Component {
       case 23:
         return <div className='notification__text'>{`has commended you!`}</div>
         break
+      case 25:
+        return <div className='notification__text'>{`grats! Sponsor approved!`}</div>
+        break
+      case 26:
+        return (
+          <div className='notification__text'>{`sorry :( Sponsor got denied. Ensure this is PG or lower, MA15+ or R will get denied`}</div>
+        )
+        break
+      case 27:
+        return (
+          <div className='notification__text'>
+            {`grats! Sponsor approved for this community: `}
+            <Link to={`/community/${decodeURIComponent(props.name)}`}>
+              <span className='notification-type'>{decodeURIComponent(props.name)}</span>
+            </Link>
+          </div>
+        )
+        break
+      case 28:
+        return (
+          <div className='notification__text'>
+            {`sorry! Sponsor denied for this community: `}
+            <Link to={`/community/${decodeURIComponent(props.name)}`}>
+              <span className='notification-type'>{decodeURIComponent(props.name)}</span>
+            </Link>
+          </div>
+        )
+        break
 
       default:
         break
