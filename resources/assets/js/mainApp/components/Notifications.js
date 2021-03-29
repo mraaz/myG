@@ -26,10 +26,10 @@ export default class Notifications extends Component {
     const { isAdmin } = this.state
     let activeTab = tab
     if (!isAdmin && type == 'next') {
-      activeTab = tab == 4 || tab == 5 ? 6 : activeTab
+      activeTab = tab == 4 || tab == 5 || tab == 7 ? 6 : activeTab
     }
     if (!isAdmin && type == 'previous') {
-      activeTab = tab == 4 || tab == 5 ? 3 : activeTab
+      activeTab = tab == 4 || tab == 5 || tab == 7 ? 3 : activeTab
     }
     this.setState(
       {
