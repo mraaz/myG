@@ -636,9 +636,6 @@ class UsergroupController {
   }
 
   async autoApproveOfficialCommunities({ auth, request, response }) {
-    const lock = await RedisRepository.lock('Auto accept official communities', 1000 * 50 * 1)
-    if (!lock) return
-
     try {
       const grp_to_approve = await Database.from('usergroups')
         .innerJoin('groups', 'groups.id', 'usergroups.group_id')
