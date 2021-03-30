@@ -575,7 +575,8 @@ class NotificationController_v2 {
         const group_member_approved = await Database.from('notifications')
           .innerJoin('users', 'users.id', 'notifications.user_id')
           .innerJoin('groups', 'groups.id', 'notifications.group_id')
-          .where({ other_user_id: auth.user.id, activity_type: 17 })
+          .where({ other_user_id: auth.user.id })
+          .whereIn('activity_type', [17, 27, 28])
           .select(
             'notifications.group_id',
             'notifications.activity_type',
@@ -605,14 +606,22 @@ class NotificationController_v2 {
           .orderBy('notifications.created_at', 'desc')
           .paginate(request.input('counter'), set_limit)
 
-        const commendations = await Database.from('notifications')
+        const user_notis = await Database.from('notifications')
           .innerJoin('users', 'users.id', 'notifications.other_user_id')
-          .where({ other_user_id: auth.user.id, activity_type: 23 })
-          .select('notifications.id', 'notifications.activity_type', 'notifications.read_status', 'users.alias')
+          .where({ other_user_id: auth.user.id })
+          .whereIn('activity_type', [23, 25, 26])
+          .select(
+            'notifications.id',
+            'notifications.activity_type',
+            'notifications.read_status',
+            'users.alias',
+            'users.profile_img',
+            'notifications.created_at'
+          )
           .orderBy('notifications.created_at', 'desc')
           .paginate(request.input('counter'), set_limit)
 
-        singleArr.push(...commendations.data)
+        singleArr.push(...user_notis.data)
         singleArr.push(...group_member_approved.data)
         singleArr.push(...user_ding.data)
       }
@@ -714,7 +723,7 @@ class NotificationController_v2 {
     try {
       const markAllNoti = await Notification.query()
         .where({ other_user_id: auth.user.id })
-        .whereIn('activity_type', [2, 3, 4, 5, 6, 10, 14, 15, 16, 17, 19, 20, 21, 22, 23])
+        .whereIn('activity_type', [2, 3, 4, 5, 6, 10, 14, 15, 16, 17, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28])
         .update({ read_status: 1 })
       return 'Saved successfully'
     } catch (error) {
@@ -734,7 +743,7 @@ class NotificationController_v2 {
         .where({
           other_user_id: auth.user.id,
         })
-        .whereIn('activity_type', [2, 3, 4, 5, 6, 10, 14, 15, 16, 17, 19, 20, 21, 22, 23])
+        .whereIn('activity_type', [2, 3, 4, 5, 6, 10, 14, 15, 16, 17, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28])
         .delete()
       const userId = auth.user.id
       const notifications = await this.count({ auth: { user: { id: userId } }, request: null })
@@ -1437,7 +1446,12 @@ class NotificationController_v2 {
         case 24:
           group_id = id
           break
-        default:
+        case 27:
+          group_id = id
+          break
+        case 28:
+          group_id = id
+          break
       }
 
       try {
@@ -1527,7 +1541,7 @@ class NotificationController_v2 {
 
           const _getUnread_count_Alerts = await Database.from('notifications')
             .where({ other_user_id: auth.user.id, read_status: 0 })
-            .whereIn('activity_type', [10, 14, 15, 17, 19, 20, 21, 22, 23])
+            .whereIn('activity_type', [10, 14, 15, 17, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28])
             .count('* as no_of_my_unread_alerts')
 
           getUnread_count_Alerts +=

@@ -11,6 +11,12 @@ import { Upload_to_S3, Remove_file } from '../AWS_utilities'
 import { MyGButton } from '../common'
 import { fetchProfileInfoAction } from '../../../redux/actions/profileAction'
 
+const typeMapping = {
+  0: 'Denied',
+  1: 'Pending Approval',
+  2: 'Approved',
+}
+
 class MangeSponsors extends React.Component {
   constructor(props) {
     super(props)
@@ -22,6 +28,7 @@ class MangeSponsors extends React.Component {
       aws_key_id: '',
       file_keys: '',
       uploading: [],
+      alert: null,
     }
     this.fileInputRef = []
   }
@@ -59,6 +66,37 @@ class MangeSponsors extends React.Component {
     }
   }
 
+  showAlert(id) {
+    const getAlert = () => (
+      <SweetAlert
+        danger
+        showCancel
+        title='Are you sure you wish to delete this Sponsor?'
+        confirmBtnText='Make it so!'
+        confirmBtnBsStyle='danger'
+        focusCancelBtn={true}
+        focusConfirmBtn={false}
+        showCloseButton={true}
+        onConfirm={() => this.hideAlert('true', id)}
+        onCancel={() => this.hideAlert('false', id)}>
+        You will not be able to recover this entry!
+      </SweetAlert>
+    )
+
+    this.setState({
+      alert: getAlert(),
+    })
+  }
+
+  hideAlert = (text, id) => {
+    this.setState({
+      alert: null,
+    })
+    if (text == 'true') {
+      this.deleteSponsor(id)
+    }
+  }
+
   handleSave = (e) => {
     const { sponsors = [] } = this.state
     sponsors.map((sponsor) => {
@@ -68,7 +106,9 @@ class MangeSponsors extends React.Component {
         this.createSponsor(sponsor)
       }
     })
-    this.setState({ saveButtonDisabled: true })
+    this.setState({ saveButtonDisabled: true }, () => {
+      this.fetchProfileData()
+    })
   }
 
   handleClose = (e) => {
@@ -196,11 +236,25 @@ class MangeSponsors extends React.Component {
     this.setState({ uploading, saveButtonDisabled: false })
   }
 
+  deleteSponsor = (id) => {
+    axios.delete(`/api/sponsor/delete/${id}`).then(this.fetchProfileData)
+    toast.success(<Toast_style text={'Yup, yup, yup... deleted successfully!'} />)
+  }
+
   render() {
-    const { saveButtonDisabled = true, linkValue = '', media_url = '', modalStatus = true, uploading = [], sponsors = [] } = this.state
+    const {
+      saveButtonDisabled = true,
+      linkValue = '',
+      media_url = '',
+      modalStatus = true,
+      uploading = [],
+      sponsors = [],
+      alert,
+    } = this.state
 
     return (
       <div className={`Sponsor__edit`}>
+        {alert}
         <div className='SponsorSave__action'>
           <button type='button' className='Sponsoraction' disabled={saveButtonDisabled} onClick={this.handleSave}>
             Save
@@ -210,7 +264,16 @@ class MangeSponsors extends React.Component {
           const counter = index + 1
           return (
             <div className='Sponsor__edit-list' key={`${sponsors.length}_${index}}`}>
-              <div className='text'>Custom Sponsor {counter}</div>
+              <div className='text sponsor__header-row'>
+                <span className='count'> Custom Sponsor {counter}</span>
+                <span className='status'> {typeMapping[sponsor.type]}</span>
+                {sponsor.id && (
+                  <span className='action' onClick={(e) => this.showAlert(sponsor.id)}>
+                    {' '}
+                    Delete
+                  </span>
+                )}
+              </div>
               <div className='Sponsor__media__input' onClick={(e) => this.handleImageChange(e, counter)}>
                 <input
                   type='file'

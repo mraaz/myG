@@ -870,6 +870,28 @@
   }
   .Sponsor__edit-list {
     margin-bottom: 20px;
+    .sponsor__header-row {
+      display: flex;
+      .count {
+        color: #fff !important;
+      }
+      .status {
+        margin-left: auto;
+        &.Denied {
+          color: red;
+        }
+        &.Pending {
+          color: yellow;
+        }
+        &.Approved {
+          color: green;
+        }
+      }
+      .action {
+        cursor: pointer;
+        color: red !important;
+      }
+    }
   }
   .Sponsor__edit {
     padding: 2em 2em !important;
