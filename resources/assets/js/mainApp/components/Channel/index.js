@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import ChatMessageList from '../Messenger/ChatMessageList'
 import ChatInput from '../Messenger/ChatInput'
+import OnlineUsers from './online';
 import AttachWindow from '../Messenger/AttachWindow'
 import { fetchChannelAction, fetchMessagesAction, sendMessageAction, editMessageAction, deleteMessageAction, updateChatStateAction, setTypingAction, addReactionAction, removeReactionAction, blockUserAction, unblockUserAction } from '../../../redux/actions/chatAction'
 import { withDatesAndLogsAndLastReads } from '../../../common/chat'
@@ -42,6 +43,7 @@ export class Channel extends React.Component {
   }
 
   handleMessageListScroll = () => {
+    if (!this.props.chatId) return;
     const messageList = this.messageListRef.current
     if (!messageList) return
     const hasScrolledEnough = messageList.scrollHeight - messageList.scrollTop > 750
@@ -135,6 +137,7 @@ export class Channel extends React.Component {
           messageListRef={this.messageListRef}
           editing={this.state.editing}
           isGroup={true}
+          canDelete={this.props.isAdmin}
           onEdit={this.onEdit}
           addReaction={this.props.addReaction}
           removeReaction={this.props.removeReaction}
@@ -251,7 +254,7 @@ export class Channel extends React.Component {
 
   render() {
     return (
-      <div className='messenger' style={{ all: 'unset' }}>
+      <div className='messenger' style={{ all: 'unset', width: '100%', display: 'flex' }}>
         <div className={`chat-component-base ${!!this.props.page ? 'channel-page' : 'channel'}`}>
           {this.state.attachment && this.renderAttachment()}
           {this.renderBody()}
@@ -260,25 +263,33 @@ export class Channel extends React.Component {
           {this.renderFooter()}
           {!this.props.page && this.renderOpenInNewPageButton()}
         </div>
+        <OnlineUsers page={this.props.page} />
       </div>
     )
   }
 }
 
-export function mapStateToProps(state, props) {
-  const userId = state.user.userId;
-  const alias = state.user.alias;
+function getChatState(state, props) {
   const chatId = state.chat.channels[props.channelId]
-  const chat = state.chat.chats.find((chat) => chat.chatId === chatId) || {};
+  const chat = state.chat.chats.find((chat) => chat.chatId === chatId);
+  if (!chat) return {};
   const loadingMessages = chat.loadingMessages || false;
   const noMoreMessages = chat.noMoreMessages || false;
   const typing = chat.typing || [];
   const chatMessages = chat.messages || [];
   const entryLogs = chat.entryLogs || [];
-  const messages = withDatesAndLogsAndLastReads(chatMessages, entryLogs, {}, {}, userId);
+  const messages = withDatesAndLogsAndLastReads(chatMessages, entryLogs, {}, {}, state.user.userId);
+  return { chatId, messages, loadingMessages, noMoreMessages, typing };
+}
+
+export function mapStateToProps(state, props) {
+  const userId = state.user.userId;
+  const alias = state.user.alias;
+  const isAdmin = state.user.isAdmin;
   const blockedUsers = state.chat.blockedUsers || [];
   const disconnected = state.socket.disconnected;
-  return { chatId, userId, alias, messages, loadingMessages, noMoreMessages, typing, blockedUsers, disconnected }
+  const chat = getChatState(state, props)
+  return { userId, alias, isAdmin, messages: [], typing: [], blockedUsers, disconnected, ...chat };
 }
 
 function mapDispatchToProps(dispatch) {

@@ -18,4 +18,4 @@ async function sqlGuard(job) {
 }
 
 // Let me know how this behaves in production, we might need it to be the Redis Guard instead.
-module.exports = sqlGuard
+module.exports = redisGuard

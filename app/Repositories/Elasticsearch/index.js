@@ -39,6 +39,7 @@ class ElasticsearchRepository {
 
   async storeUser({ user }) {
     log('ELASTICSEARCH', `Storing user in Elasticsearch: ${user.alias}`);
+    delete user.status;
     const gameExperiences = (user.gameExperiences || []).map((experience) => {
       const dynamic = experience.dynamic || {};
       const extraFields = {};
@@ -56,7 +57,6 @@ class ElasticsearchRepository {
         name: experience.gameName,
         ...extraFields,
       };
-      log('ELASTICSEARCH', `User To Store: ${JSON.stringify(userToStore)}`);
       return userToStore;
     });
     return this.getElasticsearchClient().update({

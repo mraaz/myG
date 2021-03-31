@@ -277,7 +277,7 @@ $transition-default: 0.25s ease-out 0.1s;
       }
       .mygames {
         display: flex;
-        justify-content: start;
+        justify-content: flex-start;
         min-height: 163px;
         background: #1d2326 0% 0% no-repeat padding-box;
         border-radius: 4px;

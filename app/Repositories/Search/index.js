@@ -17,10 +17,11 @@ class SearchRepository {
 
   buildUsersQuery = ({ input, from, size, requestingUserId }) => {
     const must_not = [{ match: { profileId: requestingUserId } }];
+    const sort = [{ level: { order: "desc" } }];
     if (!parseInt(size, 10)) size = 10;
     if (!parseInt(from, 10)) from = 0;
-    if (!input) return { query: { bool: { must_not } }, size, from };
-    const query = { query: { bool: { must: [], must_not, should: [] } }, size, from };
+    if (!input) return { query: { bool: { must_not } }, size, from, sort };
+    const query = { query: { bool: { must: [], must_not, should: [] } }, size, from, sort };
     const targetedQueries = [query];
     if (input.includes('alias:')) targetedQueries.push({ field: 'alias', value: input.split('alias:')[1].trim().split(' ')[0] });
     if (input.includes('country:')) targetedQueries.push({ field: 'country', value: input.split('country:')[1].trim().split(' ')[0] });

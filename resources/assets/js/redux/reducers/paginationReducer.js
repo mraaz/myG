@@ -140,7 +140,7 @@ export default function reducer(state = initialState, action) {
     }
 
     case 'NEW_MESSAGE': {
-      logger.log('CHAT', `Redux -> New Message: `, action.payload, action.meta)
+      logger.log('CHAT', `Redux -> Paginating Message: `, action.payload, action.meta)
       const newMessage = action.payload.message
       if (newMessage.keyReceiver) return state
       const existingRecentMessages = JSON.parse(JSON.stringify(state.recents))
