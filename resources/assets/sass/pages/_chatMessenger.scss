@@ -618,6 +618,16 @@
   .messenger-body-section {
     display: flex;
     flex-direction: column;
+
+    .gamers {
+      display: flex;
+      flex-direction: column;
+      background-color: #151C26;
+
+      .gamer {    
+        padding: 8px;
+      }
+    }
   }
 
   .messenger-body-section-loader {

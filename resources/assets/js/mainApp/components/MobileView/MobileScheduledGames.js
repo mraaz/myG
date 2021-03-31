@@ -296,7 +296,7 @@ const MobileScheduledGames = (props) => {
             )}
             {id == '' && !myGamesMenu && <GameFilter handleChange={handleChangeFilter} />}
           </div>
-          <div class='mGameResultsFiltersRowTwo'>
+          <div className='mGameResultsFiltersRowTwo'>
             <div className='mGameResultsCount'> {scheduleGames.length} Results</div>
             <div className='mGameResultsFillView'>
               <span>{slideOptionLabel} </span>{' '}

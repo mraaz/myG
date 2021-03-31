@@ -412,6 +412,7 @@ Route.delete('/api/chat/:chatId/privateKey', 'ChatController.confirmGroupPrivate
 
 // Channels
 Route.get('/api/channel/:channelId', 'ChatController.fetchChannel')
+Route.get('/api/users/online', 'UserController.fetchOnlineUsers')
 
 // Guests
 Route.post('/api/guest/', 'GuestController.register')

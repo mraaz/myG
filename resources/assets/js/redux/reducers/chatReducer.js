@@ -129,7 +129,7 @@ export default function reducer(state = initialState, action) {
     }
 
     case 'FETCH_CHAT_MESSAGES_PENDING': {
-      logger.log('CHAT', `Redux -> Loading More Messages: `, action.payload, action.meta)
+      logger.log('CHAT', `Redux -> Loading More Messages: `, action.meta)
       const { chatId } = action.meta
       const chats = JSON.parse(JSON.stringify(state.chats)).sort((a, b) => a.lastOpened - b.lastOpened)
       const chat = chats.find((candidate) => candidate.chatId === chatId)
@@ -940,23 +940,6 @@ function showNotification(state, chat, message) {
 
 function showNewMessageIndicator() {
   window.document.title = `(${parseInt((/\(([^)]+)\)/.exec(window.document.title) || [])[1] || 0) + 1}) myG`
-}
-
-function prepareChats(newChats, previousChats) {
-  const chats = newChats.map((chat) => {
-    const previousChat = previousChats.find((candidate) => candidate.chatId === chat.chatId) || {}
-    const previousMessages = previousChat.messages || []
-    return {
-      ...chat,
-      ...previousChat,
-      messages: previousMessages,
-      closed: previousChat.closed || !previousMessages.length,
-      deletedMessages: chat.deletedMessages,
-    }
-  })
-  const openChats = chats.filter((candidate) => !candidate.closed)
-  if (openChats.length > 4) Array.from(Array(openChats.length - 4)).forEach((_, index) => (openChats[index].closed = true))
-  return chats
 }
 
 function prepareMessage(state, chat, message) {

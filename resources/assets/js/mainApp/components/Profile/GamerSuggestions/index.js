@@ -36,7 +36,7 @@ export class GamerSuggestions extends React.Component {
     const isHovering = this.state.hovering === profile.alias;
     const games = profile.mostPlayedGames.length ? profile.mostPlayedGames : profile.gameExperiences.map(({ name }) => name);
     return(
-      <div className="game-experience clickable"
+      <div key={profile.alias} className="game-experience clickable"
       onClick={() => this.props.onboarding ? this.sendFriendRequest(profile.alias, profile.profileId) : window.router.push(`/profile/${profile.alias}`)}
       onMouseEnter={() => this.setState({ hovering: profile.alias })}
       onMouseLeave={() => this.setState({ hovering: null })}
@@ -50,7 +50,7 @@ export class GamerSuggestions extends React.Component {
           <span className="field-value">{profile.level}</span>
       </div>
       {games.filter(game => !!game).slice(0, 3).map(game => (
-        <div className="field center">
+        <div key={game} className="field center">
           <WithTooltip text={game} position={{}} disabled={game.length <= 12}>
             <span className='field-value' key={game}>
               {game.slice(0, 12) + (game.length > 12 ? '...' : '')}

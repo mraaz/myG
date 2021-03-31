@@ -108,7 +108,7 @@ export default class GameExperiences extends React.Component {
     const fields = mainFields
     const hasCommended = this.props.profile.commended.find((commendation) => commendation.gameExperienceId === id && commendation.commenderId === this.props.userId);
     return(
-      <div className="game-experience clickable" style={{ opacity: this.state.changingPage ? 0.3 : 1 }}
+      <div key={id} className="game-experience clickable" style={{ opacity: this.state.changingPage ? 0.3 : 1 }}
         onMouseEnter={() => this.setState({ hovering: id })}
         onMouseLeave={() => this.setState({ hovering: null })}
         onClick={() => this.setState({ selected: id })}>
