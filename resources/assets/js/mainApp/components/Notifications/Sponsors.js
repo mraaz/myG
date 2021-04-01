@@ -14,11 +14,10 @@ import { toast } from 'react-toastify'
 import NoRecord from './NoRecord'
 import SweetAlert from '../common/MyGSweetAlert'
 const defaultUserImage = 'https://myG.gg/default_user/new-user-profile-picture.png'
-const tabObj = {
-  0: 0,
-  1: 1,
-  2: 11,
-  3: 12,
+const typeMapping = {
+  0: 'Denied',
+  1: 'Pending Approval',
+  2: 'Approved',
 }
 
 export default class sponsors extends Component {
@@ -90,7 +89,7 @@ export default class sponsors extends Component {
     this.setState({ sponsors: filtersponsors }, () => {
       this.props.setNotificationsCount(this.state.sponsors.length)
     })
-    toast.success(<Toast_style text={`Yeah! you have successfully ${type} the request.`} />)
+    toast.success(<Toast_style text={`Yeah! you have successfully ${typeMapping[type]} the request.`} />)
   }
 
   renderActivityText = (props) => {
