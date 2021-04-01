@@ -20,7 +20,7 @@ const CommunityView = (props) => {
   const [singleSponsor, setSingleSponsor] = useState({})
   const contentAreaRef = useRef()
 
-  const [feature_on, setFeature_on] = useState(false)
+  //const [feature_on, setFeature_on] = useState(false)
 
   useEffect(() => {
     getcommunityDetails()
@@ -44,13 +44,13 @@ const CommunityView = (props) => {
     document.title = 'myG - ' + getOne.name
     setCommunityDetails({ ...getOne })
 
-    const environment = window.location.href.includes('localhost')
-      ? 'development'
-      : window.location.href.includes('myG.gg')
-      ? 'production'
-      : 'staging'
-
-    if (environment == 'development') setFeature_on(true)
+    // const environment = window.location.href.includes('localhost')
+    //   ? 'development'
+    //   : window.location.href.includes('myG.gg')
+    //   ? 'production'
+    //   : 'staging'
+    //
+    // if (environment == 'development') setFeature_on(true)
   }
 
   const handleScroll = () => {
@@ -137,7 +137,7 @@ const CommunityView = (props) => {
     return (
       <div className='Sponsors__container'>
         {[0, 1].includes(current_user_permission) && (
-          <button type='button' class='sponsors__btn' onClick={(e) => handleSponsorClick(Sponsors)}>
+          <button type='button' className='sponsors__btn' onClick={(e) => handleSponsorClick(Sponsors)}>
             Manage your Sponsors
           </button>
         )}
@@ -186,7 +186,7 @@ const CommunityView = (props) => {
           </div>
         </div>
       )}
-      {feature_on && renderSponsors(communityDetails.sponsors)}
+      {renderSponsors(communityDetails.sponsors)}
       {showSponsorModal && <MangeSponsors sponsors={singleSponsor} handleModalStatus={hideSponsorModal} group_id={communityDetails.id} />}
       {communityDetails.id && (
         <GamePosts {...props} group_id={communityDetails.id} current_user_permission={communityDetails.current_user_permission} />

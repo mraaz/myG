@@ -412,6 +412,34 @@ class UserController {
     }
   }
 
+  async fetchOnlineUsers({ auth }) {
+    if (!auth.user) return "You are not Logged In!";
+    const myGames = await Database
+      .select('game_names.game_name')
+      .from('user_most_played_games')
+      .leftJoin('game_names', 'game_names.id', 'user_most_played_games.game_name_id')
+      .where('user_most_played_games.user_id', auth.user.id)
+      .then((games) => [' All', ...games.map((game) => game.game_name)]);
+    const onlineUsers = await Database
+      .select(['users.alias', 'game_names.game_name', 'game_names.game_artwork'])
+      .from('users')
+      .leftJoin('user_most_played_games', 'user_most_played_games.user_id', 'users.id')
+      .leftJoin('game_names', 'game_names.id', 'user_most_played_games.game_name_id')
+      .where('users.status', 'online')
+      .limit(100);
+    const games = {};
+    onlineUsers.forEach(({ alias, game_name, game_artwork }) => {
+      if (!game_name) game_name = ' All';
+      if (!games[game_name]) games[game_name] = { icon: game_artwork, gamers: [] };
+      games[game_name].gamers.push(alias);
+    });
+    const preferredGames = Object.keys(games).sort().filter(game => myGames.includes(game)).map((game) => ({ game: game.trim(), ...games[game] }));
+    const otherGames = Object.keys(games).sort().filter(game => !myGames.includes(game)).map((game) => ({ game: game.trim(), ...games[game] }));
+    const gamesList = [...preferredGames, ...otherGames];
+    gamesList.forEach(game => { game.gamers = game.gamers.filter(alias => alias !== auth.user.alias) });
+    return gamesList.filter(game => game.gamers.length).slice(0, 10);
+  }
+
   // async scrub_data() {
   //   console.log('<<<RAAAZ')
   //   console.log(process.env.NODE_ENV, '<<<<process.env.NODE_ENV')

@@ -27,7 +27,7 @@ const getJobs = (runEveryJobOnStart) => [
     action: require('./tasks/chat-expiredAttachments'),
     schedule: '0 0 * * *',
     runOnStart: runEveryJobOnStart ? true : false,
-    enabled: false,
+    enabled: true,
   },
   {
     name: 'Chat Game Messages',

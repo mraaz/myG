@@ -60,8 +60,10 @@ const generateRandomString = (length) => {
 class ApiController {
   async initialApp({ auth }) {
     if (auth.user) {
+      const security_check = await Database.from('admins').where({ user_id: auth.user.id, permission_level: 1 }).first()
       return {
         userInfo: auth.user,
+        isAdmin: security_check != undefined ? true : false,
         port: process.env.PORT,
         logsOn: process.env.LOGS_ON,
         preventReload: process.env.PREVENT_RELOAD,

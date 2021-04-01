@@ -14,6 +14,7 @@ const initialState = {
   userTransactionStates: { user_level: 1 },
   statsUpdatedFromWebsocket: false,
   statsForAlias: {},
+  onlineUsers: [],
 }
 
 export default function reducer(
@@ -21,6 +22,7 @@ export default function reducer(
     userId: null,
     alias: null,
     icon: null,
+    isAdmin: false,
     status: 'online',
     ...initialState,
   },
@@ -308,6 +310,14 @@ export default function reducer(
       return {
         ...state,
         leveled_up_offline: false,
+      }
+    }
+
+    case 'FETCH_ONLINE_USERS_FULFILLED': {
+      logger.log('USER', 'Redux -> Fetched Online Users: ', action.payload);
+      return {
+        ...state,
+        onlineUsers: action.payload
       }
     }
 

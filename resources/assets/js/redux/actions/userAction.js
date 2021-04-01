@@ -16,6 +16,7 @@ import {
   fetchBadges,
   redeemBadge,
   checkedLevel,
+  fetchOnlineUsers,
 } from '../../integration/http/user'
 
 export function logoutAction() {
@@ -193,5 +194,12 @@ export function checkedLevelAction() {
   return {
     type: 'CHECKED_LEVEL',
     payload: checkedLevel(),
+  }
+}
+
+export function fetchOnlineUsersAction() {
+  return {
+    type: 'FETCH_ONLINE_USERS',
+    payload: fetchOnlineUsers(),
   }
 }

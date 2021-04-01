@@ -20,10 +20,10 @@ export default class Sponsors extends React.Component {
     axios.delete(`/api/sponsor/delete/${id}`).then(this.props.refetchSponsors)
     notifyToast('Yup, yup, yup... deleted successfully!')
   }
-  onEdit = () => {
-    this.props.refetchSponsors();
-    this.setState({ editing: null });
-  }
+  // onEdit = () => {
+  //   this.props.refetchSponsors();
+  //   this.setState({ editing: null });
+  // }
 
   renderSponsor = (sponsor) => {
     const isHovering = this.state.hovering === sponsor.id;
@@ -71,7 +71,7 @@ export default class Sponsors extends React.Component {
   render() {
     const {sponsors=[]} = this.props;
     return(<div className="profile__sponsors-container1">
-        {/* {this.props.isSelf &&<button type="button" className="sponsors__btn" onClick={() =>this.editSponsor(sponsors)}>Manage your Sponsors</button>}*/}
+        {this.props.isSelf &&<button type="button" className="sponsors__btn" onClick={() =>this.editSponsor(sponsors)}>Manage your Sponsors</button>}
         <div className="profile__sponsors-container">
         <div id="profile-sponsors">
           {/* {this.renderEditSponsor(sponsors)} */}

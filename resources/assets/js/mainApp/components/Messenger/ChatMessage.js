@@ -189,7 +189,9 @@ export default class ChatMessage extends React.Component {
           <p className='chat-component-message-options-label'>reply</p>
         </div>
 
-        <div className={`chat-component-message-options-row-divider ${origin === 'received' ? sentStyle : receivedStyle}`} />
+        {this.props.message.isAttachment && (
+          <div className={`chat-component-message-options-row-divider ${origin === 'received' ? sentStyle : receivedStyle}`} />
+        )}
 
         {this.props.message.isAttachment && (
           <div
@@ -199,15 +201,17 @@ export default class ChatMessage extends React.Component {
           </div>
         )}
 
-        {this.props.message.isAttachment && (
+        {!!this.props.canDelete && (
           <div className={`chat-component-message-options-row-divider ${origin === 'received' ? sentStyle : receivedStyle}`} />
         )}
 
-        <div
-          className='chat-component-message-options-row clickable'
-          onClick={() => this.props.deleteMessage(this.props.chatId, this.props.userId, this.props.messageId, origin)}>
-          <p className='chat-component-message-options-label'>delete</p>
-        </div>
+        {!!this.props.canDelete && (
+          <div
+            className='chat-component-message-options-row clickable'
+            onClick={() => this.props.deleteMessage(this.props.chatId, this.props.userId, this.props.messageId, origin)}>
+            <p className='chat-component-message-options-label'>delete</p>
+          </div>
+        )}
       </div>
     )
   }

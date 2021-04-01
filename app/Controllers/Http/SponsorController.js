@@ -6,6 +6,7 @@ const Database = use('Database')
 const LoggingRepository = require('../../Repositories/Logging')
 const CommonController = use('./CommonController')
 const ApiController = use('./ApiController')
+const NotificationController_v2 = use('./NotificationController_v2')
 
 class SponsorController {
   async store({ auth, request, response }) {
@@ -126,11 +127,11 @@ class SponsorController {
   async show_approval({ auth, request, response }) {
     if (auth.user) {
       try {
-        // const check = await this.security_check({ auth })
-        //
-        // if (!check) {
-        //   return
-        // }
+        const check = await this.security_check({ auth })
+
+        if (!check) {
+          return
+        }
 
         const allSponsors = await Database.table('sponsors')
           .innerJoin('users', 'users.id', 'sponsors.user_id')
@@ -195,6 +196,23 @@ class SponsorController {
         const update_sponsor = await Sponsor.query()
           .where({ id: request.input('id') })
           .update({ type: parseInt(request.input('approval')) })
+
+        const noti = new NotificationController_v2()
+
+        const thisSponsor = await Database.table('sponsors')
+          .where({ id: request.input('id') })
+          .first()
+
+        if (thisSponsor == undefined) return
+
+        switch (parseInt(request.input('approval'))) {
+          case 0:
+            noti.addGenericNoti_({ auth }, thisSponsor.group_id, thisSponsor.user_id, thisSponsor.group_id == null ? 26 : 28)
+            break
+          case 2:
+            noti.addGenericNoti_({ auth }, thisSponsor.group_id, thisSponsor.user_id, thisSponsor.group_id == null ? 25 : 27)
+            break
+        }
 
         return 'Saved successfully'
       } catch (error) {

@@ -37,14 +37,16 @@ const createOption_GrpHashTags = (label, group_hash_tag_id) => ({
   group_hash_tag_id,
 })
 
-export const getGameLabel = ({ game_img, game_name }) =>
+export const getGameLabel = ({ game_img, game_name, gameName, label }) =>
   !!game_img ? (
     <div style={{ fontWeight: 'bold', fontSize: '14px' }}>
       <img src={game_img} />
-      &nbsp;&nbsp;&nbsp;&nbsp;{game_name}
+      &nbsp;&nbsp;&nbsp;&nbsp;{game_name || gameName || label}
     </div>
   ) : (
-    game_name
+    <div style={{ fontWeight: 'bold', fontSize: '14px' }}>
+      {game_name || gameName || label}
+    </div>
   )
 
 export async function Game_name_values(inputValue) {

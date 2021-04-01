@@ -56,7 +56,7 @@ class Settings extends Component {
         })
       }
 
-      const getSettings = async function () {
+      const getSettings = async function() {
         try {
           const getSettings = await axios.get('/api/settings')
           self.setState({
@@ -299,11 +299,9 @@ class Settings extends Component {
                   Disable Account
                 </button>
               )}
-              {this.state.feature_on && (
-                <button type='button' className='sponsorsAction' onClick={() => this.sponsorsAction()}>
-                  Manage your Sponsors
-                </button>
-              )}
+              <button type='button' className='sponsorsAction' onClick={() => this.sponsorsAction()}>
+                Manage your Sponsors
+              </button>
               <button type='button' className='deleteAcccount' onClick={() => this.deleteAcccount()}>
                 Delete Account
               </button>

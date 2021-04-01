@@ -124,3 +124,7 @@ export function fetchNotifications() {
 export function checkedLevel() {
   return axios.post('/api/userStatTransaction/checkedLevel').then((response) => response.data);
 }
+
+export function fetchOnlineUsers() {
+  return axios.get('/api/users/online').then((response) => response.data);
+}
