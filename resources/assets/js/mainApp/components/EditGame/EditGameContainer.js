@@ -335,7 +335,7 @@ const EditGameContainer = (props) => {
 
   const getPageFooter = () => {
     return (
-      <div className={styles.footerContainer}>
+      <div className={styles.footerContainer} id={styles.footerContainer}>
         <div
           className={classNames([styles.footerSubmitButton, isButtonDisabled() ? styles.footerSubmitButtonLight : ''])}
           onClick={isSubmitting ? null : onAddGameSubmit}>
