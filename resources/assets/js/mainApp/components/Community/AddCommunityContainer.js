@@ -75,6 +75,7 @@ const AddCommunityContainer = ({ level }) => {
           // document.getElementById('content-container').style.marginLeft = '80px'
           document.getElementById('content-container').style.paddingLeft = '80px'
           contentAreaRef.current.style.paddingLeft = `${w}px`
+          document.getElementById('add-game__footer-container').style.paddingLeft = `${w}px`
         }
         // Exit early to make this less confusing
         return
@@ -85,6 +86,7 @@ const AddCommunityContainer = ({ level }) => {
       }
       document.getElementById('main-sidebar').removeAttribute('style')
       document.getElementById('content-container').removeAttribute('style')
+      document.getElementById('add-game__footer-container').removeAttribute('style')
     })
   }
 
@@ -150,7 +152,7 @@ const AddCommunityContainer = ({ level }) => {
 
   const getPageFooter = () => {
     return (
-      <div className={styles.footerContainer}>
+      <div className={styles.footerContainer} id={styles.footerContainer}>
         <div
           className={classNames([styles.footerSubmitButton, isButtonDisabled() ? styles.footerSubmitButtonLight : ''])}
           onClick={isSubmitting ? null : onAddGameSubmit}>
