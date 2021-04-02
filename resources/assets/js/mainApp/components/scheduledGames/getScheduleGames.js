@@ -15,6 +15,7 @@ const queryMapping = {
 }
 
 export async function PullDataFunction(myG) {
+  const now = moment().utc();
   let myGame_name_box = null,
     myRegion = null,
     myExperience = null,
@@ -23,9 +24,9 @@ export async function PullDataFunction(myG) {
     myDescription_box = null,
     counter = 0,
     show_full_games = true,
-    startDate = moment().utc(),
-    tmp_startDate = moment().utc(),
-    endDate = moment().utc(),
+    startDate = now,
+    tmp_startDate = now,
+    endDate = now,
     tags = [],
     count = 0,
     extraFields = myG.extraFields || {}
@@ -112,7 +113,7 @@ export async function PullDataFunction(myG) {
       region: myRegion,
       experience: myExperience,
       start_date_time: startDate,
-      end_date_time: endDate,
+      end_date_time: null /* We don't have a filter for this anyways */,
       platform: myPlatform,
       description: myDescription_box,
       counter: counter,
