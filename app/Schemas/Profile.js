@@ -1,4 +1,4 @@
-const GameExperience = require('./GameExperience');
+const GameExperience = require('./GameExperience')
 const { forceInt, forceString, forceArray, forceStatus, forceBoolean } = require('./Primitives')
 
 class Profile {
@@ -25,6 +25,7 @@ class Profile {
     this.experience = forceInt(data.experience)
     this.underage = forceBoolean(data.underage)
     this.hasMic = forceBoolean(data.hasMic || data.has_mic)
+    this.onboarding = forceInt(data.onboarding)
     this.visibilityName = forceString(data.visibilityName)
     this.visibilityEmail = forceString(data.visibilityEmail)
     this.visibilityCountry = forceString(data.visibilityCountry)
@@ -39,7 +40,7 @@ class Profile {
     this.hasSentFriendRequest = forceBoolean(data.hasSentFriendRequest)
     this.hasReceivedFriendRequest = forceBoolean(data.hasReceivedFriendRequest)
     this.friendRequestId = forceInt(data.friendRequestId)
-    this.gameExperiences = forceArray(data.gameExperiences).map(experience => new GameExperience(experience));
+    this.gameExperiences = forceArray(data.gameExperiences).map((experience) => new GameExperience(experience))
     this.commendations = forceArray(data.commendations)
     this.commended = forceArray(data.commended)
     this.commender = forceArray(data.commender)
