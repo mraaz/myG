@@ -1,3 +1,5 @@
+import { CHANNEL, checkFlag } from '../../common/flags'
+
 const styles = {
   container: 'my-left-menu__container',
   itemBox: 'my-left-menu__item-box',
@@ -88,93 +90,16 @@ const sideBarItems = {
 
 const sideBarItemsOrder = ['SEARCH', 'NEW_GAME', 'FEED', 'PROFILE', 'ACHIEVEMENTS']
 
-const sideBarItemsList = [
-  {
-    id: 'SEARCH',
-    header: 'Search',
-    icon: 'https://myG.gg/platform_images/Dashboard/btn_Search.svg',
-    cta: '',
-    isExpandable: true,
-    subItems: [
-      {
-        header: '',
-        cta: '',
-      },
-      {
-        header: '',
-        cta: '',
-      },
-    ],
-  },
-  {
-    id: 'NEW_GAME',
-    header: 'New Game',
-    icon: 'https://myG.gg/platform_images/Dashboard/btn_New_Game.svg',
-    cta: '',
-    isExpandable: true,
-    subItems: [
-      {
-        header: '',
-        cta: '',
-      },
-      {
-        header: '',
-        cta: '',
-      },
-    ],
-  },
-  {
-    id: 'FEED',
-    header: 'Feed',
-    icon: 'https://myG.gg/platform_images/Dashboard/btn_Feed.svg',
-    cta: '',
-    isExpandable: false,
-    subItems: [
-      {
-        header: '',
-        cta: '',
-      },
-      {
-        header: '',
-        cta: '',
-      },
-    ],
-  },
-  {
-    id: 'PROFILE',
-    header: 'Profile',
-    icon: 'https://myG.gg/platform_images/Dashboard/btn_Profile.svg',
-    cta: '',
-    isExpandable: false,
-    subItems: [
-      {
-        header: '',
-        cta: '',
-      },
-      {
-        header: '',
-        cta: '',
-      },
-    ],
-  },
-  {
-    id: 'ACHIEVEMENTS',
-    header: 'Network',
-    icon: 'https://myG.gg/platform_images/Dashboard/btn_Network.svg',
-    cta: '',
-    isExpandable: false,
-    subItems: [
-      {
-        header: '',
-        cta: '',
-      },
-      {
-        header: '',
-        cta: '',
-      },
-    ],
-  },
-]
+if (checkFlag(CHANNEL)) {
+  sideBarItems['CHANNEL'] = {
+    id: 'CHANNEL',
+    header: 'myG Chat',
+    icon: 'https://myg.gg/platform_images/Dashboard/Vix.svg',
+    cta: '/myg-chat',
+    expanded: false,
+  }
+  sideBarItemsOrder.push('CHANNEL')
+}
 
 const logoutButton = {
   header: 'Logout',

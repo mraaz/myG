@@ -80,7 +80,43 @@ export class Profile extends React.Component {
     })
   }
 
+  renderOnboarding() {
+    if (this.props.step === 1) {
+      return(
+        <div id="profile" ref={this.contentAreaRef}>
+          <EditGameExperience
+            onboarding={this.props.onboarding}
+            alias={this.props.alias}
+            profile={this.props.profile}
+            isSelf={this.props.onboarding || this.props.profile.isSelf}
+            updateGame={this.props.updateGame}
+            setOnboardingStep={this.props.setOnboardingStep}
+            skipOnboarding={this.props.skipOnboarding}
+          />
+        </div>
+      );
+    }
+    if (this.props.step === 3) {
+      return(
+        <div id="profile" ref={this.contentAreaRef}>
+          <GamerSuggestions
+            onboarding={this.props.onboarding}
+            noTitle profile={this.props.profile}
+            sendFriendRequest={this.props.sendFriendRequest}
+            cancelFriendRequest={this.props.cancelFriendRequest}
+            follow={this.props.follow}
+            unfollow={this.props.unfollow}
+            setOnboardingStep={this.props.setOnboardingStep}
+            skipOnboarding={this.props.skipOnboarding}
+          />
+        </div>
+      );
+    }
+    return null;
+  }
+
   render() {
+    if (this.props.onboarding) return this.renderOnboarding();
     if (this.props.profile.error) return <Redirect push to={`/profile/${this.props.userAlias}`} />;
     if (!this.props.foundProfile || this.props.profile.loading) return null;
     const profileSponsors = this.props.profile.sponsors || [];
@@ -88,41 +124,6 @@ export class Profile extends React.Component {
     sponsorsPositions.push({ id: this.props.level >= 5 ? 'empty-2' : 'empty-locked-2' });
     const sponsorsIndexes = this.props.profile.isSelf ? sponsorsPositions : null;
     const sponsors = sponsorsIndexes ? sponsorsIndexes.map((sponsor, index) => profileSponsors[index] || sponsor) : profileSponsors;
-
-    if (this.props.onboarding) {
-      if (this.props.step === 1) {
-        return(
-          <div id="profile" ref={this.contentAreaRef}>
-            <EditGameExperience
-              onboarding={this.props.onboarding}
-              alias={this.props.alias}
-              profile={this.props.profile}
-              isSelf={this.props.profile.isSelf}
-              updateGame={this.props.updateGame}
-              setOnboardingStep={this.props.setOnboardingStep}
-              skipOnboarding={this.props.skipOnboarding}
-            />
-          </div>
-        );
-      }
-      if (this.props.step === 3) {
-        return(
-          <div id="profile" ref={this.contentAreaRef}>
-            <GamerSuggestions
-              onboarding={this.props.onboarding}
-              noTitle profile={this.props.profile}
-              sendFriendRequest={this.props.sendFriendRequest}
-              cancelFriendRequest={this.props.cancelFriendRequest}
-              follow={this.props.follow}
-              unfollow={this.props.unfollow}
-              setOnboardingStep={this.props.setOnboardingStep}
-              skipOnboarding={this.props.skipOnboarding}
-            />
-          </div>
-        );
-      }
-      return null;
-    }
     return(
       <div id="profile" ref={this.contentAreaRef}>
         <Banner profile={this.props.profile} updateProfile={this.props.updateProfile} />

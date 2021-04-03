@@ -16,6 +16,8 @@ const GameTagController = use('App/Controllers/Http/GameTagController');
 const AwsKeyController = use('App/Controllers/Http/AwsKeyController');
 const ConnectionController = use('App/Controllers/Http/ConnectionController');
 const NotificationController_v2 = use('App/Controllers/Http/NotificationController_v2');
+const UsergroupController = use('App/Controllers/Http/UsergroupController');
+
 
 const UserStatTransactionController = use('App/Controllers/Http/UserStatTransactionController')
 
@@ -63,6 +65,7 @@ class ProfileRepository {
     const visibilityCountry = profile.country_visibility;
     const lookingForWork = profile.looking_for_work;
     const experience = profile.experience_points;
+    const onboarding = profile.onboarding;
     const isSelf = requestingUserId === profileId;
     const [
       isFriend,
@@ -118,6 +121,7 @@ class ProfileRepository {
       facebook,
       underage,
       hasMic,
+      onboarding,
       visibilityName,
       visibilityEmail,
       visibilityCountry,
@@ -380,6 +384,19 @@ class ProfileRepository {
     }))
 
     const { profile } = await this.fetchProfileInfo({ requestingUserId, id: requestingUserId });
+    if (profile.onboarding == 2 ){
+      const getVerifiedGrps = await Database.table('groups')
+        .where({ verified: 1, game_names_id: game})
+        .select('id')
+        .first()
+
+      if (getVerifiedGrps != undefined){
+        const usergroupController = new UsergroupController();
+        const auth = { user: { id: requestingUserId} };
+        const request = { input: () => getVerifiedGrps.id };
+        usergroupController.store({auth, request}, true)
+      }
+    }
     await ElasticsearchRepository.storeUser({ user: profile });
     return { gameExperiences: profile.gameExperiences }
   }

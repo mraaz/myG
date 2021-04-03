@@ -16,21 +16,31 @@ const LoggingRepository = require('../../Repositories/Logging')
 const RedisRepository = require('../../Repositories/Redis')
 
 class UsergroupController {
-  async store({ auth, request, response }) {
+  async store({ auth, request, response }, onboarding = false) {
     if (auth.user) {
       try {
-        const newaddition = await Usergroup.create({
-          group_id: request.input('group_id'),
-          user_id: auth.user.id,
-          permission_level: 42,
-        })
+        if (!onboarding) {
+          const newaddition = await Usergroup.create({
+            group_id: request.input('group_id'),
+            user_id: auth.user.id,
+            permission_level: 42,
+          })
+        } else {
+          const newaddition_onboard = await Usergroup.create({
+            group_id: request.input('group_id'),
+            user_id: auth.user.id,
+            permission_level: 3,
+          })
+        }
 
         const myGroupConnectionController = new GroupConnectionController()
         myGroupConnectionController.destroy({ auth }, request.input('group_id'))
 
-        const noti = new NotificationController_v2()
-        noti.notify_owner_new_grp_request({ auth }, request.input('group_id'))
-        noti.new_grp_request({ auth }, request.input('group_id'))
+        if (!onboarding) {
+          const noti = new NotificationController_v2()
+          noti.notify_owner_new_grp_request({ auth }, request.input('group_id'))
+          noti.new_grp_request({ auth }, request.input('group_id'))
+        }
 
         return 'Saved'
       } catch (error) {

@@ -1,6 +1,5 @@
 'use strict'
 
-const cryptico = require('cryptico')
 const { validate } = use('Validator')
 const User = use('App/Models/User')
 const SeatsAvailable = use('App/Models/SeatsAvailable')

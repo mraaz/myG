@@ -33,7 +33,7 @@ const MobileScheduledGames = (props) => {
     myGamesMenu = false,
     singleScheduleGamesPayload = {},
   } = props
-  
+
   const dispatch = useDispatch()
   const defaultThumbnails = 'https://myG.gg/platform_images/Notifications/myG_icon.svg'
   const defaultUserImage = 'https://myG.gg/default_user/new-user-profile-picture.png'
@@ -119,9 +119,8 @@ const MobileScheduledGames = (props) => {
 
   const { no_of_comments = [], lastComment = '' } = commentData
   const { no_of_my_comments = 0 } = no_of_comments[0] || {}
-  const mobileMenuIsActive = useSelector(state => state.mobileMenu.mobileMenuIsActive)
-  const mobileMenuIsTop = useSelector(state => state.mobileMenu.mobileMenuIsTop)
-
+  const mobileMenuIsActive = useSelector((state) => state.mobileMenu.mobileMenuIsActive)
+  const mobileMenuIsTop = useSelector((state) => state.mobileMenu.mobileMenuIsTop)
   return (
     <Fragment>
       <div className={`mGameAllComments${showRightSideInfo && showAllComment ? ' active' : ' inactive'}`}>
@@ -171,7 +170,12 @@ const MobileScheduledGames = (props) => {
           </div>
           <div className='mGameTimestamp'>
             <img src='https://myG.gg/platform_images/Dashboard/Notifications/clock.svg' />
-            <span>{moment(start_date_time).format('LLL')}</span>
+            <span>
+              {moment
+                .utc(start_date_time)
+                .local()
+                .format('LLL')}
+            </span>
           </div>
           <div className='gameLevelWrap'>
             {experience_split.length > 0 &&
@@ -367,7 +371,12 @@ const MobileScheduledGames = (props) => {
 
                       <div className='mGameTimestamp'>
                         <img src='https://myG.gg/platform_images/Dashboard/Notifications/clock.svg' />
-                        <span>{moment(game.start_date_time).format('LLL')}</span>
+                        <span>
+                          {moment
+                            .utc(game.start_date_time)
+                            .local()
+                            .format('LLL')}
+                        </span>
                       </div>
 
                       {game.tags && game.tags.length > 0 ? (
@@ -416,13 +425,12 @@ const MobileScheduledGames = (props) => {
               )
             })}
 
-          {
-            scheduleGames.length == 0 &&
-            <div className="mNoResultsFound">
+          {scheduleGames.length == 0 && (
+            <div className='mNoResultsFound'>
               <p>No results found mate.... click/swipe down to see menu</p>
               <img onClick={() => dispatch(openMobileMenuAction(true))} src={defaultSwipeDownImage} alt='swipe-down-icon-svg' />
             </div>
-          }
+          )}
         </div>
       </div>
     </Fragment>
