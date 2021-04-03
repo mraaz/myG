@@ -1,3 +1,4 @@
+const moment = require('moment');
 const User = use('App/Models/User');
 const ElasticsearchRepository = require('../Elasticsearch');
 const gameLabels = require('./game_labels.json');
@@ -63,16 +64,16 @@ class SearchRepository {
     return query;
   }
 
-  buildGamesQuery = (input) => {
-    const hasEndDate = input.end_date_time && input.end_date_time !== input.start_date_time;
+  buildGamesQuery = (input) => {;
+    const now = moment().utc();
     const query = { query: { bool: { must: [] } } };
     query.size = 10;
     query.from = ((parseInt(input.counter) || 1) - 1) * 10;
     query.query.bool.must.push({ match: { visibility: true } });
+    query.query.bool.must.push({ range: { end_date_time: { gte: now } } });
     if (input.game_name) query.query.bool.must.push({ match: { 'game_name.keyword': input.game_name } });
     if (input.experience) query.query.bool.must.push({ match: { 'experience.keyword': input.experience } });
     if (input.start_date_time) query.query.bool.must.push({ range: { start_date_time: { gte: input.start_date_time.replace(' ', 'T') } } });
-    if (hasEndDate) query.query.bool.must.push({ range: { end_date_time: { lte: input.end_date_time.replace(' ', 'T') } } });
     if (input.description) query.query.bool.must.push({ match: { description: { query: input.description, fuzziness: 'auto' } } });
     if (input.tags) input.tags.forEach((tag) => query.query.bool.must.push({ match: { ['tags.keyword']: tag } }));
     if (input.platform) query.query.bool.must.push({ match: { 'platform.keyword': input.platform } });
