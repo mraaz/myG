@@ -1,3 +1,5 @@
+import { CHANNEL, checkFlag } from '../../common/flags';
+
 const styles = {
   container: 'my-left-menu__container',
   itemBox: 'my-left-menu__item-box',
@@ -83,17 +85,21 @@ const sideBarItems = {
     icon: 'https://myG.gg/platform_images/Dashboard/btn_Network.svg',
     cta: '/achievements/badges',
     expanded: false,
-  },
-  CHANNEL: {
+  }
+}
+
+const sideBarItemsOrder = ['SEARCH', 'NEW_GAME', 'FEED', 'PROFILE', 'ACHIEVEMENTS']
+
+if (checkFlag(CHANNEL)) {
+  sideBarItems['CHANNEL'] = {
     id: 'CHANNEL',
     header: 'myG Chat',
     icon: 'https://svgshare.com/i/Viw.svg', /* todo for Marc: host in AWS */
     cta: '/myg-chat',
     expanded: false,
-  },
+  };
+  sideBarItemsOrder.push('CHANNEL');
 }
-
-const sideBarItemsOrder = ['SEARCH', 'NEW_GAME', 'FEED', 'PROFILE', 'ACHIEVEMENTS', 'CHANNEL']
 
 const logoutButton = {
   header: 'Logout',
