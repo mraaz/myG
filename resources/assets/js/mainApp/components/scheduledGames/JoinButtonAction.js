@@ -124,7 +124,7 @@ const JoinStatus = (props) => {
     const removeAttendee = axios.get(`/api/attendees/removeattending/${props.schedule_games_id}`)
     toast.success(<Toast_style text={"You're out!"} />)
     exitGameGroup(props.schedule_games_id)
-    setJoinButtonText(buttonStatus['0'])
+    setJoinButtonText(buttonStatus[props.join_status])
     setmyStatus(false)
     setLeaveButtonStatus(!leaveButtonStatus)
   }
