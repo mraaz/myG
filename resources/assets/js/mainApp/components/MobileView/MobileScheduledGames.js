@@ -121,7 +121,6 @@ const MobileScheduledGames = (props) => {
   const { no_of_my_comments = 0 } = no_of_comments[0] || {}
   const mobileMenuIsActive = useSelector((state) => state.mobileMenu.mobileMenuIsActive)
   const mobileMenuIsTop = useSelector((state) => state.mobileMenu.mobileMenuIsTop)
-
   return (
     <Fragment>
       <div className={`mGameAllComments${showRightSideInfo && showAllComment ? ' active' : ' inactive'}`}>
@@ -374,7 +373,7 @@ const MobileScheduledGames = (props) => {
                         <img src='https://myG.gg/platform_images/Dashboard/Notifications/clock.svg' />
                         <span>
                           {moment
-                            .utc(start_date_time)
+                            .utc(game.start_date_time)
                             .local()
                             .format('LLL')}
                         </span>
