@@ -175,21 +175,6 @@ export class Channel extends React.Component {
     )
   }
 
-  renderScrollToEndIndicator() {
-    if (!this.state.oldMessages) return <div className='chat-component-footer-divider' />
-    return (
-      <div
-        key={'scroll'}
-        className='chat-component-scroll-to-bottom clickable'
-        onClick={() => {
-          this.setState({ oldMessages: false })
-          this.messageListRef.current.scrollTo(0, this.messageListRef.current.scrollHeight)
-        }}>
-        You are viewing old messages, jump to recent ones?
-      </div>
-    )
-  }
-
   renderAttachWindow = () => {
     return (
       <AttachWindow
@@ -258,7 +243,6 @@ export class Channel extends React.Component {
         <div className={`chat-component-base ${!!this.props.page ? 'channel-page' : 'channel'}`}>
           {this.state.attachment && this.renderAttachment()}
           {this.renderBody()}
-          {this.renderScrollToEndIndicator()}
           {this.renderAttachWindow()}
           {this.renderFooter()}
           {!this.props.page && this.renderOpenInNewPageButton()}

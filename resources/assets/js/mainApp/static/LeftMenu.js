@@ -84,97 +84,16 @@ const sideBarItems = {
     cta: '/achievements/badges',
     expanded: false,
   },
+  CHANNEL: {
+    id: 'CHANNEL',
+    header: 'Main Channel',
+    icon: 'https://svgshare.com/i/Viw.svg', /* todo for Marc: host in AWS */
+    cta: '/myg-chat',
+    expanded: false,
+  },
 }
 
-const sideBarItemsOrder = ['SEARCH', 'NEW_GAME', 'FEED', 'PROFILE', 'ACHIEVEMENTS']
-
-const sideBarItemsList = [
-  {
-    id: 'SEARCH',
-    header: 'Search',
-    icon: 'https://myG.gg/platform_images/Dashboard/btn_Search.svg',
-    cta: '',
-    isExpandable: true,
-    subItems: [
-      {
-        header: '',
-        cta: '',
-      },
-      {
-        header: '',
-        cta: '',
-      },
-    ],
-  },
-  {
-    id: 'NEW_GAME',
-    header: 'New Game',
-    icon: 'https://myG.gg/platform_images/Dashboard/btn_New_Game.svg',
-    cta: '',
-    isExpandable: true,
-    subItems: [
-      {
-        header: '',
-        cta: '',
-      },
-      {
-        header: '',
-        cta: '',
-      },
-    ],
-  },
-  {
-    id: 'FEED',
-    header: 'Feed',
-    icon: 'https://myG.gg/platform_images/Dashboard/btn_Feed.svg',
-    cta: '',
-    isExpandable: false,
-    subItems: [
-      {
-        header: '',
-        cta: '',
-      },
-      {
-        header: '',
-        cta: '',
-      },
-    ],
-  },
-  {
-    id: 'PROFILE',
-    header: 'Profile',
-    icon: 'https://myG.gg/platform_images/Dashboard/btn_Profile.svg',
-    cta: '',
-    isExpandable: false,
-    subItems: [
-      {
-        header: '',
-        cta: '',
-      },
-      {
-        header: '',
-        cta: '',
-      },
-    ],
-  },
-  {
-    id: 'ACHIEVEMENTS',
-    header: 'Network',
-    icon: 'https://myG.gg/platform_images/Dashboard/btn_Network.svg',
-    cta: '',
-    isExpandable: false,
-    subItems: [
-      {
-        header: '',
-        cta: '',
-      },
-      {
-        header: '',
-        cta: '',
-      },
-    ],
-  },
-]
+const sideBarItemsOrder = ['SEARCH', 'NEW_GAME', 'FEED', 'PROFILE', 'ACHIEVEMENTS', 'CHANNEL']
 
 const logoutButton = {
   header: 'Logout',
