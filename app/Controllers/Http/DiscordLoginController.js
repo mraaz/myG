@@ -11,6 +11,7 @@ const ConnectionController = use('./ConnectionController')
 const SeatsAvailable = use('App/Models/SeatsAvailable')
 const ExtraSeatsCodes = use('App/Models/ExtraSeatsCodes')
 const ExtraSeatsCodesTran = use('App/Models/ExtraSeatsCodesTran')
+const ChatRepository = require('../../Repositories/Chat')
 const EncryptionRepository = require('../../Repositories/Encryption')
 const LoggingRepository = require('../../Repositories/Logging')
 
@@ -67,6 +68,9 @@ class DiscordLoginController {
           await auth.loginViaId(authUser.id)
           const connections = new ConnectionController()
           connections.master_controller({ auth })
+          const onlineQueryResponse = await Database.from('users').where('status', 'online').count();
+          const onlineUsers = onlineQueryResponse[0]['count(*)'];
+          if (onlineUsers < 10) await ChatRepository.publishOnMainChannel(`Welcome ${user.alias} !!`);
           return response.redirect('/')
         } else {
           session.put('provider', 'discord')

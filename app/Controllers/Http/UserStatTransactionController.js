@@ -6,6 +6,7 @@ const UserStatTransaction = use('App/Models/UserStatTransaction')
 const UserAchievements = use('App/Models/UserAchievements')
 const NotificationController = use('./NotificationController')
 const LoggingRepository = require('../../Repositories/Logging')
+const ChatRepository = require('../../Repositories/Chat')
 const NatsChatRepository = require('../../Repositories/NatsChat')
 const WebsocketChatRepository = require('../../Repositories/WebsocketChat')
 
@@ -538,15 +539,18 @@ class UserStatTransactionController {
 
     const currentStats = await Database.from('users')
       .where({ id: my_user_id })
-      .select('level', 'status')
+      .select('alias', 'level', 'status')
       .first()
+    const alias = currentStats.alias;
     const currentLevel = currentStats.level
     const currentStatus = currentStats.status
     const nextLevel = getGamerLevels.level
     const leveled_up_offline = nextLevel > currentLevel && currentStatus === 'offline'
+    const levelup_up_online = nextLevel > currentLevel && currentStatus !== 'offline'
 
     const updates = { level: getGamerLevels.level, experience_points: xp, xp_negative_balance: xp_neg_balance }
     if (leveled_up_offline) updates.leveled_up_offline = true
+    if (levelup_up_online) await ChatRepository.publishOnMainChannel(`${alias} is crushing it!! ${alias} leveled up`);
 
     await User.query()
       .where({ id: my_user_id })
