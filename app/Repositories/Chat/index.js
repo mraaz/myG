@@ -1231,6 +1231,13 @@ class ChatRepository {
     await ChatGameMessageSchedule.query().where('chat_id', 'in', chatIds).delete();
   }
 
+  async clearChannelHistory() {
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const { chat } = await this.fetchChannel({ requestedChannelId: 'main' });
+    await ChatMessage.query().where('chat_id', chat.chatId).andWhere('created_at', '<=', yesterday).delete();
+  }
+
   async handleGameMessages() {
     const lock = await RedisRepository.lock('HANDLE_GAME_MESSAGES', 1000 * 45);
     if (!lock) return;
