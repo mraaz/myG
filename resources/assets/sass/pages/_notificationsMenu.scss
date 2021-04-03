@@ -539,6 +539,15 @@ $transition-default: 0.25s ease-out 0.1s;
       .gameList__box {
         max-height: 70vh;
       }
+      &.chat__requests {
+        .notification {
+          min-height: 60px;
+        }
+        .notification-content {
+          margin: 0 0 0 40px;
+          padding-top: 20px;
+        }
+      }
     }
 
     .notifications-content {
