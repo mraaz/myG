@@ -973,8 +973,10 @@ class ChatRepository {
       createdAt: message.created_at,
       updatedAt: message.updated_at,
     });
-    await new AwsKeyController().removeChatAttachmentKey(requestedChatId, requestedMessageId);
-    if (messageSchema.senderId === requestingUserId) {
+    const security_check = await Database.from('admins').where({ user_id: requestingUserId, permission_level: 1 }).first();
+    const isAdmin = security_check != undefined ? true : false;
+    if (isAdmin || messageSchema.senderId === requestingUserId) {
+      await new AwsKeyController().removeChatAttachmentKey(requestedChatId, requestedMessageId);
       await message.save();
       this._notifyChatEvent({ chatId: requestedChatId, action: 'updateMessage', payload: messageSchema });
     }
@@ -1444,7 +1446,9 @@ class ChatRepository {
     if (userId) return this.broadcast('chat:auth:*', `chat:auth:${userId}`, `chat:${action}`, payload);
     if (guestId) return this.broadcast('chat:guest:*', `chat:guest:${guestId}`, `chat:${action}`, payload);
     if (chatId) {
-      const chat = (await Chat.find(chatId)).toJSON();
+      const result =  await Chat.find(chatId);
+      if (!result) return;
+      const chat = result.toJSON();
       if (chat.channel_id) {
         return this.broadcast('chat:channel:*', `chat:channel:${chat.channel_id}`, `chat:${action}`, payload)
       }

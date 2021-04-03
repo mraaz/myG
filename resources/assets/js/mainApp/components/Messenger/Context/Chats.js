@@ -8,6 +8,7 @@ export default class Chats extends React.Component {
   }
 
   renderChat = (chat) => {
+    if (chat.channelId) return;
     return (
       <Chat
         key={chat.chatId}

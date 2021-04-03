@@ -8,6 +8,12 @@ import { Toast_style } from '../Utility_Function'
 import { Upload_to_S3, Remove_file } from '../AWS_utilities'
 import { MyGButton } from '../common'
 
+const typeMapping = {
+  0: 'Denied',
+  1: 'Pending Approval',
+  2: 'Approved',
+}
+
 export default class MangeSponsors extends React.Component {
   constructor(props) {
     super(props)
@@ -182,10 +188,55 @@ export default class MangeSponsors extends React.Component {
     this.setState({ uploading })
   }
 
+  showAlert(id) {
+    const getAlert = () => (
+      <SweetAlert
+        danger
+        showCancel
+        title='Are you sure you wish to delete this Sponsor?'
+        confirmBtnText='Make it so!'
+        confirmBtnBsStyle='danger'
+        focusCancelBtn={true}
+        focusConfirmBtn={false}
+        showCloseButton={true}
+        onConfirm={() => this.hideAlert('true', id)}
+        onCancel={() => this.hideAlert('false', id)}>
+        You will not be able to recover this entry!
+      </SweetAlert>
+    )
+
+    this.setState({
+      alert: getAlert(),
+    })
+  }
+  hideAlert = (text, id) => {
+    this.setState({
+      alert: null,
+    })
+    if (text == 'true') {
+      this.deleteSponsor(id)
+      this.props.handleModalStatus(true)
+    }
+  }
+
+  deleteSponsor = (id) => {
+    axios.delete(`/api/sponsor/delete/${id}`).then(this.fetchProfileData)
+    toast.success(<Toast_style text={'Yup, yup, yup... deleted successfully!'} />)
+  }
+
   render() {
-    const { saveButtonDisabled = true, linkValue = '', media_url = '', modalStatus = true, uploading = [], sponsors = [] } = this.state
+    const {
+      saveButtonDisabled = true,
+      linkValue = '',
+      media_url = '',
+      modalStatus = true,
+      uploading = [],
+      sponsors = [],
+      alert = null,
+    } = this.state
     return (
       <div className={`modal-container View__Member__modal ${modalStatus ? 'modal--show' : ''}`}>
+        {alert}
         <div className='modal-wrap'>
           <div className='modal__header'>
             <div className='tabs___header'>
@@ -202,7 +253,16 @@ export default class MangeSponsors extends React.Component {
                 const counter = index + 1
                 return (
                   <div className='Sponsor__edit-list' key={`${sponsors.length}_${counter}`}>
-                    <div className='text'>Custom Sponsor {counter}</div>
+                    <div className='text sponsor__header-row'>
+                      <span className='count'> Custom Sponsor {counter}</span>
+                      <span className='status'> {typeMapping[sponsor.type]}</span>
+                      {sponsor.id && (
+                        <span className='action' onClick={(e) => this.showAlert(sponsor.id)}>
+                          {' '}
+                          Delete
+                        </span>
+                      )}
+                    </div>
                     <div className='Sponsor__media__input' onClick={(e) => this.handleImageChange(e, counter)}>
                       <input
                         type='file'

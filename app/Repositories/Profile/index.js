@@ -1,5 +1,3 @@
-
-const cryptico = require('cryptico');
 const Database = use('Database');
 const User = use('App/Models/User');
 const Friend = use('App/Models/Friend');

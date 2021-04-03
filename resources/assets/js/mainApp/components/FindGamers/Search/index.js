@@ -47,12 +47,12 @@ export default class Search extends React.Component {
   }, 300)
 
   onChange = (search) => {
-    this.setState({ search }, this.onSearch);
+    this.setState({ search, from: 0 }, this.onSearch);
     if (search === ':?') this.showHelp();
   }
 
   onFilter = (filter) => {
-    this.setState({ filter }, this.onSearch);
+    this.setState({ filter, from: 0 }, this.onSearch);
   }
 
   toggleOnline = () => {
