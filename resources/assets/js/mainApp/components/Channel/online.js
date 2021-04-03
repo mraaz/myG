@@ -12,7 +12,7 @@ export class OnlineUsers extends React.Component {
   }
 
   state = {
-    expanded: ['All'],
+    expanded: ['Active Now'],
   }
 
   componentDidMount() {
