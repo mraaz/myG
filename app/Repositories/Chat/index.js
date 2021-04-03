@@ -266,7 +266,7 @@ class ChatRepository {
       .count();
     return response[0]['count(*)'];
   }
-  
+
   async countLastMessages({ requestingUserId }) {
     const response = await Database.raw(`
       select (
@@ -883,7 +883,7 @@ class ChatRepository {
   }
 
   async publishOnMainChannel(content) {
-    const { chat } = await this.fetchChannel({ requestedChannelId: 'main' });
+    const { chat } = await this.fetchChannel({ requestedChannelId: 'main' })
     await this.sendMessageFromMyG({ requestedChatId: chat.chatId, content })
   }
 
@@ -1229,6 +1229,13 @@ class ChatRepository {
 
   async clearGameMessageSchedule({ chatIds }) {
     await ChatGameMessageSchedule.query().where('chat_id', 'in', chatIds).delete();
+  }
+
+  async clearChannelHistory() {
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const { chat } = await this.fetchChannel({ requestedChannelId: 'main' });
+    await ChatMessage.query().where('chat_id', chat.chatId).andWhere('created_at', '<=', yesterday).delete();
   }
 
   async handleGameMessages() {

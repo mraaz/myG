@@ -22,7 +22,7 @@ async function initRollout() {
 
 initRollout().then(function() {})
 
-function checkFlag(flag) {
+export function checkFlag(flag) {
   if (window.location.href.startsWith('http://localhost')) return isFlagEnabledDevelopment(flag);
   return isFlagEnabledProduction(flag);
 }

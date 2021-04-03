@@ -88,7 +88,7 @@ export class Profile extends React.Component {
             onboarding={this.props.onboarding}
             alias={this.props.alias}
             profile={this.props.profile}
-            isSelf={this.props.profile.isSelf}
+            isSelf={this.props.onboarding || this.props.profile.isSelf}
             updateGame={this.props.updateGame}
             setOnboardingStep={this.props.setOnboardingStep}
             skipOnboarding={this.props.skipOnboarding}
