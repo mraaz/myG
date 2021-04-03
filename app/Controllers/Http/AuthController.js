@@ -2,8 +2,7 @@
 
 const { validate } = use('Validator')
 const Hash = use('Hash')
-const cryptico = require('cryptico')
-
+const Database = use('Database')
 const User = use('App/Models/User')
 const Settings = use('App/Models/Setting')
 const SeatsAvailable = use('App/Models/SeatsAvailable')
@@ -12,6 +11,7 @@ const ExtraSeatsCodesTran = use('App/Models/ExtraSeatsCodesTran')
 
 const ConnectionController = use('./ConnectionController')
 
+const ChatRepository = require('../../Repositories/Chat')
 const EncryptionRepository = require('../../Repositories/Encryption')
 const LoggingRepository = require('../../Repositories/Logging')
 
@@ -207,6 +207,10 @@ class AuthController {
         //session.flash({ notification: 'Welcome back!!!' })
         const connections = new ConnectionController()
         connections.master_controller({ auth })
+
+        const onlineQueryResponse = await Database.from('users').where('status', 'online').count();
+        const onlineUsers = onlineQueryResponse[0]['count(*)'];
+        if (onlineUsers < 10) await ChatRepository.publishOnMainChannel(`Welcome ${user.alias} !!`);
 
         return response.redirect('/')
       } else {
