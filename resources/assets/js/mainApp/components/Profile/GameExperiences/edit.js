@@ -83,7 +83,7 @@ export default class EditGameExperience extends React.Component {
     if (experience.rating) updates.rating = experience.rating
     if (experience.dynamic) updates.dynamic = experience.dynamic
     if (experience.background) {
-      updates.background = experience.background.filter(this.hasAddedDataToExperience).map((experience) => ({
+      updates.background = (experience.background || []).filter(this.hasAddedDataToExperience).map((experience) => ({
         id: experience.id,
         team: experience.team,
         role: experience.role,

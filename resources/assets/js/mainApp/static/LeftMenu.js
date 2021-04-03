@@ -86,7 +86,7 @@ const sideBarItems = {
   },
   CHANNEL: {
     id: 'CHANNEL',
-    header: 'Main Channel',
+    header: 'myG Chat',
     icon: 'https://svgshare.com/i/Viw.svg', /* todo for Marc: host in AWS */
     cta: '/myg-chat',
     expanded: false,

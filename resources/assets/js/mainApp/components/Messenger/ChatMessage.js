@@ -280,7 +280,8 @@ export default class ChatMessage extends React.Component {
     )
   }
 
-  colorMessage = (id) => {
+  colorMessage = (id, senderName) => {
+    if (senderName === 'myG') return '#e6c846';
     const colors = ['#F99', '#9F9', '#99F', '#FF9', '#9FF', '#F9F']
     return colors[parseInt(id % colors.length)]
   }
@@ -422,7 +423,7 @@ export default class ChatMessage extends React.Component {
         <div className='chat-component-message-container'>
           <div className='chat-component-message-content-body'>
             {message.senderId !== this.props.userId && this.props.isGroup && (
-              <p style={{ color: this.colorMessage(parseInt(message.senderId)) }} className={`chat-component-message-sender-name`}>
+              <p style={{ color: this.colorMessage(parseInt(message.senderId), message.senderName) }} className={`chat-component-message-sender-name`}>
                 {message.senderName}
               </p>
             )}

@@ -204,7 +204,7 @@ export class Channel extends React.Component {
   renderOpenInNewPageButton = () => (
     <div
       className='open-in-new-page clickable'
-      style={{ backgroundImage: `url(https://myG.gg/platform_images/Profile/newWindow-icon.svg)` }}
+      style={{ backgroundImage: `url(https://svgshare.com/i/Vix.svg)` }} /* todo for Marc: host in AWS */
       onClick={() => window.router.push('/myg-chat')}
     />
   )
@@ -239,17 +239,26 @@ export class Channel extends React.Component {
 
   render() {
     return (
-      <div className='messenger' style={{ all: 'unset', width: '100%', display: 'flex' }}>
-        <div className={`chat-component-base ${!!this.props.page ? 'channel-page' : 'channel'}`}>
-          {this.state.attachment && this.renderAttachment()}
-          {this.renderBody()}
-          {this.renderAttachWindow()}
-          {this.renderFooter()}
-          {!this.props.page && this.renderOpenInNewPageButton()}
+      <React.Fragment>
+        {!!this.props.page ? (
+          <div className='viewGame__header'>
+            <div className='title'>myG Chat</div>
+          </div>
+        ) : (
+          <div className='channel-header'>myG Chat</div>
+        )}
+        <div className='messenger' style={{ all: 'unset', width: this.props.page ? '100%' : '80%', margin: 'auto', display: 'flex' }}>
+          <div className={`chat-component-base ${!!this.props.page ? 'channel-page' : 'channel'}`}>
+            {this.state.attachment && this.renderAttachment()}
+            {this.renderBody()}
+            {this.renderAttachWindow()}
+            {this.renderFooter()}
+            {!this.props.page && this.renderOpenInNewPageButton()}
+          </div>
+          <OnlineUsers page={this.props.page} />
         </div>
-        <OnlineUsers page={this.props.page} />
-      </div>
-    )
+      </React.Fragment>
+    );
   }
 }
 
