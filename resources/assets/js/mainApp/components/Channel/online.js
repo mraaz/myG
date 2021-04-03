@@ -51,7 +51,7 @@ export class OnlineUsers extends React.Component {
         {expanded && (
           <div className="gamers">
             {gamers.map((gamer) => 
-              <div className="gamer clickable" onClick={() => window.router.push(`/profile/${gamer}`)}>
+              <div key={gamer} className="gamer clickable" onClick={() => window.router.push(`/profile/${gamer}`)}>
                 {gamer}
               </div>
             )}

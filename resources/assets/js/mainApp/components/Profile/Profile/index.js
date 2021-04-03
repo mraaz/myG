@@ -27,7 +27,7 @@ export class Profile extends React.Component {
 
   componentDidMount() {
     if (!this.props.onboarding) document.title = `myG - ${this.props.alias}`;
-    this.props.fetchProfile(this.props.alias);
+    // this.props.fetchProfile(this.props.alias);
   }
 
   componentDidUpdate(previous) {
@@ -88,7 +88,7 @@ export class Profile extends React.Component {
             onboarding={this.props.onboarding}
             alias={this.props.alias}
             profile={this.props.profile}
-            isSelf={this.props.profile.isSelf}
+            isSelf={this.props.onboarding || this.props.profile.isSelf}
             updateGame={this.props.updateGame}
             setOnboardingStep={this.props.setOnboardingStep}
             skipOnboarding={this.props.skipOnboarding}
