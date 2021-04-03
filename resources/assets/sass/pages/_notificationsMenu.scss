@@ -1120,6 +1120,24 @@ $transition-default: 0.25s ease-out 0.1s;
     position: relative;
     width: $width;
     margin-left: auto;
+    .switchLabel {
+      position: absolute;
+      top: -0.6em;
+      z-index: 1;
+      font-size: 16px;
+      cursor: pointer;
+      transition: left $transition-default;
+
+      &.on {
+        left: 0.3em;
+        color: rgb(229, 199, 70);
+      }
+
+      &.off {
+        left: 1.3em;
+        color: #384952;
+      }
+    }
     .switch {
       -webkit-appearance: none;
       -moz-appearance: none;
@@ -1145,42 +1163,31 @@ $transition-default: 0.25s ease-out 0.1s;
       &:before {
         border-radius: 20 / 16 * 1em;
         background: #1d2326;
-        height: $height;
-        left: 4 / 16 * -1em;
-        top: 3 / 16 * -1em;
+        height: 0.7em;
+        left: -0.23em;
+        top: -0.23em;
         transition: background-color $transition-default;
-        width: $width;
+        width: 2em;
       }
 
       &:after {
         border-radius: 50%;
         background: #1d2326;
-        height: 14 / 18 * 1em;
+        height: 0.5em;
         transform: translate(0, 0);
-        transition: transform $transition-default;
-        width: 14 / 18 * 1em;
+        transition: transform $transition-default, background-color $transition-default;
+        width: 0.5em;
         top: -5px;
         left: -2px;
+        background-color: #384952;
+        z-index: 2;
       }
 
       &:checked {
         &:after {
           transform: translate(20 / 18 * 1em, 0);
+          background-color: rgb(229, 199, 70);
         }
-      }
-    }
-  }
-  .browser__notification {
-    .switch {
-      &:after {
-        background: #446f62;
-      }
-    }
-  }
-  .sound__notification {
-    .switch {
-      &:after {
-        background: #804545;
       }
     }
   }
