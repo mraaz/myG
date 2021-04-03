@@ -24,7 +24,7 @@ export async function PullDataFunction(myG) {
     myDescription_box = null,
     counter = 0,
     show_full_games = true,
-    startDate = now,
+    startDate = null,
     tmp_startDate = now,
     endDate = now,
     tags = [],
