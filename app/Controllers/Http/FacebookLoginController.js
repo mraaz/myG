@@ -30,9 +30,9 @@ class FacebookLoginController {
           await auth.loginViaId(authUser.id)
           const connections = new ConnectionController()
           connections.master_controller({ auth })
-          const onlineQueryResponse = await Database.from('users').where('status', 'online').count();
-          const onlineUsers = onlineQueryResponse[0]['count(*)'];
-          if (onlineUsers < 10) await ChatRepository.publishOnMainChannel(`Welcome ${user.alias} !!`);
+          // const onlineQueryResponse = await Database.from('users').where('status', 'online').count();
+          // const onlineUsers = onlineQueryResponse[0]['count(*)'];
+          // if (onlineUsers < 10) await ChatRepository.publishOnMainChannel(`Welcome ${user.alias} !!`);
           return response.redirect('/')
         } else {
           session.put('provider', 'facebook')
