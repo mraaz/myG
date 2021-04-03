@@ -204,7 +204,7 @@ export class Channel extends React.Component {
   renderOpenInNewPageButton = () => (
     <div
       className='open-in-new-page clickable'
-      style={{ backgroundImage: `url(https://svgshare.com/i/Vix.svg)` }} /* todo for Marc: host in AWS */
+      style={{ backgroundImage: `url(https://myg.gg/platform_images/Dashboard/Vix.svg)` }}
       onClick={() => window.router.push('/myg-chat')}
     />
   )

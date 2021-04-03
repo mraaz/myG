@@ -161,15 +161,16 @@ class AuthController {
       }
       //session.flash({ notification: 'Welcome to myGame!!!' })
 
-      const fallbackUser = async () => await User.query()
-        .where('email', request.input('email'))
-        .first()
+      const fallbackUser = async () =>
+        await User.query()
+          .where('email', request.input('email'))
+          .first()
 
       const user = await User.query()
         .where('email', await EncryptionRepository.encryptField(request.input('email')))
         .first()
 
-      await auth.login(user || await fallbackUser())
+      await auth.login(user || (await fallbackUser()))
 
       return response.redirect(`/setEncryptionParaphrase/${request.input('encryption')}`)
     }
@@ -208,9 +209,11 @@ class AuthController {
         const connections = new ConnectionController()
         connections.master_controller({ auth })
 
-        const onlineQueryResponse = await Database.from('users').where('status', 'online').count();
-        const onlineUsers = onlineQueryResponse[0]['count(*)'];
-        if (onlineUsers < 10) await ChatRepository.publishOnMainChannel(`Welcome ${user.alias} !!`);
+        const onlineQueryResponse = await Database.from('users')
+          .where('status', 'online')
+          .count()
+        const onlineUsers = onlineQueryResponse[0]['count(*)']
+        if (onlineUsers < 10) await ChatRepository.publishOnMainChannel(`Welcome ${user.alias} !!`)
 
         return response.redirect('/')
       } else {

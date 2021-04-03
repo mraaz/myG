@@ -266,7 +266,7 @@ class ChatRepository {
       .count();
     return response[0]['count(*)'];
   }
-  
+
   async countLastMessages({ requestingUserId }) {
     const response = await Database.raw(`
       select (
@@ -883,8 +883,8 @@ class ChatRepository {
   }
 
   async publishOnMainChannel(content) {
-    const { chat } = await this.fetchChannel({ requestedChannelId: 'main' });
-    await this.sendMessageFromMyG({ requestedChatId: chat.chatId, content })
+    // const { chat } = await this.fetchChannel({ requestedChannelId: 'main' });
+    // await this.sendMessageFromMyG({ requestedChatId: chat.chatId, content })
   }
 
   async sendMessageFromMyG({ requestedChatId, content }) {

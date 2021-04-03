@@ -41,7 +41,7 @@ const getJobs = (runEveryJobOnStart) => [
     action: require('./tasks/channel-history'),
     schedule: '0 * * * *',
     runOnStart: runEveryJobOnStart ? true : false,
-    enabled: true,
+    enabled: false,
   },
   {
     name: 'Profile Sync To Elasticsearch',
