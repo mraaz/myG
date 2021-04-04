@@ -21,6 +21,13 @@ class AWSEmailController {
   }
 
   async createEmailnSend(toAddress, subject, body) {
+    console.log(toAddress, '<<<<toAddress')
+
+    const env_variable = Env.get('NODE_ENV')
+
+    if (env_variable != 'production') console.log('Will return later')
+
+    console.log('Sending Email')
     var params = {
       Source: 'myG <' + Env.get('SMTP_FROM_ADDRESS') + '>',
       Destination: {
