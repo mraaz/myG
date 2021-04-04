@@ -25,7 +25,7 @@ class AWSEmailController {
 
     const env_variable = Env.get('NODE_ENV')
 
-    if (env_variable != 'production') console.log('Will return later')
+    if (env_variable != 'production') return
 
     console.log('Sending Email')
     var params = {
