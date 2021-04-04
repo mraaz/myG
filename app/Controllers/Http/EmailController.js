@@ -77,12 +77,12 @@ class EmailController {
     const myRequests = await noti.count({ auth })
 
     if (parseInt(myRequests.approvals) == 0 && parseInt(myRequests.alerts) == 0 && parseInt(myRequests.chats) == 0) {
-      return
-    } else {
       console.log(myRequests.alerts, '<<<myRequests.alerts')
       console.log(myRequests.approvals, '<<<myRequests.approvals')
       console.log(myRequests.chats, '<<<myRequests.chats')
+      return
     }
+
     console.log('passed guard')
 
     const user = await Database.from('users')
