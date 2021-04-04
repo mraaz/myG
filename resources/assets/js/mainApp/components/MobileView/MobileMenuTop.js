@@ -1,6 +1,7 @@
 import React, { Fragment, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
+import { FeatureEnabled, checkFlag, CHANNEL } from '../../../common/flags'
 import { logoutAction } from '../../../redux/actions/userAction'
 import { closeMobileMenuAction } from '../../../redux/actions/mobileMenuAction'
 import NotificationIcon from '../Notifications/Icon'
@@ -9,7 +10,7 @@ const MobileMenuTop = (props) => {
   const { initialData, notifications } = props
   const [hideSideMenu, setHideSideMenu] = useState(false)
   const dispatch = useDispatch()
-  const mobileMenuIsActive = useSelector(state => state.mobileMenu.mobileMenuIsActive)
+  const mobileMenuIsActive = useSelector((state) => state.mobileMenu.mobileMenuIsActive)
 
   const alias = initialData === 'loading' ? '' : initialData.userInfo.alias
 
@@ -31,11 +32,8 @@ const MobileMenuTop = (props) => {
     <Fragment>
       <div className={mobileMenuIsActive ? 'menu-tab show' : 'menu-tab hide'}>
         <img onClick={() => setHideSideMenu(true)} src='https://myG.gg/platform_images/Dashboard/logo.svg' className='img-fluid logo-img' />
-        <div className='toggle-menu-btn'>
-          <img src='https://myG.gg/platform_images/Dashboard/toggle_menu_collapsed.svg' className='img-fluid' />
-        </div>
         <div className={'notification-expanded'}>
-          <Link to='/?at=notifications&submenu=1'>
+          <Link to='/?at=notifications&submenu=1' style={{ marginLeft: 16 }}>
             <div className='notification-container'>
               <img src='https://myG.gg/platform_images/Dashboard/ntfo_Friendship_Icon.svg' height='22' width='22' />
               <NotificationIcon type='approvals' />
@@ -47,12 +45,21 @@ const MobileMenuTop = (props) => {
               <NotificationIcon type='alerts' />
             </div>
           </Link>
-          <Link to='/?at=notifications&submenu=3'>
+          <Link to='/?at=notifications&submenu=3' style={{ paddingRight: checkFlag(CHANNEL) ? 35 : 16 }}>
             <div className='notification-container'>
               <img src='https://myG.gg/platform_images/Dashboard/Chat_Icon.svg' height='22' width='22' />
               <NotificationIcon type='chats' />
             </div>
           </Link>
+          <FeatureEnabled allOf={[CHANNEL]}>
+            <Link to='/myg-chat' style={{ paddingRight: 20 }}>
+              <div className='notification-container'>
+                {/* todo for Marc: this is a different image, store in AWS */}
+                <img src='https://svgshare.com/i/Viw.svg' height='22' width='22' />
+                <NotificationIcon type='channel' />
+              </div>
+            </Link>
+          </FeatureEnabled>
         </div>
       </div>
       {hideSideMenu && (

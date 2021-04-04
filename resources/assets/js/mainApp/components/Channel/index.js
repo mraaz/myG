@@ -247,7 +247,7 @@ export class Channel extends React.Component {
         ) : (
           <div className='channel-header'>myG Chat</div>
         )}
-        <div className='messenger' style={{ all: 'unset', width: this.props.page ? '100%' : '80%', margin: 'auto', display: 'flex' }}>
+        <div className='messenger' style={{ all: 'unset', display: 'flex', width: this.props.page ? '100%' : '80%', margin: 'auto', display: 'flex' }}>
           <div className={`chat-component-base ${!!this.props.page ? 'channel-page' : 'channel'}`}>
             {this.state.attachment && this.renderAttachment()}
             {this.renderBody()}
