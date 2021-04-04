@@ -26,6 +26,7 @@ export class Channel extends React.Component {
       attachment: null,
       loadedAllMessages: false,
       hasScrolledToLastRead: false,
+      showingOnlineUsers: false,
     }
     this.messageListRef = React.createRef()
   }
@@ -209,6 +210,15 @@ export class Channel extends React.Component {
     />
   )
 
+  // todo for Marc: store it in AWS (these are all different icons)
+  renderOnlineUsersButton = () => (
+    <div
+      className='online-users-button clickable'
+      style={{ backgroundImage: `url(https://svgshare.com/i/Vmv.svg)` }}
+      onClick={() => this.setState({ showingOnlineUsers: true })}
+    />
+  )
+
   renderFooter = () => {
     const rotatedStyle = this.state.showAttachWindow ? 'chat-component-attach-button-rotated' : ''
     return (
@@ -238,6 +248,7 @@ export class Channel extends React.Component {
   }
 
   render() {
+    if (this.state.showingOnlineUsers) return <div className='messenger channel channel-online'><OnlineUsers modal onClose={() => this.setState({ showingOnlineUsers: false })} /></div>
     return (
       <React.Fragment>
         {!!this.props.page ? (
@@ -247,13 +258,14 @@ export class Channel extends React.Component {
         ) : (
           <div className='channel-header'>myG Chat</div>
         )}
-        <div className='messenger' style={{ all: 'unset', display: 'flex', width: this.props.page ? '100%' : '80%', margin: 'auto', display: 'flex' }}>
+        <div className='messenger channel' style={{ width: this.props.page ? '100%' : '80%', margin: 'auto', display: 'flex' }}>
           <div className={`chat-component-base ${!!this.props.page ? 'channel-page' : 'channel'}`}>
             {this.state.attachment && this.renderAttachment()}
             {this.renderBody()}
             {this.renderAttachWindow()}
             {this.renderFooter()}
             {!this.props.page && this.renderOpenInNewPageButton()}
+            {this.renderOnlineUsersButton()}
           </div>
           <OnlineUsers page={this.props.page} />
         </div>

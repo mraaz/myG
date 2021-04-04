@@ -2,9 +2,9 @@
   border-bottom: 2px solid #1e2326;
   display: flex;
   padding-bottom: 8px;
-  font-family: Montserrat!important;
+  font-family: Montserrat !important;
   flex: 1;
-  background-color: #1E2326;
+  background-color: #1e2326;
   margin: auto;
   width: 80%;
   border-top-left-radius: 10px;
@@ -15,6 +15,15 @@
   color: #fff;
   align-items: center;
   justify-content: space-around;
+}
+
+.channel {
+  all: unset !important;
+  display: flex !important;
+}
+
+.channel-online {
+  margin-top: 80px !important;
 }
 
 .messenger {
@@ -35,14 +44,33 @@
     position: relative !important;
   }
 
-  .open-in-new-page {
+  .online-users-mobile {
+    width: 100% !important;
+  }
+
+  .online-users-button {
     width: 8px;
     height: 8px;
     position: absolute;
     background-repeat: no-repeat;
     background-size: unset;
+    left: 0;
+    z-index: 100;
+    background-color: #0b0f14;
+    padding: 16px;
+    background-position: center;
+    border-radius: 8px;
+  }
+
+  .open-in-new-page {
+    width: 8px;
+    height: 8px;
+    z-index: 100;
+    position: absolute;
+    background-repeat: no-repeat;
+    background-size: unset;
     right: 0;
-    background-color: #0B0F14;
+    background-color: #0b0f14;
     padding: 16px;
     background-position: center;
     border-radius: 8px;
@@ -51,8 +79,8 @@
   .chat-component-base {
     pointer-events: auto;
     background-color: #171a1c;
-    display: flex;
-    flex-direction: column;
+    display: flex !important;
+    flex-direction: column !important;
     margin: 0 4px;
     height: 240px;
     width: 25%;
@@ -429,6 +457,7 @@
       background-position: center;
       background-repeat: no-repeat;
       width: 32px;
+      min-height: 37px;
       height: 100%;
       border-top-right-radius: 16px;
       border-bottom-right-radius: 16px;
@@ -449,6 +478,7 @@
       background-position: center;
       background-repeat: no-repeat;
       width: 32px;
+      min-height: 37px;
       height: 100%;
       -webkit-transition: all 0.5s ease-in-out;
       -moz-transition: all 0.5s ease-in-out;
@@ -563,5 +593,40 @@
     height: 80vh !important;
     border-radius: 8px !important;
     overflow: hidden;
+  }
+}
+
+@media screen and (min-width: 481px) {
+  .online-users-button {
+    display: none !important;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .channel-page {
+    .chat-component-body {
+      margin-bottom: 100px !important;
+    }
+    .chat-component-attach-window {
+      margin-bottom: 100px !important;
+    }
+    .chat-component-footer {
+      position: fixed !important;
+      bottom: 56px !important;
+      left: 0 !important;
+      right: 0 !important;
+      z-index: 100 !important;
+    }
+  }
+  .online-users-desktop {
+    display: none !important;
+  }
+  .channel-header {
+    width: 100% !important;
+  }
+  .messenger .chat-component-base {
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
   }
 }
