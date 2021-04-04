@@ -19,16 +19,21 @@
 
 .channel {
   all: unset !important;
+  width: 80% !important;
+  margin: auto !important;
   display: flex !important;
 }
 
-.channel-online {
-  margin-top: 80px !important;
+.channel-page {
+  all: unset !important;
+  width: 100% !important;
+  margin: auto !important;
+  display: flex !important;
 }
 
 .messenger {
-  .channel {
-    width: 80% !important;
+  .channel-chat {
+    width: 100% !important;
     margin: auto !important;
     height: 400px !important;
     position: relative !important;
@@ -37,10 +42,10 @@
     overflow: hidden;
   }
 
-  .channel-page {
-    width: 80% !important;
+  .channel-chat-page {
+    width: 100% !important;
     margin: auto !important;
-    height: 100vh !important;
+    height: calc(100vh - 77px)!important;
     position: relative !important;
   }
 
@@ -603,6 +608,9 @@
 }
 
 @media screen and (max-width: 480px) {
+  .channel {
+    width: 100%!important;
+  }
   .channel-page {
     .chat-component-body {
       margin-bottom: 100px !important;

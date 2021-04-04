@@ -247,19 +247,34 @@ export class Channel extends React.Component {
     )
   }
 
+  renderHeader = () => {
+    return !!this.props.page ? 
+      (
+        <div className='viewGame__header'>
+          <div className='title'>myG Chat</div>
+        </div>
+      ) : 
+      (
+        <div className='channel-header'>myG Chat</div>
+      );
+  }
+
   render() {
-    if (this.state.showingOnlineUsers) return <div className='messenger channel channel-online'><OnlineUsers modal onClose={() => this.setState({ showingOnlineUsers: false })} /></div>
+    if (this.state.showingOnlineUsers) {
+      return(
+         <React.Fragment>
+            {this.renderHeader()}
+            <div className='messenger channel channel-online'>
+              <OnlineUsers modal onClose={() => this.setState({ showingOnlineUsers: false })} />
+            </div>
+         </React.Fragment>
+      )
+    }
     return (
       <React.Fragment>
-        {!!this.props.page ? (
-          <div className='viewGame__header'>
-            <div className='title'>myG Chat</div>
-          </div>
-        ) : (
-          <div className='channel-header'>myG Chat</div>
-        )}
-        <div className='messenger channel' style={{ width: this.props.page ? '100%' : '80%', margin: 'auto', display: 'flex' }}>
-          <div className={`chat-component-base ${!!this.props.page ? 'channel-page' : 'channel'}`}>
+        {this.renderHeader()}
+        <div className={`messenger ${!!this.props.page ? 'channel-page' : 'channel'}`}>
+          <div className={`chat-component-base ${!!this.props.page ? 'channel-chat-page' : 'channel-chat'}`}>
             {this.state.attachment && this.renderAttachment()}
             {this.renderBody()}
             {this.renderAttachWindow()}
