@@ -117,7 +117,7 @@ const getJobs = (runEveryJobOnStart) => [
     name: 'Send Daily Emails',
     action: require('./tasks/send-daily-emails'),
     schedule: '0 0 * * *',
-    runOnStart: runEveryJobOnStart ? true : false,
+    runOnStart: true,// runEveryJobOnStart ? true : false,
     enabled: true,
   },
   {
