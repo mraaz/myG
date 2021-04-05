@@ -32,6 +32,7 @@ const MobileScheduledGames = (props) => {
     handleChangeFilter,
     myGamesMenu = false,
     singleScheduleGamesPayload = {},
+    updateSingleScheduleGamesPayload,
   } = props
 
   const dispatch = useDispatch()
@@ -150,6 +151,7 @@ const MobileScheduledGames = (props) => {
               additional_submit_info_fields={additional_submit_info_fields}
               schedule_games_GUID={schedule_games_GUID}
               myStatus={myStatus}
+              updateSingleScheduleGamesPayload={updateSingleScheduleGamesPayload}
               routeProps={routeProps}
             />
           </div>

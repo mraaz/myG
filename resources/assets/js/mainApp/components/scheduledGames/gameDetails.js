@@ -26,7 +26,7 @@ export default class GameDetails extends Component {
   }
 
   render() {
-    const { singleScheduleGamesPayload = {}, selected_game = {}, showRightSideInfo, commentData, showAllComment } = this.props
+    const { singleScheduleGamesPayload = {}, selected_game = {}, showRightSideInfo, commentData, showAllComment, updateSingleScheduleGamesPayload } = this.props
     const {
       additional_game_info = {},
       approved_gamers = [],
@@ -102,6 +102,7 @@ export default class GameDetails extends Component {
                 additional_submit_info_fields={additional_submit_info_fields}
                 schedule_games_GUID={schedule_games_GUID}
                 myStatus={myStatus}
+                updateSingleScheduleGamesPayload={updateSingleScheduleGamesPayload}
                 routeProps={this.props.routeProps}
               />
             </div>
