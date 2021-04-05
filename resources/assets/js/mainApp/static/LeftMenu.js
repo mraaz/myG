@@ -94,7 +94,7 @@ if (checkFlag(CHANNEL)) {
   sideBarItems['CHANNEL'] = {
     id: 'CHANNEL',
     header: 'myG Chat',
-    icon: 'https://myg.gg/platform_images/Dashboard/Vix.svg',
+    icon: 'https://svgshare.com/i/Viw.svg', /* todo for Marc: this is a different image, store in AWS */
     cta: '/myg-chat',
     expanded: false,
   }

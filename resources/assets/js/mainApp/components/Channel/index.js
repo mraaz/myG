@@ -26,6 +26,7 @@ export class Channel extends React.Component {
       attachment: null,
       loadedAllMessages: false,
       hasScrolledToLastRead: false,
+      showingOnlineUsers: false,
     }
     this.messageListRef = React.createRef()
   }
@@ -209,6 +210,15 @@ export class Channel extends React.Component {
     />
   )
 
+  // todo for Marc: store it in AWS (these are all different icons)
+  renderOnlineUsersButton = () => (
+    <div
+      className='online-users-button clickable'
+      style={{ backgroundImage: `url(https://svgshare.com/i/Vmv.svg)` }}
+      onClick={() => this.setState({ showingOnlineUsers: true })}
+    />
+  )
+
   renderFooter = () => {
     const rotatedStyle = this.state.showAttachWindow ? 'chat-component-attach-button-rotated' : ''
     return (
@@ -237,23 +247,40 @@ export class Channel extends React.Component {
     )
   }
 
+  renderHeader = () => {
+    return !!this.props.page ? 
+      (
+        <div className='viewGame__header'>
+          <div className='title'>myG Chat</div>
+        </div>
+      ) : 
+      (
+        <div className='channel-header'>myG Chat</div>
+      );
+  }
+
   render() {
+    if (this.state.showingOnlineUsers) {
+      return(
+         <React.Fragment>
+            {this.renderHeader()}
+            <div className='messenger channel channel-online'>
+              <OnlineUsers modal onClose={() => this.setState({ showingOnlineUsers: false })} />
+            </div>
+         </React.Fragment>
+      )
+    }
     return (
       <React.Fragment>
-        {!!this.props.page ? (
-          <div className='viewGame__header'>
-            <div className='title'>myG Chat</div>
-          </div>
-        ) : (
-          <div className='channel-header'>myG Chat</div>
-        )}
-        <div className='messenger' style={{ all: 'unset', width: this.props.page ? '100%' : '80%', margin: 'auto', display: 'flex' }}>
-          <div className={`chat-component-base ${!!this.props.page ? 'channel-page' : 'channel'}`}>
+        {this.renderHeader()}
+        <div className={`messenger ${!!this.props.page ? 'channel-page' : 'channel'}`}>
+          <div className={`chat-component-base ${!!this.props.page ? 'channel-chat-page' : 'channel-chat'}`}>
             {this.state.attachment && this.renderAttachment()}
             {this.renderBody()}
             {this.renderAttachWindow()}
             {this.renderFooter()}
             {!this.props.page && this.renderOpenInNewPageButton()}
+            {this.renderOnlineUsersButton()}
           </div>
           <OnlineUsers page={this.props.page} />
         </div>
