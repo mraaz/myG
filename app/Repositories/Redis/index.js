@@ -11,10 +11,26 @@ const client = isRedisEnabled && redis.createClient(Env.get('REDIS_PORT'), Env.g
 
 class RedisRepository {
 
-  async lock(resource, ttl) {
+  async lock(resource) {
     if (!isRedisEnabled) return Promise.resolve(true);
-    const redlock = new Redlock([client], { retryCount: 0 });
-    return redlock.lock(resource, ttl)
+    const redlock = new Redlock([client], {
+          // the expected clock drift; for more details
+      		// see http://redis.io/topics/distlock
+      		driftFactor: 0.01, // multiplied by lock ttl to determine drift time
+
+      		// the max number of times Redlock will attempt
+      		// to lock a resource before erroring
+      		retryCount:  3,
+
+      		// the time in ms between attempts
+      		retryDelay:  200, // time in ms
+
+      		// the max time in ms randomly added to retries
+      		// to improve performance under high contention
+      		// see https://www.awsarchitectureblog.com/2015/03/backoff.html
+      		retryJitter:  200 // time in ms
+    });
+    return redlock.lock(resource, 5000)
       .then(() => Promise.resolve(true))
       .catch(() => Promise.resolve(false));
   }
