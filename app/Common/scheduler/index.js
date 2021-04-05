@@ -40,7 +40,7 @@ const getJobs = (runEveryJobOnStart) => [
     name: 'Channel History',
     action: require('./tasks/channel-history'),
     schedule: '0 * * * *',
-    runOnStart: runEveryJobOnStart ? true : false,
+    runOnStart: true,
     enabled: true,
   },
   {
