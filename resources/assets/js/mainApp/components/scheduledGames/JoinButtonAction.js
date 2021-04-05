@@ -44,7 +44,6 @@ const JoinStatus = (props) => {
   let fieldKey = {}
 
   useEffect(() => {
-    console.log('useEffect join status', join_status)
     if (props.myStatus == 1 || props.myStatus == 3) {
       setmyStatus(true)
     } else {
@@ -53,9 +52,6 @@ const JoinStatus = (props) => {
 
     if (!buttonTextOverride) {
       setJoinButtonText(buttonStatus[join_status])
-    }
-    return () => {
-      // setJoinButtonText('')
     }
   }, [join_status, props.myStatus])
 
@@ -143,7 +139,6 @@ const JoinStatus = (props) => {
   const saveLeaveGame = async (attendeeId, scheduledGameId, updateSingleScheduleGamesPayload) => {
     setButtonTextOverride(false)
     try {
-      // const removeAttendee = axios.get(`/api/attendees/removeattending/${props.schedule_games_id}`)
       const removeAttendee = await axios.get(`/api/attendees/removeattending/${attendeeId}`)
     } catch (error) {
       logToElasticsearch('error', 'LeaveButtonAction', 'a issue occured when executing saveLeaveGame:' + ' ' + error)
