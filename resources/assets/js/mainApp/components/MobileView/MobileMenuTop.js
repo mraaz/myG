@@ -54,8 +54,7 @@ const MobileMenuTop = (props) => {
           <FeatureEnabled allOf={[CHANNEL]}>
             <Link to='/myg-chat' style={{ paddingRight: 20 }}>
               <div className='notification-container'>
-                {/* todo for Marc: this is a different image, store in AWS */}
-                <img src='https://svgshare.com/i/Viw.svg' height='22' width='22' />
+                <img src='https://myg.gg/platform_images/Dashboard/Viw.svg' height='22' width='22' />
                 <NotificationIcon type='channel' />
               </div>
             </Link>

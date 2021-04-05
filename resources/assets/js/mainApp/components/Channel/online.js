@@ -59,11 +59,10 @@ export class OnlineUsers extends React.Component {
     )
   }
 
-  // todo for Marc: store it in AWS (these are all different icons)
   renderOnlineUsersButton = () => (
     <div
       className='online-users-button clickable'
-      style={{ backgroundImage: `url(https://svgshare.com/i/Vko.svg)` }}
+      style={{ backgroundImage: `url(https://myg.gg/platform_images/Dashboard/Vko.svg)` }}
       onClick={this.props.onClose}
     />
   )

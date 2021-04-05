@@ -210,11 +210,10 @@ export class Channel extends React.Component {
     />
   )
 
-  // todo for Marc: store it in AWS (these are all different icons)
   renderOnlineUsersButton = () => (
     <div
       className='online-users-button clickable'
-      style={{ backgroundImage: `url(https://svgshare.com/i/Vmv.svg)` }}
+      style={{ backgroundImage: `url(https://myg.gg/platform_images/Dashboard/Vmv.svg)` }}
       onClick={() => this.setState({ showingOnlineUsers: true })}
     />
   )
@@ -248,12 +247,12 @@ export class Channel extends React.Component {
   }
 
   renderHeader = () => {
-    return !!this.props.page ? 
+    return !!this.props.page ?
       (
         <div className='viewGame__header'>
           <div className='title'>myG Chat</div>
         </div>
-      ) : 
+      ) :
       (
         <div className='channel-header'>myG Chat</div>
       );
