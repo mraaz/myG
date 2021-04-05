@@ -419,7 +419,7 @@ class UserController {
       .from('user_most_played_games')
       .leftJoin('game_names', 'game_names.id', 'user_most_played_games.game_name_id')
       .where('user_most_played_games.user_id', auth.user.id)
-      .then((games) => [' All', ...games.map((game) => game.game_name)]);
+      .then((games) => [...games.map((game) => game.game_name)]);
     const onlineUsers = await Database
       .select(['users.alias', 'game_names.game_name', 'game_names.game_artwork'])
       .from('users')
@@ -428,18 +428,20 @@ class UserController {
       .where('users.status', 'online')
       .limit(100);
     const games = {};
+    const aliases = {};
     onlineUsers.forEach(({ alias, game_name, game_artwork }) => {
-      if (!game_name) game_name = 'Active Now';
-      if (!games[game_name]) games[game_name] = { icon: game_artwork, gamers: [] };
-      games[game_name].gamers.push(alias);
+      aliases[alias] = true;
+      if (game_name) {
+        if (!games[game_name]) games[game_name] = { icon: game_artwork, gamers: [] };
+        games[game_name].gamers.push(alias);
+      }
     });
+    const activeNow = { game: 'Active Now', icon: null, gamers: Object.keys(aliases) };
     const preferredGames = Object.keys(games).sort().filter(game => myGames.includes(game)).map((game) => ({ game: game.trim(), ...games[game] }));
     const otherGames = Object.keys(games).sort().filter(game => !myGames.includes(game)).map((game) => ({ game: game.trim(), ...games[game] }));
-    const gamesList = [...preferredGames, ...otherGames];
-    const activeNow = gamesList.find(({ game }) => game === 'Active Now');
-    const orderedList = [activeNow, ...gamesList.filter(({ game }) => game !== 'Active Now')];
-    orderedList.forEach(game => { game.gamers = game.gamers.filter(alias => alias !== auth.user.alias) });
-    return orderedList.filter(game => game.gamers.length).slice(0, 10);
+    const gamesList = [activeNow, ...preferredGames, ...otherGames];
+    gamesList.forEach(game => { game.gamers = game.gamers.filter(alias => alias !== auth.user.alias) });
+    return gamesList.filter(game => game.gamers.length).slice(0, 10);
   }
 
   // async scrub_data() {
