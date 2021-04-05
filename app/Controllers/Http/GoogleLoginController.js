@@ -43,7 +43,7 @@ class LoginController {
         connections.master_controller({ auth })
         const onlineQueryResponse = await Database.from('users').where('status', 'online').count();
         const onlineUsers = onlineQueryResponse[0]['count(*)'];
-        if (onlineUsers < 10) await ChatRepository.publishOnMainChannel(`Welcome ${user.alias} !!`);
+        if (onlineUsers < 10) await ChatRepository.publishOnMainChannel(`Welcome ${authUser.alias} !!`);
         return response.redirect('/')
       } else {
         session.put('provider', 'google')

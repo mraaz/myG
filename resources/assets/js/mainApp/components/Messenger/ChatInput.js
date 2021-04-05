@@ -129,7 +129,7 @@ export default class ChatInput extends React.Component {
             maxLength={2000}
             className='chat-component-input'
             disabled={disabled || this.state.disabled}
-            placeholder={this.state.disabled ? 'Slowmode is enabled. Can only send one message every 3s.' : placeholderText}
+            placeholder={this.state.disabled ? 'Slowmode - a message every 3s' : placeholderText}
             value={this.state.input}
             onChange={(event) => this.onTyping(event.target.value)}
             onKeyPress={this.onKeyPressed}

@@ -12,14 +12,14 @@ mygame:
   smtpHost: smtp.gmail.com
   smtpPort: 587
   smtpFromAddress: noreply@myG.gg
-  nodeEnvironment: development
+  nodeEnvironment: production
   redisHost: 'redis-redis-cluster-headless'
   redisPort: '"6379"'
   natsServer: 'nats://nats-client:4222'
   clamavHost: clamav
   clamavPort: '"3310"'
   timezone: UTC
-  features_on: PROFILE_V2
+  features_on: CHANNEL
   awsSesRegion: us-east-1
   facebookID: '522599251611585'
   elasticSearch2: http://elasticsearch-master:9200

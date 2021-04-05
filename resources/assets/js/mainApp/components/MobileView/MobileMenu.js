@@ -117,11 +117,12 @@ const MobileMenu = ({ initialData }) => {
     getNotis()
   }, [])
 
+  const isInChannel = window.location.pathname.includes('myg-chat');
   return (
     <Fragment>
       <MobileMenuTop initialData={initialData} notifications={{ ...notifications }} />
       <section className='main-mobile-menu'>
-        <div className={mobileMenuIsActive ? 'menu-bottom show' : 'menu-bottom hide'}>
+        <div className={(mobileMenuIsActive || isInChannel) ? 'menu-bottom show' : 'menu-bottom hide'}>
           <div className='mobile-sub-menu'>
             <div className='mobile-feed-img'>
               <Link to='/'>
