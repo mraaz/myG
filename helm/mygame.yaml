@@ -19,7 +19,7 @@ mygame:
   clamavHost: clamav
   clamavPort: '"3310"'
   timezone: UTC
-  features_on: CHANNEL
+  features_on:
   awsSesRegion: us-east-1
   facebookID: '522599251611585'
   elasticSearch2: http://elasticsearch-master:9200
