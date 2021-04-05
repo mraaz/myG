@@ -622,12 +622,15 @@
     .gamers {
       display: flex;
       flex-direction: column;
-      background-color: #151C26;
+      background-color: #151c26;
 
-      .gamer {    
+      .gamer {
         padding: 8px;
       }
     }
+  }
+  .online-users-desktop {
+    margin-right: auto;
   }
 
   .messenger-body-section-loader {

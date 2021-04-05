@@ -23,7 +23,9 @@ async function initRollout() {
 initRollout().then(function() {})
 
 export function checkFlag(flag) {
-  if (window.location.href.startsWith('http://localhost')) return isFlagEnabledDevelopment(flag);
+  const isLocalhost = window.location.href.startsWith('http://localhost');
+  const isNgrok = window.location.href.includes('ngrok');
+  if (isLocalhost || isNgrok) return isFlagEnabledDevelopment(flag);
   return isFlagEnabledProduction(flag);
 }
 

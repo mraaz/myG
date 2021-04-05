@@ -20,7 +20,7 @@ export class OnlineUsers extends React.Component {
   }
 
   renderGame = ({ game: name, icon, gamers }, index) => {
-    const color = (index % 2) ? colors[0] : colors[1]
+    const color = index % 2 ? colors[0] : colors[1]
     const expanded = this.state.expanded.includes(name)
     const chevronType = expanded ? 'down' : 'right'
     return (
@@ -29,13 +29,11 @@ export class OnlineUsers extends React.Component {
           className='messenger-body-section-header clickable'
           style={{ backgroundColor: color }}
           onClick={() =>
-            this.setState(
-              (previous) => ({
-                expanded: previous.expanded.includes(name)
-                  ? [...previous.expanded.filter((game) => game !== name)]
-                  : [...previous.expanded, name],
-              })
-            )
+            this.setState((previous) => ({
+              expanded: previous.expanded.includes(name)
+                ? [...previous.expanded.filter((game) => game !== name)]
+                : [...previous.expanded, name],
+            }))
           }>
           <div className='messenger-body-game-section' style={{ backgroundColor: color }}>
             <div className='messenger-game-icon' style={{ backgroundImage: `url('${icon}')` }} />
@@ -49,28 +47,40 @@ export class OnlineUsers extends React.Component {
           </div>
         </div>
         {expanded && (
-          <div className="gamers">
-            {gamers.map((gamer) => 
-              <div key={gamer} className="gamer clickable" onClick={() => window.router.push(`/profile/${gamer}`)}>
+          <div className='gamers'>
+            {gamers.map((gamer) => (
+              <div key={gamer} className='gamer clickable' onClick={() => window.router.push(`/profile/${gamer}`)}>
                 {gamer}
               </div>
-            )}
+            ))}
           </div>
         )}
       </div>
     )
   }
 
+  renderOnlineUsersButton = () => (
+    <div
+      className='online-users-button clickable'
+      style={{ backgroundImage: `url(https://myg.gg/platform_images/Dashboard/Vko.svg)` }}
+      onClick={this.props.onClose}
+    />
+  )
+
   render() {
-    return(
-      <div className='messenger-body-section' style={{ 
-        width: '20%',
-        height: this.props.page ? '100%' : '400px',
-        overflowY: 'scroll',
-      }}>
+    const style = this.props.modal ? 'online-users-mobile' : 'online-users-desktop'
+    return (
+      <div
+        className={`messenger-body-section ${style}`}
+        style={{
+          width: '20%',
+          height: this.props.page ? '100%' : '400px',
+          overflowY: 'scroll',
+        }}>
+        {!!this.props.modal && this.renderOnlineUsersButton()}
         {this.props.onlineUsers.map(this.renderGame)}
       </div>
-    );
+    )
   }
 }
 
