@@ -44,9 +44,10 @@
 
   .channel-chat-page {
     width: 100% !important;
-    margin: auto !important;
-    height: calc(100vh - 77px)!important;
+    margin-left: auto !important;
+    height: calc(100vh - 77px) !important;
     position: relative !important;
+    max-width: 640px;
   }
 
   .online-users-mobile {
@@ -609,7 +610,7 @@
 
 @media screen and (max-width: 480px) {
   .channel {
-    width: 100%!important;
+    width: 100% !important;
   }
   .channel-page {
     .chat-component-body {
