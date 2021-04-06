@@ -40,6 +40,7 @@ const JoinStatus = (props) => {
   const [inGameUsername, setInGameUsername] = useState('')
   const [selectValues, setSelectValues] = useState({})
   const [isButtonDisabled, setButtonDisabled] = useState(true)
+  const [buttonTextOverride, setButtonTextOverride] = useState(false)
   let fieldKey = {}
 
   useEffect(() => {
@@ -48,11 +49,11 @@ const JoinStatus = (props) => {
     } else {
       setmyStatus(false)
     }
-    setJoinButtonText(buttonStatus[join_status])
-    return () => {
-      setJoinButtonText('')
+
+    if (!buttonTextOverride) {
+      setJoinButtonText(buttonStatus[join_status])
     }
-  }, [join_status])
+  }, [join_status, props.myStatus])
 
   const showModal = () => {
     setModalStatus(!modalStatus)
@@ -81,14 +82,14 @@ const JoinStatus = (props) => {
 
   const handleJoinGame = () => {
     if (!additional_submit_info) {
-      saveJoinGame()
+      saveJoinGame({}, props.updateSingleScheduleGamesPayload)
     } else {
       setModalStatus(!modalStatus)
     }
     setmyStatus(true)
     setLeaveButtonStatus(!leaveButtonStatus)
   }
-  const saveJoinGame = async (query = {}) => {
+  const saveJoinGame = async (query = {}, updateSingleScheduleGamesPayload) => {
     let get_stats = ''
     try {
       get_stats = await axios.post('/api/attendees/savemySpot', {
@@ -118,15 +119,36 @@ const JoinStatus = (props) => {
       toast.success(<Toast_style text={'Yoyo! Host has been notified, waiting on their approval'} />)
       setJoinButtonText(buttonStatus['3'])
     }
+    if (join_status === 4 || join_status === 5) {
+      // set a parameter to override the auto setting of button status in the userEffect function.
+      // This parameters will default to false so it wont be remembered
+      setButtonTextOverride(true)
+    }
+    updateSingleScheduleGamesPayload(props.schedule_games_id)
   }
 
   const handleLeaveGame = async () => {
-    const removeAttendee = axios.get(`/api/attendees/removeattending/${props.schedule_games_id}`)
+    const wasNotSuccessful = await saveLeaveGame(props.schedule_games_id, props.schedule_games_id, props.updateSingleScheduleGamesPayload)
+    if (wasNotSuccessful) {
+      // toast.success(<Toast_style text={"A error occured"} />)
+      return
+    }
     toast.success(<Toast_style text={"You're out!"} />)
-    exitGameGroup(props.schedule_games_id)
-    //setJoinButtonText(buttonStatus['0'])
+  }
+
+  const saveLeaveGame = async (attendeeId, scheduledGameId, updateSingleScheduleGamesPayload) => {
+    setButtonTextOverride(false)
+    try {
+      const removeAttendee = await axios.get(`/api/attendees/removeattending/${attendeeId}`)
+    } catch (error) {
+      logToElasticsearch('error', 'LeaveButtonAction', 'a issue occured when executing saveLeaveGame:' + ' ' + error)
+      return true
+    }
+    updateSingleScheduleGamesPayload(props.schedule_games_id)
+    exitGameGroup(scheduledGameId)
     setmyStatus(false)
     setLeaveButtonStatus(!leaveButtonStatus)
+    return false
   }
   const handleJoindButtonClick = () => {
     setLeaveButtonStatus(!leaveButtonStatus)
@@ -198,7 +220,7 @@ const JoinStatus = (props) => {
       query[`value_${queryMapping[index]}`] = { [key]: valueToSubmit[key] }
       index++
     }
-    saveJoinGame(query)
+    saveJoinGame(query, props.updateSingleScheduleGamesPayload)
     setModalStatus(!modalStatus)
     setSelectValues({})
   }

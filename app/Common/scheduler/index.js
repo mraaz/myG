@@ -2,12 +2,12 @@ function setupScheduler() {
 
   const Env = use('Env')
   const hasRedis = Env.get('REDIS_ENABLED');
-  if (!hasRedis) return logScheduler(schedulerLogs, moment, 'Redis Disabled, no Scheduler Queues will be run.');
-
-  const cron = require('node-cron')
-  const moment = require('moment')();
   const schedulerLogs = Env.get('SCHEDULER_LOGS');
+  const moment = require('moment')();
+  const cron = require('node-cron')
   const runEveryJobOnStart = Env.get('SCHEDULER_RUN_EVERY_JOB_ON_START') == 'true' ? true : false;
+  
+  if (!hasRedis) return logScheduler(schedulerLogs, moment, 'Redis Disabled, no Scheduler Queues will be run.');
 
   getJobs(runEveryJobOnStart).forEach((job) => {
     if (!job.enabled) return logScheduler(schedulerLogs, moment, `Skipping Disabled Job ${job.name}`);
