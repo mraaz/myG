@@ -30,9 +30,22 @@ class RedisRepository {
       		// see https://www.awsarchitectureblog.com/2015/03/backoff.html
       		retryJitter:  200 // time in ms
     });
+
     return redlock.lock(resource, 5000)
       .then(() => Promise.resolve(true))
       .catch(() => Promise.resolve(false));
+
+    // let ttl = 5000;
+    // let gate_keeper = false
+    //
+    // await redlock.lock(resource, ttl).then( async function(lock) {
+    //   await setTimeout(function () {
+    //     gate_keeper = true
+    //   }, 3000)
+    //
+    //   lock.unlock()
+    // }).then(() => Promise.resolve(gate_keeper ? true: false) )
+
   }
 
   async setGameMessageSchedule(schedule) {

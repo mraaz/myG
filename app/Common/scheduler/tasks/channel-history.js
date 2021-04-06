@@ -4,8 +4,6 @@ module.exports = async (job) => {
     console.log('\x1b[36m', 'SCHEDULER', moment.format('D MMM HH:mm:ss'), '-', `Started execution for ${job.name}`, '\x1b[0m')
   const guardExecution = require('./execution-guard')
   await guardExecution(job.name)
-  console.log('RUNNING THIS JOB')
-  console.log(job.name)
   const ChatRepository = require('../../../Repositories/Chat')
   await ChatRepository.clearChannelHistory(job)
   if (process.env.SCHEDULER_LOGS)
