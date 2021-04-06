@@ -177,7 +177,7 @@ export default class Chat extends Component {
     const isActive = active == true ? { display: 'block' } : { display: 'none' }
 
     return (
-      <div style={isActive} className='notification__container'>
+      <div style={isActive} className='notification__container chat__requests'>
         <TopTabs tabs={['All', 'Messages', 'Groups', 'Misc']} changeTab={this.changeTab} />
         {chatNotifications.length && tab == 0 && (
           <div className='top-actions'>

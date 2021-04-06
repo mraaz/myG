@@ -75,6 +75,21 @@ const CoverImage = (props) => {
       setToggleOption(!toggle)
     }
   }
+
+  /**
+   * Designed to attach to a elements onClick event and toggle the options
+   * dropdown, while preventing the click event on parent elements.
+   * 
+   * Built to attach to the options button to prevent the Join/Leave event
+   * firing.
+   * 
+   * @param {MouseEvent} clickEvent The click event of the attached element
+   */
+  const handleToggleOption = (clickEvent) => {
+    clickEvent.stopPropagation()
+    setToggleOption(!toggle)
+  }
+
   return (
     <div className='coverImage__container'>
       <img
@@ -98,9 +113,9 @@ const CoverImage = (props) => {
       <div className='community__option'>
         <div className='name'>{props.name}</div>
         <div className='option'>
-          <button type='button' className='btnWarning btn__option'>
-            <span onClick={(e) => handleJoinButton(e, props.id)}>{joinlabel || labelMap[props.current_user_permission]}</span>
-            <img src='https://myG.gg/platform_images/View+Game/Down+Carrot_black.svg' onClick={(e) => setToggleOption(!toggle)}></img>
+          <button type='button' className='btnWarning btn__option' onClick={(e) => handleJoinButton(e, props.id)}>
+            <span>{joinlabel || labelMap[props.current_user_permission]}</span>
+            <img src='https://myG.gg/platform_images/View+Game/Down+Carrot_black.svg' onClick={(e) => handleToggleOption(e)}></img>
             {toggle &&
               (labelMap[props.current_user_permission] == 'Joined' ||
                 labelMap[props.current_user_permission] == 'Pending' ||

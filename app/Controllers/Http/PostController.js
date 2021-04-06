@@ -344,7 +344,8 @@ class PostController {
     try {
       let myPosts = await Database.from('posts')
         .innerJoin('users', 'users.id', 'posts.user_id')
-        .where({ user_id: auth.user.id, visibility: 1 })
+        .where({ user_id: auth.user.id })
+        .whereIn('posts.visibility', [0, 1])
         .select('*', 'posts.id', 'posts.updated_at')
         .orderBy('posts.created_at', 'desc')
         .paginate(request.params.paginateNo, 10)

@@ -201,12 +201,15 @@ class Settings extends Component {
               <div className='option'>
                 <div className='title'>Main channel</div>
                 <div className='button__switch browser__notification'>
+                  <label className={`switchLabel ${this.props.mainChannelEnabled ? 'on' : 'off'}`} onClick={() => this.props.toggleMainChannel(this.props.userId)}>
+                    {this.props.mainChannelEnabled ? 'on' : 'off'}
+                  </label>
                   <input
                     id='switch-orange'
                     type='checkbox'
                     className='switch'
                     value={this.props.mainChannelEnabled}
-                    defaultChecked={this.props.mainChannelEnabled}
+                    checked={this.props.mainChannelEnabled}
                     onChange={() => this.props.toggleMainChannel(this.props.userId)}
                   />
                 </div>
@@ -215,12 +218,15 @@ class Settings extends Component {
             <div className='option'>
               <div className='title'>Browser notifications</div>
               <div className='button__switch browser__notification'>
+                <label className={`switchLabel ${this.props.pushNotificationsEnabled ? 'on' : 'off'}`} onClick={() => this.props.togglePushNotifications(this.props.userId)}>
+                  {this.props.pushNotificationsEnabled ? 'on' : 'off'}
+                </label>
                 <input
                   id='switch-orange'
                   type='checkbox'
                   className='switch'
                   value={this.props.pushNotificationsEnabled}
-                  defaultChecked={this.props.pushNotificationsEnabled}
+                  checked={this.props.pushNotificationsEnabled}
                   onChange={() => this.props.togglePushNotifications(this.props.userId)}
                 />
               </div>
@@ -228,13 +234,16 @@ class Settings extends Component {
             <div className='option'>
               <div className='title'>Sound notifications</div>
               <div className='button__switch sound__notification'>
+                <label className={`switchLabel ${!this.props.notificationSoundsDisabled ? 'on' : 'off'}`} onClick={() => this.props.toggleNotificationSounds(!this.props.notificationSoundsDisabled)}>
+                  {!this.props.notificationSoundsDisabled ? 'on' : 'off'}
+                </label>
                 <input
                   id='switch-orange'
                   type='checkbox'
                   className='switch'
                   value={!this.props.notificationSoundsDisabled}
-                  defaultChecked={!this.props.notificationSoundsDisabled}
-                  onClick={() => this.props.toggleNotificationSounds(!this.props.notificationSoundsDisabled)}
+                  checked={!this.props.notificationSoundsDisabled}
+                  onChange={() => this.props.toggleNotificationSounds(!this.props.notificationSoundsDisabled)}
                 />
               </div>
             </div>

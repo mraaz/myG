@@ -188,6 +188,13 @@ export default class ScheduleGames extends Component {
       this.getScheduleGamesChangeCall({ show_full_games: checked })
     })
   }
+  updateSingleScheduleGamesPayload = (id) => {
+    axios.get(`/api/ScheduleGame/additional_game_info/${id}`).then(additionalGameInformation => {
+      this.setState({
+        singleScheduleGamesPayload: additionalGameInformation.data,
+      })
+    })
+  }
 
   render() {
     const { params = {} } = this.props.routeProps.match
@@ -242,6 +249,7 @@ export default class ScheduleGames extends Component {
                       commentData={commentData}
                       handleShowAllComments={this.handleShowAllComments}
                       showAllComment={showAllComment}
+                      updateSingleScheduleGamesPayload={this.updateSingleScheduleGamesPayload}
                       {...this.props}
                     />
                   </div>
@@ -272,6 +280,7 @@ export default class ScheduleGames extends Component {
             showFullGames={show_full_games}
             selectedGame={selected_game}
             singleScheduleGamesPayload={singleScheduleGamesPayload}
+            updateSingleScheduleGamesPayload={this.updateSingleScheduleGamesPayload}
             handleExcludesFullGames={this.handleExcludesFullGames}
             slideOptionLabel={this.state.slideOptionText}
             copyClipboardEnable={true}
