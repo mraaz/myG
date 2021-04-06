@@ -37,6 +37,13 @@ const getJobs = (runEveryJobOnStart) => [
     enabled: false,
   },
   {
+    name: 'Disconnect_Users',
+    action: require('./tasks/disconnect-users'),
+    schedule: '0 * * * *',
+    runOnStart: runEveryJobOnStart ? true : false,
+    enabled: true,
+  },
+  {
     name: 'Channel_History',
     action: require('./tasks/channel-history'),
     schedule: '0 * * * *',

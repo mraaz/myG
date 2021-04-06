@@ -1,6 +1,6 @@
 'use strict'
 
-const UserRepository = require('../../Repositories/User')
+const ConnectionRepository = require('../../Repositories/Connection')
 const { log } = require('../../Common/logger')
 
 class ChatRealtimeController {
@@ -11,12 +11,12 @@ class ChatRealtimeController {
     this.request = request
     this.userId = auth.user.id;
     log('CHAT', `WS Connection Opened: ${this.socket.topic}`)
-    UserRepository.updateStatus({ requestingUserId: this.userId, requestedStatus: 'online', forceStatus: false })
+    ConnectionRepository.connectUser({ requestingUserId: this.userId });
   }
 
   onClose() {
     log('CHAT', `WS Connection Closed: ${this.socket.topic}`)
-    UserRepository.updateStatus({ requestingUserId: this.userId, requestedStatus: 'offline', forceStatus: false })
+    ConnectionRepository.disconnectUser({ requestingUserId: this.userId });
   }
 }
 
