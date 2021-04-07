@@ -41,6 +41,7 @@
     .filter__value-container {
       overflow-y: scroll;
       height: 45px;
+      scrollbar-width: none;
       .css-b8ldur-Input {
         color: white !important;
       }
@@ -1375,7 +1376,7 @@
     padding: 30px 10px 10px 10px;
     margin: 0;
     overflow-y: scroll;
-    min-height: 400px;
+    //min-height: 400px;
     scrollbar-width: none; /* Firefox */
     -ms-overflow-style: none; /* IE and Edge */
     max-height: calc(100vh - 200px);
