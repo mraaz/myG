@@ -1376,6 +1376,9 @@
     margin: 0;
     overflow-y: scroll;
     min-height: 400px;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    max-height: calc(100vh - 200px);
 
     .image-uploader {
       background-color: #1d2326;
@@ -1427,6 +1430,8 @@
     }
 
     .game-title-select {
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none; /* IE and Edge */
       min-width: 60%;
       .css-b8ldur-Input {
         color: white !important;
