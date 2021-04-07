@@ -126,6 +126,7 @@
           padding: 0;
           max-width: 450px;
           .css-g1d714-ValueContainer {
+            scrollbar-width: none;
             height: 45px;
             height: 100%;
             padding: 2px;
@@ -348,6 +349,7 @@
         border: none;
         padding: 0;
         .css-g1d714-ValueContainer {
+          scrollbar-width: none;
           height: 45px;
           height: 100%;
           padding: 2px;
@@ -3296,7 +3298,6 @@ $transition-default: 0.25s ease-out 0.1s;
           &.active {
             visibility: visible;
             opacity: 1;
-            
           }
           .edit {
             font-size: 10px;
