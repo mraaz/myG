@@ -1471,6 +1471,12 @@ class ChatRepository {
     }
   }
 
+  async notifyActiveNow(userId, active) {
+    const response = await User.query().select('alias').where('id', userId).first();
+    const alias = response && response.toJSON().alias;
+    return this.broadcast('chat:channel:*', `chat:channel:main`, `chat:activeNow`, { alias, active })
+  }
+
   async publishNotifications({ userId, notifications }) {
     return this.broadcast('chat:auth:*', `chat:auth:${userId}`, `chat:notification`, notifications);
   }

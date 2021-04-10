@@ -1,16 +1,19 @@
 
 const User = use('App/Models/User');
+const ChatRepository = require('../Chat');
 const { log } = require('../../Common/logger')
 
 class ConnectionRepository {
 
   connectUser({ requestingUserId }) {
     log('CONNECTION', `User ${requestingUserId} connected`);
+    ChatRepository.notifyActiveNow(requestingUserId, true);
     return User.query().where('id', '=', requestingUserId).update({ status: 'online', last_seen: new Date() });
   }
 
   disconnectUser({ requestingUserId }) {
     log('CONNECTION', `User ${requestingUserId} disconnected`);
+    ChatRepository.notifyActiveNow(requestingUserId, false);
     return User.query().where('id', '=', requestingUserId).update({ status: 'offline', last_seen: new Date() });
   }
 
