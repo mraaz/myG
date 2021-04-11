@@ -10,42 +10,37 @@ const isRedisEnabled = Env.get('REDIS_ENABLED');
 const client = isRedisEnabled && redis.createClient(Env.get('REDIS_PORT'), Env.get('REDIS_HOST'));
 
 class RedisRepository {
+  
+  getRedLock() {
+    return new Redlock([client], {
+      // the expected clock drift; for more details
+      // see http://redis.io/topics/distlock
+      driftFactor: 0.01, // multiplied by lock ttl to determine drift time
+
+      // the max number of times Redlock will attempt
+      // to lock a resource before erroring
+      retryCount:  3,
+
+      // the time in ms between attempts
+      retryDelay:  200, // time in ms
+
+      // the max time in ms randomly added to retries
+      // to improve performance under high contention
+      // see https://www.awsarchitectureblog.com/2015/03/backoff.html
+      retryJitter:  200 // time in ms
+    });
+  }
 
   async lock(resource) {
-    if (!isRedisEnabled) return Promise.resolve(true);
-    const redlock = new Redlock([client], {
-          // the expected clock drift; for more details
-      		// see http://redis.io/topics/distlock
-      		driftFactor: 0.01, // multiplied by lock ttl to determine drift time
+    if (!isRedisEnabled) return Promise.resolve(null);
+    const redlock = this.getRedLock();
+    return redlock.lock(resource, 5000);
+  }
 
-      		// the max number of times Redlock will attempt
-      		// to lock a resource before erroring
-      		retryCount:  3,
-
-      		// the time in ms between attempts
-      		retryDelay:  200, // time in ms
-
-      		// the max time in ms randomly added to retries
-      		// to improve performance under high contention
-      		// see https://www.awsarchitectureblog.com/2015/03/backoff.html
-      		retryJitter:  200 // time in ms
-    });
-
-    return redlock.lock(resource, 5000)
-      .then(() => Promise.resolve(true))
-      .catch(() => Promise.resolve(false));
-
-    // let ttl = 5000;
-    // let gate_keeper = false
-    //
-    // await redlock.lock(resource, ttl).then( async function(lock) {
-    //   await setTimeout(function () {
-    //     gate_keeper = true
-    //   }, 3000)
-    //
-    //   lock.unlock()
-    // }).then(() => Promise.resolve(gate_keeper ? true: false) )
-
+  async unlock(resource) {
+    if (!isRedisEnabled) return Promise.resolve(null);
+    const redlock = this.getRedLock();
+    return redlock.unlock(resource);
   }
 
   async setGameMessageSchedule(schedule) {
