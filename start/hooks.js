@@ -1,6 +1,6 @@
 'use strict'
 const { hooks } = require('@adonisjs/ignitor')
-const setupScheduler = require('../app/Common/scheduler')
+const { setupScheduler } = require('../app/Common/scheduler')
 const NatsChatRepository = require('../app/Repositories/NatsChat')
 
 hooks.after.providersBooted(() => {

@@ -172,4 +172,4 @@ const getJobs = (runEveryJobOnStart) => [
   },
 ];
 
-module.exports = setupScheduler;
+module.exports = { setupScheduler, getJobs };

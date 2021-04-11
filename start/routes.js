@@ -485,4 +485,7 @@ Route.post('/api/achievements/daily', 'AchievementsController.redeemDaily')
 Route.post('/api/achievements/weekly', 'AchievementsController.redeemWeekly')
 Route.post('/api/achievements/monthly', 'AchievementsController.redeemMonthly')
 
+// Triggering Jobs
+Route.get('/api/schedule/:job', 'SchedulerController.triggerJob')
+
 Route.any('*', ({ view }) => view.render('pages/react'))
