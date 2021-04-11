@@ -7,6 +7,7 @@ const UserAchievements = use('App/Models/UserAchievements')
 const NotificationController = use('./NotificationController')
 const LoggingRepository = require('../../Repositories/Logging')
 const ChatRepository = require('../../Repositories/Chat')
+const RedisRepository = require('../../Repositories/Redis')
 const NatsChatRepository = require('../../Repositories/NatsChat')
 const WebsocketChatRepository = require('../../Repositories/WebsocketChat')
 
@@ -576,14 +577,22 @@ class UserStatTransactionController {
   }
 
   async getMostImprovedGamer() {
+    const redisMip = await RedisRepository.getMip();
+    if (redisMip) return { alias: redisMip };
     const mostImprovedGamer = await Database.from('most_improved_gamers').orderBy('created_at', 'desc').limit(1);
     const alias = (mostImprovedGamer && mostImprovedGamer[0] && mostImprovedGamer[0].alias) || '';
+    await RedisRepository.setMip(alias);
     return { alias };
   }
 
   /**
    * Paginates all users, 10 users at a time.
-   * For every user, select the experience gained last week.
+   * For every user: 
+   *   Select the current experience and the experience they had last week.
+   *   Calculate the delta, a.k.a. the amount of experience they gained since last week.
+   *   Insert the delta back into the last week's experience table.
+   * Select the user with the biggest amount of delta (experience they gained since last week).
+   * Insert that user's alias into the mip table, and sets it in Redis.
    */
   async setMostImprovedGamer() {
     const dates = { created_at: new Date(), updated_at: new Date() };
@@ -609,6 +618,7 @@ class UserStatTransactionController {
     const alias = aliasResponse[0].alias;
     const xpDelta = mostImprovedGamer[0].gained_experience;
     console.log(`MIP: Setting ${alias} as MIP, gained ${xpDelta} experience`);
+    await RedisRepository.setMip(alias);
     await Database.insert({ alias, ...dates }).into('most_improved_gamers');
   }
 }

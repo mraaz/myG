@@ -43,6 +43,20 @@ class RedisRepository {
     return redlock.unlock(resource);
   }
 
+  async getMip() {
+    if (!isRedisEnabled) return Promise.resolve(null);
+    return new Promise(resolve => {
+      client.get(keys.MIP, (_, response) => resolve(response));
+    });
+  }
+
+  async setMip(mip) {
+    if (!isRedisEnabled) return Promise.resolve();
+    return new Promise(resolve => {
+      client.set(keys.MIP, mip, (_, response) => resolve(response));
+    });
+  }
+
   async setGameMessageSchedule(schedule) {
     if (!isRedisEnabled) return Promise.resolve();
     return new Promise(resolve => {
