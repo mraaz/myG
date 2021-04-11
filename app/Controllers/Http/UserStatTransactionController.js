@@ -577,7 +577,8 @@ class UserStatTransactionController {
 
   async getMostImprovedGamer() {
     const mostImprovedGamer = await Database.from('most_improved_gamers').orderBy('created_at', 'desc').limit(1);
-    return mostImprovedGamer && mostImprovedGamer[0] && mostImprovedGamer[0].alias;
+    const alias = (mostImprovedGamer && mostImprovedGamer[0] && mostImprovedGamer[0].alias) || '';
+    return { alias };
   }
 
   /**
