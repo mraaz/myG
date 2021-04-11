@@ -574,6 +574,42 @@ class UserStatTransactionController {
       .where({ id: auth.user.id })
       .update({ leveled_up_offline: false })
   }
+
+  async getMostImprovedGamer() {
+    const mostImprovedGamer = await Database.from('most_improved_gamers').orderBy('created_at', 'desc').limit(1);
+    return mostImprovedGamer && mostImprovedGamer[0] && mostImprovedGamer[0].alias;
+  }
+
+  /**
+   * Paginates all users, 10 users at a time.
+   * For every user, select the experience gained last week.
+   */
+  async setMostImprovedGamer() {
+    const dates = { created_at: new Date(), updated_at: new Date() };
+    const usersCountResponse = await Database.from('users').count();
+    const usersCount = usersCountResponse[0]['count(*)'];
+    let processedUsers = 0;
+    while(processedUsers < usersCount) {
+      console.log(`MIP: Processing users ${processedUsers} - ${processedUsers + 10} of ${usersCount}`);
+      const page = (processedUsers / 10) + 1;
+      const users = await Database.from('users').select(['id', 'experience_points']).paginate(page, 10);
+      processedUsers += users.data.length;
+      for (const user of users.data) {
+        const lastWeekXpEntry = await Database.from('last_week_experiences').where('user_id', user.id).select(['experience_points']);
+        const hasLastWeekXpEntry = lastWeekXpEntry && lastWeekXpEntry[0];
+        const lastWeekXp = hasLastWeekXpEntry ? (parseInt(lastWeekXpEntry[0].experience_points) || 0) : 0;
+        const gained_experience = (parseInt(user.experience_points) || 0) - lastWeekXp;
+        if (hasLastWeekXpEntry) await Database.from('last_week_experiences').where('user_id', user.id).update({ experience_points: user.experience_points, gained_experience: gained_experience });
+        else await Database.insert({ user_id: user.id, experience_points: user.experience_points, gained_experience, ...dates }).into('last_week_experiences');
+      }
+    }
+    const mostImprovedGamer = await Database.from('last_week_experiences').orderBy('gained_experience', 'desc').limit(1);
+    const aliasResponse = await Database.from('users').where('id', mostImprovedGamer[0].user_id).select(['alias']);
+    const alias = aliasResponse[0].alias;
+    const xpDelta = mostImprovedGamer[0].gained_experience;
+    console.log(`MIP: Setting ${alias} as MIP, gained ${xpDelta} experience`);
+    await Database.insert({ alias, ...dates }).into('most_improved_gamers');
+  }
 }
 
 module.exports = UserStatTransactionController

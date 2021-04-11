@@ -331,6 +331,7 @@ Route.post('/api/connections/communities_you_might_know', 'ConnectionController.
 Route.post('/api/invited_users_for_schedule_games/create', 'InvitedUsersForScheduleGameController.store')
 Route.post('/api/invited_users_for_schedule_games/invite', 'InvitedUsersForScheduleGameController.invite')
 
+Route.get('/api/userStatTransaction/mostImprovedGamer', 'UserStatTransactionController.getMostImprovedGamer')
 Route.get('/api/userStatTransaction/master_controller', 'UserStatTransactionController.master_controller')
 Route.post('/api/userStatTransaction/checkedLevel', 'UserStatTransactionController.checkedLevel')
 

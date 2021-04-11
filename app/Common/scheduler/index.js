@@ -163,6 +163,13 @@ const getJobs = (runEveryJobOnStart) => [
     runOnStart: runEveryJobOnStart ? true : false,
     enabled: true,
   },
+  {
+    name: 'Most_Improved_Gamers',
+    action: require('./tasks/most-improved-gamers'),
+    schedule: '0 0 * * 0', // At 00:00 on Sunday.
+    runOnStart: runEveryJobOnStart ? true : false,
+    enabled: true,
+  },
 ];
 
 module.exports = setupScheduler;
