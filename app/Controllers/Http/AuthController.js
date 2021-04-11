@@ -74,7 +74,7 @@ class AuthController {
           return response.redirect('back')
         }
 
-        if (/[' *(){}\[\]/%#|+^$?:;_`~=&-+,<>\\]/.test(request.input('alias'))) {
+        if (/[' *(){}\[\]/%#|+^$?:;_`~=&-+,@!<>\\]/.test(request.input('alias'))) {
           session.withErrors([{ field: 'alias', message: strMsg }]).flashAll()
           return response.redirect('back')
         }

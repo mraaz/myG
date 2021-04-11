@@ -133,8 +133,7 @@ class CommonSaveController {
 
         const { profile } = await ProfileRepository.fetchProfileInfo({ requestingUserId: user.id, id: user.id })
         await ElasticsearchRepository.storeUser({ user: profile })
-        await ChatRepository.publishOnMainChannel(`Introducing a newcomer to myG...`)
-        await ChatRepository.publishOnMainChannel(`Please all welcome ${user.alias} !!`)
+        await ChatRepository.publishOnMainChannel(`Introducing a newcomer to myG... Please all welcome ${user.alias} !!`)
 
         // Decrease Seats Available upon Registration
         if (seatsAvailable.seats_available > 0) {
