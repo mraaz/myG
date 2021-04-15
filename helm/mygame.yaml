@@ -78,26 +78,18 @@ ingress:
   #      - myg.gg
 
 ingress2:
-  enabled: false
+  enabled: true
   annotations:
     kubernetes.io/ingress.class: nginx
-    cert-manager.io/cluster-issuer: myg-www
-    ingress.kubernetes.io/force-ssl-redirect: 'true'
-    nginx.ingress.kubernetes.io/configuration-snippet: |
-      if ($request_uri ~* \.(ico|css|js|gif|jpe?g|png|svg)) {
-            expires 2d;
-            add_header Pragma public;
-            add_header Cache-Control "public";
-            break;
-      }
-    #kubernetes.io/tls-acme: "true"
+    #cert-manager.io/cluster-issuer: myg-www
+    #ingress.kubernetes.io/force-ssl-redirect: 'true'
   paths: []
   path: /
   hostName: www.myg.gg
-  tls:
-    - secretName: www.myg.gg
-      hosts:
-        - www.myg.gg
+  #tls:
+  #  - secretName: www.myg.gg
+  #    hosts:
+  #      - www.myg.gg
 
 tls:
   enabled: false
