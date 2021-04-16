@@ -1,3 +1,4 @@
+import uniq from 'lodash.uniq';
 import logger from '../../common/logger'
 
 const initialState = {
@@ -289,10 +290,10 @@ export default function reducer(
 
     case 'FETCH_STATS_FULFILLED': {
       logger.log('USER', `Redux -> Fetched Stats for ${action.meta.alias}: `, action.payload)
-      const userTransactionStates = action.payload;
-      const statsForAlias = JSON.parse(JSON.stringify(state.statsForAlias || {}));
+      const userTransactionStates = action.payload
+      const statsForAlias = JSON.parse(JSON.stringify(state.statsForAlias || {}))
       if (action.meta.alias && action.meta.alias !== state.alias) {
-        statsForAlias[action.meta.alias] = userTransactionStates;
+        statsForAlias[action.meta.alias] = userTransactionStates
         return {
           ...state,
           statsForAlias,
@@ -306,7 +307,7 @@ export default function reducer(
     }
 
     case 'CHECKED_LEVEL_FULFILLED': {
-      logger.log('USER', 'Redux -> Checked Level');
+      logger.log('USER', 'Redux -> Checked Level')
       return {
         ...state,
         leveled_up_offline: false,
@@ -314,10 +315,24 @@ export default function reducer(
     }
 
     case 'FETCH_ONLINE_USERS_FULFILLED': {
-      logger.log('USER', 'Redux -> Fetched Online Users: ', action.payload);
+      logger.log('USER', 'Redux -> Fetched Online Users: ', action.payload)
       return {
         ...state,
-        onlineUsers: action.payload
+        onlineUsers: action.payload,
+      }
+    }
+
+    case 'ON_ACTIVE_NOW': {
+      logger.log('USER', `Redux -> On Active Now: `, action.payload)
+      const onlineUsers = JSON.parse(JSON.stringify(state.onlineUsers))
+      const hasActiveNow = onlineUsers.find(({ game }) => game === 'Active Now');
+      const activeNow = hasActiveNow || { game: 'Active Now', gamers: [] };
+      if (!hasActiveNow) onlineUsers.push(activeNow);
+      if (action.payload.active) activeNow.gamers = uniq([...activeNow.gamers, action.payload.alias]);
+      if (!action.payload.active) activeNow.gamers = activeNow.gamers.filter((alias) => alias !== action.payload.alias);
+      return {
+        ...state,
+        onlineUsers,
       }
     }
 

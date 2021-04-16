@@ -9,11 +9,19 @@ function setupScheduler() {
   
   if (!hasRedis) return logScheduler(schedulerLogs, moment, 'Redis Disabled, no Scheduler Queues will be run.');
 
+  const runJob = async (job, action) => {
+    try {
+      await action();
+    } catch(error) {
+      console.error(`Cron Job (${job}): ${error.message}`);
+    }
+  }
+
   getJobs(runEveryJobOnStart).forEach((job) => {
     if (!job.enabled) return logScheduler(schedulerLogs, moment, `Skipping Disabled Job ${job.name}`);
     logScheduler(schedulerLogs, moment, `Setting up Scheduler Job: ${job.name}`);
-    cron.schedule(job.schedule, () => job.action(job));
-    if (job.runOnStart) job.action(job);
+    cron.schedule(job.schedule, () => runJob(job.name, () => job.action(job)));
+    if (job.runOnStart) runJob(job.name, () => job.action(job));
   });
 }
 
@@ -34,7 +42,7 @@ const getJobs = (runEveryJobOnStart) => [
     action: require('./tasks/chat-gameMessages'),
     schedule: '* * * * *',
     runOnStart: runEveryJobOnStart ? true : false,
-    enabled: false,
+    enabled: true,
   },
   {
     name: 'Disconnect_Users',
@@ -155,6 +163,13 @@ const getJobs = (runEveryJobOnStart) => [
     runOnStart: runEveryJobOnStart ? true : false,
     enabled: true,
   },
+  {
+    name: 'Most_Improved_Gamers',
+    action: require('./tasks/most-improved-gamers'),
+    schedule: '0 0 * * 0', // At 00:00 on Sunday.
+    runOnStart: runEveryJobOnStart ? true : false,
+    enabled: true,
+  },
 ];
 
-module.exports = setupScheduler;
+module.exports = { setupScheduler, getJobs };

@@ -47,12 +47,9 @@ class EmailController {
   }
 
   async dailyEmails() {
-    console.log('dailyEmails')
     const userList = await Database.from('settings')
       .select('user_id')
       .where('email_notification', '=', 2)
-
-    console.log(userList.length, 'userList.length')
     for (let i = 0; i < userList.length; i++) {
       await this.summary_email(userList[i].user_id)
     }
@@ -62,7 +59,6 @@ class EmailController {
     const userList = await Database.from('settings')
       .select('user_id')
       .where('email_notification', '=', 1)
-
     for (let i = 0; i < userList.length; i++) {
       await this.summary_email(userList[i].user_id)
     }
@@ -70,20 +66,12 @@ class EmailController {
 
   async summary_email(user_id) {
     const noti = new NotificationController_v2()
-
-    console.log('summary_email')
-
     const auth = { user: { id: user_id } }
     const myRequests = await noti.count({ auth })
 
     if (parseInt(myRequests.approvals) == 0 && parseInt(myRequests.alerts) == 0 && parseInt(myRequests.chats) == 0) {
-      console.log(myRequests.alerts, '<<<myRequests.alerts')
-      console.log(myRequests.approvals, '<<<myRequests.approvals')
-      console.log(myRequests.chats, '<<<myRequests.chats')
       return
     }
-
-    console.log('passed guard')
 
     const user = await Database.from('users')
       .where('id', '=', user_id)

@@ -331,6 +331,7 @@ Route.post('/api/connections/communities_you_might_know', 'ConnectionController.
 Route.post('/api/invited_users_for_schedule_games/create', 'InvitedUsersForScheduleGameController.store')
 Route.post('/api/invited_users_for_schedule_games/invite', 'InvitedUsersForScheduleGameController.invite')
 
+Route.get('/api/userStatTransaction/mostImprovedGamer', 'UserStatTransactionController.getMostImprovedGamer')
 Route.get('/api/userStatTransaction/master_controller', 'UserStatTransactionController.master_controller')
 Route.post('/api/userStatTransaction/checkedLevel', 'UserStatTransactionController.checkedLevel')
 
@@ -483,5 +484,8 @@ Route.get('/api/achievements/monthly', 'AchievementsController.fetchMonthlyQuest
 Route.post('/api/achievements/daily', 'AchievementsController.redeemDaily')
 Route.post('/api/achievements/weekly', 'AchievementsController.redeemWeekly')
 Route.post('/api/achievements/monthly', 'AchievementsController.redeemMonthly')
+
+// Triggering Jobs
+Route.get('/api/schedule/:job', 'SchedulerController.triggerJob')
 
 Route.any('*', ({ view }) => view.render('pages/react'))

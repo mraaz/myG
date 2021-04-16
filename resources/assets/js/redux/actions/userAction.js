@@ -154,7 +154,7 @@ export function togglePushNotificationsAction(userId) {
 
 export function toggleMainChannelAction() {
   return {
-    type: 'TOGGLE_MAIN_CHANNEL'
+    type: 'TOGGLE_MAIN_CHANNEL',
   }
 }
 
@@ -201,5 +201,12 @@ export function fetchOnlineUsersAction() {
   return {
     type: 'FETCH_ONLINE_USERS',
     payload: fetchOnlineUsers(),
+  }
+}
+
+export function onActiveNowAction({ alias, active }) {
+  return {
+    type: 'ON_ACTIVE_NOW',
+    payload: { alias, active },
   }
 }

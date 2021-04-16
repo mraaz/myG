@@ -35,6 +35,7 @@ export default class Results extends React.Component {
   handleScroll = () => {
     const scroll = document.scrollingElement || {};
     const windowHeight = window.innerHeight;
+    const filters = document.getElementsByClassName('filter-container')[0] || {}
     const list = document.getElementsByClassName('find-gamers-results')[0] || {}
     const element = document.getElementsByClassName('find-gamer-result')[0] || {}
     const elementStyles = window.getComputedStyle(element);
@@ -44,10 +45,11 @@ export default class Results extends React.Component {
       parseInt(elementMarginTop.replace('px', '')) + 
       parseInt(elementMarginBottom.replace('px', ''))
     ) || 24
+    const filtersHeight = filters.offsetHeight;
     const listHeight = list.offsetHeight + elementMargins;
     const elementHeight = element.offsetHeight + elementMargins;
     const scrollPosition = scroll.scrollTop
-    const listFitsInScreen = windowHeight > listHeight
+    const listFitsInScreen = windowHeight > (listHeight + filtersHeight)
     const scrolledToBottom = (scrollPosition + elementHeight) > windowHeight
     if (this.props.loading || !this.props.gamers.length) return;
     if ((!listFitsInScreen && !scrolledToBottom) || lastScrollPosition === scrollPosition) return;

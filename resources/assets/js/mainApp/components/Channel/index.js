@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import ChatMessageList from '../Messenger/ChatMessageList'
 import ChatInput from '../Messenger/ChatInput'
 import OnlineUsers from './online';
+import MostImprovedGamer from './mip';
 import AttachWindow from '../Messenger/AttachWindow'
 import { fetchChannelAction, fetchMessagesAction, sendMessageAction, editMessageAction, deleteMessageAction, updateChatStateAction, setTypingAction, addReactionAction, removeReactionAction, blockUserAction, unblockUserAction } from '../../../redux/actions/chatAction'
 import { withDatesAndLogsAndLastReads } from '../../../common/chat'
@@ -274,6 +275,7 @@ export class Channel extends React.Component {
         {this.renderHeader()}
         <div className={`messenger ${!!this.props.page ? 'channel-page' : 'channel'}`}>
           <div className={`chat-component-base ${!!this.props.page ? 'channel-chat-page' : 'channel-chat'}`}>
+            <MostImprovedGamer />
             {this.state.attachment && this.renderAttachment()}
             {this.renderBody()}
             {this.renderAttachWindow()}
