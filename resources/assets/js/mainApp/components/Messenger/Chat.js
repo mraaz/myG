@@ -545,11 +545,11 @@ export class Chat extends React.Component {
   render() {
     logger.log('RENDER', 'ChatComponent')
     if (!this.state.settings && !this.props.minimised && !this.props.privateKey) return this.renderEncryptedChat()
-    let classes = 'chat-component-base'
-    if (this.props.maximised) classes += 'chat-maximised'
-    if (this.props.minimised) classes += 'chat-minimised'
-    if (!this.props.minimised && this.state.settings) classes = 'chat-settings'
-    if (this.props.isGuest) classes = 'chat-guest'
+    let classes = 'chat-component-base '
+    if (this.props.maximised) classes += 'chat-maximised '
+    if (this.props.minimised) classes += 'chat-minimised '
+    if (!this.props.minimised && this.state.settings) classes += 'chat-settings '
+    if (this.props.isGuest) classes += 'chat-guest'
     if (this.state.guestChatExpanded) classes += '-expanded'
     return (
       <div key={this.props.chatId} className={classes}>

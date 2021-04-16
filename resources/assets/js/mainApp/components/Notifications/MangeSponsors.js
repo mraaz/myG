@@ -288,7 +288,7 @@ class MangeSponsors extends React.Component {
                 />
               </div>
               <div className='text__tap'>
-                Or <span>Click/Tap here</span> to select
+                Or <span>Click/Tap here</span> to select (Image size: 980x120)
               </div>
               {uploading[counter] && (
                 <div className='text'>

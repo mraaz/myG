@@ -44,8 +44,12 @@ export default class Sponsors extends React.Component {
             registerSponsorClick();
             window.open(sponsorLink, '_blank');
           }}
-        >
-          <img src={sponsor.media_url} style={{ height: '100%' }} />
+          style={{
+            backgroundImage: `url(${sponsor.media_url})`,
+            backgroundSize: 'cover',
+            backgroundRepeat: 'no-repeat',
+          }}
+        >          
       </div>
         <div className="hover-bar">
           {/* {!!isHovering && <div className={`tiny-button ${!isLocked && 'clickable'}`} onClick={() => !isLocked && this.editSponsor(sponsor.id)}>{isLocked ? 'Unlock at Lvl 5' : 'Edit'}</div>} */}

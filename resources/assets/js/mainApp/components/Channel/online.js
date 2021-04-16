@@ -19,33 +19,41 @@ export class OnlineUsers extends React.Component {
     this.props.fetchOnlineUsers()
   }
 
-  renderGame = ({ game: name, icon, gamers }, index) => {
-    const color = index % 2 ? colors[0] : colors[1]
+  renderHeader = ({ name, icon, color, fixed }) => {
+    if (name === 'Active Now' && !fixed) return null;
     const expanded = this.state.expanded.includes(name)
     const chevronType = expanded ? 'down' : 'right'
     return (
-      <div key={name} className='messenger-body-section' style={{ backgroundColor: color }}>
-        <div
-          className='messenger-body-section-header clickable'
-          style={{ backgroundColor: color }}
-          onClick={() =>
-            this.setState((previous) => ({
-              expanded: previous.expanded.includes(name)
-                ? [...previous.expanded.filter((game) => game !== name)]
-                : [...previous.expanded, name],
-            }))
-          }>
-          <div className='messenger-body-game-section' style={{ backgroundColor: color }}>
-            <div className='messenger-game-icon' style={{ backgroundImage: `url('${icon}')` }} />
-            <p className='messenger-body-section-header-name'>{name}</p>
-          </div>
-          <div className='messenger-body-section-header-info'>
-            <div
-              className='messenger-body-section-header-icon'
-              style={{ backgroundImage: `url('${getAssetUrl(`ic_messenger_chevron_${chevronType}`)}')` }}
-            />
-          </div>
+      <div
+        className='messenger-body-section-header clickable'
+        style={{ backgroundColor: color }}
+        onClick={() =>
+          this.setState((previous) => ({
+            expanded: previous.expanded.includes(name)
+              ? [...previous.expanded.filter((game) => game !== name)]
+              : [...previous.expanded, name],
+          }))
+        }>
+        <div className='messenger-body-game-section' style={{ backgroundColor: color }}>
+          <div className='messenger-game-icon' style={{ backgroundImage: `url('${icon}')` }} />
+          <p className='messenger-body-section-header-name'>{name}</p>
         </div>
+        <div className='messenger-body-section-header-info'>
+          <div
+            className='messenger-body-section-header-icon'
+            style={{ backgroundImage: `url('${getAssetUrl(`ic_messenger_chevron_${chevronType}`)}')` }}
+          />
+        </div>
+      </div>
+    )
+  }
+
+  renderGame = ({ game: name, icon, gamers }, index) => {
+    const color = index % 2 ? colors[0] : colors[1]
+    const expanded = this.state.expanded.includes(name)
+    return (
+      <div key={name} className='messenger-body-section' style={{ backgroundColor: color }}>
+        {this.renderHeader({ name, icon, color })}
         {expanded && (
           <div className='gamers'>
             {gamers.map((gamer) => (
@@ -75,10 +83,12 @@ export class OnlineUsers extends React.Component {
         style={{
           width: '20%',
           height: this.props.page ? '100%' : '400px',
-          overflowY: 'scroll',
         }}>
         {!!this.props.modal && this.renderOnlineUsersButton()}
-        {this.props.onlineUsers.map(this.renderGame)}
+        {this.renderHeader({ name: 'Active Now', color: '#425156', fixed: true })}
+        <div style={{ overflowY: 'scroll' }}>
+          {this.props.onlineUsers.map(this.renderGame)}
+        </div>
       </div>
     )
   }
