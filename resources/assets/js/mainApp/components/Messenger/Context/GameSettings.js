@@ -51,7 +51,7 @@ export default class GameSettings extends React.Component {
     const search = (name) => name.toLowerCase().includes(this.state.favoriteGameInput.toLowerCase())
     const games = this.props.games.slice(0).filter((game) => search(game.name))
     return (
-      <div className='messenger-settings-game-input'>
+      <div className='messenger-settings-game-input' style={this.props.mobile && { top: '80px', bottom: '110px', right: '0', width: '100%' }}>
         <p className='messenger-settings-game-input-hint'>Search for your added games to favourite</p>
         <div className='messenger-settings-game-input-header'>
           <input

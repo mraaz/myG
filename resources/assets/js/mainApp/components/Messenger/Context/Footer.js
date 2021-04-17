@@ -48,7 +48,7 @@ export default class Footer extends React.Component {
   render() {
     logger.log('RENDER', 'Footer')
     return (
-      <div className={`messenger-footer-container`}>
+      <div className={`messenger-footer-container`} style={this.props.mobile && { bottom: '52px', width: '100%' }}>
         <div className='messenger-footer'>
           <div className='messenger-footer-icon-container'>
             <div className='messenger-footer-icon' style={{ backgroundImage: `url('${this.props.profileImage}')` }} />

@@ -115,6 +115,7 @@ class Groups extends React.Component {
         )}
         {this.state.showingGroupCreation && (
           <GroupCreation
+            mobile={this.props.mobile}
             game={this.props.game}
             onCreate={this.createGroup}
             onCancel={() => this.setState({ showingGroupCreation: false })}

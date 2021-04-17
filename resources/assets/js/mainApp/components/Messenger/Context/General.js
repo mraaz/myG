@@ -50,6 +50,7 @@ export default class General extends React.Component {
   renderGroups = () => {
     return (
       <Groups
+        mobile={this.props.mobile}
         userId={this.props.userId}
         privateKey={this.props.privateKey}
         disconnected={this.props.disconnected}
