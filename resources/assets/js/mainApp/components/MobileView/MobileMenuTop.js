@@ -1,5 +1,5 @@
 import React, { Fragment, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { FeatureEnabled, checkFlag, CHANNEL, MOBILE_CHAT } from '../../../common/flags'
 import { logoutAction } from '../../../redux/actions/userAction'
@@ -32,12 +32,14 @@ const MobileMenuTop = (props) => {
     <Fragment>
       <div className={mobileMenuIsActive ? 'menu-tab show' : 'menu-tab hide'}>
         <FeatureEnabled allOf={[MOBILE_CHAT]}>
-          <Link to='/mobile-chat'>
-            <div className="mobile-chat-link clickable">
-              <img src='https://myg.gg/platform_images/Dashboard/Viw.svg' height='32' width='32' />
-              <NotificationIcon type='chat' />
-            </div>
-          </Link>
+          {!props.location.pathname.includes('/mobile-chat') && (
+            <Link to='/mobile-chat'>
+              <div className="mobile-chat-link clickable">
+                <img src='https://myg.gg/platform_images/Dashboard/Viw.svg' height='32' width='32' />
+                <NotificationIcon type='chat' />
+              </div>
+            </Link>
+          )}
         </FeatureEnabled>
         <img onClick={() => setHideSideMenu(true)} src='https://myG.gg/platform_images/Dashboard/logo.svg' className='img-fluid logo-img' />
         <div className={'notification-expanded'}>
@@ -152,4 +154,4 @@ const MobileMenuTop = (props) => {
   )
 }
 
-export default MobileMenuTop
+export default withRouter(MobileMenuTop)

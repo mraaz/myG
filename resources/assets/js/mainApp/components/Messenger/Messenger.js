@@ -81,8 +81,8 @@ class Messenger extends React.Component {
   renderLockedChat = () => {
     return (
       <React.Fragment>
-        <section className='messenger'>
-          <div className='locked-chat'>
+        <section className={`messenger${this.props.mobile ? ' mobile-messenger' : ''}`}>
+          <div className='locked-chat' style={this.props.mobile && { width: '100vw' }}>
             <div className='locked-image'>
               <img src='https://myG.gg/platform_images/Dashboard/Lock_Icon_Mobile.svg' className='img-locked' />
             </div>
@@ -272,7 +272,7 @@ class Messenger extends React.Component {
     if (parseInt(this.props.level) < 2) return this.renderLockedChat()
     return (
       <React.Fragment>
-        <section className='messenger'>
+        <section className={`messenger${this.props.mobile ? ' mobile-messenger' : ''}`}>
           <div className='messenger-content'>
             {this.renderBody()}
             {this.renderSettings()}
