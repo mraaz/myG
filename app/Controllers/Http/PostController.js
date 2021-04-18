@@ -335,20 +335,47 @@ class PostController {
     }
   }
 
-  async postsFromUser({ auth, request }) {
+  /**
+   * For showing a users own posts, including private posts. Designed to be triggered when looking at your own profile.
+   * 
+   * @param {auth, request, response} param0 Data sent from the frontend.
+   * @returns {Object | string} A Object containing the users own posts, including private posts, or a string indicating you aren't logged in.
+   */
+  async showMyPosts({ auth, request, response }) {
     if (!auth.user.id) return 'You are not Logged In!'
-    return this.showmyposts({ auth: { user: { id: request.params.userId } }, request })
+    return await this.showPosts(auth, auth.user.id, request.params.paginateNo, [0, 1])
   }
 
-  async showmyposts({ auth, request, response }) {
+  /**
+   * For showing all the posts of a specific user. Designed to be triggered when looking at another users profile.
+   * 
+   * @param {auth, request, response} param0 Data sent from the frontend.
+   * @returns {Object | string} A Object containing a list of posts from a specific user, excluding private posts, or a string indicating you aren't logged in.
+   */
+  async showUsersPosts({  auth, request, response }) {
+    if (!auth.user.id) return 'You are not Logged In!'
+    return await this.showPosts(auth, request.params.userId, request.params.paginateNo, [1])
+  }
+
+  /**
+   * Private function, to be triggered by `showUsersPosts` and `showMyPosts`.
+   * The underlying shared logic for fetching posts for a user.
+   * 
+   * @param {Object} auth A object containing authentication information.
+   * @param {string} user_id The user whos posts are being queried.
+   * @param {number} paginateNo The pagination number we are up to.
+   * @param {number[]} visibility A array listing visibility settings allowed for the posts. Can be 0, 1, 2, or 3.
+   * @returns {Object} A object containing a list of posts matching the provided input.
+   */
+  async showPosts(auth, user_id, paginateNo, visibility) {
     try {
       let myPosts = await Database.from('posts')
         .innerJoin('users', 'users.id', 'posts.user_id')
-        .where({ user_id: auth.user.id })
-        .whereIn('posts.visibility', [0, 1])
+        .where({ user_id })
+        .whereIn('posts.visibility', visibility)
         .select('*', 'posts.id', 'posts.updated_at')
         .orderBy('posts.created_at', 'desc')
-        .paginate(request.params.paginateNo, 10)
+        .paginate(paginateNo, 10)
 
       myPosts = await this.get_additional_info({ auth }, myPosts.data)
 
