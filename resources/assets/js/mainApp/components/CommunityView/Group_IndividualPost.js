@@ -20,6 +20,7 @@ import { logToElasticsearch } from '../../../integration/http/logger'
 const buckectBaseUrl = 'https://myG.gg/platform_images/'
 
 import ImageGallery from '../common/ImageGallery/ImageGallery'
+import { WithTooltip } from '../Tooltip'
 
 export default class Group_IndividualPost extends Component {
   constructor() {
@@ -655,6 +656,19 @@ export default class Group_IndividualPost extends Component {
                   <div className='username'>
                     <Link to={`/profile/${post.alias}`}>{`@${post.alias} `}</Link>
                   </div>
+                  {post.visibility === 0 && (
+                  <div className='private__post__lock'>
+                    <WithTooltip
+                        position={{ bottom: '-46px', left: '-22px' }}
+                        style={{ display: 'inline-block', padding: '0 0 0 10px' }}
+                        text='private'>
+                        <i className='fas fa-lock'></i>
+                        <p className='singleTags'>
+                          lol
+                        </p>
+                    </WithTooltip>
+                  </div>
+                  )}
                 </div>
                 <div className='post__time'>{this.state.post_time}</div>
               </div>
