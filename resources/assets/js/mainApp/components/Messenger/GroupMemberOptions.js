@@ -327,7 +327,7 @@ class GroupMemberOptions extends React.Component {
         </div>
         <Popup
           show={this.state.settingAsOwner}
-          position={{ top: 0, left: '-45px' }}
+          position={{ top: 0, left: this.props.mobile ? '-10px' : '-45px' }}
           header={`Are you sure you want to transfer the ownership to ${this.state.ownerInput}?`}
           footer={'* After the transfer you will be demoted to moderator'}
           confirmAction={this.changeOwnership}
@@ -342,7 +342,7 @@ class GroupMemberOptions extends React.Component {
     const isGroupOwner = this.props.owners.length && this.props.owners.includes(this.props.userId)
     const isGroupModerator = this.props.moderators.length && this.props.moderators.includes(this.props.userId)
     return (
-      <div className='chat-group-members'>
+      <div className='chat-group-members' style={this.props.mobile && { minWidth: '100vw', borderRadius: 0 }}>
         <Popup
           show={this.state.kickingUser}
           position={{ bottom: '20px', left: '-50px' }}

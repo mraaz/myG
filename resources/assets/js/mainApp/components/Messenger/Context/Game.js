@@ -37,6 +37,7 @@ export default class Game extends React.Component {
   renderGroups = () => {
     return (
       <Groups
+        mobile={this.props.mobile}
         userId={this.props.userId}
         game={this.props.game}
         gameId={this.props.game.gameId}

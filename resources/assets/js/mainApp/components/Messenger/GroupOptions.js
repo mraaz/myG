@@ -61,8 +61,9 @@ class GroupOptions extends React.Component {
   renderGroupMemberOptions() {
     if (!this.state.showingMembers) return null
     return (
-      <div className='chat-group-members-container'>
+      <div className='chat-group-members-container' style={this.props.mobile && { left: 0, height: '100vh', width: '100vw' }}>
         <GroupMemberOptions
+          mobile={this.props.mobile}
           userId={this.props.userId}
           chatId={this.props.chatId}
           group={this.props.group}
@@ -77,8 +78,9 @@ class GroupOptions extends React.Component {
   renderGroupLinkOptions() {
     if (!this.state.showingLinks) return null
     return (
-      <div className='chat-group-links-container'>
+      <div className='chat-group-links-container' style={this.props.mobile && { left: 0, height: '100vh', width: '100vw' }}>
         <GroupLinkOptions
+          mobile={this.props.mobile}
           userId={this.props.userId}
           group={this.props.group}
           updateLink={this.props.updateLink}

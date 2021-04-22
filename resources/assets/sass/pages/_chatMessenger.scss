@@ -1,3 +1,10 @@
+.mobile-messenger {
+  display: flex !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 0 !important;
+}
+
 .messenger {
   position: relative;
   width: 16vw;

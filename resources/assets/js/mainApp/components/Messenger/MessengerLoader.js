@@ -34,7 +34,7 @@ class MessengerLoader extends React.Component {
   render() {
     if (!this.state.loaded || this.props.preparingMessenger) {
       return (
-        <section className='messenger'>
+        <section className={`messenger${this.props.mobile ? ' mobile-messenger' : ''}`}>
           <div className='messenger-loading-container'>
             <p className='messenger-loading-hint-top'>Hang On</p>
             <div className='messenger-loading-indicator'>
@@ -47,6 +47,7 @@ class MessengerLoader extends React.Component {
     }
     return (
       <Messenger
+        mobile={this.props.mobile}
         profileImage={this.props.profileImage}
         userId={this.props.userId}
         alias={this.props.alias}
