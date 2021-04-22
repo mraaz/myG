@@ -81,8 +81,8 @@ class Messenger extends React.Component {
   renderLockedChat = () => {
     return (
       <React.Fragment>
-        <section className='messenger'>
-          <div className='locked-chat'>
+        <section className={`messenger${this.props.mobile ? ' mobile-messenger' : ''}`}>
+          <div className='locked-chat' style={this.props.mobile && { width: '100vw' }}>
             <div className='locked-image'>
               <img src='https://myG.gg/platform_images/Dashboard/Lock_Icon_Mobile.svg' className='img-locked' />
             </div>
@@ -130,6 +130,7 @@ class Messenger extends React.Component {
     if (!this.props.pin) return null
     return (
       <Footer
+        mobile={this.props.mobile}
         search={this.state.searchInput}
         updateStatus={this.props.updateStatus}
         profileImage={this.props.profileImage}
@@ -145,6 +146,7 @@ class Messenger extends React.Component {
     if (!this.state.showingSettings) return null
     return (
       <Settings
+        mobile={this.props.mobile}
         games={this.props.games}
         favoriteGames={this.props.favoriteGames}
         userId={this.props.userId}
@@ -189,6 +191,7 @@ class Messenger extends React.Component {
   renderGeneral = () => {
     return (
       <General
+        mobile={this.props.mobile}
         userId={this.props.userId}
         privateKey={this.props.privateKey}
         search={this.state.searchInput}
@@ -222,6 +225,7 @@ class Messenger extends React.Component {
   renderGames = () => {
     return (
       <Games
+        mobile={this.props.mobile}
         games={this.props.games}
         userId={this.props.userId}
         privateKey={this.props.privateKey}
@@ -239,6 +243,7 @@ class Messenger extends React.Component {
     if (!this.props.pin) return null
     return (
       <Chats
+        mobile={this.props.mobile}
         userId={this.props.userId}
         chats={this.props.chats}
         alias={this.props.alias}
@@ -272,8 +277,8 @@ class Messenger extends React.Component {
     if (parseInt(this.props.level) < 2) return this.renderLockedChat()
     return (
       <React.Fragment>
-        <section className='messenger'>
-          <div className='messenger-content'>
+        <section className={`messenger${this.props.mobile ? ' mobile-messenger' : ''}`}>
+          <div className='messenger-content' style={this.props.mobile && { width: '100vw', height: '90vh', marginTop: '80px' }}>
             {this.renderBody()}
             {this.renderSettings()}
             {this.renderFooter()}

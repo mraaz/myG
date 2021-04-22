@@ -204,6 +204,7 @@ export class Chat extends React.Component {
     if (this.props.isGroup)
       return (
         <GroupOptions
+          mobile={this.props.mobile}
           userId={this.props.userId}
           chatId={this.props.chatId}
           messages={this.props.messages}
@@ -274,7 +275,7 @@ export class Chat extends React.Component {
         {!this.props.isGuest && (
           <div className='chat-component-header-options'>
             {(!this.state.settings || this.props.minimised) && (
-              <div className='chat-component-header-top-buttons'>
+              <div className='chat-component-header-top-buttons' style={this.props.mobile && { display: 'none' }}>
                 <div
                   className='chat-component-header-button clickable'
                   style={{ backgroundImage: `url(${getAssetUrl('ic_chat_minimise')})` }}
@@ -295,17 +296,26 @@ export class Chat extends React.Component {
                 />
               </div>
             )}
-            <div
-              className='chat-component-header-settings clickable'
-              style={{ backgroundImage: `url(${getAssetUrl('ic_chat_settings')})` }}
-              onClick={() => this.setState((previous) => ({ settings: !previous.settings }))}
-            />
+            <div className="chat-component-header-settings-container">
+              <div
+                className='chat-component-header-settings clickable'
+                style={{ backgroundImage: `url(${getAssetUrl('ic_chat_settings')})` }}
+                onClick={() => this.setState((previous) => ({ settings: !previous.settings }))}
+              />
+              {!!this.props.mobile && (
+                <div
+                  className='chat-component-mobile-close-button clickable'
+                  style={{ backgroundImage: `url(${getAssetUrl('ic_chat_close')})` }}
+                  onClick={() => this.props.onClose(this.props.chatId)}
+                />
+              )}
+            </div>
           </div>
         )}
 
         {this.props.isGuest && (
           <div className='chat-component-header-options'>
-            <div className='chat-component-header-top-buttons'>
+            <div className='chat-component-header-top-buttons' style={this.props.mobile && { display: 'none' }}>
               <div
                 className='chat-component-header-button clickable'
                 style={{ backgroundImage: `url(${getAssetUrl('ic_chat_minimise')})` }}
@@ -515,10 +525,10 @@ export class Chat extends React.Component {
     const noUserKeyText = 'Please inform your encryption key to read the contents of this chat.'
     const noGroupKeyText = `Unable to retrieve E2E key from an active member. Please wait for a group chat member to come online.`
     const noGroupKeySubtext = this.props.isGuest
-    ? 'Alternatively, create an account @ myG.gg'
-    : this.props.isGroupOwner
-    ? 'Alternatively, click here to reset the encryption key.'
-    : ''
+      ? 'Alternatively, create an account @ myG.gg'
+      : this.props.isGroupOwner
+        ? 'Alternatively, click here to reset the encryption key.'
+        : ''
     const canResetKey = isGroupWithoutKey && this.props.isGroupOwner
     return (
       <div key={this.props.chatId} className='chat-component-base'>
@@ -548,11 +558,11 @@ export class Chat extends React.Component {
     let classes = 'chat-component-base '
     if (this.props.maximised) classes += 'chat-maximised '
     if (this.props.minimised) classes += 'chat-minimised '
-    if (!this.props.minimised && this.state.settings) classes += 'chat-settings '
+    if (!this.props.minimised && this.state.settings && !this.props.mobile) classes += 'chat-settings '
     if (this.props.isGuest) classes += 'chat-guest'
     if (this.state.guestChatExpanded) classes += '-expanded'
     return (
-      <div key={this.props.chatId} className={classes}>
+      <div key={this.props.chatId} className={classes} style={this.props.mobile && { height: 'calc(100vh - 132px)', margin: '0 0 56px 0' }}>
         {this.renderHeader()}
         {!this.state.settings && !this.props.minimised && this.renderMuteBanner()}
         {!this.state.settings && !this.props.minimised && this.renderBlockedBanner()}

@@ -97,7 +97,7 @@ export default class Settings extends React.Component {
 
   render() {
     return (
-      <div className='messenger-settings-container'>
+      <div className='messenger-settings-container' style={this.props.mobile && { marginBottom: '110px' }}>
         <p className='messenger-settings-title'>Settings</p>
         {this.renderAutoSelfDestructSettings()}
         {this.renderEncryptionPersistSettings()}

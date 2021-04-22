@@ -11,8 +11,13 @@ class NotificationIcon extends React.Component {
     return <div className={`notification-box notification-myg`}>myG</div>
   }
 
+  renderChatIcon() {
+    return <div className={`notification-box notification-myg notification-chat`}>chat</div>
+  }
+
   render() {
     if (this.props.type === 'channel') return this.renderChannelIcon();
+    if (this.props.type === 'chat') return this.renderChatIcon();
     const counter = this.props[this.props.type];
     return <div className={`notification-box ${counter ? 'notification-alert' : ''}`}>{counter}</div>
   }

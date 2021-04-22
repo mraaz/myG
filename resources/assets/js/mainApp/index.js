@@ -336,6 +336,22 @@ class Layout extends Component {
 
                 <Route
                   exact
+                  path='/mobile-chat'
+                  component={() => (
+                    <MessengerLoader
+                      mobile
+                      profileImage={this.state.initialData && this.state.initialData.userInfo.profile_img}
+                      userId={this.state.initialData && this.state.initialData.userInfo.id}
+                      alias={this.state.initialData && this.state.initialData.userInfo.alias}
+                      publicKey={this.state.initialData && this.state.initialData.userInfo.public_key}
+                      loading={!this.state.initialData}
+                      key={Math.random()}
+                    />
+                  )}
+                />
+
+                <Route
+                  exact
                   path='/setEncryptionParaphrase/:encryption'
                   component={(props) => <EncryptionParaphraseRegistration routeProps={props} key={Math.random()} />}
                 />

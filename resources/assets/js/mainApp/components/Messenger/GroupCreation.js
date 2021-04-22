@@ -225,7 +225,7 @@ class GroupCreation extends React.Component {
   render() {
     logger.log('RENDER', 'GroupCreation')
     return (
-      <div className='chat-group-creation-container'>
+      <div className='chat-group-creation-container' style={this.props.mobile && { width: '100vw', height: 'calc(100vh - 132px)', right: '0', top: '80px' }}>
         {this.renderHeader()}
         {this.renderGameHint()}
         {this.renderGameInput()}

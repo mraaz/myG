@@ -205,6 +205,23 @@
       background-size: cover;
       cursor: pointer;
     }
+    
+    .chat-component-header-settings-container {
+      display: flex;
+      flex-direction: row;
+    }
+
+    .chat-component-mobile-close-button {
+      margin-left: 12px;
+      margin-right: 4px;
+      margin-top: 4px;
+      width: 24px;
+      height: 24px;
+      background-repeat: no-repeat;
+      background-position: center center;
+      background-size: cover;
+      cursor: pointer;
+    }
 
     .chat-component-muted-banner {
       display: flex;

@@ -54,7 +54,9 @@ export default class GroupLinkOptions extends React.Component {
     return (
       <div className='chat-group-links-current-tab-container'>
         <div className='chat-group-links-current-link-container'>
-          <div className='chat-group-links-current-link'>{linkURL}</div>
+          <div className='chat-group-links-current-link' style={this.props.mobile && { width: '64vw', overflowX: 'scroll', padding: '10px 0 0 0', height: '40px' }}>
+            {linkURL}
+          </div>
         </div>
         <div className={`chat-group-links-copy-button clickable`} onClick={() => copyToClipboard(linkURL)}>
           copy
@@ -74,31 +76,31 @@ export default class GroupLinkOptions extends React.Component {
           className='chat-group-links-ruler-option clickable'
           onClick={() => this.props.updateLink(this.props.group.chatId, link.uuid, null, false)}>
           <div className={`chat-group-links-ruler-option-inside ${link.expiry === null && selectedOptionStyle}`} />
-          <div className={`chat-group-links-ruler-option-text ${link.expiry === null && selectedTextStyle}`}>Unlimited</div>
+          <div style={this.props.mobile && { marginLeft: 0, width: '12px;' }} className={`chat-group-links-ruler-option-text ${link.expiry === null && selectedTextStyle}`}>{this.props.mobile ? '∞' : 'Unlimited'}</div>
         </div>
         <div
           className='chat-group-links-ruler-option clickable'
           onClick={() => this.props.updateLink(this.props.group.chatId, link.uuid, 3, false)}>
           <div className={`chat-group-links-ruler-option-inside ${link.expiry === 3 && selectedOptionStyle}`} />
-          <div className={`chat-group-links-ruler-option-text ${link.expiry === 3 && selectedTextStyle}`}>Lasts 3hrs</div>
+          <div style={this.props.mobile && { marginLeft: 0, width: '12px;' }} className={`chat-group-links-ruler-option-text ${link.expiry === 3 && selectedTextStyle}`}>{this.props.mobile ? '3hrs' : 'Last 3hrs'}</div>
         </div>
         <div
           className='chat-group-links-ruler-option clickable'
           onClick={() => this.props.updateLink(this.props.group.chatId, link.uuid, 6, false)}>
           <div className={`chat-group-links-ruler-option-inside ${link.expiry === 6 && selectedOptionStyle}`} />
-          <div className={`chat-group-links-ruler-option-text ${link.expiry === 6 && selectedTextStyle}`}>Lasts 6hrs</div>
+          <div style={this.props.mobile && { marginLeft: 0, width: '12px;' }} className={`chat-group-links-ruler-option-text ${link.expiry === 6 && selectedTextStyle}`}>{this.props.mobile ? '6hrs' : 'Last 6hrs'}</div>
         </div>
         <div
           className='chat-group-links-ruler-option clickable'
           onClick={() => this.props.updateLink(this.props.group.chatId, link.uuid, 12, false)}>
           <div className={`chat-group-links-ruler-option-inside ${link.expiry === 12 && selectedOptionStyle}`} />
-          <div className={`chat-group-links-ruler-option-text ${link.expiry === 12 && selectedTextStyle}`}>Lasts 12hrs</div>
+          <div style={this.props.mobile && { marginLeft: 0, width: '12px;' }} className={`chat-group-links-ruler-option-text ${link.expiry === 12 && selectedTextStyle}`}>{this.props.mobile ? '12hrs' : 'Last 12hrs'}</div>
         </div>
         <div
           className='chat-group-links-ruler-option clickable'
           onClick={() => this.props.updateLink(this.props.group.chatId, link.uuid, 24, false)}>
           <div className={`chat-group-links-ruler-option-inside ${link.expiry === 24 && selectedOptionStyle}`} />
-          <div className={`chat-group-links-ruler-option-text ${link.expiry === 24 && selectedTextStyle}`}>Lasts 24hrs</div>
+          <div style={this.props.mobile && { marginLeft: 0, width: '12px;' }} className={`chat-group-links-ruler-option-text ${link.expiry === 24 && selectedTextStyle}`}>{this.props.mobile ? '24hrs' : 'Last 24hrs'}</div>
         </div>
       </div>
     )
@@ -117,7 +119,7 @@ export default class GroupLinkOptions extends React.Component {
 
   render() {
     return (
-      <div className='chat-group-links'>
+      <div className='chat-group-links' style={this.props.mobile && { borderRadius: 0 }}>
         {this.renderHeader()}
         {this.renderLinkTabs()}
         {this.renderCurrentLinkTab()}
