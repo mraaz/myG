@@ -55,7 +55,7 @@ export default class IndividualPost extends Component {
       hideComments: false,
       commentShowCount: 2,
       showPostExtraOption: false,
-      show_group_name: false,
+      show_group_name: false
     }
     this.imageFileType = ['jpeg', 'jpg', 'png', 'gif']
     this.videoFileType = ['mov', 'webm', 'mpg', 'mp4', 'avi', 'ogg']
@@ -87,34 +87,34 @@ export default class IndividualPost extends Component {
 
   click_like_btn = async (post_id) => {
     this.setState({
-      total: this.state.total + 1,
+      total: this.state.total + 1
     })
 
     try {
       const mylike = await axios.post('/api/likes', {
-        post_id: post_id,
+        post_id: post_id
       })
     } catch (error) {
       logToElasticsearch('error', 'IndividualPost', 'Failed click_like_btn:' + ' ' + error)
     }
     if (this.state.total == 0) {
       this.setState({
-        admirer_first_name: this.props.user.userInfo.alias,
+        admirer_first_name: this.props.user.userInfo.alias
       })
     }
 
     this.setState({
-      show_like: true,
+      show_like: true
     })
 
     this.setState({
-      like: !this.state.like,
+      like: !this.state.like
     })
   }
 
   click_unlike_btn = async (post_id) => {
     this.setState({
-      total: this.state.total - 1,
+      total: this.state.total - 1
     })
 
     try {
@@ -125,12 +125,12 @@ export default class IndividualPost extends Component {
 
     if (this.state.total == 0) {
       this.setState({
-        show_like: false,
+        show_like: false
       })
     }
 
     this.setState({
-      like: !this.state.like,
+      like: !this.state.like
     })
   }
 
@@ -169,12 +169,12 @@ export default class IndividualPost extends Component {
         admirer_first_name: this.props.post.admirer_first_name,
         post_time: post_timestamp.local().fromNow(),
         content: this.props.post.content,
-        galleryItems,
+        galleryItems
       })
       if (this.props.post.no_of_comments != 0) {
         this.setState({
           zero_comments: true,
-          comment_total: this.props.post.no_of_comments,
+          comment_total: this.props.post.no_of_comments
         })
       }
 
@@ -197,13 +197,13 @@ export default class IndividualPost extends Component {
     } catch (e) {}
     const self = this
 
-    const getComments = async function() {
+    const getComments = async function () {
       try {
         const myComments = await axios.get(`/api/comments/${post_id}`)
         self.setState({
           myComments: myComments.data.allComments,
           value: '',
-          comment_total: myComments.data.allComments.length,
+          comment_total: myComments.data.allComments.length
         })
       } catch (error) {
         logToElasticsearch('error', 'IndividualPost', 'Failed pullComments:' + ' ' + error)
@@ -225,7 +225,7 @@ export default class IndividualPost extends Component {
     this.setState({
       show_comments: !show_comments,
       show_more_comments: !show_more_comments,
-      hideComments: false,
+      hideComments: false
     })
   }
 
@@ -237,7 +237,7 @@ export default class IndividualPost extends Component {
     }
     this.setState({
       show_comments: !show_comments,
-      show_more_comments: true,
+      show_more_comments: true
     })
     if (!show_comments) {
       this.focusTextInput()
@@ -250,7 +250,7 @@ export default class IndividualPost extends Component {
     }
     this.setState({
       pull_once: false,
-      show_comments: true,
+      show_comments: true
     })
   }
   insert_image_comment = () => {
@@ -269,7 +269,7 @@ export default class IndividualPost extends Component {
 
   doUploadS3 = async (file, name) => {
     this.setState({
-      uploading: true,
+      uploading: true
     })
 
     try {
@@ -278,17 +278,17 @@ export default class IndividualPost extends Component {
       this.setState({
         preview_file: [post.data.Location],
         file_keys: post.data.Key,
-        aws_key_id: [post.data.aws_key_id],
+        aws_key_id: [post.data.aws_key_id]
       })
     } catch (error) {
       toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file.'} />)
     }
     this.setState({
-      uploading: false,
+      uploading: false
     })
 
     this.setState({
-      uploading: false,
+      uploading: false
     })
   }
 
@@ -306,7 +306,7 @@ export default class IndividualPost extends Component {
           content: this.state.value.trim(),
           post_id: this.props.post.id,
           media_url: this.state.preview_file.length > 0 ? JSON.stringify(this.state.preview_file) : '',
-          aws_key_id: aws_key_id.length > 0 ? aws_key_id : '',
+          aws_key_id: aws_key_id.length > 0 ? aws_key_id : ''
         })
 
         let { post, user } = this.props
@@ -316,12 +316,12 @@ export default class IndividualPost extends Component {
           preview_file: '',
           file_keys: '',
           value: '',
-          aws_key_id: [],
+          aws_key_id: []
         })
 
         this.setState({
           comment_total: this.state.comment_total + 1,
-          zero_comments: true,
+          zero_comments: true
         })
       } catch (error) {
         logToElasticsearch('error', 'IndividualPost', 'Failed saveComment:' + ' ' + error)
@@ -336,22 +336,22 @@ export default class IndividualPost extends Component {
     }
     if (this.state.value2.trim() == '') {
       this.setState({
-        value: '',
+        value: ''
       })
       return
     }
     const self = this
     var post_id = this.props.post.id
 
-    const editPost = async function() {
+    const editPost = async function () {
       try {
         const myEditPost = await axios.post(`/api/post/update/${post_id}`, {
-          content: self.state.value2,
+          content: self.state.value2
         })
         self.setState({
           content: self.state.value2,
           edit_post: false,
-          value2: '',
+          value2: ''
         })
       } catch (error) {
         logToElasticsearch('error', 'IndividualPost', 'Failed editPost:' + ' ' + error)
@@ -393,7 +393,7 @@ export default class IndividualPost extends Component {
     if (e.key === 'Escape') {
       this.setState({
         edit_post: false,
-        value2: '',
+        value2: ''
       })
     }
 
@@ -417,7 +417,7 @@ export default class IndividualPost extends Component {
             user={this.props.user}
             onDelete={(deleted) => {
               this.setState((previous) => ({
-                myComments: previous.myComments.filter((comment) => comment.id !== deleted),
+                myComments: previous.myComments.filter((comment) => comment.id !== deleted)
               }))
             }}
           />
@@ -440,7 +440,7 @@ export default class IndividualPost extends Component {
             user={this.props.user}
             onDelete={(deleted) => {
               this.setState((previous) => ({
-                myComments: previous.myComments.filter((comment) => comment.id !== deleted),
+                myComments: previous.myComments.filter((comment) => comment.id !== deleted)
               }))
             }}
           />
@@ -451,7 +451,7 @@ export default class IndividualPost extends Component {
 
   clickedDropdown = () => {
     this.setState({
-      dropdown: !this.state.dropdown,
+      dropdown: !this.state.dropdown
     })
   }
 
@@ -460,10 +460,10 @@ export default class IndividualPost extends Component {
     this.setState({
       edit_post: true,
       value2: this.state.content.trim(),
-      dropdown: false,
+      dropdown: false
     })
     setTimeout(
-      function() {
+      function () {
         //Start the timer
         this.focusTextInput2()
       }.bind(this),
@@ -477,7 +477,7 @@ export default class IndividualPost extends Component {
     try {
       const myPost_delete = axios.delete(`/api/post/delete/${post_id}`)
       this.setState({
-        post_deleted: true,
+        post_deleted: true
       })
     } catch (error) {
       logToElasticsearch('error', 'IndividualPost', 'Failed delete_exp:' + ' ' + error)
@@ -497,13 +497,14 @@ export default class IndividualPost extends Component {
         focusConfirmBtn={false}
         showCloseButton={true}
         onConfirm={() => this.hideAlert('true')}
-        onCancel={() => this.hideAlert('false')}>
+        onCancel={() => this.hideAlert('false')}
+      >
         You will not be able to recover this entry!
       </SweetAlert>
     )
 
     this.setState({
-      alert: getAlert(),
+      alert: getAlert()
     })
   }
   showReportAlert = (id) => {
@@ -511,14 +512,14 @@ export default class IndividualPost extends Component {
     const getAlert = () => <ReportPost post_id={id} hideModal={this.hideAlert} />
 
     this.setState({
-      alert: getAlert(),
+      alert: getAlert()
     })
   }
 
   hideAlert = (text) => {
     this.setState({
       alert: null,
-      dropdown: false,
+      dropdown: false
     })
     if (text == 'true') {
       this.delete_exp()
@@ -534,7 +535,7 @@ export default class IndividualPost extends Component {
 
     this.setState({
       preview_file: [],
-      file_keys: '',
+      file_keys: ''
     })
   }
 
@@ -558,7 +559,11 @@ export default class IndividualPost extends Component {
 
   hide_comments = () => {
     const { myComments = [], show_more_comments } = this.state
-    this.setState({ hideComments: true, show_more_comments: !show_more_comments, commentShowCount: myComments.length })
+    this.setState({
+      hideComments: true,
+      show_more_comments: !show_more_comments,
+      commentShowCount: myComments.length
+    })
   }
 
   clickedGamePostExtraOption = () => {
@@ -576,12 +581,13 @@ export default class IndividualPost extends Component {
       show_more_comments = false,
       galleryItems = [],
       hideComments,
-      showPostExtraOption,
+      showPostExtraOption
     } = this.state
     if (post_deleted != true) {
       let { post, current_user_permission = null, user = {} } = this.props //destructing of object
       let profile_img = 'https://myG.gg/default_user/new-user-profile-picture.png',
         hash_tags = ''
+
       if (post != undefined) {
         profile_img = post.profile_img
         hash_tags = post.hash_tags
@@ -625,9 +631,10 @@ export default class IndividualPost extends Component {
                 <div
                   className='profile__image'
                   style={{
-                    backgroundImage: `url('${profile_img}'), url('https://myG.gg/default_user/new-user-profile-picture.png')`,
-                    backgroundSize: 'cover',
-                  }}>
+                    backgroundImage: `url('${user.profile_img}'), url('https://myG.gg/default_user/new-user-profile-picture.png')`,
+                    backgroundSize: 'cover'
+                  }}
+                >
                   {/* <div className='online__status'></div>*/}
                 </div>
               </Link>
@@ -754,9 +761,10 @@ export default class IndividualPost extends Component {
               <div
                 className='profile__image'
                 style={{
-                  backgroundImage: `url('${post.profile_img}')`,
-                  backgroundSize: 'cover',
-                }}>
+                  backgroundImage: `url('${user.profile_img}')`,
+                  backgroundSize: 'cover'
+                }}
+              >
                 <Link to={`/profile/${post.alias}`} className='user-img'></Link>
                 <div className='online__status'></div>
               </div>
