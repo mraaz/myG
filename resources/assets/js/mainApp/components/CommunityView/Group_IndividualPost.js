@@ -644,7 +644,7 @@ export default class Group_IndividualPost extends Component {
                 <div
                   className='profile__image'
                   style={{
-                    backgroundImage: `url('${profile_img}')`,
+                    backgroundImage: `url('${userInfo.profile_img}')`,
                     backgroundSize: 'cover',
                   }}>
                   <div className='online__status'></div>
@@ -762,7 +762,7 @@ export default class Group_IndividualPost extends Component {
               <div
                 className='profile__image'
                 style={{
-                  backgroundImage: `url('${post.profile_img}')`,
+                  backgroundImage: `url('${userInfo.profile_img}')`,
                   backgroundSize: 'cover',
                 }}>
                 <Link to={`/profile/${post.alias}`} className='user-img'></Link>
