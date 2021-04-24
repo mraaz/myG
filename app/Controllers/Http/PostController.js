@@ -700,9 +700,6 @@ class PostController {
   }
 
   async shuffle_sponsored_posts() {
-    const lock = await RedisRepository.lock('Shuffle Sponsored Posts', 1000 * 60 * 5)
-    if (!lock) return
-
     try {
       /*
        Get all records

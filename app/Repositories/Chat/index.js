@@ -1239,8 +1239,6 @@ class ChatRepository {
   }
 
   async handleGameMessages() {
-    const lock = await RedisRepository.lock('HANDLE_GAME_MESSAGES', 1000 * 45);
-    if (!lock) return;
     const { schedule } = await RedisRepository.getGameMessageSchedule();
     const oneHourFromNow = Date.now() + 1000 * 60 * 60;
     const messagesToSend = (schedule || []).filter(entry => new Date(entry.schedule).getTime() < oneHourFromNow);
