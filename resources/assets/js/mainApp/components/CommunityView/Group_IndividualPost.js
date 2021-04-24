@@ -662,10 +662,7 @@ export default class Group_IndividualPost extends Component {
                         position={{ bottom: '-46px', left: '-22px' }}
                         style={{ display: 'inline-block', padding: '0 0 0 10px' }}
                         text='private'>
-                        <i className='fas fa-lock'></i>
-                        <p className='singleTags'>
-                          lol
-                        </p>
+                      <img src='https://myg.gg/platform_images/Dashboard/lock_icon_small.svg' alt='lock_svg' />
                     </WithTooltip>
                   </div>
                   )}
