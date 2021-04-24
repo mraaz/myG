@@ -106,7 +106,8 @@ export default class GameExperiences extends React.Component {
   renderGameExperience = (game) => {
     const { id, gameName, gameImage, mainFields } = game;
     const fields = mainFields
-    const hasCommended = this.props.profile.commended.find((commendation) => commendation.gameExperienceId === id && commendation.commenderId === this.props.userId);
+    const commended = this.props.profile && this.props.profile.commended || [];
+    const hasCommended = commended.find((commendation) => commendation.gameExperienceId === id && commendation.commenderId === this.props.userId);
     return(
       <div key={id} className="game-experience clickable" style={{ opacity: this.state.changingPage ? 0.3 : 1 }}
         onMouseEnter={() => this.setState({ hovering: id })}
@@ -146,7 +147,7 @@ export default class GameExperiences extends React.Component {
                 Delete
               </div>
             )}
-            {!!this.props.profile.isFriend && !hasCommended && (
+            {!!this.props.profile && !this.props.profile.isFriend && !hasCommended && (
               <div className="hover-button clickable" onClick={(event) => { event.stopPropagation(); this.props.commendUser(id); }}>
                   Commend Me
               </div>

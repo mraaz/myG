@@ -394,7 +394,7 @@ class ProfileRepository {
         const usergroupController = new UsergroupController();
         const auth = { user: { id: requestingUserId} };
         const request = { input: () => getVerifiedGrps.id };
-        usergroupController.store({auth, request}, true)
+        await usergroupController.store({auth, request}, true)
       }
     }
     await ElasticsearchRepository.storeUser({ user: profile });
