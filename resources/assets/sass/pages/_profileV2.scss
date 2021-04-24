@@ -1380,6 +1380,8 @@
     scrollbar-width: none; /* Firefox */
     -ms-overflow-style: none; /* IE and Edge */
     max-height: calc(100vh - 200px);
+    min-height: 480px;
+    overflow: visible;
 
     .image-uploader {
       background-color: #1d2326;
