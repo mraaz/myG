@@ -394,9 +394,6 @@ class UserController {
   }
 
   async update_has_additional() {
-    const lock = await RedisRepository.lock('Update has_additional Field', 1000 * 60 * 5)
-    if (!lock) return
-
     try {
       await User.query().update({
         has_additional: false,
@@ -447,8 +444,6 @@ class UserController {
   // async scrub_data() {
   //   console.log('<<<RAAAZ')
   //   console.log(process.env.NODE_ENV, '<<<<process.env.NODE_ENV')
-  //   // const lock = await RedisRepository.lock('Update has_additional Field', 1000 * 60 * 5)
-  //   // if (!lock) return
   //
   //   if (process.env.NODE_ENV != 'development') return
   //

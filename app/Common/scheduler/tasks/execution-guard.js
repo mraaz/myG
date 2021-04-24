@@ -1,4 +1,5 @@
 async function lockJob(job) {
+  return; // Disabling Locks
   const RedisRepository = require('../../../Repositories/Redis')
   const lock = await RedisRepository.lock(job)
   if (!lock) throw new Error(`Cron Job (${job}): Failed to Acquire Lock`)
@@ -7,6 +8,7 @@ async function lockJob(job) {
 }
 
 async function unlockJob(job, lock) {
+  return; // Disabling Locks
   try {
     await waitBeforeReleasingLock(10);
     const RedisRepository = require('../../../Repositories/Redis')

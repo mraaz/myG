@@ -64,14 +64,9 @@ class SeatsAvailableController {
   }
 
   async delete_expired_codes() {
-    const lock = await RedisRepository.lock('Delete expired Codes', 1000 * 60 * 5)
-    if (!lock) return
-
     await ExtraSeatsCodes.query()
       .where('expiry', '<', Database.fn.now())
       .delete()
-
-    return
   }
 }
 
