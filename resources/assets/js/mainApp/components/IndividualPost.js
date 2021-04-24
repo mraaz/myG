@@ -21,6 +21,7 @@ const buckectBaseUrl = 'https://myG.gg/platform_images/'
 
 import ImageGallery from './common/ImageGallery/ImageGallery'
 import ReportPost from './common/ReportPost'
+import { WithTooltip } from './Tooltip'
 
 export default class IndividualPost extends Component {
   constructor() {
@@ -649,6 +650,16 @@ export default class IndividualPost extends Component {
                       <div className='arrow'></div>
                       <Link to={`/community/${decodeURI(post.name)}`}>{decodeURI(post.name)}</Link>
                     </div>
+                  )}
+                  {post.visibility === 0 && (
+                  <div className='private__post__lock'>
+                    <WithTooltip
+                        position={{ bottom: '-46px', left: '-22px' }}
+                        style={{ display: 'inline-block', padding: '0 0 0 10px' }}
+                        text='private'>
+                      <img src='https://myg.gg/platform_images/Dashboard/lock_icon_small.svg' alt='lock_svg' />
+                    </WithTooltip>
+                  </div>
                   )}
                 </div>
                 <div className='post__time'>{this.state.post_time}</div>
