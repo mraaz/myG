@@ -437,7 +437,6 @@ class UserController {
     const preferredGames = Object.keys(games).sort().filter(game => myGames.includes(game)).map((game) => ({ game: game.trim(), ...games[game] }));
     const otherGames = Object.keys(games).sort().filter(game => !myGames.includes(game)).map((game) => ({ game: game.trim(), ...games[game] }));
     const gamesList = [activeNow, ...preferredGames, ...otherGames];
-    gamesList.forEach(game => { game.gamers = game.gamers.filter(alias => alias !== auth.user.alias) });
     return gamesList.filter(game => game.gamers.length).slice(0, 10);
   }
 
