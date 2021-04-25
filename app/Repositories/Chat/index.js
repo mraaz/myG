@@ -1172,6 +1172,13 @@ class ChatRepository {
     return { chat: chatSchema };
   }
 
+  async deleteChatByIndividualGameId({ requestingUserId, requestedGameId }) {
+    const response = (await Chat.query().where('individual_game_id', requestedGameId).first());
+    if (!response) return;
+    const chat = response.toJSON();
+    await this.deleteChat({ requestingUserId, requestedChatId: chat.id, forceDelete: true });
+  }
+
   async fetchChatByIndividualGameId({ requestingUserId, requestedGameId }) {
     let chat = null;
     const response = (await Chat.query().where('individual_game_id', requestedGameId).first());

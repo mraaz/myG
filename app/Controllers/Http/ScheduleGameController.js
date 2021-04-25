@@ -628,9 +628,6 @@ class ScheduleGameController {
             reason = null
         }
 
-        if (process.env.ELASTICSEARCH_GAMES) {
-          await ElasticsearchRepository.removeGame({ id: request.params.id })
-        }
         const update_sch = await ScheduleGame.query()
           .where({ id: request.params.id })
           .update({ marked_as_deleted: true, deleted_date: Database.fn.now(), reason_for_deletion: reason })
@@ -655,6 +652,7 @@ class ScheduleGameController {
           }
         }
 
+        await ChatRepository.deleteChatByIndividualGameId({ requestingUserId: auth.user.id, requestedGameId: request.params.id });
         await ElasticsearchRepository.removeGame({ id: request.params.id })
         return 'Deleted successfully'
       } catch (error) {
