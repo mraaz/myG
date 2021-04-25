@@ -10,9 +10,18 @@
   z-index: 14;
 }
 
+.main-sidebar-collapsed {
+  width: 80px;
+}
+
+.main-sidebar-expanded {
+  width: 245px;
+}
+
 .sidebar-container {
   width: 245px;
   height: 100vh;
+  position: fixed;
   display: flex;
   flex-direction: column;
   transition: 0.5s;
@@ -24,6 +33,7 @@
 .sidebar-container-collapsed {
   width: 80px;
   height: 100vh;
+  position: fixed;
   display: flex;
   flex-direction: column;
   transition: 0.5s;

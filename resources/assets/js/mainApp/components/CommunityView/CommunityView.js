@@ -7,7 +7,6 @@ import GamePosts from './GamePosts'
 import CoverImage from './CoverImage'
 import Members from './Members'
 import MangeSponsors from './MangeSponsors'
-import { registerSponsorClick } from '../../../integration/http/quests'
 
 import { Toast_style } from '../Utility_Function'
 const defaultSponsorImage = 'https://myG.gg/platform_images/Communities/myG_logo.jpg'
@@ -24,7 +23,6 @@ const CommunityView = (props) => {
 
   useEffect(() => {
     getcommunityDetails()
-    window.addEventListener('scroll', handleScroll, true)
     return () => {
       setCommunityDetails({})
     }
@@ -43,44 +41,6 @@ const CommunityView = (props) => {
 
     document.title = 'myG - ' + getOne.name
     setCommunityDetails({ ...getOne })
-
-    // const environment = window.location.href.includes('localhost')
-    //   ? 'development'
-    //   : window.location.href.includes('myG.gg')
-    //   ? 'production'
-    //   : 'staging'
-    //
-    // if (environment == 'development') setFeature_on(true)
-  }
-
-  const handleScroll = () => {
-    let lastScrollY = window.scrollY
-    let offsetWidth = 0
-    if (contentAreaRef.current && contentAreaRef.current.offsetWidth) {
-      offsetWidth = contentAreaRef.current.offsetWidth ? contentAreaRef.current.offsetWidth : 0
-    }
-    window.requestAnimationFrame(() => {
-      if (lastScrollY > 200 && contentAreaRef.current && contentAreaRef.current.style) {
-        document.getElementById('main-sidebar').style.position = 'fixed'
-        // Required padding to prevent infinite loop of styling
-
-        const w = document.getElementById('main-sidebar').offsetWidth - 80
-        if (window.innerWidth > 768) {
-          contentAreaRef.current.style.paddingTop = '170px'
-          // document.getElementById('content-container').style.marginLeft = '80px'
-          document.getElementById('content-container').style.paddingLeft = '80px'
-          contentAreaRef.current.style.paddingLeft = `${w}px`
-        }
-        // Exit early to make this less confusing
-        return
-      }
-
-      if (contentAreaRef.current) {
-        contentAreaRef.current.removeAttribute('style')
-      }
-      document.getElementById('main-sidebar').removeAttribute('style')
-      document.getElementById('content-container').removeAttribute('style')
-    })
   }
 
   const handleModalStatus = (label) => {

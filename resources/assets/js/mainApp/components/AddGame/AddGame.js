@@ -62,39 +62,7 @@ const AddGame = ({
     document.title = 'myG - Schedule Game'
     getInitialData_Tags()
     getInitialData_GameName()
-    window.addEventListener('scroll', handleScroll, true)
   }, [])
-  const handleScroll = () => {
-    lastScrollY = window.scrollY
-    let offsetWidth = 0
-    if (contentAreaRef.current && contentAreaRef.current.offsetWidth) {
-      offsetWidth = contentAreaRef.current.offsetWidth ? contentAreaRef.current.offsetWidth : 0
-    }
-    window.requestAnimationFrame(() => {
-      if (lastScrollY > 200 && contentAreaRef.current && contentAreaRef.current.style) {
-        document.getElementById('main-sidebar').style.position = 'fixed'
-        // Required padding to prevent infinite loop of styling
-
-        const w = document.getElementById('main-sidebar').offsetWidth - 80
-        if (window.innerWidth > 768) {
-          contentAreaRef.current.style.paddingTop = '170px'
-          // document.getElementById('content-container').style.marginLeft = '80px'
-          document.getElementById('content-container').style.paddingLeft = '80px'
-          contentAreaRef.current.style.paddingLeft = `${w}px`
-          document.getElementById('add-game__footer-container').style.paddingLeft = `${w}px`
-        }
-        // Exit early to make this less confusing
-        return
-      }
-
-      if (contentAreaRef.current) {
-        contentAreaRef.current.removeAttribute('style')
-      }
-      document.getElementById('main-sidebar').removeAttribute('style')
-      document.getElementById('content-container').removeAttribute('style')
-      document.getElementById('add-game__footer-container').removeAttribute('style')
-    })
-  }
 
   // Handlers
   const updateMainSettings = (stateUpdates) => {
