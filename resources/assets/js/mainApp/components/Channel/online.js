@@ -87,7 +87,7 @@ export class OnlineUsers extends React.Component {
         {!!this.props.modal && this.renderOnlineUsersButton()}
         {this.renderHeader({ name: 'Active Now', color: '#425156', fixed: true })}
         <div style={{ overflowY: 'scroll' }}>
-          {this.props.onlineUsers.map(this.renderGame)}
+          {(this.props.onlineUsers || []).map(this.renderGame)}
         </div>
       </div>
     )
@@ -96,7 +96,7 @@ export class OnlineUsers extends React.Component {
 
 export function mapStateToProps(state) {
   const alias = state.user.alias
-  const onlineUsers = state.user.onlineUsers || []
+  const onlineUsers = Array.isArray(state.user.onlineUsers) ? state.user.onlineUsers : [];
   return { alias, onlineUsers }
 }
 
