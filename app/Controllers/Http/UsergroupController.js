@@ -643,7 +643,7 @@ class UsergroupController {
     }
   }
 
-  async autoApproveOfficialCommunities({ auth, request }) {
+  async autoApproveOfficialCommunities({ auth }) {
     try {
       const grp_to_approve = await Database.from('usergroups')
         .innerJoin('groups', 'groups.id', 'usergroups.group_id')
@@ -664,8 +664,9 @@ class UsergroupController {
         userStatController.update_total_number_of(grp_to_approve[i].user_id, 'total_number_of_communities')
 
         //delete this notification
-        const auth = { user: { id: grp_to_approve[i].user_id } }
-        noti.delete_group_invites({ auth }, grp_to_approve[i].grp_id)
+        const auth2 = { user: { id: grp_to_approve[i].user_id } }
+        console.log(auth2, '<<<AUTH2')
+        await noti.delete_group_invites({ auth2 }, grp_to_approve[i].grp_id, grp_to_approve[i].user_id)
       }
 
       return 'Saved successfully'

@@ -50,8 +50,8 @@ class LeftMenu extends Component {
     activePage: '',
   }
 
-  setExpandedDefault = function(data) {
-    Object.keys(data).forEach(function(key) {
+  setExpandedDefault = function (data) {
+    Object.keys(data).forEach(function (key) {
       data[key]['expanded'] = false
     })
     return data
@@ -156,8 +156,8 @@ class LeftMenu extends Component {
       this.props.initialData === 'loading'
         ? 'invalid_link'
         : this.props.initialData.userInfo.profile_img
-        ? this.props.initialData.userInfo.profile_img
-        : 'invalid_link'
+          ? this.props.initialData.userInfo.profile_img
+          : 'invalid_link'
     const { isExpanded, approvals = 0, chats = 0, alerts = 0 } = this.state
     return (
       <div className={classNames([isExpanded ? 'user-detail-box-expanded' : 'user-detail-box-collapsed'])}>
@@ -292,8 +292,8 @@ class LeftMenu extends Component {
   render() {
     return (
       <Fragment>
-        <section id='main-sidebar'>
-          <div className={` ${!this.state.isExpanded ? 'sidebar-container-collapsed' : 'sidebar-container'}`}>
+        <section id='main-sidebar' className={`${!this.state.isExpanded ? 'main-sidebar-collapsed' : 'main-sidebar-expanded'}`}>
+          <div className={`${!this.state.isExpanded ? 'sidebar-container-collapsed' : 'sidebar-container'}`}>
             {this.getLogoSection()}
             {this.getToggleButton()}
             {this.getUserSection()}

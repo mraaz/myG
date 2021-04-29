@@ -54,7 +54,7 @@ class Posts extends Component {
     }
     const self = this
 
-    const getPosts = async function() {
+    const getPosts = async function () {
       try {
         const myPosts = await axios({
           method: 'GET',
@@ -146,11 +146,9 @@ class Posts extends Component {
           </div>
         )}
         <GamerSuggestions />
-        <FeatureEnabled allOf={[CHANNEL]}>
-          {!!this.props.mainChannelEnabled && (
-            <Channel channelId='main' />
-          )}
-        </FeatureEnabled>
+        {!!this.props.mainChannelEnabled && (
+          <Channel channelId='main' />
+        )}
         {myPosts.length > 0 && !post_submit_loading && (
           <section id='posts' className={isFetching ? '' : `active`}>
             <InfiniteScroll dataLength={myPosts.length} next={this.fetchMoreData} hasMore={moreplease}>

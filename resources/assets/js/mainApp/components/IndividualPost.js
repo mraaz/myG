@@ -632,7 +632,7 @@ export default class IndividualPost extends Component {
                 <div
                   className='profile__image'
                   style={{
-                    backgroundImage: `url('${user.profile_img}'), url('https://myG.gg/default_user/new-user-profile-picture.png')`,
+                    backgroundImage: `url('${profile_img}'), url('https://myG.gg/default_user/new-user-profile-picture.png')`,
                     backgroundSize: 'cover'
                   }}
                 >

@@ -59,14 +59,12 @@ const MobileMenuTop = (props) => {
               <NotificationIcon type='chats' />
             </div>
           </Link>
-          <FeatureEnabled allOf={[CHANNEL]}>
-            <Link to='/myg-chat' style={{ paddingRight: 20 }}>
-              <div className='notification-container'>
-                <img src='https://myg.gg/platform_images/Dashboard/Viw.svg' height='22' width='22' />
-                <NotificationIcon type='channel' />
-              </div>
-            </Link>
-          </FeatureEnabled>
+          <Link to='/myg-chat' style={{ paddingRight: 20 }}>
+            <div className='notification-container'>
+              <img src='https://myg.gg/platform_images/Dashboard/Viw.svg' height='22' width='22' />
+              <NotificationIcon type='channel' />
+            </div>
+          </Link>
         </div>
       </div>
       {hideSideMenu && (

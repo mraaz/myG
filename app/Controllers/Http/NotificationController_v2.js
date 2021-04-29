@@ -114,27 +114,27 @@ class NotificationController_v2 {
               switch (key) {
                 case 'value_one':
                   myschedulegames_attendees.data[i].value_one = {
-                    [memorise[myschedulegames_attendees.data[i].schedule_games_id][key]]: _attendees.value_one,
+                    [memorise[myschedulegames_attendees.data[i].schedule_games_id][key]]: _attendees.value_one
                   }
                   break
                 case 'value_two':
                   myschedulegames_attendees.data[i].value_two = {
-                    [memorise[myschedulegames_attendees.data[i].schedule_games_id][key]]: _attendees.value_two,
+                    [memorise[myschedulegames_attendees.data[i].schedule_games_id][key]]: _attendees.value_two
                   }
                   break
                 case 'value_three':
                   myschedulegames_attendees.data[i].value_three = {
-                    [memorise[myschedulegames_attendees.data[i].schedule_games_id][key]]: _attendees.value_three,
+                    [memorise[myschedulegames_attendees.data[i].schedule_games_id][key]]: _attendees.value_three
                   }
                   break
                 case 'value_four':
                   myschedulegames_attendees.data[i].value_four = {
-                    [memorise[myschedulegames_attendees.data[i].schedule_games_id][key]]: _attendees.value_four,
+                    [memorise[myschedulegames_attendees.data[i].schedule_games_id][key]]: _attendees.value_four
                   }
                   break
                 case 'value_five':
                   myschedulegames_attendees.data[i].value_five = {
-                    [memorise[myschedulegames_attendees.data[i].schedule_games_id][key]]: _attendees.value_five,
+                    [memorise[myschedulegames_attendees.data[i].schedule_games_id][key]]: _attendees.value_five
                   }
                   break
                 default:
@@ -179,7 +179,7 @@ class NotificationController_v2 {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -189,7 +189,7 @@ class NotificationController_v2 {
       try {
         const delete_noti = await Database.table('notifications')
           .where({
-            id: request.params.id,
+            id: request.params.id
           })
           .delete()
 
@@ -200,7 +200,7 @@ class NotificationController_v2 {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -212,15 +212,12 @@ class NotificationController_v2 {
   async notify_owner_new_grp_request({ auth }, grp_id) {
     if (auth.user) {
       try {
-        const getOwner = await Database.from('groups')
-          .where({ id: grp_id })
-          .select('user_id')
-          .first()
+        const getOwner = await Database.from('groups').where({ id: grp_id }).select('user_id').first()
         const addGroup = await Notification.create({
           other_user_id: getOwner.user_id,
           user_id: auth.user.id,
           activity_type: 12,
-          group_id: grp_id,
+          group_id: grp_id
         })
         const userId = getOwner.user_id
         const notifications = await this.count({ auth: { user: { id: userId } }, request: null })
@@ -232,7 +229,7 @@ class NotificationController_v2 {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -241,18 +238,13 @@ class NotificationController_v2 {
   }
 
   //Notify all groupies there is a new request to join this group
-  async new_grp_request({ auth, request }, grp_id) {
+  async new_grp_request({ auth }, grp_id) {
     if (auth.user) {
       try {
         let mygroups
-        const getAccept = await Database.from('groups')
-          .where({ id: grp_id })
-          .select('all_accept')
-          .first()
+        const getAccept = await Database.from('groups').where({ id: grp_id }).select('all_accept').first()
         if (getAccept.all_accept) {
-          mygroups = await Database.from('usergroups')
-            .where({ group_id: grp_id })
-            .whereNot({ permission_level: 42 })
+          mygroups = await Database.from('usergroups').where({ group_id: grp_id }).whereNot({ permission_level: 42 })
         } else {
           mygroups = await Database.from('usergroups')
             .where({ group_id: grp_id, permission_level: 1 })
@@ -264,7 +256,7 @@ class NotificationController_v2 {
             other_user_id: mygroups[i].user_id,
             user_id: auth.user.id,
             activity_type: 12,
-            group_id: grp_id,
+            group_id: grp_id
           })
           const userId = mygroups[i].user_id
           const notifications = await this.count({ auth: { user: { id: userId } }, request: null })
@@ -277,7 +269,7 @@ class NotificationController_v2 {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -285,40 +277,42 @@ class NotificationController_v2 {
     }
   }
 
-  async delete_group_invites({ auth }, grp_id) {
-    if (auth.user) {
-      try {
-        const delete_noti = await Database.table('notifications')
-          .where({
-            group_id: grp_id,
-            user_id: auth.user.id,
-            activity_type: 12,
-          })
-          .delete()
+  async delete_group_invites({ auth }, grp_id, workAround) {
+    let tmpWorkAround
 
-        return 'deleted'
-      } catch (error) {
-        LoggingRepository.log({
-          environment: process.env.NODE_ENV,
-          type: 'error',
-          source: 'backend',
-          context: __filename,
-          message: (error && error.message) || error,
+    if (auth == undefined) tmpWorkAround = workAround
+    else tmpWorkAround = auth.user.id
+
+    try {
+      const delete_noti = await Database.table('notifications')
+        .where({
+          group_id: grp_id,
+          user_id: tmpWorkAround,
+          activity_type: 12
         })
-      }
-    } else {
-      return 'You are not Logged In!'
+        .delete()
+
+      return 'deleted'
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error
+      })
     }
   }
 
   async add_approved_group_attendee({ auth }, grp_id, other_user_id) {
+    console.log(auth, '<<<AUTH')
     if (auth.user) {
       try {
         const add_approved_group_attendee = await Notification.create({
           other_user_id: other_user_id,
           user_id: auth.user.id,
           activity_type: 17,
-          group_id: grp_id,
+          group_id: grp_id
         })
         const userId = other_user_id
         const notifications = await this.count({ auth: { user: { id: userId } }, request: null })
@@ -330,7 +324,7 @@ class NotificationController_v2 {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -534,7 +528,7 @@ class NotificationController_v2 {
               schedule_games_id: dropped_out_attendees[i].schedule_games_id,
               read_status: 0,
               other_user_id: auth.user.id,
-              activity_type: 16,
+              activity_type: 16
             })
             .count('* as no_of_my_unread')
           if (first_three_users != undefined) {
@@ -687,7 +681,7 @@ class NotificationController_v2 {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -699,7 +693,7 @@ class NotificationController_v2 {
           other_user_id: other_user_id,
           user_id: auth.user.id,
           activity_type: 14,
-          schedule_games_id: schedule_games_id,
+          schedule_games_id: schedule_games_id
         })
         const userId = other_user_id
         const notifications = await this.count({ auth: { user: { id: userId } }, request: null })
@@ -711,7 +705,7 @@ class NotificationController_v2 {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -732,7 +726,7 @@ class NotificationController_v2 {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -741,7 +735,7 @@ class NotificationController_v2 {
     try {
       const deleteAllNoti = await Database.table('notifications')
         .where({
-          other_user_id: auth.user.id,
+          other_user_id: auth.user.id
         })
         .whereIn('activity_type', [2, 3, 4, 5, 6, 10, 14, 15, 16, 17, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28])
         .delete()
@@ -755,7 +749,7 @@ class NotificationController_v2 {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -767,7 +761,7 @@ class NotificationController_v2 {
           other_user_id: other_user_id,
           user_id: auth.user.id,
           activity_type: activity_type,
-          schedule_games_id: schedule_games_id,
+          schedule_games_id: schedule_games_id
         })
         const userId = other_user_id
         const notifications = await this.count({ auth: { user: { id: userId } }, request: null })
@@ -779,7 +773,7 @@ class NotificationController_v2 {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -793,7 +787,7 @@ class NotificationController_v2 {
         const remove_schedule_game_attendees = await Database.table('notifications')
           .where({
             schedule_games_id: schedule_games_id,
-            activity_type: activity_type,
+            activity_type: activity_type
           })
           .delete()
         const userId = auth.user.id
@@ -806,7 +800,7 @@ class NotificationController_v2 {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -820,7 +814,7 @@ class NotificationController_v2 {
           other_user_id: other_user_id,
           user_id: auth.user.id,
           activity_type: 16,
-          schedule_games_id: schedule_games_id,
+          schedule_games_id: schedule_games_id
         })
         const userId = other_user_id
         const notifications = await this.count({ auth: { user: { id: userId } }, request: null })
@@ -832,7 +826,7 @@ class NotificationController_v2 {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -848,7 +842,7 @@ class NotificationController_v2 {
           user_id: auth.user.id,
           activity_type: 5,
           post_id: post_id,
-          comment_id: comment_id,
+          comment_id: comment_id
         })
         const userId = other_user_id
         const notifications = await this.count({ auth: { user: { id: userId } }, request: null })
@@ -860,7 +854,7 @@ class NotificationController_v2 {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -876,7 +870,7 @@ class NotificationController_v2 {
           user_id: auth.user.id,
           activity_type: 6,
           post_id: post_id,
-          reply_id: reply_id,
+          reply_id: reply_id
         })
         const userId = other_user_id
         const notifications = await this.count({ auth: { user: { id: userId } }, request: null })
@@ -888,7 +882,7 @@ class NotificationController_v2 {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -905,7 +899,7 @@ class NotificationController_v2 {
           activity_type: 3,
           post_id: post_id,
           comment_id: comment_id,
-          schedule_games_id: schedule_games_id,
+          schedule_games_id: schedule_games_id
         })
         const userId = other_user_id
         const notifications = await this.count({ auth: { user: { id: userId } }, request: null })
@@ -917,7 +911,7 @@ class NotificationController_v2 {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -932,7 +926,7 @@ class NotificationController_v2 {
           .where({
             comment_id: comment_id,
             user_id: auth.user.id,
-            activity_type: 3,
+            activity_type: 3
           })
           .delete()
         const userId = auth.user.id
@@ -945,7 +939,7 @@ class NotificationController_v2 {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -962,7 +956,7 @@ class NotificationController_v2 {
           activity_type: 4,
           post_id: post_id,
           reply_id: reply_id,
-          schedule_games_id: schedule_games_id,
+          schedule_games_id: schedule_games_id
         })
         const userId = other_user_id
         const notifications = await this.count({ auth: { user: { id: userId } }, request: null })
@@ -974,7 +968,7 @@ class NotificationController_v2 {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -989,7 +983,7 @@ class NotificationController_v2 {
           .where({
             reply_id: reply_id,
             user_id: auth.user.id,
-            activity_type: 4,
+            activity_type: 4
           })
           .delete()
         const userId = auth.user.id
@@ -1002,7 +996,7 @@ class NotificationController_v2 {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -1017,7 +1011,7 @@ class NotificationController_v2 {
           other_user_id: other_user_id,
           user_id: auth.user.id,
           activity_type: 2,
-          post_id: post_id,
+          post_id: post_id
         })
         const userId = other_user_id
         const notifications = await this.count({ auth: { user: { id: userId } }, request: null })
@@ -1029,7 +1023,7 @@ class NotificationController_v2 {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -1044,7 +1038,7 @@ class NotificationController_v2 {
           .where({
             post_id: post_id,
             user_id: auth.user.id,
-            activity_type: 2,
+            activity_type: 2
           })
           .delete()
         const userId = auth.user.id
@@ -1057,7 +1051,7 @@ class NotificationController_v2 {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -1071,7 +1065,7 @@ class NotificationController_v2 {
         const addFriend = await Notification.create({
           other_user_id: request.input('other_user_id'),
           user_id: auth.user.id,
-          activity_type: 1,
+          activity_type: 1
         })
         const userId = request.input('other_user_id')
         const notifications = await this.count({ auth: { user: { id: userId } }, request: null })
@@ -1083,7 +1077,7 @@ class NotificationController_v2 {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -1096,7 +1090,7 @@ class NotificationController_v2 {
       await Notification.create({
         user_id: commenderId,
         other_user_id: commendedId,
-        activity_type: 23,
+        activity_type: 23
       })
       const userId = commendedId
       const notifications = await this.count({ auth: { user: { id: userId } }, request: null })
@@ -1108,7 +1102,7 @@ class NotificationController_v2 {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -1118,7 +1112,7 @@ class NotificationController_v2 {
       try {
         const delete_noti = await Database.table('notifications')
           .where({
-            id: request.params.id,
+            id: request.params.id
           })
           .delete()
         const userId = auth.user.id
@@ -1131,7 +1125,7 @@ class NotificationController_v2 {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -1144,7 +1138,7 @@ class NotificationController_v2 {
       try {
         const delete_noti = await Database.table('notifications')
           .where({
-            id: request.params.id,
+            id: request.params.id
           })
           .delete()
 
@@ -1152,7 +1146,7 @@ class NotificationController_v2 {
           .where({
             user_id: request.params.user_id,
             group_id: request.params.group_id,
-            permission_level: 42,
+            permission_level: 42
           })
           .delete()
         const userId = auth.user.id
@@ -1165,7 +1159,7 @@ class NotificationController_v2 {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -1178,11 +1172,11 @@ class NotificationController_v2 {
       const checkFriend = await Database.from('notifications').where({
         user_id: auth.user.id,
         activity_type: 1,
-        other_user_id: request.params.id,
+        other_user_id: request.params.id
       })
 
       return {
-        checkedFriend: checkFriend === undefined || checkFriend.length == 0 ? false : true,
+        checkedFriend: checkFriend === undefined || checkFriend.length == 0 ? false : true
       }
     } catch (error) {
       LoggingRepository.log({
@@ -1190,7 +1184,7 @@ class NotificationController_v2 {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -1202,7 +1196,7 @@ class NotificationController_v2 {
         .count('* as no_of_my_notiFriends')
 
       return {
-        checkMyFriends: checkMyFriends,
+        checkMyFriends: checkMyFriends
       }
     } catch (error) {
       LoggingRepository.log({
@@ -1210,7 +1204,7 @@ class NotificationController_v2 {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -1240,7 +1234,7 @@ class NotificationController_v2 {
           for (var i = 0; i < arrInvite_user.length; i++) {
             const findUser = await Database.table('users')
               .where({
-                alias: arrInvite_user[i].trim(),
+                alias: arrInvite_user[i].trim()
               })
               .select('id')
 
@@ -1252,7 +1246,7 @@ class NotificationController_v2 {
               other_user_id: findUser[0].id,
               user_id: auth.user.id,
               activity_type: 10,
-              schedule_games_id: scheduledGameId,
+              schedule_games_id: scheduledGameId
             })
             const userId = findUser[0].id
             const notifications = await this.count({ auth: { user: { id: userId } }, request: null })
@@ -1264,7 +1258,7 @@ class NotificationController_v2 {
           for (var i = 0; i < arrInvite_group.length; i++) {
             const findChat = await Database.table('chats')
               .where({
-                title: arrInvite_group[i].trim(),
+                title: arrInvite_group[i].trim()
               })
               .select('id')
 
@@ -1281,7 +1275,7 @@ class NotificationController_v2 {
           for (var i = 0; i < arrInvite_community.length; i++) {
             const findGroup = await Database.table('groups')
               .where({
-                name: arrInvite_community[i].trim(),
+                name: arrInvite_community[i].trim()
               })
               .select('id')
 
@@ -1309,7 +1303,7 @@ class NotificationController_v2 {
                 findGame.start_date_time +
                 '. Find out more here: https://myG.gg/scheduled_games/' +
                 scheduledGameId,
-              group_id: findGroup[0].id,
+              group_id: findGroup[0].id
             })
           }
         }
@@ -1321,7 +1315,7 @@ class NotificationController_v2 {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -1351,7 +1345,7 @@ class NotificationController_v2 {
           for (var i = 0; i < arrInvite_user.length; i++) {
             const findUser = await Database.table('users')
               .where({
-                alias: arrInvite_user[i].trim(),
+                alias: arrInvite_user[i].trim()
               })
               .select('id')
 
@@ -1363,7 +1357,7 @@ class NotificationController_v2 {
               other_user_id: findUser[0].id,
               user_id: auth.user.id,
               activity_type: 22,
-              group_id: group_id,
+              group_id: group_id
             })
             const userId = findUser[0].id
             const notifications = await this.count({ auth: { user: { id: userId } }, request: null })
@@ -1375,7 +1369,7 @@ class NotificationController_v2 {
           for (var i = 0; i < arrInvite_group.length; i++) {
             const findChat = await Database.table('chats')
               .where({
-                title: arrInvite_group[i].trim(),
+                title: arrInvite_group[i].trim()
               })
               .select('id')
 
@@ -1392,7 +1386,7 @@ class NotificationController_v2 {
           for (var i = 0; i < arrInvite_community.length; i++) {
             const findGroup = await Database.table('groups')
               .where({
-                name: arrInvite_community[i].trim(),
+                name: arrInvite_community[i].trim()
               })
               .select('id', 'group_img')
 
@@ -1405,7 +1399,7 @@ class NotificationController_v2 {
               type: 'text',
               content: content,
               group_id: findGroup[0].id,
-              media_url: findGroup[0].group_img,
+              media_url: findGroup[0].group_img
             })
           }
         }
@@ -1417,7 +1411,7 @@ class NotificationController_v2 {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -1464,7 +1458,7 @@ class NotificationController_v2 {
           chat_id: chat_id,
           schedule_games_id: schedule_games_id,
           comment_id: comment_id,
-          reply_id: reply_id,
+          reply_id: reply_id
         })
         return 'Saved item'
       } catch (error) {
@@ -1476,7 +1470,7 @@ class NotificationController_v2 {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -1488,9 +1482,7 @@ class NotificationController_v2 {
     if (auth.user) {
       let checking = false
 
-      const security_check = await Database.from('admins')
-        .where({ user_id: auth.user.id, permission_level: 1 })
-        .first()
+      const security_check = await Database.from('admins').where({ user_id: auth.user.id, permission_level: 1 }).first()
 
       let isAdmin = false
       if (security_check != undefined) {
@@ -1505,9 +1497,7 @@ class NotificationController_v2 {
     if (auth.user) {
       let checking = false
 
-      const security_check = await Database.from('admins')
-        .where({ user_id: auth.user.id, permission_level: 1 })
-        .first()
+      const security_check = await Database.from('admins').where({ user_id: auth.user.id, permission_level: 1 }).first()
 
       let isAdmin = false
       if (security_check != undefined) {
@@ -1569,7 +1559,7 @@ class NotificationController_v2 {
           return {
             getUnread_count_Approvals: getUnread_count_Approvals[0].no_of_my_unread_approvals,
             getUnread_count_Alerts: getUnread_count_Alerts,
-            isAdmin,
+            isAdmin
           }
         } else {
           const getUnread_count = await Database.from('notifications')
@@ -1585,7 +1575,7 @@ class NotificationController_v2 {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     }
@@ -1648,7 +1638,7 @@ class NotificationController_v2 {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     }

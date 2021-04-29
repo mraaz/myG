@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { fetchOnlineUsersAction } from '../../../redux/actions/userAction'
 import { getAssetUrl } from '../../../common/assets'
 import { ignoreFunctions } from '../../../common/render'
+import { logToElasticsearch } from '../../../integration/http/logger'
 
 const colors = ['#425156', '#2D363A']
 
@@ -75,6 +76,15 @@ export class OnlineUsers extends React.Component {
     />
   )
 
+  renderOnlineUsers = () => {
+    try {
+      return (this.props.onlineUsers || []).map(this.renderGame);
+    } catch(error) {
+      logToElasticsearch('error', 'Online Users Error', { onlineUsers: this.props.onlineUsers, error: error && error.message || error });
+      return <span>No online users at the moment</span>
+    }
+  }
+
   render() {
     const style = this.props.modal ? 'online-users-mobile' : 'online-users-desktop'
     return (
@@ -87,7 +97,7 @@ export class OnlineUsers extends React.Component {
         {!!this.props.modal && this.renderOnlineUsersButton()}
         {this.renderHeader({ name: 'Active Now', color: '#425156', fixed: true })}
         <div style={{ overflowY: 'scroll' }}>
-          {this.props.onlineUsers.map(this.renderGame)}
+          {this.renderOnlineUsers()}
         </div>
       </div>
     )
@@ -96,7 +106,7 @@ export class OnlineUsers extends React.Component {
 
 export function mapStateToProps(state) {
   const alias = state.user.alias
-  const onlineUsers = state.user.onlineUsers || []
+  const onlineUsers = Array.isArray(state.user.onlineUsers) ? state.user.onlineUsers : [];
   return { alias, onlineUsers }
 }
 
