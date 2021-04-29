@@ -595,6 +595,10 @@ export default class Group_IndividualPost extends Component {
       //destructing of object
       const { userInfo = {} } = user
 
+      if (post != undefined) {
+        profile_img = post.profile_img        
+      }
+
       if (media_urls != [] && media_urls != null) {
         show_media = true
       }
@@ -645,7 +649,7 @@ export default class Group_IndividualPost extends Component {
                 <div
                   className='profile__image'
                   style={{
-                    backgroundImage: `url('${userInfo.profile_img}')`,
+                    backgroundImage: `url('${profile_img}')`,
                     backgroundSize: 'cover',
                   }}>
                   <div className='online__status'></div>

@@ -121,3 +121,4 @@ database/migrations/9580672082471_import_dummy_data.js
 database/migrations/9580672082471_import_game_names_fields_data.js
 database/migrations/9580672082472_import_community_data.js
 database/migrations/9580672082473_import_post_data.js
+database/migrations/9580672082474_import_game_names_1.js

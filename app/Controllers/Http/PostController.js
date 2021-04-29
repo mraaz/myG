@@ -206,7 +206,6 @@ class PostController {
         .paginate(request.params.counter, grp_limit)
 
       const category = request.params.counter % 5
-      let get_sponsored_posts = undefined
 
       let _1stpass = [...ppl_im_following_Posts.data, ...groups_im_in_Posts.data]
 
@@ -223,52 +222,56 @@ class PostController {
         _1stpass = [..._1stpass, ...welcome_Posts]
       }
 
-      if (!isNaN(category) && _1stpass.length > 2) {
-        let get_Origin_info = await Database.from('users_additional_infos')
-          .where('user_id', '=', auth.user.id)
-          .first()
+    // **RAAZ removed since we're not having AD's atm
+         //let get_sponsored_posts = undefined
 
-        if (get_Origin_info == undefined) {
-          get_Origin_info = { logged_in_country_code: null }
-        }
 
-        if (get_Origin_info.in_eu == true) get_Origin_info.logged_in_country_code = 'EU'
+    //   if (!isNaN(category) && _1stpass.length > 2) {
+    //     let get_Origin_info = await Database.from('users_additional_infos')
+    //       .where('user_id', '=', auth.user.id)
+    //       .first()
 
-        const get_sponsored_posts_total = await Database.from('sponsored_posts')
-          .where('visibility', '=', 1)
-          .where('category', '=', category)
-          .count('* as total')
+    //     if (get_Origin_info == undefined) {
+    //       get_Origin_info = { logged_in_country_code: null }
+    //     }
 
-        get_sponsored_posts = await Database.from('sponsored_posts')
-          .leftJoin('sponsored_posts_transactions', 'sponsored_posts_transactions.sponsored_posts_id', 'sponsored_posts.id')
-          .where('visibility', '=', 1)
-          .where('category', '=', category)
-          .where('sponsored_posts_transactions.id', 'is', null)
-          .where((bd) => {
-            bd.orWhere({ country_code: get_Origin_info.logged_in_country_code }).orWhere('country_code', 'is', null)
-          })
-          .select('sponsored_posts.*')
-          .orderBy('updated_at', 'desc')
-          .limit(Math.floor(Math.random() * parseInt(get_sponsored_posts_total[0].total)))
+    //     if (get_Origin_info.in_eu == true) get_Origin_info.logged_in_country_code = 'EU'
 
-        if (get_sponsored_posts != undefined && get_sponsored_posts.length > 0) {
-          const randValue = Math.floor(Math.random() * (get_sponsored_posts.length - 1 + 1)) + 0
-          get_sponsored_posts = get_sponsored_posts[randValue]
-        } else {
-          get_sponsored_posts = await Database.from('sponsored_posts')
-            .where('visibility', '=', 1)
-            .select('*')
-            .orderBy('updated_at', 'desc')
-            .limit(88)
-          const randValue = Math.floor(Math.random() * (get_sponsored_posts.length - 1 + 1)) + 0
-          get_sponsored_posts = get_sponsored_posts[randValue]
-        }
+    //     const get_sponsored_posts_total = await Database.from('sponsored_posts')
+    //       .where('visibility', '=', 1)
+    //       .where('category', '=', category)
+    //       .count('* as total')
 
-        if (get_sponsored_posts != undefined) {
-          get_sponsored_posts.sponsored_post = true
-          _1stpass.splice(1, 0, get_sponsored_posts)
-        }
-      }
+    //     get_sponsored_posts = await Database.from('sponsored_posts')
+    //       .leftJoin('sponsored_posts_transactions', 'sponsored_posts_transactions.sponsored_posts_id', 'sponsored_posts.id')
+    //       .where('visibility', '=', 1)
+    //       .where('category', '=', category)
+    //       .where('sponsored_posts_transactions.id', 'is', null)
+    //       .where((bd) => {
+    //         bd.orWhere({ country_code: get_Origin_info.logged_in_country_code }).orWhere('country_code', 'is', null)
+    //       })
+    //       .select('sponsored_posts.*')
+    //       .orderBy('updated_at', 'desc')
+    //       .limit(Math.floor(Math.random() * parseInt(get_sponsored_posts_total[0].total)))
+
+    //     if (get_sponsored_posts != undefined && get_sponsored_posts.length > 0) {
+    //       const randValue = Math.floor(Math.random() * (get_sponsored_posts.length - 1 + 1)) + 0
+    //       get_sponsored_posts = get_sponsored_posts[randValue]
+    //     } else {
+    //       get_sponsored_posts = await Database.from('sponsored_posts')
+    //         .where('visibility', '=', 1)
+    //         .select('*')
+    //         .orderBy('updated_at', 'desc')
+    //         .limit(88)
+    //       const randValue = Math.floor(Math.random() * (get_sponsored_posts.length - 1 + 1)) + 0
+    //       get_sponsored_posts = get_sponsored_posts[randValue]
+    //     }
+
+    //     if (get_sponsored_posts != undefined) {
+    //       get_sponsored_posts.sponsored_post = true
+    //       _1stpass.splice(1, 0, get_sponsored_posts)
+    //     }
+    //   }
 
       const myPosts = await this.get_additional_info({ auth }, _1stpass)
 
