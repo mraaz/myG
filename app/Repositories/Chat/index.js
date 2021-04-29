@@ -168,8 +168,8 @@ class ChatRepository {
       query = query.where('chat_messages.id', 'in', requestedMessageIds).orderBy('chat_messages.id', 'desc').fetch();
     } else {
       query = query.where('chat_messages.chat_id', requestedChatId)
-      .andWhere('chat_messages.key_receiver', null)
-      .orderBy('chat_messages.id', 'desc');
+        .andWhere('chat_messages.key_receiver', null)
+        .orderBy('chat_messages.id', 'desc');
       if (requestedPage === "ALL") query = query.fetch();
       else query = query.paginate(requestedPage || 1, 10);
     }
@@ -278,7 +278,7 @@ class ChatRepository {
       from chat_last_reads
       where user_id = ?
    `, requestingUserId);
-   const unreadMessages = response[0].map((result) => result.unread_count);
+    const unreadMessages = response[0].map((result) => result.unread_count);
     return !!unreadMessages ? unreadMessages.reduce((prv, cur) => prv + cur, 0) : 0;
   }
 
@@ -449,7 +449,7 @@ class ChatRepository {
     return this.fetchBlockedUsers({ requestingUserId });
   }
 
-  async updateChat({ requestingUserId, requestedChatId, icon, title, owners, moderators, muted, isPrivate, markAsRead, selfDestruct, publicKey}) {
+  async updateChat({ requestingUserId, requestedChatId, icon, title, owners, moderators, muted, isPrivate, markAsRead, selfDestruct, publicKey }) {
     if (markAsRead) await this._markAsRead({ requestingUserId, requestedChatId });
     if (selfDestruct !== undefined) return await this._setSelfDestruct({ requestingUserId, requestedChatId, selfDestruct });
     if (muted !== undefined) await UserChat.query().where('chat_id', requestedChatId).andWhere('user_id', requestingUserId).update({ muted });
@@ -604,7 +604,7 @@ class ChatRepository {
     let query = Database.from('friends')
       .innerJoin('users', 'users.id', 'friends.friend_id')
       .where({ user_id: requestingUserId })
-    if (status) query = query.andWhere({  status: status })
+    if (status) query = query.andWhere({ status: status })
     if (search) query = query.andWhere('alias', 'like', `%${search}%`)
     const results = await query.offset(requestedPage * 10).limit(10);
     if (!results) return { contacts: [] };
@@ -622,23 +622,23 @@ class ChatRepository {
 
   async fetchContactsByGame({ requestingUserId, status, gameId }) {
     const query = Database
-    .select('friends.friend_id', 'users.profile_img', 'users.alias', 'users.status', 'users.last_seen', 'users.public_key')
-    .from('game_experiences')
-    .leftJoin('friends', 'friends.friend_id', 'game_experiences.user_id')
-    .leftJoin('users', 'users.id', 'friends.friend_id')
-    .where('friends.user_id', requestingUserId)
-    .andWhere('game_experiences.game_names_id', gameId)
-    .andWhere('users.status', status)
-    .union([
-      Database
       .select('friends.friend_id', 'users.profile_img', 'users.alias', 'users.status', 'users.last_seen', 'users.public_key')
-      .from('esports_experiences')
-      .leftJoin('friends', 'friends.friend_id', 'esports_experiences.user_id')
+      .from('game_experiences')
+      .leftJoin('friends', 'friends.friend_id', 'game_experiences.user_id')
       .leftJoin('users', 'users.id', 'friends.friend_id')
       .where('friends.user_id', requestingUserId)
-      .andWhere('esports_experiences.game_names_id', gameId)
+      .andWhere('game_experiences.game_names_id', gameId)
       .andWhere('users.status', status)
-    ]);
+      .union([
+        Database
+          .select('friends.friend_id', 'users.profile_img', 'users.alias', 'users.status', 'users.last_seen', 'users.public_key')
+          .from('esports_experiences')
+          .leftJoin('friends', 'friends.friend_id', 'esports_experiences.user_id')
+          .leftJoin('users', 'users.id', 'friends.friend_id')
+          .where('friends.user_id', requestingUserId)
+          .andWhere('esports_experiences.game_names_id', gameId)
+          .andWhere('users.status', status)
+      ]);
     const results = await query;
     if (!results) return { contacts: [] };
     const contacts = results.map(contact => new ContactSchema({
@@ -696,7 +696,7 @@ class ChatRepository {
       .leftJoin('game_names', 'game_names.id', 'esports_experiences.game_names_id')
       .where('esports_experiences.user_id', requestingUserId)
 
-      let experiencesQuery = Database
+    let experiencesQuery = Database
       .select('game_experiences.user_id', 'game_names.user_id as owner_id', 'game_names_id', 'game_name', 'game_img')
       .from('game_experiences')
       .leftJoin('game_names', 'game_names.id', 'game_experiences.game_names_id')
@@ -865,7 +865,9 @@ class ChatRepository {
     const chatIds = (chats || []).map(chat => chat.chat_id);
     const recentMessages = await ChatRecentMessage.query().where('chat_id', 'in', chatIds).fetch();
     const requestedMessageIds = ((recentMessages && recentMessages.toJSON()) || []).map(recentMessage => recentMessage.message_id);
-    return this.fetchMessages({ requestedMessageIds });
+    const { messages } = await this.fetchMessages({ requestedMessageIds });
+    const yesterday = new Date(new Date().setDate(new Date().getDate() - 1))
+    return { messages: messages.filter((message) => message.createdAt > yesterday) };
   }
 
   async saveRecentMessage(message) {
@@ -1170,6 +1172,13 @@ class ChatRepository {
     return { chat: chatSchema };
   }
 
+  async deleteChatByIndividualGameId({ requestingUserId, requestedGameId }) {
+    const response = (await Chat.query().where('individual_game_id', requestedGameId).first());
+    if (!response) return;
+    const chat = response.toJSON();
+    await this.deleteChat({ requestingUserId, requestedChatId: chat.id, forceDelete: true });
+  }
+
   async fetchChatByIndividualGameId({ requestingUserId, requestedGameId }) {
     let chat = null;
     const response = (await Chat.query().where('individual_game_id', requestedGameId).first());
@@ -1451,7 +1460,7 @@ class ChatRepository {
     if (userId) return this.broadcast('chat:auth:*', `chat:auth:${userId}`, `chat:${action}`, payload);
     if (guestId) return this.broadcast('chat:guest:*', `chat:guest:${guestId}`, `chat:${action}`, payload);
     if (chatId) {
-      const result =  await Chat.find(chatId);
+      const result = await Chat.find(chatId);
       if (!result) return;
       const chat = result.toJSON();
       if (chat.channel_id) {

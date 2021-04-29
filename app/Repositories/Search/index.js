@@ -84,8 +84,8 @@ class SearchRepository {
     if (input.value_three) query.query.bool.must.push({ match: { 'dynamic_fields.value_three.keyword': typeof input.value_three === 'string' ? input.value_three : input.value_three[Object.keys(input.value_three)[0]] } });
     if (input.value_four) query.query.bool.must.push({ match: { 'dynamic_fields.value_four.keyword': typeof input.value_four === 'string' ? input.value_four : input.value_four[Object.keys(input.value_four)[0]] } });
     if (input.value_five) query.query.bool.must.push({ match: { 'dynamic_fields.value_five.keyword': typeof input.value_five === 'string' ? input.value_five : input.value_five[Object.keys(input.value_five)[0]] } });
-    if (input.mic !== null) query.query.bool.must.push({ match: { mic: input.mic } });
-    if (input.eighteen_plus !== null) query.query.bool.must.push({ match: { eighteen_plus: input.eighteen_plus } });
+    if (input.mic !== null) query.query.bool.must.push({ match: { mic: !!input.mic } });
+    if (input.eighteen_plus !== null) query.query.bool.must.push({ match: { eighteen_plus: !!input.eighteen_plus } });
     return query;
   }
 

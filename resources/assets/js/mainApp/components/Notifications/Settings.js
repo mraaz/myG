@@ -47,8 +47,8 @@ class Settings extends Component {
       const environment = window.location.href.includes('localhost')
         ? 'development'
         : window.location.href.includes('myG.gg')
-        ? 'production'
-        : 'staging'
+          ? 'production'
+          : 'staging'
 
       if (environment == 'development') {
         this.setState({
@@ -56,7 +56,7 @@ class Settings extends Component {
         })
       }
 
-      const getSettings = async function() {
+      const getSettings = async function () {
         try {
           const getSettings = await axios.get('/api/settings')
           self.setState({
@@ -197,24 +197,22 @@ class Settings extends Component {
                 </div>
               </div>
             )}
-            <FeatureEnabled allOf={[CHANNEL]}>
-              <div className='option'>
-                <div className='title'>Main channel</div>
-                <div className='button__switch browser__notification'>
-                  <label className={`switchLabel ${this.props.mainChannelEnabled ? 'on' : 'off'}`} onClick={() => this.props.toggleMainChannel(this.props.userId)}>
-                    {this.props.mainChannelEnabled ? 'on' : 'off'}
-                  </label>
-                  <input
-                    id='switch-orange'
-                    type='checkbox'
-                    className='switch'
-                    value={this.props.mainChannelEnabled}
-                    checked={this.props.mainChannelEnabled}
-                    onChange={() => this.props.toggleMainChannel(this.props.userId)}
-                  />
-                </div>
+            <div className='option'>
+              <div className='title'>Main channel</div>
+              <div className='button__switch browser__notification'>
+                <label className={`switchLabel ${this.props.mainChannelEnabled ? 'on' : 'off'}`} onClick={() => this.props.toggleMainChannel(this.props.userId)}>
+                  {this.props.mainChannelEnabled ? 'on' : 'off'}
+                </label>
+                <input
+                  id='switch-orange'
+                  type='checkbox'
+                  className='switch'
+                  value={this.props.mainChannelEnabled}
+                  checked={this.props.mainChannelEnabled}
+                  onChange={() => this.props.toggleMainChannel(this.props.userId)}
+                />
               </div>
-            </FeatureEnabled>
+            </div>
             <div className='option'>
               <div className='title'>Browser notifications</div>
               <div className='button__switch browser__notification'>

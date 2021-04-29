@@ -1,6 +1,6 @@
 // --- One way to disable adonis websocket logs.
 const log = console.log
-console.log = function() {
+console.log = function () {
   if (arguments[0] && arguments[0].includes && arguments[0].includes('adonis:websocket')) return
   if (log.apply) log.apply(console, arguments)
   else log(Array.prototype.slice.apply(arguments).join(' '))
@@ -23,13 +23,10 @@ import ErrorHandler from './components/ErrorHandler'
 import PopupAlert from './components/PopupAlert'
 import Bubbles from './components/Bubbles'
 import LevelUp from './components/LevelUp'
-
-import Utility_Function from './components/Utility_Function'
 import { Update_ip_settings } from './components/Utility_Function'
 
 import { store, persistor } from '../redux/Store'
 import { loadUserInfoToReduxStore } from '../common/user'
-import { FeatureEnabled, PROFILE_V2, CHANNEL } from '../common/flags'
 import { fetchNotifications } from '../common/notifications'
 import { registerAccess } from '../integration/http/quests';
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -48,8 +45,6 @@ import {
   Posts,
   AddScheduleGames,
   SinglePost,
-  IndividualEsportsExperience,
-  ScheduledGamesApprovals,
   ScheduleGamesView,
   CreateCommunity,
   EditScheduleGames,
@@ -87,7 +82,7 @@ class Layout extends Component {
           window.location.href = '/logout'
         }
 
-        if (initialData.data.userInfo.has_additional != '1'){
+        if (initialData.data.userInfo.has_additional != '1') {
           Update_ip_settings()
         }
 
@@ -174,10 +169,10 @@ class Layout extends Component {
                   component={(props) => (
                     <React.Fragment>
                       <ProfileContainer
-                          routeProps={props}
-                          initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
-                          key={Math.random()}
-                        />
+                        routeProps={props}
+                        initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
+                        key={Math.random()}
+                      />
                     </React.Fragment>
                   )}
                 />
@@ -187,13 +182,11 @@ class Layout extends Component {
                   path='/profile/:alias/game/:gameId'
                   component={(props) => (
                     <React.Fragment>
-                      <FeatureEnabled allOf={[PROFILE_V2]}>
-                        <ProfileContainer
-                          routeProps={props}
-                          initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
-                          key={Math.random()}
-                        />
-                      </FeatureEnabled>
+                      <ProfileContainer
+                        routeProps={props}
+                        initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
+                        key={Math.random()}
+                      />
                     </React.Fragment>
                   )}
                 />
@@ -203,9 +196,7 @@ class Layout extends Component {
                   path='/myg-chat'
                   component={() => (
                     <React.Fragment>
-                      <FeatureEnabled allOf={[CHANNEL]}>
-                        <Channel page channelId="main" key={Math.random()} />
-                      </FeatureEnabled>
+                      <Channel page channelId="main" key={Math.random()} />
                     </React.Fragment>
                   )}
                 />
@@ -216,10 +207,10 @@ class Layout extends Component {
                   component={(props) => (
                     <React.Fragment>
                       <AchievementsContainer
-                          routeProps={props}
-                          initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
-                          key={Math.random()}
-                        />
+                        routeProps={props}
+                        initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
+                        key={Math.random()}
+                      />
                     </React.Fragment>
                   )}
                 />
