@@ -519,7 +519,9 @@ export default class IndividualComment extends Component {
               {'  '}
               {!this.state.show_edit_comment && (
                 <div className='comment-content'>
-                  <p>{this.state.content}</p>
+                  <p style={{ whiteSpace: 'pre-line' }}>
+                    {this.state.content}
+                  </p>
                   {media_urls.length > 0 && (
                     <div className='show__comment__image'>
                       {media_urls.map((img) => {
