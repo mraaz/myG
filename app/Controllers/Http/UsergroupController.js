@@ -666,7 +666,7 @@ class UsergroupController {
         //delete this notification
         const auth2 = { user: { id: grp_to_approve[i].user_id } }
         console.log(auth2, '<<<AUTH2')
-        await noti.delete_group_invites({ auth2 }, grp_to_approve[i].grp_id, grp_to_approve[i].user_id)
+        await noti.delete_group_invites({ auth: auth2 }, grp_to_approve[i].grp_id, grp_to_approve[i].user_id)
       }
 
       return 'Saved successfully'
