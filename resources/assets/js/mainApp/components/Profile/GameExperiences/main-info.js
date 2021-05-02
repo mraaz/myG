@@ -375,28 +375,34 @@ export default class MainInfo extends React.Component {
     const isValid = validation
       ? validation.test(get(this.props, `experience.dynamic.${field.id}.value`, get(this.props, `experience.dynamic.${field.id}`)))
       : true
+    const value = get(this.props, `experience.dynamic.${field.id}.value`, get(this.props, `experience.dynamic.${field.id}`));
     return (
       <React.Fragment>
         <span className='hint'>{field.label}</span>
         {required && <span className='required'>*</span>}
-        <div className='input-container-row'>
+        <div className='input-container-row' style={showLink && { width: '88%' }}>
           <input
             className={`input${isValid ? '' : ' input-error'}`}
-            value={get(this.props, `experience.dynamic.${field.id}.value`, get(this.props, `experience.dynamic.${field.id}`))}
+            value={value}
             placeholder={field.profile_placeholder}
             onChange={(event) =>
-              this.props.storeDynamicExperience({ [field.id]: { value: event.target.value, text: field.label } })
+              this.props.storeDynamicExperience({ [field.id]: { value: event.target.value, tewxt: field.label } })
             }></input>
         </div>
         {showLink && (
           <div
             className='icon-button clickable'
             style={{ backgroundImage: `url(https://myG.gg/platform_images/Profile/newWindow-icon.svg)` }}
-            onClick={() => window.open(field.profile_placeholder, '_blank')}
+            onClick={() => window.open(this.forceHttps(value) || field.profile_placeholder, '_blank')}
           />
         )}
       </React.Fragment>
     )
+  }
+
+  forceHttps = (url) => {
+    if (url.startsWith('https://')) return url
+    return `https://${url}`
   }
 
   onDrop = async (file, rejectedFiles) => {
