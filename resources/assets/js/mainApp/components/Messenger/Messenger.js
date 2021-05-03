@@ -131,6 +131,7 @@ class Messenger extends React.Component {
     return (
       <Footer
         mobile={this.props.mobile}
+        mobileMenuActive={this.props.mobileMenuActive}
         search={this.state.searchInput}
         updateStatus={this.props.updateStatus}
         profileImage={this.props.profileImage}
@@ -275,10 +276,11 @@ class Messenger extends React.Component {
   render() {
     logger.log('RENDER', 'Messenger')
     if (parseInt(this.props.level) < 2) return this.renderLockedChat()
+    const topBarSpacer = this.props.mobileMenuActive ? { height: '90vh', marginTop: '80px' } : {};
     return (
       <React.Fragment>
         <section className={`messenger${this.props.mobile ? ' mobile-messenger' : ''}`}>
-          <div className='messenger-content' style={this.props.mobile && { width: '100vw', height: '90vh', marginTop: '80px' }}>
+          <div className='messenger-content' style={this.props.mobile && { width: '100vw', ...topBarSpacer }}>
             {this.renderBody()}
             {this.renderSettings()}
             {this.renderFooter()}
@@ -326,6 +328,7 @@ function mapStateToProps(state) {
     searchResults: state.pagination.search,
     searching: state.pagination.searchLoading,
     contactCount: state.user.contactCount,
+    mobileMenuActive: state.mobileMenu.mobileMenuIsActive,
   }
 }
 
