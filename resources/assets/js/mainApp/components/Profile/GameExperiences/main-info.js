@@ -386,7 +386,7 @@ export default class MainInfo extends React.Component {
             value={value}
             placeholder={field.profile_placeholder}
             onChange={(event) =>
-              this.props.storeDynamicExperience({ [field.id]: { value: event.target.value, tewxt: field.label } })
+              this.props.storeDynamicExperience({ [field.id]: { value: event.target.value, text: field.label } })
             }></input>
         </div>
         {showLink && (
