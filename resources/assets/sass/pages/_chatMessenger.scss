@@ -185,7 +185,6 @@
     white-space: nowrap;
     overflow: hidden;
     width: 10em;
-    height: 16px;
   }
 
   .messenger-contact-info {
@@ -950,7 +949,7 @@
   }
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 1500px) {
   .messenger {
     display: none;
   }

@@ -773,7 +773,9 @@ class ChatRepository {
     chat.guests.forEach(guestId => this._notifyChatEvent({ guestId, action: isKickingGuest ? 'guestLeft' : 'userLeft', payload: { userId: userToRemove, guestId: userToRemove, chatId: requestedChatId, entryLog } }));
     if (isKickingGuest) {
       const guest = await Guest.find(userToRemove);
-      return new GuestSchema({ publicKey: guest.public_key, uuid: guest.uuid, guestId: guest.id });
+      if (guest) {
+        return new GuestSchema({ publicKey: guest.public_key, uuid: guest.uuid, guestId: guest.id });
+      }
     }
     return new DefaultSchema({ success: true });
   }
@@ -1030,6 +1032,7 @@ class ChatRepository {
 
   async fetchChatInfo({ requestedChatId }) {
     const chat = await Chat.find(requestedChatId);
+    if (!chat) return { chat: null };
     const chatSchema = new ChatSchema({
       chatId: chat.id,
       isPrivate: chat.isPrivate,
@@ -1078,6 +1081,7 @@ class ChatRepository {
 
   async updateLink({ requestedChatId, requestedLinkUuid, expiry, expire }) {
     const rawLink = (await ChatLink.query().where('chat_id', requestedChatId).andWhere('uuid', requestedLinkUuid).first()).toJSON();
+    if (!rawLink) throw new Error(`Link not found for chat: ${requestedChatId}`);
     const link = new ChatLinkSchema({
       chatId: rawLink.chat_id,
       uuid: rawLink.uuid,
@@ -1151,7 +1155,9 @@ class ChatRepository {
   }
 
   async fetchChatByGameId({ requestedGameId }) {
-    const chat = (await Chat.query().where('game_id', requestedGameId).first()).toJSON();
+    const chatResponse = await Chat.query().where('game_id', requestedGameId).first();
+    if (!chatResponse) return { chat: null };
+    const chat = chatResponse.toJSON();
     const chatSchema = new ChatSchema({
       chatId: chat.id,
       isPrivate: chat.isPrivate,
@@ -1190,6 +1196,7 @@ class ChatRepository {
         .leftJoin('game_names', 'schedule_games.game_names_id', 'game_names.id')
         .where('schedule_games.id', requestedGameId)
         .select(['schedule_games.user_id', 'game_names.game_name', 'game_names.game_name_fields_img', 'game_names.id', 'schedule_games.start_date_time']);
+      if (!games.length) throw new Error("(fetchChatByIndividualGameId) Game not found");
       const game = games[0];
       const owner = game.user_id;
       const title = game.game_name;

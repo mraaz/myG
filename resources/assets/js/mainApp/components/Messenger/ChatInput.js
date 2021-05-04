@@ -47,6 +47,9 @@ export default class ChatInput extends React.Component {
     const enterKeyCode = 13
     if (code === enterKeyCode) {
       event.preventDefault()
+      if (event.shiftKey) {
+        return this.setState(previous => ({ input: previous.input + "\n" }))
+      }
       this.sendMessage()
     }
   }

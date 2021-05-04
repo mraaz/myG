@@ -47,8 +47,9 @@ export default class Footer extends React.Component {
 
   render() {
     logger.log('RENDER', 'Footer')
+    const bottomBarSpacer = this.props.mobileMenuActive ? { bottom: '52px' } : {};
     return (
-      <div className={`messenger-footer-container`} style={this.props.mobile && { bottom: '52px', width: '100%' }}>
+      <div className={`messenger-footer-container`} style={this.props.mobile && { width: '100%', ...bottomBarSpacer }}>
         <div className='messenger-footer'>
           <div className='messenger-footer-icon-container'>
             <div className='messenger-footer-icon' style={{ backgroundImage: `url('${this.props.profileImage}')` }} />
