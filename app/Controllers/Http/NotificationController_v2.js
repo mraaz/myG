@@ -252,7 +252,7 @@ class NotificationController_v2 {
         }
 
         for (var i = 0; i < mygroups.length; i++) {
-          const add_all_to_Group = await Notification.create({
+          await Notification.create({
             other_user_id: mygroups[i].user_id,
             user_id: auth.user.id,
             activity_type: 12,
@@ -277,30 +277,27 @@ class NotificationController_v2 {
     }
   }
 
-  async delete_group_invites({ auth }, grp_id, workAround) {
-    let tmpWorkAround
+  async delete_group_invites({ auth }, grp_id) {
+    if (auth) {
+      try {
+        await Database.table('notifications')
+          .where({
+            group_id: grp_id,
+            user_id: auth.user.id,
+            activity_type: 12
+          })
+          .delete()
 
-    if (auth == undefined) tmpWorkAround = workAround
-    else tmpWorkAround = auth.user.id
-
-    try {
-      const delete_noti = await Database.table('notifications')
-        .where({
-          group_id: grp_id,
-          user_id: tmpWorkAround,
-          activity_type: 12
+        return 'deleted'
+      } catch (error) {
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error
         })
-        .delete()
-
-      return 'deleted'
-    } catch (error) {
-      LoggingRepository.log({
-        environment: process.env.NODE_ENV,
-        type: 'error',
-        source: 'backend',
-        context: __filename,
-        message: (error && error.message) || error
-      })
+      }
     }
   }
 
@@ -308,7 +305,7 @@ class NotificationController_v2 {
     console.log(auth, '<<<AUTH')
     if (auth.user) {
       try {
-        const add_approved_group_attendee = await Notification.create({
+        await Notification.create({
           other_user_id: other_user_id,
           user_id: auth.user.id,
           activity_type: 17,

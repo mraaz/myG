@@ -20,13 +20,13 @@ class UsergroupController {
     if (auth.user) {
       try {
         if (!onboarding) {
-          const newaddition = await Usergroup.create({
+          await Usergroup.create({
             group_id: request.input('group_id'),
             user_id: auth.user.id,
             permission_level: 42
           })
         } else {
-          const newaddition_onboard = await Usergroup.create({
+          await Usergroup.create({
             group_id: request.input('group_id'),
             user_id: auth.user.id,
             permission_level: 3
@@ -247,7 +247,7 @@ class UsergroupController {
           }
         }
         if (access_granted) {
-          const updated_permission = await Usergroup.query()
+          await Usergroup.query()
             .where({ group_id: request.params.grp_id, user_id: request.params.user_id })
             .update({ permission_level: 3 })
 
@@ -263,7 +263,7 @@ class UsergroupController {
 
           return 'Saved successfully'
         } else {
-          const delete_this_noti = await Database.table('notifications')
+          await Database.table('notifications')
             .where({
               other_user_id: auth.user.id,
               group_id: request.params.grp_id,
@@ -391,7 +391,7 @@ class UsergroupController {
           }
         }
 
-        const deleteMember = await Database.table('usergroups')
+        await Database.table('usergroups')
           .where({
             id: request.params.usergrp_id
           })
@@ -518,7 +518,7 @@ class UsergroupController {
             timeDif = Math.abs(Math.round(timeDif))
 
             if (timeDif < 5 && permission_query_to_be_promoted_user[0].permission_level_updated_by == auth.user.id) {
-              const updated_permission = await Usergroup.query()
+              await Usergroup.query()
                 .where({ id: request.params.usergrp_id })
                 .update({ permission_level: 3, permission_level_updated_by: auth.user.id })
 
@@ -541,7 +541,7 @@ class UsergroupController {
           return false
         }
 
-        const updated_permission = await Usergroup.query()
+        await Usergroup.query()
           .where({ id: request.params.usergrp_id })
           .update({ permission_level: user_to_be_promoted_permission - 1, permission_level_updated_by: auth.user.id })
 
@@ -655,7 +655,7 @@ class UsergroupController {
       const userStatController = new UserStatTransactionController()
 
       for (let i = 0; i < grp_to_approve.length; i++) {
-        const updated_permission = await Usergroup.query()
+        await Usergroup.query()
           .where({ group_id: grp_to_approve[i].grp_id, user_id: grp_to_approve[i].user_id })
           .update({ permission_level: 3 })
 
@@ -663,10 +663,8 @@ class UsergroupController {
 
         userStatController.update_total_number_of(grp_to_approve[i].user_id, 'total_number_of_communities')
 
-        //delete this notification
         const auth2 = { user: { id: grp_to_approve[i].user_id } }
-        console.log(auth2, '<<<AUTH2')
-        await noti.delete_group_invites({ auth: auth2 }, grp_to_approve[i].grp_id, grp_to_approve[i].user_id)
+        await noti.delete_group_invites({ auth: auth2 }, grp_to_approve[i].grp_id)
       }
 
       return 'Saved successfully'
