@@ -38,25 +38,23 @@ class UserController {
     var friend = undefined,
       following = undefined
     try {
-      const user = await User.query()
-        .where('id', '=', request.params.id)
-        .fetch()
+      const user = await User.query().where('id', '=', request.params.id).fetch()
       if (auth.user.id != request.params.id) {
         friend = await Database.from('friends').where({
           user_id: auth.user.id,
-          friend_id: request.params.id,
+          friend_id: request.params.id
         })
 
         following = await Database.from('followers').where({
           user_id: auth.user.id,
-          follower_id: request.params.id,
+          follower_id: request.params.id
         })
       }
 
       return {
         user: user.toJSON(),
         friend: friend === undefined || friend.length == 0 ? false : true,
-        following: following === undefined || following.length == 0 ? false : true,
+        following: following === undefined || following.length == 0 ? false : true
       }
     } catch (error) {
       LoggingRepository.log({
@@ -64,25 +62,23 @@ class UserController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
 
   async profile_with_alias({ auth, request, response }) {
     try {
-      const user = await Database.from('users')
-        .where('alias', '=', request.params.alias)
-        .first()
+      const user = await Database.from('users').where('alias', '=', request.params.alias).first()
       const friend = await Database.from('friends').where({
         user_id: auth.user.id,
-        friend_id: user.id,
+        friend_id: user.id
       })
 
       return {
         user: user,
 
-        friend: friend === undefined || friend.length == 0 ? false : true,
+        friend: friend === undefined || friend.length == 0 ? false : true
       }
     } catch (error) {
       LoggingRepository.log({
@@ -90,7 +86,7 @@ class UserController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -108,7 +104,7 @@ class UserController {
             country: request.input('country'),
             regional: request.input('regional'),
             contact_info: request.input('contact_info'),
-            relationship_status: request.input('relationship_status'),
+            relationship_status: request.input('relationship_status')
           })
         const { profile } = await ProfileRepository.fetchProfileInfo({ requestingUserId: auth.user.id, id: auth.user.id })
         await ElasticsearchRepository.storeUser({ user: profile })
@@ -120,7 +116,7 @@ class UserController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -134,14 +130,14 @@ class UserController {
         const unfriendUser = await Database.table('friends')
           .where({
             user_id: auth.user.id,
-            friend_id: request.params.id,
+            friend_id: request.params.id
           })
           .delete()
 
         const unfriendUserViceVersa = await Database.table('friends')
           .where({
             user_id: request.params.id,
-            friend_id: auth.user.id,
+            friend_id: auth.user.id
           })
           .delete()
 
@@ -160,7 +156,7 @@ class UserController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -175,7 +171,7 @@ class UserController {
           .where({
             user_id: auth.user.id,
             other_user_id: request.params.id,
-            activity_type: 1,
+            activity_type: 1
           })
           .delete()
         const userId = request.params.id
@@ -188,7 +184,7 @@ class UserController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -206,7 +202,7 @@ class UserController {
         .limit(8)
 
       return {
-        playerSearchResults,
+        playerSearchResults
       }
     } catch (error) {
       LoggingRepository.log({
@@ -214,7 +210,7 @@ class UserController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -235,7 +231,7 @@ class UserController {
         .paginate(request.input('counter'), 88)
 
       return {
-        playerSearchResults,
+        playerSearchResults
       }
     } catch (error) {
       LoggingRepository.log({
@@ -243,7 +239,7 @@ class UserController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -255,13 +251,11 @@ class UserController {
           return
         }
 
-        const transferGames = await GameName.query()
-          .where('user_id', '=', auth.user.id)
-          .update({ user_id: 1 })
+        const transferGames = await GameName.query().where('user_id', '=', auth.user.id).update({ user_id: 1 })
 
         const byebyebye = await Database.table('users')
           .where({
-            id: auth.user.id,
+            id: auth.user.id
           })
           .delete()
 
@@ -272,7 +266,7 @@ class UserController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -283,11 +277,11 @@ class UserController {
   async changeProfile({ auth, request, response }) {
     if (auth.user) {
       try {
-        let update_key = new AwsKeyController()
+        const update_key = new AwsKeyController()
         request.params.type = 1
         update_key.addUserKey({ auth, request, response })
 
-        const saveUser = await User.query()
+        await User.query()
           .where('id', '=', auth.user.id)
           .update({ profile_img: request.input('profile_img') })
 
@@ -330,7 +324,7 @@ class UserController {
       try {
         const aliasConverted = await Database.table('users')
           .where({
-            alias: request.params.alias,
+            alias: request.params.alias
           })
           .select('id')
 
@@ -341,7 +335,7 @@ class UserController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -355,7 +349,7 @@ class UserController {
         await User.query()
           .where('id', '=', auth.user.id)
           .update({
-            notification_sounds_disabled: request.only('disabled').disabled,
+            notification_sounds_disabled: request.only('disabled').disabled
           })
       } catch (error) {
         LoggingRepository.log({
@@ -363,7 +357,7 @@ class UserController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -377,7 +371,7 @@ class UserController {
         await User.query()
           .where('id', '=', auth.user.id)
           .update({
-            chat_auto_self_destruct: request.only('enabled').enabled,
+            chat_auto_self_destruct: request.only('enabled').enabled
           })
       } catch (error) {
         LoggingRepository.log({
@@ -385,7 +379,7 @@ class UserController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -396,7 +390,7 @@ class UserController {
   async update_has_additional() {
     try {
       await User.query().update({
-        has_additional: false,
+        has_additional: false
       })
     } catch (error) {
       LoggingRepository.log({
@@ -404,40 +398,44 @@ class UserController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
 
   async fetchOnlineUsers({ auth }) {
-    if (!auth.user) return "You are not Logged In!";
-    const myGames = await Database
-      .select('game_names.game_name')
+    if (!auth.user) return 'You are not Logged In!'
+    const myGames = await Database.select('game_names.game_name')
       .from('user_most_played_games')
       .leftJoin('game_names', 'game_names.id', 'user_most_played_games.game_name_id')
       .where('user_most_played_games.user_id', auth.user.id)
-      .then((games) => [...games.map((game) => game.game_name)]);
-    const onlineUsers = await Database
-      .select(['users.alias', 'game_names.game_name', 'game_names.game_artwork'])
+      .then((games) => [...games.map((game) => game.game_name)])
+    const onlineUsers = await Database.select(['users.alias', 'game_names.game_name', 'game_names.game_artwork'])
       .from('users')
       .leftJoin('user_most_played_games', 'user_most_played_games.user_id', 'users.id')
       .leftJoin('game_names', 'game_names.id', 'user_most_played_games.game_name_id')
       .where('users.status', 'online')
-      .limit(100);
-    const games = {};
-    const aliases = {};
+      .limit(100)
+    const games = {}
+    const aliases = {}
     onlineUsers.forEach(({ alias, game_name, game_artwork }) => {
-      aliases[alias] = true;
+      aliases[alias] = true
       if (game_name) {
-        if (!games[game_name]) games[game_name] = { icon: game_artwork, gamers: [] };
-        games[game_name].gamers.push(alias);
+        if (!games[game_name]) games[game_name] = { icon: game_artwork, gamers: [] }
+        games[game_name].gamers.push(alias)
       }
-    });
-    const activeNow = { game: 'Active Now', icon: null, gamers: Object.keys(aliases) };
-    const preferredGames = Object.keys(games).sort().filter(game => myGames.includes(game)).map((game) => ({ game: game.trim(), ...games[game] }));
-    const otherGames = Object.keys(games).sort().filter(game => !myGames.includes(game)).map((game) => ({ game: game.trim(), ...games[game] }));
-    const gamesList = [activeNow, ...preferredGames, ...otherGames];
-    return gamesList.filter(game => game.gamers.length).slice(0, 10);
+    })
+    const activeNow = { game: 'Active Now', icon: null, gamers: Object.keys(aliases) }
+    const preferredGames = Object.keys(games)
+      .sort()
+      .filter((game) => myGames.includes(game))
+      .map((game) => ({ game: game.trim(), ...games[game] }))
+    const otherGames = Object.keys(games)
+      .sort()
+      .filter((game) => !myGames.includes(game))
+      .map((game) => ({ game: game.trim(), ...games[game] }))
+    const gamesList = [activeNow, ...preferredGames, ...otherGames]
+    return gamesList.filter((game) => game.gamers.length).slice(0, 10)
   }
 
   // async scrub_data() {
