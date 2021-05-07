@@ -32,14 +32,24 @@ const MobileMenuTop = (props) => {
     <Fragment>
       <div className={mobileMenuIsActive ? 'menu-tab show' : 'menu-tab hide'}>
         {!props.location.pathname.includes('/mobile-chat') && (
-          <Link to='/mobile-chat'>
-            <div className="mobile-chat-link clickable">
-              <img src='https://myg.gg/platform_images/Dashboard/Viw.svg' height='32' width='32' />
-              <NotificationIcon type='chat' />
-            </div>
-          </Link>
+          <div className='mobile_chat_icon'>
+            <Link to='/mobile-chat'>
+              <div className='mobile-chat-link'>
+                <img src='https://myg.gg/platform_images/Moblie/Chat_Icon_Btn.svg' height='32' width='32' />
+                {/* <NotificationIcon type='chat' /> */}
+              </div>
+            </Link>
+          </div>
         )}
-        <img onClick={() => setHideSideMenu(true)} src='https://myG.gg/platform_images/Dashboard/logo.svg' className='img-fluid logo-img' />
+        <Link to='/' style={{ marginRight: 10 }}>
+          <img src='https://myG.gg/platform_images/Dashboard/logo.svg' className='img-fluid logo-img' />
+        </Link>
+
+        <img
+          onClick={() => setHideSideMenu(true)}
+          src='https://myg.gg/platform_images/Moblie/Top_Menu_Btn.svg'
+          className='img-fluid logo-img'
+        />
         <div className={'notification-expanded'}>
           <Link to='/?at=notifications&submenu=1' style={{ marginLeft: 16 }}>
             <div className='notification-container'>
@@ -59,12 +69,14 @@ const MobileMenuTop = (props) => {
               <NotificationIcon type='chats' />
             </div>
           </Link>
-          <Link to='/myg-chat' style={{ paddingRight: 20 }}>
-            <div className='notification-container'>
-              <img src='https://myg.gg/platform_images/Dashboard/Viw.svg' height='22' width='22' />
-              <NotificationIcon type='channel' />
-            </div>
-          </Link>
+          {!mobileMenuIsActive && (
+            <Link to='/myg-chat' style={{ paddingRight: 20 }}>
+              <div className='notification-container'>
+                <img src='https://myg.gg/platform_images/Dashboard/Viw.svg' height='22' width='22' />
+                <NotificationIcon type='channel' />
+              </div>
+            </Link>
+          )}
         </div>
       </div>
       {hideSideMenu && (
@@ -133,7 +145,8 @@ const MobileMenuTop = (props) => {
                   setHideSideMenu(false)
                   dispatch(logoutAction())
                   window.location.href = '/logout'
-                }}>
+                }}
+              >
                 <img src='https://myG.gg/platform_images/Dashboard/Logout_Icon.svg' />
                 <span>Logout</span>
               </div>
