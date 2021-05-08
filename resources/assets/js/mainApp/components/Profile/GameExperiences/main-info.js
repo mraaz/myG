@@ -380,7 +380,7 @@ export default class MainInfo extends React.Component {
       <React.Fragment>
         <span className='hint'>{field.label}</span>
         {required && <span className='required'>*</span>}
-        <div className='input-container-row' style={showLink && { width: '88%' }}>
+        <div className='input-container-row' style={showLink && { width: '85%' }}>
           <input
             className={`input${isValid ? '' : ' input-error'}`}
             value={value}
@@ -393,7 +393,7 @@ export default class MainInfo extends React.Component {
           <div
             className='icon-button clickable'
             style={{ backgroundImage: `url(https://myG.gg/platform_images/Profile/newWindow-icon.svg)` }}
-            onClick={() => window.open(this.forceHttps(value) || field.profile_placeholder, '_blank')}
+            onClick={() => window.open(value ? this.forceHttps(value) : this.forceHttps(field.profile_placeholder), '_blank')}
           />
         )}
       </React.Fragment>
