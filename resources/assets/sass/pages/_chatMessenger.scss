@@ -16,6 +16,7 @@
   .locked-chat {
     position: fixed;
     display: flex;
+    min-width: 300px;
     width: 16vw;
     height: 95vh;
     flex-direction: column;
@@ -37,6 +38,7 @@
     }
     span {
       padding: 2px;
+      text-align: center;
     }
   }
   .rectangle {

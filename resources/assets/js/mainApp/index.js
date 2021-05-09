@@ -18,6 +18,7 @@ import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
+import LanguageProvider from './components/Languages/LanguageProvider';
 import ErrorHandler from './components/ErrorHandler'
 
 import PopupAlert from './components/PopupAlert'
@@ -408,19 +409,21 @@ class Layout extends Component {
       <ErrorHandler>
         <Provider store={store}>
           <PersistGate persistor={persistor}>
-            <Onboarding />
-            <PopupAlert />
-            <Bubbles />
-            <LevelUp />
-            <ToastContainer
-              autoClose={8000}
-              draggablePercent={60}
-              hideProgressBar={false}
-              className='toast-container'
-              toastClassName='dark-toast'
-            />
-            {!guestLink && this.renderRouter()}
-            {guestLink && this.renderGuestLink()}
+            <LanguageProvider>
+              <Onboarding />
+              <PopupAlert />
+              <Bubbles />
+              <LevelUp />
+              <ToastContainer
+                autoClose={8000}
+                draggablePercent={60}
+                hideProgressBar={false}
+                className='toast-container'
+                toastClassName='dark-toast'
+              />
+              {!guestLink && this.renderRouter()}
+              {guestLink && this.renderGuestLink()}
+            </LanguageProvider>
           </PersistGate>
         </Provider>
       </ErrorHandler>
