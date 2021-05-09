@@ -45,7 +45,7 @@ pipeline {
                       url: 'https://github.com/mraaz/myG'
             }
         }
-        stage('Publish Frontend') {
+        stage('Publish Frontend Stage') {
           when {
                 expression {
                    return env.GIT_BRANCH == "origin/stage"
@@ -60,7 +60,27 @@ pipeline {
                     sh "mv frontend.tar.gz ./public/"
                 }
                 withAWS(credentials: "myg-aws-credentials") {
-                    s3Upload(file:'public', bucket:'myg-frontend', path:'')
+                    s3Upload(file:'public', bucket:'myg-frontend', path:'stage.myg.gg')
+                    cfInvalidate(distribution:"${DISTRIBUTION}", paths:['/*'])
+                }
+              }
+        }
+        stage('Publish Frontend Prod') {
+          when {
+                expression {
+                   return env.GIT_BRANCH == "origin/master"
+                }
+            }
+            steps {
+                withNPM(npmrcConfig: 'ee91dee8-05da-4b62-88ba-174a08a3fba4') {
+                    sh "npm install"
+                    sh "npm run build"
+                    sh "npm run production"
+                    sh "tar -zcvf frontend.tar.gz ./public/"
+                    sh "mv frontend.tar.gz ./public/"
+                }
+                withAWS(credentials: "myg-aws-credentials") {
+                    s3Upload(file:'public', bucket:'myg-frontend', path:'myg.gg')
                     cfInvalidate(distribution:"${DISTRIBUTION}", paths:['/*'])
                 }
               }
