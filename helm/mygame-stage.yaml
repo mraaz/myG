@@ -66,16 +66,16 @@ ingress:
   enabled: true
   annotations:
     kubernetes.io/ingress.class: nginx
-    cert-manager.io/cluster-issuer: myg-stage
-    ingress.kubernetes.io/force-ssl-redirect: 'true'
+    #cert-manager.io/cluster-issuer: myg-stage
+    #ingress.kubernetes.io/force-ssl-redirect: 'true'
     #kubernetes.io/tls-acme: "true"
   paths: []
   path: /
   hostName: stage.myg.gg
-  tls:
-    - secretName: stage.myg.gg
-      hosts:
-        - stage.myg.gg
+  #tls:
+  #  - secretName: stage.myg.gg
+  #    hosts:
+  #      - stage.myg.gg
 
 ingress2:
   enabled: false
