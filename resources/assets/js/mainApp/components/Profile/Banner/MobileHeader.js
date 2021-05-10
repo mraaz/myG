@@ -57,7 +57,7 @@ export default class Header extends React.Component {
         {this.renderIcon()}
         <div className={`status-${this.props.profile.status}`} />
         <div className={`handle ${this.props.profile.isSelf ? 'self' : ''}`}>
-          <span className='alias'>@{this.props.profile.alias} mobile</span>
+          <span className='alias'>@{this.props.profile.alias}</span>
           <span className='name'>{name}</span>
         </div>
         {this.renderLevel()}
