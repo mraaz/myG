@@ -58,10 +58,11 @@ export class Banner extends React.Component {
           uploadProfileImage={this.props.uploadProfileImage}
           updateProfile={this.props.updateProfile}
           onlyProfile={this.props.onlyProfile}
-        />}
+        />} 
         {isMobile &&<MobileHeader
           alias={this.props.profile.alias}
           profile={this.props.profile}
+          userTransactionStates={this.props.userTransactionStates}
           isSelf={this.props.profile.isSelf}
           sendFriendRequest={this.props.sendFriendRequest}
           confirmFriendRequest={this.props.confirmFriendRequest}
@@ -76,6 +77,12 @@ export class Banner extends React.Component {
         <div className="profile-banner-shadow"></div> 
       </div>
     );
+  }
+} 
+
+function mapStateToProps(state) {
+  return {
+    userTransactionStates: state.user.userTransactionStates || {},
   }
 }
  
@@ -92,4 +99,4 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-export default connect(null, mapDispatchToProps)(Banner)
+export default connect(mapStateToProps, mapDispatchToProps)(Banner)

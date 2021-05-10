@@ -4,8 +4,9 @@ import get from 'lodash.get'
 import Dossier from '../Dossier'
 import ViewFriends from '../ViewFriends'
 import { ignoreFunctions } from '../../../../common/render'
-import { openChatByContact } from '../../../../common/chat'
-import { showMessengerAlert } from '../../../../common/alert'
+import { openChatByContact } from './../../../../common/chat'
+import { showMessengerAlert } from './../../../../common/alert'
+import Progress from './../../common/ProgressCircle/progress'
 
 export default class Header extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
@@ -58,6 +59,39 @@ export default class Header extends React.Component {
           <span className='alias'>@{this.props.profile.alias} mobile</span>
           <span className='name'>{name}</span>
         </div>
+        {this.renderLevel()}
+      </div>
+    )
+  }
+  renderLevel = () => {
+    const {
+      user_level = 0,
+      user_experience = 0,
+      start_of_level_xp = 0,
+      user_xp_negative_balance = 0,
+      level_max_points = 0
+    } = this.props.userTransactionStates
+
+    const progress = Math.floor(((user_experience - start_of_level_xp) / level_max_points) * 100)
+    return (
+      <div className='level-container'>
+        <section className='level-container-img'>
+          <Progress
+            className={`circle-wrap`}
+            borderColor={`${user_xp_negative_balance == 1 ? '#d70f46' : '#E5C746'}`}
+            progress={progress || 0}
+            value={user_level}
+            subtitle={'Level'}
+            reduction={0}
+            hideBall
+            strokeWidth={8}
+            background={'#fff'}
+          />
+          <div className='ratings'>
+            <p className='social-box-text'>Experience Pts.</p>
+            <p className='social-box-count'>{user_experience}</p>
+          </div>
+        </section>
       </div>
     )
   }
@@ -206,7 +240,7 @@ export default class Header extends React.Component {
 
   render() {
     return (
-      <div id='header'>
+      <div className='profile__mobile-header'>
         {this.renderInfo()}
         <div className='buttons'>
           {this.renderConnectionButton()}

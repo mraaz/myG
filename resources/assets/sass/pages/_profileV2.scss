@@ -498,7 +498,7 @@
     font-family: 'Montserrat', sans-serif;
     position: relative;
     &.mobileView {
-      height: 300px;
+      height: 504px;
     }
     .profile-banner-shadow {
       position: absolute;
@@ -1693,5 +1693,58 @@
 @media screen and (max-width: 575px) {
   .game-title-select {
     width: 100% !important;
+  }
+}
+.profile__mobile-header {
+  margin-left: 36px;
+  margin-right: 28px;
+  background: #1d2326;
+  z-index: 99;
+  .info {
+    display: flex;
+    font-size: 1.1em;
+    font-weight: 700;
+    color: #fff;
+    padding: 10px 10px;
+    position: relative;
+    background: #1d2326;
+    padding-left: 75px;
+    flex-direction: column;
+    .icon {
+      position: absolute;
+      background: #eeee;
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      left: -25px;
+      top: -40px;
+    }
+    .level-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #fff;
+      padding-right: 50px;
+      font-weight: 300;
+      margin-top: 10px;
+      .ratings {
+        margin-left: 20px;
+        font-size: 0.5em;
+        .social-box-text {
+          font-size: 1em;
+          font-family: Montserrat, sans-serif;
+          letter-spacing: 0;
+          color: #fff;
+          position: relative;
+          margin-bottom: 5px !important;
+        }
+      }
+      .level-container-img div[data-test-id='CircularProgressbarWithChildren'] {
+        width: 79px;
+        div {
+          font-size: 10px !important;
+        }
+      }
+    }
   }
 }
