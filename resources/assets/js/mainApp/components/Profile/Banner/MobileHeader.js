@@ -7,6 +7,7 @@ import { ignoreFunctions } from '../../../../common/render'
 import { openChatByContact } from './../../../../common/chat'
 import { showMessengerAlert } from './../../../../common/alert'
 import Progress from './../../common/ProgressCircle/progress'
+import ProfileInfo from './../Info/MobileInfo'
 
 export default class Header extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
@@ -242,6 +243,7 @@ export default class Header extends React.Component {
     return (
       <div className='profile__mobile-header'>
         {this.renderInfo()}
+        <ProfileInfo />
         <div className='buttons'>
           {this.renderConnectionButton()}
           {this.renderSendMessageButton()}
