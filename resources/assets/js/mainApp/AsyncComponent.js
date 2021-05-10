@@ -74,6 +74,12 @@ const GuestLink = Loadable({
     return null
   },
 })
+const GuestGame = Loadable({
+  loader: () => import('./components/Guest/Game'),
+  loading: function() {
+    return null
+  },
+})
 const EncryptionParaphraseRegistration = Loadable({
   loader: () => import('./components/Messenger/EncryptionParaphraseRegistration'),
   loading: function() {
@@ -166,6 +172,7 @@ export {
   MessengerLoader,
   ChatUnreadMessages,
   GuestLink,
+  GuestGame,
   EncryptionParaphraseRegistration,
   Posts,
   AddScheduleGames,

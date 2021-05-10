@@ -43,6 +43,7 @@ import {
   ChatUnreadMessages,
   EncryptionParaphraseRegistration,
   GuestLink,
+  GuestGame,
   Posts,
   AddScheduleGames,
   SinglePost,
@@ -79,7 +80,10 @@ class Layout extends Component {
 
         this.setState({ once: true })
 
-        if (initialData.data.userInfo == 1981 && !window.location.href.includes('/link')) {
+        const loggedOut = initialData.data.userInfo == 1981;
+        const notOnLink = !window.location.href.includes('/link')
+        const notOnGame = !window.location.href.includes('/scheduledGames')
+        if (loggedOut && notOnLink && notOnGame) {
           window.location.href = '/logout'
         }
 
@@ -403,17 +407,25 @@ class Layout extends Component {
     return <GuestLink uuid={uuid} />
   }
 
+  renderGuestGame = () => {
+    const uuidMatcher = new RegExp(/[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}/)
+    const url = window.location.href
+    const uuid = Array.isArray(url.match(uuidMatcher)) ? url.match(uuidMatcher)[0] : null
+    return <GuestGame uuid={uuid} />
+  }
+
   render() {
     const guestLink = this.state.initialData && window.location.href.includes('/link') && this.state.initialData.userInfo === 1981
+    const guestGame = this.state.initialData && window.location.href.includes('/scheduledGames') && this.state.initialData.userInfo === 1981
     return (
       <ErrorHandler>
         <Provider store={store}>
           <PersistGate persistor={persistor}>
             <LanguageProvider>
-              <Onboarding />
+              {!guestLink && !guestGame && <Onboarding />}
+              {!guestLink && !guestGame && <Bubbles />}
+              {!guestLink && !guestGame && <LevelUp />}
               <PopupAlert />
-              <Bubbles />
-              <LevelUp />
               <ToastContainer
                 autoClose={8000}
                 draggablePercent={60}
@@ -421,8 +433,9 @@ class Layout extends Component {
                 className='toast-container'
                 toastClassName='dark-toast'
               />
-              {!guestLink && this.renderRouter()}
+              {!guestLink && !guestGame && this.renderRouter()}
               {guestLink && this.renderGuestLink()}
+              {guestGame && this.renderGuestGame()}
             </LanguageProvider>
           </PersistGate>
         </Provider>

@@ -16,6 +16,11 @@ export function fetchLink(uuid) {
   return axios.get(`/api/guest/link/${uuid}`).then(response => response.data);
 }
 
+export function fetchGame(uuid) {
+  logger.log('GUEST', 'HTTP', `Fetching Game ${uuid}`);
+  return axios.get(`/api/guest/game/${uuid}`).then(response => response.data);
+}
+
 export function fetchChat(chatId) {
   logger.log('GUEST', 'HTTP', `Fetching Chat ${chatId}`);
   return axios.get(`/api/guest/chat/${chatId}`).then(response => response.data);

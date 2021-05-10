@@ -5,7 +5,6 @@
  */
 import React, { Fragment, useEffect, useState } from 'react'
 import axios from 'axios'
-import Modal from 'react-modal'
 import { Link } from 'react-router-dom'
 const defaultUserImage = 'https://myG.gg/default_user/new-user-profile-picture.png'
 
@@ -61,19 +60,30 @@ const Approved_gamers = (props) => {
           approved_gamers.slice(0, 3).map((gamer) => {
             return (
               <div className='single__gamer'>
-                <Link to={`/profile/${gamer.alias}`}>
+                {!props.disableLink ? (
+                  <Link to={`/profile/${gamer.alias}`}>
+                    <div className='gamer__image '>
+                      <img onError={addDefaultSrc} src={gamer.profile_img ? gamer.profile_img : defaultUserImage} />
+                    </div>
+                    <div className='gamer__alias ' title={gamer.alias}>
+                      {gamer.alias}
+                    </div>
+                  </Link>
+                ) : (
+                <Fragment>
                   <div className='gamer__image '>
                     <img onError={addDefaultSrc} src={gamer.profile_img ? gamer.profile_img : defaultUserImage} />
                   </div>
                   <div className='gamer__alias ' title={gamer.alias}>
                     {gamer.alias}
                   </div>
-                </Link>
+                </Fragment>
+                )}
               </div>
             )
           })}
 
-        {approved_gamers.length > 0 && (
+        {approved_gamers.length > 0 && !props.disableModal && (
           <div className='View__AllGamers' onClick={showModal}>
             ... View All
           </div>
