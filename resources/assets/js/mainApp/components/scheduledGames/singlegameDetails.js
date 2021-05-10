@@ -11,6 +11,7 @@ import GameComments from './GameComments'
 import { Link } from 'react-router-dom'
 import { WithTooltip } from '../Tooltip'
 import axios from 'axios'
+import { copyToClipboard } from '../../../common/clipboard'
 const defaultUserImage = 'https://myG.gg/default_user/new-user-profile-picture.png'
 
 export default class SingleGameDetails extends Component {
@@ -111,6 +112,8 @@ export default class SingleGameDetails extends Component {
                         </div>
                       )
                     })}
+                  <a className="clickable share-copy" onClick={() => copyToClipboard(`Checkout this game -> ${window.location.href}`)}>Share</a>
+                  <a className="clickable share-facebook" target="_blank" href={`https://www.facebook.com/sharer/sharer.php?u=${window.location.href}`}>Facebook</a>
                 </div>
               </div>
               {!marked_as_deleted && (

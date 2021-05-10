@@ -1711,7 +1711,7 @@
     }
     .gameTags__value {
       .singleTags {
-        max-width: 40px !important;
+        max-width: 64px !important;
         margin: 0 10px 10px 0 !important;
       }
     }
@@ -3489,4 +3489,28 @@ $transition-default: 0.25s ease-out 0.1s;
       }
     }
   }
+}
+
+.share-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 8px;
+  margin: 0 4px;
+  border-radius: 1000px;
+  border-style: solid;
+  border-width: 1px;
+  font-weight: 500;
+}
+
+.share-copy {
+  @extend .share-button;
+  border-color: #e5c746;
+  color: #e5c746;
+}
+
+.share-facebook {
+  @extend .share-button;
+  border-color: #3b5998;
+  color: #3b5998;
 }

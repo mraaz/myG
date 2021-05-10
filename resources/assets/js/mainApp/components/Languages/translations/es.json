@@ -1,0 +1,9 @@
+{
+  "messenger.locked-chat": "Tu Chat está bloqueado",
+  "achievements.call-to-action": "Vaya a <link> Logros </link> para aprender cómo progresar",
+  "level.reach-to-unlock": "Alcanza el <highlight> nivel {level} </highlight> para desbloquearlo",
+  "settings.languages": "Idiomas",
+  "settings.languages.select": "Seleccionar un Idioma",
+  "settings.languages.english": "Inglés",
+  "settings.languages.spanish": "Español"
+}

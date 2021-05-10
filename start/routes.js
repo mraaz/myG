@@ -433,6 +433,7 @@ Route.get('/api/guest/privateKey/:chatId', 'GuestController.fetchGroupPrivateKey
 Route.post('/api/guest/privateKey/:guestId/:chatId', 'GuestController.requestGroupPrivateKey')
 Route.delete('/api/guest/privateKey/:guestId/:chatId', 'GuestController.confirmGroupPrivateKey')
 Route.post('/api/guest/lastRead/:guestId/:chatId', 'GuestController.markLastReadGuest')
+Route.get('/api/guest/game/:gameId', 'ScheduleGameController.fetchGuestGame')
 
 // Seats Available
 Route.get('/api/seats_available', 'SeatsAvailableController.fetchSeatsAvailable')

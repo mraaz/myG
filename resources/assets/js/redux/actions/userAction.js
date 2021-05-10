@@ -210,3 +210,10 @@ export function onActiveNowAction({ alias, active }) {
     payload: { alias, active },
   }
 }
+
+export function selectLanguageAction(language) {
+  return {
+    type: 'SELECT_LANGUAGE',
+    payload: language,
+  }
+}

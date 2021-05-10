@@ -23,6 +23,7 @@ export default function reducer(
     userId: null,
     alias: null,
     icon: null,
+    language: null,
     isAdmin: false,
     status: 'online',
     ...initialState,
@@ -342,6 +343,14 @@ export default function reducer(
         ...state,
         userTransactionStates: action.payload,
         statsUpdatedFromWebsocket: true,
+      }
+    }
+
+    case 'SELECT_LANGUAGE': {
+      logger.log('USER', `Redux -> Selected Language `, action.payload)
+      return {
+        ...state,
+        language: action.payload,
       }
     }
 
