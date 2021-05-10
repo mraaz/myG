@@ -35,20 +35,22 @@ const MobileMenuTop = (props) => {
           <div className='mobile_chat_icon'>
             <Link to='/mobile-chat'>
               <div className='mobile-chat-link'>
-                <img src='https://myg.gg/platform_images/Moblie/Chat_Icon_Btn.svg' height='32' width='32' />
+                <img src='https://myg.gg/platform_images/Moblie/Chat_Icon_Btn.svg' height='22' width='22' />
                 {/* <NotificationIcon type='chat' /> */}
               </div>
             </Link>
           </div>
         )}
         <Link to='/' style={{ marginRight: 10 }}>
-          <img src='https://myG.gg/platform_images/Dashboard/logo.svg' className='img-fluid logo-img' />
+          <img src='https://myG.gg/platform_images/Dashboard/logo.svg' className='img-fluid logo-img' height='22' width='22' />
         </Link>
 
         <img
           onClick={() => setHideSideMenu(true)}
           src='https://myg.gg/platform_images/Moblie/Top_Menu_Btn.svg'
           className='img-fluid logo-img'
+          height='22'
+          width='22'
         />
         <div className={'notification-expanded'}>
           <Link to='/?at=notifications&submenu=1' style={{ marginLeft: 16 }}>
@@ -63,20 +65,18 @@ const MobileMenuTop = (props) => {
               <NotificationIcon type='alerts' />
             </div>
           </Link>
-          <Link to='/?at=notifications&submenu=3' style={{ paddingRight: checkFlag(CHANNEL) ? 35 : 16 }}>
+          <Link to='/?at=notifications&submenu=3' style={{ paddingRight: checkFlag(CHANNEL) ? 30 : 16 }}>
             <div className='notification-container'>
               <img src='https://myG.gg/platform_images/Dashboard/Chat_Icon.svg' height='22' width='22' />
               <NotificationIcon type='chats' />
             </div>
           </Link>
-          {!mobileMenuIsActive && (
-            <Link to='/myg-chat' style={{ paddingRight: 20 }}>
-              <div className='notification-container'>
-                <img src='https://myg.gg/platform_images/Dashboard/Viw.svg' height='22' width='22' />
-                <NotificationIcon type='channel' />
-              </div>
-            </Link>
-          )}
+          <Link to='/myg-chat' style={{ paddingRight: 10 }}>
+            <div className='notification-container'>
+              <img src='https://myg.gg/platform_images/Dashboard/Viw.svg' height='22' width='22' />
+              <NotificationIcon type='channel' />
+            </div>
+          </Link>
         </div>
       </div>
       {hideSideMenu && (
