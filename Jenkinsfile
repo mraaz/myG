@@ -60,7 +60,7 @@ pipeline {
                     sh "mv frontend.tar.gz ./public/"
                 }
                 withAWS(credentials: "myg-aws-credentials") {
-                    s3Upload(file:'public', bucket:'myg-frontend', path:'stage.myg.gg')
+                    s3Upload(file:'public', bucket:'myg-stage-frontend', path:'stage.myg.gg')
                     cfInvalidate(distribution:"${DISTRIBUTION}", paths:['/*'])
                 }
               }
