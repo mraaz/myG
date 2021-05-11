@@ -26,15 +26,13 @@ export default class PostFileModal extends Component {
       groups_im_in: [],
       visibility: 1,
       gid_request: {},
-      initial_data: [],
+      initial_data: []
     }
 
     this.closeModal = this.closeModal.bind(this)
   }
 
   componentDidMount() {
-    const self = this
-
     const getGroups_im_in = async () => {
       try {
         const getmyGroups = await axios.get('/api/groups/view/1')
@@ -44,7 +42,7 @@ export default class PostFileModal extends Component {
 
         this.setState({
           groups_im_in,
-          initial_data: groups_im_in,
+          initial_data: groups_im_in
         })
       } catch (error) {
         logToElasticsearch('error', 'PostFileModal', 'Failed getGroups_im_in:' + ' ' + error)
@@ -57,7 +55,7 @@ export default class PostFileModal extends Component {
     this.setState({
       selected_group,
       selected_group_data,
-      visibility,
+      visibility
     })
   }
 
@@ -72,7 +70,7 @@ export default class PostFileModal extends Component {
   closeModal(outsideClick = false) {
     if (outsideClick && !this.state.uploading) {
       this.setState({
-        post_content: '',
+        post_content: ''
       })
       this.props.callbackClose()
       return
@@ -85,13 +83,13 @@ export default class PostFileModal extends Component {
     this.props.callbackConfirm({
       selected_group: selected_group,
       selected_group_data: selected_group_data,
-      visibility: visibility,
+      visibility: visibility
     })
   }
 
   handleVisibityChange = (event, value) => {
     this.setState({
-      visibility: value,
+      visibility: value
     })
   }
 
@@ -157,7 +155,7 @@ export default class PostFileModal extends Component {
       selected_group_data.push({
         name,
         id,
-        group_img,
+        group_img
       })
     } else {
       selected_group = selected_group.filter((gid) => gid != id)
@@ -170,7 +168,7 @@ export default class PostFileModal extends Component {
     try {
       const { gid_request = {} } = this.state
       const sendInvite = await axios.post('/api/usergroup/create', {
-        group_id: gid,
+        group_id: gid
       })
       if (sendInvite.data) {
         gid_request[gid] = true
