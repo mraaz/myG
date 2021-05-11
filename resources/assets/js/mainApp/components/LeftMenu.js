@@ -12,14 +12,14 @@ import NotificationIcon from './Notifications/Icon'
 
 class LeftMenu extends Component {
   static propTypes = {
-    initialData: PropTypes.oneOfType([PropTypes.object, PropTypes.string]).isRequired,
+    initialData: PropTypes.oneOfType([PropTypes.object, PropTypes.string]).isRequired
   }
 
   async componentDidMount() {
     let expanded = localStorage.getItem('isExpanded')
 
     const getnoti = await axios.post('/api/notifications_v2/getUnread_count', {
-      notification_type: -1,
+      notification_type: -1
     })
 
     const chat_noti = await axios.get('/api/chat/message/unread?count=true')
@@ -42,12 +42,12 @@ class LeftMenu extends Component {
     dropdown: false,
     isExpanded: false,
     sideBarData: {
-      ...sideBarItems,
+      ...sideBarItems
     },
     approvals: 0,
     alerts: 0,
     chats: 0,
-    activePage: '',
+    activePage: ''
   }
 
   setExpandedDefault = function (data) {
@@ -82,8 +82,8 @@ class LeftMenu extends Component {
     this.setState((currentState) => ({
       isExpanded: !currentState.isExpanded,
       sideBarData: {
-        ...sideBarItems,
-      },
+        ...sideBarItems
+      }
     }))
   }
 
@@ -95,9 +95,9 @@ class LeftMenu extends Component {
         ...prevState.sideBarData,
         [itemKey]: {
           ...prevState.sideBarData[itemKey],
-          expanded: !prevState.sideBarData[itemKey].expanded,
-        },
-      },
+          expanded: !prevState.sideBarData[itemKey].expanded
+        }
+      }
     }))
   }
 
@@ -113,9 +113,9 @@ class LeftMenu extends Component {
 
     this.setState((currentState) => ({
       sideBarData: {
-        ...sideBarItems,
+        ...sideBarItems
       },
-      isExpanded: expanded,
+      isExpanded: expanded
     }))
   }
 
@@ -156,8 +156,8 @@ class LeftMenu extends Component {
       this.props.initialData === 'loading'
         ? 'invalid_link'
         : this.props.initialData.userInfo.profile_img
-          ? this.props.initialData.userInfo.profile_img
-          : 'invalid_link'
+        ? this.props.initialData.userInfo.profile_img
+        : 'invalid_link'
     const { isExpanded, approvals = 0, chats = 0, alerts = 0 } = this.state
     return (
       <div className={classNames([isExpanded ? 'user-detail-box-expanded' : 'user-detail-box-collapsed'])}>
@@ -165,7 +165,9 @@ class LeftMenu extends Component {
           <Link to={`/profile/${alias}`}>
             <div className='lm-user-info-main'>
               <img onError={this.addDefaultSrc} src={profileImage} className='profile-image img-fluid' alt='user-picture' />
-              <div className='lm-username'>@{alias}</div>
+              <div className='lm-username' title={`${alias}`}>
+                @{alias}
+              </div>
             </div>
           </Link>
         )}
@@ -275,7 +277,8 @@ class LeftMenu extends Component {
               //window.router.push('/logout');
               window.location.href = '/logout'
             }}
-            className={`logout-text${this.state.isExpanded ? ' margin-right' : ''}`}>
+            className={`logout-text${this.state.isExpanded ? ' margin-right' : ''}`}
+          >
             <img src={logoutButton.icon} className='img-fluid' />
             {this.state.isExpanded && <p>{logoutButton.header}</p>}
           </div>
@@ -308,7 +311,7 @@ class LeftMenu extends Component {
 
 function mapDispatchToProps(dispatch) {
   return {
-    logout: () => dispatch(logoutAction()),
+    logout: () => dispatch(logoutAction())
   }
 }
 

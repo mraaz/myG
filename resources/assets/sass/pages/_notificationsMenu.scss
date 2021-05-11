@@ -1114,6 +1114,13 @@ $transition-default: 0.25s ease-out 0.1s;
   }
 }
 .settings {
+  .languages {
+    justify-content: space-between;
+    .title {
+      margin: 0;
+      padding: 0;
+    }
+  }
   .button__switch {
     font-size: 2.2em;
     height: $height;

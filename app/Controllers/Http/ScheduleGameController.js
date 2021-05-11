@@ -1744,6 +1744,104 @@ class ScheduleGameController {
       .andWhere('schedule_games.end_date_time', '<', new Date())
       .select(['attendees.schedule_games_id', 'attendees.user_id'])
   }
+
+  async fetchGuestGame({ request }) {
+    const games = await Database.from('schedule_games')
+      .innerJoin('users', 'users.id', 'schedule_games.user_id')
+      .innerJoin('game_names', 'game_names.id', 'schedule_games.game_names_id')
+      .leftJoin('schedule_games_transactions', 'schedule_games_transactions.schedule_games_id', 'schedule_games.id')
+      .where('schedule_games.schedule_games_GUID', '=', request.params.gameId)
+      .select(
+        'schedule_games.*',
+        'game_names.*',
+        'schedule_games_transactions.*',
+        'users.profile_img',
+        'users.alias',
+        'users.id as user_id',
+        'schedule_games.id as id',
+        'schedule_games.created_at',
+        'schedule_games.updated_at'
+      );
+    if (!games.length) return {};
+    const gamesWithFields = await InGame_fieldsController.find_InGame_Fields_NOT_paginate(games)
+    const game = gamesWithFields[0];
+    game.tags = await Database.from('schedule_games_tags')
+      .innerJoin('game_tags', 'game_tags.id', 'schedule_games_tags.game_tag_id')
+      .where({ schedule_games_id: game.id })
+      .select('content')
+    const approved_gamers = await Database.from('attendees')
+      .innerJoin('users', 'users.id', 'attendees.user_id')
+      .where({ schedule_games_id: game.id, type: 1 })
+      .select('attendees.*', 'users.id as user_id', 'users.profile_img', 'users.alias')
+      .limit(4)
+    const additional_submit_info_fields = [];
+    const getGameFields = await Database.from('game_name_fields')
+      .where({ game_names_id: game.game_names_id })
+      .first()
+    if (getGameFields != undefined) {
+      let obj = '',
+        obj2 = '',
+        obj3 = '',
+        obj4 = ''
+
+      if (getGameFields.in_game_fields != undefined) {
+        obj = JSON.parse(getGameFields.in_game_fields)
+      }
+      if (getGameFields.in_game_field_placeholders != undefined) {
+        obj2 = JSON.parse(getGameFields.in_game_field_placeholders)
+      }
+      if (getGameFields.in_game_field_types != undefined) {
+        obj3 = JSON.parse(getGameFields.in_game_field_types)
+      }
+
+      if (getGameFields.in_game_field_labels != undefined) {
+        obj4 = JSON.parse(getGameFields.in_game_field_labels)
+      }
+
+      const getGameTransactions = await Database.from('schedule_games_transactions')
+        .where({ schedule_games_id: game.id })
+        .first()
+
+      if (getGameTransactions != undefined) {
+        let arr_game_fields = [],
+          arr_game_fields_data = []
+
+        for (let key in obj) {
+          arr_game_fields.push(obj[key])
+        }
+        let tmp_array = []
+        switch (arr_game_fields.length - 1) {
+          case 4:
+            tmp_array[arr_game_fields[4]] = getGameTransactions.value_five
+          case 3:
+            tmp_array[arr_game_fields[3]] = getGameTransactions.value_four
+          case 2:
+            tmp_array[arr_game_fields[2]] = getGameTransactions.value_three
+          case 1:
+            tmp_array[arr_game_fields[1]] = getGameTransactions.value_two
+          case 0:
+            tmp_array[arr_game_fields[0]] = getGameTransactions.value_one
+        }
+        for (let key in tmp_array) {
+          if (key == 'stats_link') {
+            continue
+          }
+          let tmp_tmp = { [key]: tmp_array[key], label: obj4[key], placeholder: obj2[key], type: obj3[key] }
+          additional_submit_info_fields.push([tmp_tmp, obj2[key], obj3[key]])
+        }
+      }
+    }
+    const getAllGamers = await Database.from('attendees')
+      .where({ schedule_games_id: game.id, type: 1 })
+      .count('* as no_of_gamers')
+    return {
+      latestScheduledGames: [game],
+      approved_gamers,
+      additional_submit_info: additional_submit_info_fields.length > 0,
+      additional_submit_info_fields,
+      getAllGamers,
+    }
+  }
 }
 
 module.exports = ScheduleGameController

@@ -40,7 +40,7 @@ export default class IndividualComment extends Component {
       file_keys: '',
       aws_key_id: [],
       hideReplies: false,
-      replyShowCount: 1,
+      replyShowCount: 1
     }
     this.textInput = null
     this.fileInputRef = React.createRef()
@@ -61,7 +61,7 @@ export default class IndividualComment extends Component {
     }
 
     this.setState({
-      content: this.props.comment.content,
+      content: this.props.comment.content
     })
 
     var comment_timestamp = moment(this.props.comment.updated_at, 'YYYY-MM-DD HH:mm:ssZ')
@@ -75,25 +75,25 @@ export default class IndividualComment extends Component {
         const myCommentReplies = await axios.get(`/api/replies/${comment.comment.id}`)
 
         self.setState({
-          myReplies: myCommentReplies.data.this_comments_replies,
+          myReplies: myCommentReplies.data.this_comments_replies
         })
 
         if (myCommentReplies.data.no_of_replies[0].no_of_replies != 0) {
           self.setState({
             show_reply: true,
-            reply_total: myCommentReplies.data.no_of_replies[0].no_of_replies,
+            reply_total: myCommentReplies.data.no_of_replies[0].no_of_replies
           })
         }
 
         if (myCommentReplies.data.do_I_like_this_comment[0].myOpinion != 0) {
           self.setState({
-            like: true,
+            like: true
           })
         }
         if (myCommentReplies.data.no_of_likes[0].no_of_likes != 0) {
           self.setState({
             show_like: true,
-            total: myCommentReplies.data.no_of_likes[0].no_of_likes,
+            total: myCommentReplies.data.no_of_likes[0].no_of_likes
           })
         }
       } catch (error) {
@@ -129,7 +129,7 @@ export default class IndividualComment extends Component {
       try {
         const myCommentReplies = await axios.get(`/api/replies/${comment_id}`)
         self.setState({
-          myReplies: myCommentReplies.data.this_comments_replies,
+          myReplies: myCommentReplies.data.this_comments_replies
         })
       } catch (error) {
         logToElasticsearch('error', 'IndividualComment', 'Failed getComments:' + ' ' + error)
@@ -140,12 +140,12 @@ export default class IndividualComment extends Component {
 
   click_like_btn = (comment_id) => {
     this.setState({
-      total: this.state.total + 1,
+      total: this.state.total + 1
     })
 
     try {
       axios.post('/api/likes', {
-        comment_id: comment_id,
+        comment_id: comment_id
       })
     } catch (error) {
       logToElasticsearch('error', 'IndividualComment', 'Failed click_like_btn:' + ' ' + error)
@@ -153,13 +153,13 @@ export default class IndividualComment extends Component {
 
     this.setState({
       show_like: true,
-      like: !this.state.like,
+      like: !this.state.like
     })
   }
 
   click_unlike_btn = (comment_id) => {
     this.setState({
-      total: this.state.total - 1,
+      total: this.state.total - 1
     })
 
     let { comment } = this.props
@@ -171,12 +171,12 @@ export default class IndividualComment extends Component {
 
     if (this.state.total == 1) {
       this.setState({
-        show_like: false,
+        show_like: false
       })
     }
 
     this.setState({
-      like: !this.state.like,
+      like: !this.state.like
     })
   }
 
@@ -190,7 +190,7 @@ export default class IndividualComment extends Component {
 
   toggleReply = () => {
     this.setState({
-      show_add_reply: !this.state.show_add_reply,
+      show_add_reply: !this.state.show_add_reply
     })
 
     if (!this.state.show_add_reply) {
@@ -224,7 +224,7 @@ export default class IndividualComment extends Component {
             schedule_game_id={this.props.comment.schedule_games_id}
             onDelete={(deleted) => {
               this.setState((previous) => ({
-                myReplies: previous.myReplies.filter((reply) => reply.id !== deleted),
+                myReplies: previous.myReplies.filter((reply) => reply.id !== deleted)
               }))
             }}
           />
@@ -246,7 +246,7 @@ export default class IndividualComment extends Component {
             schedule_game_id={this.props.comment.schedule_games_id}
             onDelete={(deleted) => {
               this.setState((previous) => ({
-                myReplies: previous.myReplies.filter((reply) => reply.id !== deleted),
+                myReplies: previous.myReplies.filter((reply) => reply.id !== deleted)
               }))
             }}
           />
@@ -289,7 +289,7 @@ export default class IndividualComment extends Component {
       this.setState({
         show_edit_comment: false,
         dropdown: false,
-        value2: '',
+        value2: ''
       })
     }
 
@@ -306,7 +306,7 @@ export default class IndividualComment extends Component {
     }
     if (this.state.value2.trim() == '') {
       this.setState({
-        value2: '',
+        value2: ''
       })
       return
     }
@@ -316,14 +316,14 @@ export default class IndividualComment extends Component {
     const saveComment = async function () {
       try {
         const mysaveComment = await axios.post(`/api/comments/update/${comment_id}`, {
-          content: self.state.value2,
+          content: self.state.value2
         })
 
         self.setState({
           show_edit_comment: false,
           dropdown: false,
           content: self.state.value2,
-          value2: '',
+          value2: ''
         })
       } catch (error) {
         logToElasticsearch('error', 'IndividualComment', 'Failed saveComment:' + ' ' + error)
@@ -348,11 +348,11 @@ export default class IndividualComment extends Component {
           content: self.state.value.trim(),
           comment_id: self.props.comment.id,
           media_url: self.state.preview_file.length > 0 ? JSON.stringify(self.state.preview_file) : '',
-          aws_key_id: aws_key_id.length > 0 ? aws_key_id : '',
+          aws_key_id: aws_key_id.length > 0 ? aws_key_id : ''
         })
 
         self.setState({
-          myReplies: [...myReplies, ...postReply.data],
+          myReplies: [...myReplies, ...postReply.data]
         })
 
         self.setState({
@@ -361,7 +361,7 @@ export default class IndividualComment extends Component {
           show_add_reply: false,
           reply_total: self.state.reply_total + 1,
           show_reply: true,
-          preview_file: [],
+          preview_file: []
         })
       } catch (error) {
         logToElasticsearch('error', 'IndividualComment', 'Failed saveReply:' + ' ' + error)
@@ -372,7 +372,7 @@ export default class IndividualComment extends Component {
 
   clickedDropdown = () => {
     this.setState({
-      dropdown: !this.state.dropdown,
+      dropdown: !this.state.dropdown
     })
   }
 
@@ -384,7 +384,7 @@ export default class IndividualComment extends Component {
       this.setState({
         show_edit_comment: true,
         dropdown: false,
-        value2: content,
+        value2: content
       })
       this.focusTextInput()
     } catch (error) {
@@ -398,7 +398,7 @@ export default class IndividualComment extends Component {
     try {
       const myComment_delete = axios.delete(`/api/comments/delete/${comment_id}`)
       this.setState({
-        comment_deleted: true,
+        comment_deleted: true
       })
       this.props.onDelete(comment_id)
     } catch (error) {
@@ -410,7 +410,7 @@ export default class IndividualComment extends Component {
     const getAlert = () => <ReportPost comment_id={id} hideModal={this.hideAlert} />
 
     this.setState({
-      alert: getAlert(),
+      alert: getAlert()
     })
   }
 
@@ -428,23 +428,24 @@ export default class IndividualComment extends Component {
         style={{
           display: 'flex',
           whiteSpace: 'pre',
-          width: '41%',
+          width: '41%'
         }}
         onConfirm={() => this.hideAlert('true')}
-        onCancel={() => this.hideAlert('false')}>
+        onCancel={() => this.hideAlert('false')}
+      >
         You will not be able to recover this entry!
       </SweetAlert>
     )
 
     this.setState({
-      alert: getAlert(),
+      alert: getAlert()
     })
   }
 
   hideAlert = (text) => {
     this.setState({
       alert: null,
-      dropdown: false,
+      dropdown: false
     })
     if (text == 'true') {
       this.delete_exp()
@@ -466,7 +467,7 @@ export default class IndividualComment extends Component {
 
   doUploadS3 = async (file, name) => {
     this.setState({
-      uploading: true,
+      uploading: true
     })
 
     try {
@@ -475,13 +476,13 @@ export default class IndividualComment extends Component {
       this.setState({
         preview_file: [post.data.Location],
         file_keys: post.data.Key,
-        aws_key_id: [post.data.aws_key_id],
+        aws_key_id: [post.data.aws_key_id]
       })
     } catch (error) {
       toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file.'} />)
     }
     this.setState({
-      uploading: false,
+      uploading: false
     })
   }
 
@@ -494,7 +495,7 @@ export default class IndividualComment extends Component {
     this.setState({
       preview_file: [],
       file_keys: '',
-      aws_key_id: [],
+      aws_key_id: []
     })
   }
 
@@ -519,7 +520,7 @@ export default class IndividualComment extends Component {
               {'  '}
               {!this.state.show_edit_comment && (
                 <div className='comment-content'>
-                  <p>{this.state.content}</p>
+                  <p style={{ whiteSpace: 'pre-line' }}>{this.state.content}</p>
                   {media_urls.length > 0 && (
                     <div className='show__comment__image'>
                       {media_urls.map((img) => {
@@ -577,8 +578,9 @@ export default class IndividualComment extends Component {
                 className='profile__image'
                 style={{
                   backgroundImage: `url('${profile_img}'), url('https://myG.gg/default_user/new-user-profile-picture.png')`,
-                  backgroundSize: 'cover',
-                }}>
+                  backgroundSize: 'cover'
+                }}
+              >
                 <div className='online__status'></div>
               </div>
             </Link>

@@ -497,6 +497,9 @@
     z-index: 2;
     font-family: 'Montserrat', sans-serif;
     position: relative;
+    &.mobileView {
+      height: 504px;
+    }
     .profile-banner-shadow {
       position: absolute;
       bottom: 0;
@@ -1278,7 +1281,7 @@
     padding: 0;
     margin: 0;
     background-color: rgba(0, 0, 0, 0.6);
-    z-index: 900;
+    z-index: 1010;
     font-family: 'Montserrat', sans-serif;
 
     .container {
@@ -1381,7 +1384,6 @@
     -ms-overflow-style: none; /* IE and Edge */
     max-height: calc(100vh - 200px);
     min-height: 480px;
-    overflow: visible;
 
     .image-uploader {
       background-color: #1d2326;
@@ -1595,7 +1597,7 @@
     #profile-game-experiences .headers {
       margin: 0;
       padding: 12px 0;
-      font-size: 14px;
+      font-size: 13px;
     }
     #profile-game-experiences .scroll {
       margin: 8px 4px;
@@ -1690,5 +1692,73 @@
 @media screen and (max-width: 575px) {
   .game-title-select {
     width: 100% !important;
+  }
+}
+.profile__mobile-header {
+  margin-left: 36px;
+  margin-right: 28px;
+  background: #1d2326;
+  z-index: 99;
+  .info {
+    display: flex;
+    font-size: 1.1em;
+    font-weight: 700;
+    color: #fff;
+    padding: 10px 10px 20px;
+    position: relative;
+    background: #1d2326;
+    padding-left: 75px;
+    flex-direction: column;
+    border-bottom: 1px solid #273136;
+    .icon {
+      position: absolute;
+      background: #eeee;
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      left: -25px;
+      top: -40px;
+    }
+    .uploader {
+      .icon {
+        left: -110px;
+        top: -50px;
+      }
+    }
+    .level-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #fff;
+      padding-right: 50px;
+      font-weight: 300;
+      margin-top: 10px;
+      .ratings {
+        margin-left: 20px;
+        font-size: 0.5em;
+        .social-box-text {
+          font-size: 1em;
+          font-family: Montserrat, sans-serif;
+          letter-spacing: 0;
+          color: #fff;
+          position: relative;
+          margin-bottom: 5px !important;
+        }
+      }
+      .level-container-img div[data-test-id='CircularProgressbarWithChildren'] {
+        width: 79px;
+        div {
+          font-size: 10px !important;
+        }
+      }
+    }
+  }
+  #profile-info {
+    .col-sm-6 {
+      width: 50%;
+    }
+    .pod {
+      width: 100%;
+    }
   }
 }

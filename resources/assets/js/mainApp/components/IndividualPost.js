@@ -5,6 +5,7 @@
  */
 import React, { Component, Fragment } from 'react'
 import ReactPlayer from 'react-player'
+import { FormattedMessage } from 'react-intl'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 import moment from 'moment'
@@ -729,7 +730,7 @@ export default class IndividualPost extends Component {
                     : `${this.state.admirer_first_name} liked this update`}
                 </div>
               )}
-              {!this.state.show_like && <div className='other-users'>Be the first to like this!</div>}
+              {!this.state.show_like && <div className='other-users'><FormattedMessage id="individual-post.show-like" defaultMessage="Be the first to like this!" /></div>}
             </div>
             {show_more_comments && myComments.length > 0 && (
               <div className='show__comments_count' onClick={this.show_more_comments}>{` View all (${myComments.length}) comments`}</div>

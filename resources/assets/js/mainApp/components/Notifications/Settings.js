@@ -6,6 +6,7 @@
 import React, { Component } from 'react'
 import { toast } from 'react-toastify'
 import { connect } from 'react-redux'
+import { FormattedMessage, injectIntl } from 'react-intl';
 import axios from 'axios'
 import { Toast_style } from '../Utility_Function'
 import SweetAlert from '../common/MyGSweetAlert'
@@ -16,9 +17,11 @@ import {
   toggleNotificationSoundsAction,
   togglePushNotificationsAction,
 } from '../../../redux/actions/userAction'
-import { FeatureEnabled, CHANNEL } from '../../../common/flags'
 
 import MangeSponsors from './MangeSponsors'
+import { MyGSelect } from '../common';
+import { selectLanguage } from '../../../common/user';
+import { languages } from '../Languages/LanguageProvider';
 
 class Settings extends Component {
   constructor() {
@@ -150,6 +153,7 @@ class Settings extends Component {
     const { active } = this.props
 
     const isActive = active == true ? { display: 'block' } : { display: 'none' }
+    const selectedLanguage = this.props.language && languages.find(({ value }) => this.props.language === value);
 
     return (
       <div className='settings__container'>
@@ -212,6 +216,15 @@ class Settings extends Component {
                   onChange={() => this.props.toggleMainChannel(this.props.userId)}
                 />
               </div>
+            </div>
+            <div className='option languages'>
+              <div className='title'><FormattedMessage id="settings.languages" defaultMessage="Languages" /></div>
+              <MyGSelect
+                options={languages.map(language => ({ value: language.value, label: this.props.intl.formatMessage(language.label) }))}
+                onChange={({ value }) => selectLanguage(value)}
+                value={selectedLanguage ? { value: this.props.language, label: this.props.intl.formatMessage(selectedLanguage.label) } : ''}
+                placeholder={this.props.intl.formatMessage({ id: "settings.languages.select", defaultMessage: "Select a Language" })}
+              />
             </div>
             <div className='option'>
               <div className='title'>Browser notifications</div>
@@ -323,6 +336,7 @@ class Settings extends Component {
 function mapStateToProps(state) {
   return {
     userId: state.user.userId,
+    language: state.user.language,
     mainChannelEnabled: state.user.mainChannelEnabled,
     notificationSoundsDisabled: state.user.notificationSoundsDisabled,
     pushNotificationsEnabled: state.user.pushNotificationsEnabled,
@@ -338,4 +352,4 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Settings)
+export default connect(mapStateToProps, mapDispatchToProps)(injectIntl(Settings))

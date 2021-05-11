@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
+import { FormattedMessage } from 'react-intl';
 import General from './Context/General'
 import Games from './Context/Games'
 import SearchResults from './Context/SearchResults'
@@ -86,25 +87,22 @@ class Messenger extends React.Component {
             <div className='locked-image'>
               <img src='https://myG.gg/platform_images/Dashboard/Lock_Icon_Mobile.svg' className='img-locked' />
             </div>
-            <span>Your Chat is locked</span>
+            <span><FormattedMessage id="messenger.locked-chat" defaultMessage="Your Chat is locked" /></span>
             <span>
-              Reach{' '}
-              <span style={{ color: '#E6C846' }}>
-                {' '}
-                <strong>level 2</strong>
-              </span>{' '}
-              to unlock it.
+              <FormattedMessage
+                id="level.reach-to-unlock"
+                defaultMessage="Reach <highlight>level {level}</highlight> to unlock it."
+                values={{ level: 2, highlight: text => <span style={{ color: '#E6C846' }}><strong>{text}</strong></span> }}
+              />
             </span>
             <div className='rectangle'>
               <img src='https://myG.gg/platform_images/Dashboard/btn_Network.svg' className='img-network' />
               <div className='body-of-text'>
-                <p>
-                  Go to{' '}
-                  <Link to={'/achievements/badges'}>
-                    &nbsp;<strong> Achievements</strong>{' '}
-                  </Link>
-                </p>
-                <p>to learn how to progress</p>
+                <FormattedMessage
+                  id="achievements.call-to-action"
+                  defaultMessage="Go to <link>Achievements</link> to learn how to progress."
+                  values={{ link: text => <Link to={'/achievements/badges'}>&nbsp;{text}<strong></strong>{' '}</Link> }}
+                />
               </div>
             </div>
           </div>
@@ -131,6 +129,7 @@ class Messenger extends React.Component {
     return (
       <Footer
         mobile={this.props.mobile}
+        mobileMenuActive={this.props.mobileMenuActive}
         search={this.state.searchInput}
         updateStatus={this.props.updateStatus}
         profileImage={this.props.profileImage}
@@ -275,10 +274,11 @@ class Messenger extends React.Component {
   render() {
     logger.log('RENDER', 'Messenger')
     if (parseInt(this.props.level) < 2) return this.renderLockedChat()
+    const topBarSpacer = this.props.mobileMenuActive ? { height: '90vh', marginTop: '80px' } : {};
     return (
       <React.Fragment>
         <section className={`messenger${this.props.mobile ? ' mobile-messenger' : ''}`}>
-          <div className='messenger-content' style={this.props.mobile && { width: '100vw', height: '90vh', marginTop: '80px' }}>
+          <div className='messenger-content' style={this.props.mobile && { width: '100vw', ...topBarSpacer }}>
             {this.renderBody()}
             {this.renderSettings()}
             {this.renderFooter()}
@@ -326,6 +326,7 @@ function mapStateToProps(state) {
     searchResults: state.pagination.search,
     searching: state.pagination.searchLoading,
     contactCount: state.user.contactCount,
+    mobileMenuActive: state.mobileMenu.mobileMenuIsActive,
   }
 }
 

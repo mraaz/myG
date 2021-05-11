@@ -9,23 +9,24 @@ class AwsKeyController {
     if (auth.user) {
       try {
         const aws_entry_for_this_user = await Database.from('aws_keys').where({ user_id: auth.user.id, type: request.params.type })
+        //Since we ONLY ever want one bg image or profile image, this is a safeguard to delete any duplicates.
+        const remove_file = new ApiController()
 
         for (var i = 0; i < aws_entry_for_this_user.length; i++) {
           request.params.key = aws_entry_for_this_user[i].aws_key
-          let remove_file = new ApiController()
           remove_file.deleteFile_server({ auth, request, response })
         }
-        var delete_aws_entry_for_this_user = await Database.table('aws_keys')
+        await Database.table('aws_keys')
           .where({
             user_id: auth.user.id,
-            type: request.params.type,
+            type: request.params.type
           })
           .delete()
 
         const addAwsKey = await AwsKey.create({
           aws_key: request.input('aws_key'),
           user_id: auth.user.id,
-          type: request.params.type,
+          type: request.params.type
         })
         return addAwsKey
       } catch (error) {
@@ -34,7 +35,7 @@ class AwsKeyController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -86,12 +87,13 @@ class AwsKeyController {
     if (auth.user) {
       try {
         const aws_entry_for_this_post = await Database.from('aws_keys').where({
-          post_id: request.params.id,
+          post_id: request.params.id
         })
+
+        const remove_file = new ApiController()
 
         for (var i = 0; i < aws_entry_for_this_post.length; i++) {
           request.params.key = aws_entry_for_this_post[i].aws_key
-          let remove_file = new ApiController()
           remove_file.deleteFile_server({ auth, request, response })
         }
       } catch (error) {
@@ -100,7 +102,7 @@ class AwsKeyController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -219,7 +221,7 @@ class AwsKeyController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
       return Promise.resolve(error)
     }
@@ -238,7 +240,7 @@ class AwsKeyController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
       return Promise.resolve(error)
     }
@@ -256,7 +258,7 @@ class AwsKeyController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
       return Promise.resolve(error)
     }
@@ -274,7 +276,7 @@ class AwsKeyController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
       return Promise.resolve()
     }
@@ -298,7 +300,7 @@ class AwsKeyController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
       return Promise.resolve()
     }
@@ -315,7 +317,7 @@ class AwsKeyController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
       return Promise.resolve()
     }
@@ -337,14 +339,14 @@ class AwsKeyController {
     const report = filesToDelete.map((fileToDelete) => ({
       id: fileToDelete.id,
       userId: fileToDelete.user_id,
-      key: fileToDelete.aws_key,
+      key: fileToDelete.aws_key
     }))
     LoggingRepository.log({
       environment: process.env.NODE_ENV,
       type: 'task',
       source: 'backend',
       context: 'delete files from s3',
-      message: JSON.stringify(report),
+      message: JSON.stringify(report)
     })
   }
 }

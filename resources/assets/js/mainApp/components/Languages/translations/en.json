@@ -1,0 +1,10 @@
+{
+  "messenger.locked-chat": "Your Chat is locked",
+  "achievements.call-to-action": "Go to <link>Achievements</link> to learn how to progress",
+  "level.reach-to-unlock": "Reach <highlight>level {level}</highlight> to unlock it",
+  "settings.languages": "Languages",
+  "settings.languages.select": "Select a Language",
+  "settings.languages.english": "English",
+  "settings.languages.spanish": "Spanish",
+  "individual-post.show-like": "Be the first to like this!"
+}

@@ -21,7 +21,8 @@ class ConnectionRepository {
     const lastHour = new Date();
     lastHour.setHours(lastHour.getHours() - 1);
     const lastOnlineAnHourAgo = User.query().where('status', '!=', 'offline').andWhere('last_seen', '<', lastHour);
-    return lastOnlineAnHourAgo.update({ status: 'offline' });
+    const lastSeenIsNull = User.query().whereNull('last_seen', '=', null).andWhere('status', '!=', 'offline');
+    return Promise.all([lastOnlineAnHourAgo.update({ status: 'offline' }), lastSeenIsNull.update({ status: 'offline' })]);
   }
 
 }

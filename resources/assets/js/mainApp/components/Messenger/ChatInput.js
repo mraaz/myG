@@ -42,11 +42,19 @@ export default class ChatInput extends React.Component {
     }
   }
 
+  refreshInput = () => {
+    this.input.current.blur()
+    this.input.current.focus()
+  }
+
   onKeyPressed = (event) => {
     const code = event.keyCode || event.which
     const enterKeyCode = 13
     if (code === enterKeyCode) {
       event.preventDefault()
+      if (event.shiftKey) {
+        return this.setState(previous => ({ input: previous.input + "\n" }), this.refreshInput)
+      }
       this.sendMessage()
     }
   }
@@ -55,8 +63,7 @@ export default class ChatInput extends React.Component {
     const code = event.keyCode || event.which
     const arrowUpKeyCode = 38
     const selftDestructKeyCode = 83
-    if (code === arrowUpKeyCode) {
-      this.setState({ input: '' })
+    if (code === arrowUpKeyCode && !this.state.input) {
       this.props.editLastMessage()
     }
     if (code === selftDestructKeyCode && event.altKey) {
