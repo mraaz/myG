@@ -926,6 +926,9 @@ section#content-container {
       margin: 40px 25px;
       font-family: 'Montserrat' !important;
       position: relative;
+      @media screen and (max-width: $mobile) {
+        margin: 40px 20px;
+      }
       .threedots__backdrop {
         position: fixed;
         top: 0;
@@ -1049,6 +1052,9 @@ section#content-container {
         @media (min-width: 575px) {
           padding: 12px;
         }
+        @media (max-width: $mobile) {
+          padding: 12px 30px 12px 20px;
+        }
         .clearfix:after {
           visibility: hidden;
           display: block;
@@ -1071,6 +1077,10 @@ section#content-container {
           background-repeat: no-repeat;
           background-position: center;
           background-size: cover;
+          @media (max-width: $mobile) {
+            width: 35px;
+            height: 35px;
+          }
           .online__status {
             border: 7px solid #68bd45;
             border-radius: 50%;
@@ -1098,8 +1108,8 @@ section#content-container {
           margin-left: 20px;
 
           @media only screen and (max-width: $mobile) {
-            display: grid;
-            margin-left: -40px;
+            margin-left: 0px;
+            margin-top: -7px;
           }
 
           .author__username {
@@ -1207,6 +1217,9 @@ section#content-container {
         @media (min-width: 575px) {
           margin: 0;
           padding: 0;
+        }
+        @media (max-width: $mobile) {
+          margin-left: 20px;
         }
         .clearfix:after {
           visibility: hidden;
@@ -1335,7 +1348,6 @@ section#content-container {
         margin-left: 20px;
         margin-bottom: 12px;
         @media screen and (max-width: $mobile) {
-          width: 100%;
           margin-left: 0px;
         }
       }
@@ -1568,6 +1580,9 @@ section#content-container {
                   display: inline-block;
                   text-overflow: ellipsis;
                   overflow: hidden;
+                  @media screen and (max-width: $mobile) {
+                    font-size: 12px;
+                  }
                 }
                 a:hover {
                   color: #e5c746;
@@ -2743,17 +2758,17 @@ section#content-container {
     width: 100%;
   }
 
-  .mobile-chat-link {
+  .mobile_chat_icon {
     position: absolute;
-    top: 64px;
-    left: 4px;
-    display: flex;
-    flex-direction: column;
-    img {
-      border-radius: 1000px;
-      background: #1d2326;
-      padding: 5px;
-      border: 1px solid #384952;
+    right: -43px;
+    top: 0px;
+    border: 1px solid #384952;
+    width: 56px;
+    height: 56px;
+    border-radius: 100%;
+    background: #1d2426;
+    .mobile-chat-link {
+      padding: 16px;
     }
   }
 
@@ -2778,10 +2793,13 @@ section#content-container {
   .mobile-top-menu-dropdown,
   .menu-tab {
     top: 0vh;
+    .logo-img {
+      margin-right: 0px;
+    }
   }
 
   .top-menu > .logo-img {
-    padding-right: 20px;
+    padding-right: 10px;
   }
 
   .toggle-menu-btn {

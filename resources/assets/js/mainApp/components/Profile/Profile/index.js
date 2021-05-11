@@ -13,6 +13,7 @@ import GamerSuggestions from '../GamerSuggestions';
 import MyPosts from '../../MyPosts'
 import PostsFromUser from '../../PostsFromUser'
 import EditGameExperience from '../GameExperiences/edit';
+import { detectMob } from '../../../utils/utils'
 
 export class Profile extends React.Component {
   constructor(){
@@ -93,10 +94,11 @@ export class Profile extends React.Component {
     sponsorsPositions.push({ id: this.props.level >= 5 ? 'empty-2' : 'empty-locked-2' });
     const sponsorsIndexes = this.props.profile.isSelf ? sponsorsPositions : null;
     const sponsors = sponsorsIndexes ? sponsorsIndexes.map((sponsor, index) => profileSponsors[index] || sponsor) : profileSponsors;
+    const isMobile = detectMob()
     return(
       <div id="profile" ref={this.contentAreaRef}>
         <Banner profile={this.props.profile} updateProfile={this.props.updateProfile} />
-        <ProfileInfo alias={this.props.alias} profile={this.props.profile} updateProfile={this.props.updateProfile} />
+        {!isMobile && <ProfileInfo alias={this.props.alias} profile={this.props.profile} updateProfile={this.props.updateProfile} />}
          {!!sponsors.length && <Sponsors isSelf={this.props.profile.isSelf} alias={this.props.alias} profile={this.props.profile} sponsors={sponsors} refetchSponsors={() => this.props.fetchProfile(this.props.alias)} />}
         <GameExperiences userId={this.props.userId} selectedGame={this.props.gameId} commendUser={this.commendUser} deleteExperience={this.deleteExperience} alias={this.props.alias} profile={this.props.profile} updateGame={this.props.updateGame} />
         {!!this.props.profile.isSelf && <GamerSuggestions profile={this.props.profile} sendFriendRequest={this.props.sendFriendRequest} cancelFriendRequest={this.props.cancelFriendRequest} follow={this.props.follow} unfollow={this.props.unfollow}  /> }
