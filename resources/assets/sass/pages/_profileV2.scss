@@ -499,6 +499,7 @@
     position: relative;
     &.mobileView {
       height: 504px;
+      margin-bottom: 20px;
     }
     .profile-banner-shadow {
       position: absolute;
@@ -1033,13 +1034,13 @@
       justify-content: space-around;
 
       .header {
-        border-bottom: 2px solid #1e2326;
+        // border-bottom: 2px solid #1e2326;
         display: flex;
         align-items: center;
         justify-content: center;
         padding-bottom: 8px;
         font-family: 'Montserrat' !important;
-        flex: 1;
+        // flex: 1;
       }
 
       .selected {
@@ -1243,6 +1244,22 @@
       border: 1px solid #2d363a;
       border-radius: 8px;
       background-color: #1e2326;
+      &.mobile {
+        flex-direction: row;
+        align-content: center;
+        justify-content: center;
+        padding: 8px 4px;
+        .mobile_col {
+          margin-right: 20px;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          .title,
+          .subtitle {
+            text-align: left;
+          }
+        }
+      }
 
       .icon {
         @extend .button-icon;
@@ -1474,6 +1491,53 @@
         padding: inherit;
       }
     }
+    &.mobile {
+      align-items: center;
+      margin-left: 48px;
+      margin-right: 39px;
+      width: auto;
+      .sponsors__btn {
+        font-family: Montserrat !important;
+        font-size: 1.5em;
+        font-weight: 700;
+        color: #000;
+        background: #e5c746;
+        border: 0;
+        cursor: pointer;
+        height: 60px;
+        margin-bottom: 10px;
+        border-radius: 4px;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        &:focus {
+          margin: 0;
+          border: 0;
+        }
+        @media screen and (max-width: $tablet) {
+          padding: inherit;
+        }
+      }
+    }
+    .sponsors__btn {
+      font-family: 'Montserrat' !important;
+      font-size: 12px;
+      font-weight: 700;
+      color: #000;
+      background: #e5c746;
+      padding: 4px 8px;
+      border: 0;
+      cursor: pointer;
+      &:focus {
+        margin: 0;
+        border: 0;
+      }
+      @media screen and (max-width: $tablet) {
+        padding: inherit;
+      }
+    }
   }
   .profile__sponsors-container {
     display: flex;
@@ -1599,6 +1663,8 @@
       margin: 0;
       padding: 12px 0;
       font-size: 13px;
+      border-bottom: 2px solid #1e2326;
+      padding-bottom: 0;
     }
     #profile-game-experiences .scroll {
       margin: 8px 4px;
@@ -1761,5 +1827,26 @@
     .pod {
       width: 100%;
     }
+  }
+}
+.mobile__buttons-group {
+  margin-left: 48px;
+  margin-right: 39px;
+  z-index: 99;
+  .button {
+    font-family: Montserrat !important;
+    font-size: 1.5em;
+    font-weight: 700;
+    color: #000;
+    background: #e5c746;
+    border: 0;
+    cursor: pointer;
+    height: 60px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }
