@@ -170,7 +170,7 @@ export default class GameExperiences extends React.Component {
         <span className="title">Add New</span>
         <span className="subtitle">Game Experience</span>
       </div>
-    );
+    ); 
   }
   renderAddGameExperience_mobile = () => {
     if (!this.state.isSelf) return null;

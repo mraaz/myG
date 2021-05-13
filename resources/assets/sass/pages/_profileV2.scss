@@ -1034,13 +1034,13 @@
       justify-content: space-around;
 
       .header {
-        border-bottom: 2px solid #1e2326;
+        // border-bottom: 2px solid #1e2326;
         display: flex;
         align-items: center;
         justify-content: center;
         padding-bottom: 8px;
         font-family: 'Montserrat' !important;
-        flex: 1;
+        // flex: 1;
       }
 
       .selected {
@@ -1663,6 +1663,8 @@
       margin: 0;
       padding: 12px 0;
       font-size: 13px;
+      border-bottom: 2px solid #1e2326;
+      padding-bottom: 0;
     }
     #profile-game-experiences .scroll {
       margin: 8px 4px;
