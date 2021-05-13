@@ -54,8 +54,8 @@ export default class GameExperiences extends React.Component {
   }
 
   getGamesPerPage = () => {
-    const selfSize = 3;
-    const othersSize = 1;
+    const selfSize = 1;
+    const othersSize = 3;
     return this.state.isSelf ? selfSize : othersSize;
   }
 

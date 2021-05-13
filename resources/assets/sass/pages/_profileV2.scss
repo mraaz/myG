@@ -499,6 +499,7 @@
     position: relative;
     &.mobileView {
       height: 504px;
+      margin-bottom: 20px;
     }
     .profile-banner-shadow {
       position: absolute;
@@ -1474,6 +1475,53 @@
         padding: inherit;
       }
     }
+    &.mobile {
+      align-items: center;
+      margin-left: 48px;
+      margin-right: 39px;
+      width: auto;
+      .sponsors__btn {
+        font-family: Montserrat !important;
+        font-size: 1.5em;
+        font-weight: 700;
+        color: #000;
+        background: #e5c746;
+        border: 0;
+        cursor: pointer;
+        height: 60px;
+        margin-bottom: 10px;
+        border-radius: 4px;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        &:focus {
+          margin: 0;
+          border: 0;
+        }
+        @media screen and (max-width: $tablet) {
+          padding: inherit;
+        }
+      }
+    }
+    .sponsors__btn {
+      font-family: 'Montserrat' !important;
+      font-size: 12px;
+      font-weight: 700;
+      color: #000;
+      background: #e5c746;
+      padding: 4px 8px;
+      border: 0;
+      cursor: pointer;
+      &:focus {
+        margin: 0;
+        border: 0;
+      }
+      @media screen and (max-width: $tablet) {
+        padding: inherit;
+      }
+    }
   }
   .profile__sponsors-container {
     display: flex;
@@ -1761,5 +1809,26 @@
     .pod {
       width: 100%;
     }
+  }
+}
+.mobile__buttons-group {
+  margin-left: 48px;
+  margin-right: 39px;
+  z-index: 99;
+  .button {
+    font-family: Montserrat !important;
+    font-size: 1.5em;
+    font-weight: 700;
+    color: #000;
+    background: #e5c746;
+    border: 0;
+    cursor: pointer;
+    height: 60px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }
