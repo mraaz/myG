@@ -217,10 +217,10 @@ export default class GameExperiences extends React.Component {
     return(
       <div id="profile-game-experiences">
         {this.renderHeaders()}
+        {isMobile && this.renderAddGameExperience_mobile()}
         <div className="scroll">
           {this.renderPageButtons()}
           {!isMobile && this.renderAddGameExperience()}
-          {isMobile && this.renderAddGameExperience_mobile()}
           {gameExperiences.slice(this.state.page, this.state.page + this.getGamesPerPage()).map(this.renderGameExperience)}
           {!gameExperiences.length && !this.state.isSelf && this.renderEmptyState()}
           {this.renderEditGameExperienceModal()}
