@@ -7,6 +7,7 @@ import { ignoreFunctions } from '../../../../common/render'
 import EditGameExperience from './edit';
 import { showMessengerAlert } from '../../../../common/alert';
 import { WithTooltip } from '../../Tooltip';
+import { detectMob } from '../../../utils/utils'
 
 export default class GameExperiences extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
@@ -171,6 +172,23 @@ export default class GameExperiences extends React.Component {
       </div>
     );
   }
+  renderAddGameExperience_mobile = () => {
+    if (!this.state.isSelf) return null;
+    return(
+      <div className="add-game-experience mobile clickable" onClick={() => this.setState({ selected: 'edit' })}>
+        <div className="mobile_col">
+        <div
+          className="icon"
+          style={{ backgroundImage: `url(${getAssetUrl('ic_profile_add')})` }}
+        />
+        </div> 
+        <div className="mobile_col"> 
+        <div className="title">Add New</div>
+        <div className="subtitle">Game Experience</div>
+        </div>
+      </div>
+    );
+  } 
 
   renderEditGameExperienceModal = () => {
     if (!this.state.selected) return null;
@@ -195,12 +213,14 @@ export default class GameExperiences extends React.Component {
 
   render() {
     const gameExperiences = this.filterGameExperiences();
+    const isMobile = detectMob()
     return(
       <div id="profile-game-experiences">
         {this.renderHeaders()}
         <div className="scroll">
           {this.renderPageButtons()}
-          {this.renderAddGameExperience()}
+          {!isMobile && this.renderAddGameExperience()}
+          {isMobile && this.renderAddGameExperience_mobile()}
           {gameExperiences.slice(this.state.page, this.state.page + this.getGamesPerPage()).map(this.renderGameExperience)}
           {!gameExperiences.length && !this.state.isSelf && this.renderEmptyState()}
           {this.renderEditGameExperienceModal()}
