@@ -10,6 +10,7 @@ import ProfileInfo from '../Info';
 import Sponsors from '../Sponsors';
 import GameExperiences from '../GameExperiences';
 import GamerSuggestions from '../GamerSuggestions';
+import MobileGamerSuggestions from '../GamerSuggestions/Mobile';
 import MyPosts from '../../MyPosts'
 import PostsFromUser from '../../PostsFromUser'
 import EditGameExperience from '../GameExperiences/edit';
@@ -101,7 +102,8 @@ export class Profile extends React.Component {
         {!isMobile && <ProfileInfo alias={this.props.alias} profile={this.props.profile} updateProfile={this.props.updateProfile} />}
          {!!sponsors.length && <Sponsors isSelf={this.props.profile.isSelf} alias={this.props.alias} profile={this.props.profile} sponsors={sponsors} refetchSponsors={() => this.props.fetchProfile(this.props.alias)} />}
         <GameExperiences userId={this.props.userId} selectedGame={this.props.gameId} commendUser={this.commendUser} deleteExperience={this.deleteExperience} alias={this.props.alias} profile={this.props.profile} updateGame={this.props.updateGame} />
-        {!!this.props.profile.isSelf && <GamerSuggestions profile={this.props.profile} sendFriendRequest={this.props.sendFriendRequest} cancelFriendRequest={this.props.cancelFriendRequest} follow={this.props.follow} unfollow={this.props.unfollow}  /> }
+        {!!this.props.profile.isSelf && !isMobile && <GamerSuggestions profile={this.props.profile} sendFriendRequest={this.props.sendFriendRequest} cancelFriendRequest={this.props.cancelFriendRequest} follow={this.props.follow} unfollow={this.props.unfollow}  /> }
+        {!!this.props.profile.isSelf && isMobile && <MobileGamerSuggestions profile={this.props.profile} sendFriendRequest={this.props.sendFriendRequest} cancelFriendRequest={this.props.cancelFriendRequest} follow={this.props.follow} unfollow={this.props.unfollow}  /> }
         {!!this.props.profile.isSelf && <MyPosts initialData={this.props.initialData} /> }
         {!this.props.profile.isSelf && <PostsFromUser initialData={this.props.initialData} profile={this.props.profile} /> }
       </div>
