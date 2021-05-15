@@ -17,9 +17,9 @@ def valid_code(current_codes):
   return valid_code(current_codes)
 
 mydb = mysql.connector.connect(
-    host="192.168.64.10",
+    host="localhost",
     user="root",
-    passwd="root",
+    passwd="jordan",
     database="mygame"
 )
 
