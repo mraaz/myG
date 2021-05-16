@@ -1833,7 +1833,9 @@
   margin-left: 48px;
   margin-right: 39px;
   z-index: 99;
-  .button {
+  position: relative;
+  .button,
+  .send-message-button {
     font-family: Montserrat !important;
     font-size: 1.5em;
     font-weight: 700;
@@ -1848,5 +1850,186 @@
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+  .send-message-button {
+    color: #e5c746;
+    background: #000000;
+    border: 1px solid #273136;
+  }
+  #view-friends-modal {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    @media screen and (max-width: $tablet) {
+      padding: 15px;
+    }
+
+    .container {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      width: 920px;
+      padding: 0;
+      margin: 0;
+      background-color: #1d2326;
+      border-radius: 12px;
+
+      .filter {
+        display: flex;
+        align-items: center;
+        padding: 0 1em;
+        width: 100%;
+        .input-container-row {
+          display: flex;
+          align-items: center;
+          width: 50%;
+          font-size: 16px;
+          height: 36px;
+          margin: 16px auto 4px auto;
+          .input {
+            width: 100%;
+            background: #171a1c 0% 0% no-repeat padding-box;
+            border: none;
+            padding: 12px 12px;
+            border-radius: 25px;
+            outline: none;
+            margin: 0;
+            font: italic normal normal 12px/14px Montserrat;
+            letter-spacing: -0.65px;
+            color: #93a4a5;
+          }
+          .input::placeholder {
+            color: #1d2326;
+          }
+        }
+      }
+
+      .no-friends {
+        display: flex;
+        flex-direction: column;
+        padding: 8px;
+        margin: 8px;
+        align-items: center;
+        justify-content: center;
+
+        .title {
+          font-size: 18px;
+          font-weight: 500;
+          color: #909090;
+          margin: 0;
+          padding: 0;
+        }
+
+        .subtitle {
+          font-size: 16px;
+          color: #606060;
+          padding: 0;
+          margin: 0;
+        }
+      }
+
+      .friend-list {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        overflow-y: scroll;
+        height: 400px;
+        background-color: #181a1c;
+        margin: 10px;
+        padding: 10px;
+        border-radius: 10px;
+
+        .friend {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          width: 200px;
+          height: 200px;
+          margin: 10px;
+          padding: 0;
+          @media screen and (max-width: $tablet) {
+            width: 150px;
+          }
+
+          .picture-container {
+            position: relative;
+            width: 100%;
+            height: 0;
+          }
+
+          .picture {
+            position: absolute;
+            top: -40px;
+            left: 33%;
+            width: 60px;
+            height: 60px;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: contain;
+            border-radius: 1000px;
+            z-index: 1;
+          }
+
+          .background {
+            width: 100%;
+            height: 50%;
+            background-color: #070808;
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+          }
+
+          .info {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 50%;
+            padding-top: 25px;
+            background-color: #1d2326;
+          }
+
+          .alias {
+            font-size: 16px;
+            font-weight: bold;
+            font-family: 'Montserrat' !important;
+            color: white;
+            margin: 0 0 4px 0;
+            padding: 0;
+          }
+
+          .level {
+            font-size: 14px;
+            font-family: 'Montserrat' !important;
+            color: white;
+            margin: 0;
+            padding: 0;
+          }
+
+          .add-friend {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background-color: #e5c746;
+            color: #000000;
+            margin: 8px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            position: absolute;
+            bottom: -22px;
+          }
+        }
+      }
+    }
   }
 }

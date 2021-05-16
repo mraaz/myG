@@ -105,6 +105,8 @@ export default class GameExperiences extends React.Component {
   }
 
   renderGameExperience = (game) => {
+
+    console.log('this.props.game   ', game)
     const { id, gameName, gameImage, mainFields } = game;
     const fields = mainFields
     const commended = this.props.profile && this.props.profile.commended || [];

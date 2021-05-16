@@ -15,7 +15,7 @@ export default class Header extends React.Component {
   state = {
     editing: false,
     viewingFriends: false,
-    hoveringIcon: false,
+    hoveringIcon: false
   }
 
   onUpload = (source, key) => this.props.uploadProfileImage(this.props.alias, source, key)
@@ -24,12 +24,13 @@ export default class Header extends React.Component {
     if (this.props.profile.isSelf) {
       return (
         <Uploader onUpload={this.onUpload}>
-          <div className='icon clickable' 
-            style={{ backgroundImage: `url('${this.props.profile.image}')` }} 
+          <div
+            className='icon clickable'
+            style={{ backgroundImage: `url('${this.props.profile.image}')` }}
             onMouseEnter={() => this.setState({ hoveringIcon: true })}
             onMouseLeave={() => this.setState({ hoveringIcon: false })}
           >
-            {this.state.hoveringIcon && <div className="hover-icon">Update</div>}
+            {this.state.hoveringIcon && <div className='hover-icon'>Update</div>}
           </div>
         </Uploader>
       )
@@ -38,7 +39,7 @@ export default class Header extends React.Component {
       <div
         className='icon'
         style={{
-          backgroundImage: `url('${this.props.profile.image}'), url('https://myG.gg/default_user/new-user-profile-picture.png')`,
+          backgroundImage: `url('${this.props.profile.image}'), url('https://myG.gg/default_user/new-user-profile-picture.png')`
         }}
       />
     )
@@ -47,8 +48,8 @@ export default class Header extends React.Component {
   renderInfo = () => {
     const firstName = get(this.props, 'profile.firstName') || ''
     const lastName = get(this.props, 'profile.lastName') || ''
-    const { isFriend, isSelf, visibilityName } = this.props.profile;
-    const name = visibilityName === 'secret' || visibilityName === 'friends' && !isFriend && !isSelf ? '' : `${firstName} ${lastName}`
+    const { isFriend, isSelf, visibilityName } = this.props.profile
+    const name = visibilityName === 'secret' || (visibilityName === 'friends' && !isFriend && !isSelf) ? '' : `${firstName} ${lastName}`
     return (
       <div className='info'>
         {this.renderIcon()}
@@ -66,11 +67,14 @@ export default class Header extends React.Component {
   cancelFriendRequest = () => this.props.cancelFriendRequest(this.props.profile.alias, this.props.profile.profileId)
 
   renderConnectionButton = () => {
-    if (this.props.onlyProfile) return null;
+    if (this.props.onlyProfile) return null
     if (this.props.profile.isSelf) return null
     if (this.props.profile.isFriend) {
       return (
-        <div className='button clickable' onClick={() => showMessengerAlert('Fair dinkum! You sure you want to do this?', this.unfriend, null, 'Make it so')}>
+        <div
+          className='button clickable'
+          onClick={() => showMessengerAlert('Fair dinkum! You sure you want to do this?', this.unfriend, null, 'Make it so')}
+        >
           Remove Friend
         </div>
       )
@@ -84,38 +88,48 @@ export default class Header extends React.Component {
       )
     }
     if (this.props.profile.hasSentFriendRequest) {
-      return <div className='button clickable' onClick={() => showMessengerAlert('This will cancel the friend request, are you sure?', this.cancelFriendRequest, null, 'Make it so')}>Request Sent</div>
+      return (
+        <div
+          className='button clickable'
+          onClick={() =>
+            showMessengerAlert('This will cancel the friend request, are you sure?', this.cancelFriendRequest, null, 'Make it so')
+          }
+        >
+          Request Sent
+        </div>
+      )
     }
     return (
       <div
         className='button clickable'
-        onClick={() => this.props.sendFriendRequest(this.props.profile.alias, this.props.profile.profileId)}>
+        onClick={() => this.props.sendFriendRequest(this.props.profile.alias, this.props.profile.profileId)}
+      >
         Connect
       </div>
     )
   }
 
   renderSendMessageButton = () => {
-    if (this.props.onlyProfile) return null;
+    if (this.props.onlyProfile) return null
     if (this.props.profile.isSelf) return null
     if (!this.props.profile.isFriend) return null
     return (
       <div className='send-message-button clickable' onClick={() => openChatByContact(this.props.profile.profileId)}>
-        <div
-          className='send-message-button-icon'
-          style={{ backgroundImage: `url('https://myG.gg/platform_images/Dashboard/logo.svg')` }}
-        />
+        <div className='send-message-button-icon' style={{ backgroundImage: `url('https://myG.gg/platform_images/Dashboard/logo.svg')` }} />
         Send Message
       </div>
     )
   }
 
   renderFollowButton = () => {
-    if (this.props.onlyProfile) return null;
+    if (this.props.onlyProfile) return null
     if (this.props.profile.isSelf) return null
     if (this.props.profile.isFollower) {
       return (
-        <div className='button clickable' onClick={() => showMessengerAlert('Fair dinkum! You sure you want to do this?', this.unfollow, null, 'Make it so')}>
+        <div
+          className='button clickable'
+          onClick={() => showMessengerAlert('Fair dinkum! You sure you want to do this?', this.unfollow, null, 'Make it so')}
+        >
           Unfollow
         </div>
       )
@@ -128,29 +142,45 @@ export default class Header extends React.Component {
   }
 
   renderViewFriendsButton = () => {
-    if (this.props.onlyProfile) return null;
+    if (this.props.onlyProfile) return null
     if (this.props.profile.isSelf) return null
-    return <div className='button clickable' onClick={() => this.setState({ viewingFriends: true })}>View Friends</div>
+    return (
+      <div className='button clickable' onClick={() => this.setState({ viewingFriends: true })}>
+        View Friends
+      </div>
+    )
   }
 
   renderSocialHubButton = () => {
-    if (this.props.onlyProfile) return null;
-    return <div className='button clickable' onClick={() => this.setState({ editing: 'social-view' })}>Social Hub</div>
+    if (this.props.onlyProfile) return null
+    return (
+      <div className='button clickable' onClick={() => this.setState({ editing: 'social-view' })}>
+        Social Hub
+      </div>
+    )
   }
 
   renderAchievementsButton = () => {
-    if (this.props.onlyProfile || !this.props.isSelf) return null;
-    return <div className='button clickable' onClick={() => window.router.push('/achievements/badges')}>Achievements</div>
+    if (this.props.onlyProfile || !this.props.isSelf) return null
+    return (
+      <div className='button clickable' onClick={() => window.router.push('/achievements/badges')}>
+        Achievements
+      </div>
+    )
   }
 
   renderProfileButton = () => {
-    if (!this.props.onlyProfile) return null;
-    return <div className='button clickable' onClick={() => window.router.push(`/profile/${this.props.alias}`)}>Go To Profile</div>
+    if (!this.props.onlyProfile) return null
+    return (
+      <div className='button clickable' onClick={() => window.router.push(`/profile/${this.props.alias}`)}>
+        Go To Profile
+      </div>
+    )
   }
 
   renderSocialHub = () => {
-    if (this.props.onlyProfile) return null;
-    if (!this.state.editing) return;
+    if (this.props.onlyProfile) return null
+    if (!this.state.editing) return
     return (
       <Dossier
         profile={this.props.profile}
@@ -163,8 +193,8 @@ export default class Header extends React.Component {
   }
 
   renderViewFriends = () => {
-    if (this.props.onlyProfile) return null;
-    if (!this.state.viewingFriends) return;
+    if (this.props.onlyProfile) return null
+    if (!this.state.viewingFriends) return
     return (
       <ViewFriends
         profile={this.props.profile}

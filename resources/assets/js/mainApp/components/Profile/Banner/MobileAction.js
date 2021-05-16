@@ -98,8 +98,8 @@ export default class MobileAction extends React.Component {
   }
 
   renderViewFriendsButton = () => {
-    if (this.props.onlyProfile) return null
-    if (this.props.profile.isSelf) return null
+    // if (this.props.onlyProfile) return null
+    // if (this.props.profile.isSelf) return null
     return (
       <div className='button clickable' onClick={() => this.setState({ viewingFriends: true })}>
         View Friends
@@ -164,8 +164,8 @@ export default class MobileAction extends React.Component {
     return (
       <Fragment>
         <div className='mobile__buttons-group'>
-          {this.renderConnectionButton()}
           {this.renderSendMessageButton()}
+          {this.renderConnectionButton()}
           {this.renderFollowButton()}
           {this.renderViewFriendsButton()}
           {this.renderSocialHubButton()}

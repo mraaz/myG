@@ -32,6 +32,7 @@ export default class Header extends React.Component {
             onMouseEnter={() => this.setState({ hoveringIcon: true })}
             onMouseLeave={() => this.setState({ hoveringIcon: false })}
           >
+            <img src={this.props.profile.image} style={{ width: '100%', height: '100%', borderRadius: '50%' }} />
             {this.state.hoveringIcon && <div className='hover-icon'>Update</div>}
           </div>
         </Uploader>
@@ -43,7 +44,9 @@ export default class Header extends React.Component {
         style={{
           backgroundImage: `url('${this.props.profile.image}'), url('https://myG.gg/default_user/new-user-profile-picture.png')`
         }}
-      />
+      >
+        <img src={this.props.profile.image} style={{ width: '100%', height: '100%', borderRadius: '50%' }} />
+      </div>
     )
   }
 
