@@ -6,6 +6,7 @@ pipeline {
         GITHUB_CREDENTIAL = 'git-private-key'
         DB_USER = credentials('db_user')
         DB_PASS = credentials('db_pass')
+        DB_PASS_STAGE = credentials('db_pass_stage')
         APP_KEY = credentials('appkey')
         AWS_KEY = credentials('aws_key')
         AWS_SECRET = credentials('aws_secret')
@@ -126,7 +127,7 @@ pipeline {
                      withCredentials([file(credentialsId: 'kubernetes-stage-credential', variable: 'config')]) {
                        sh """
                        export KUBECONFIG=\${config}
-                       helm upgrade myg ./helm/mygame -f ./helm/mygame-stage.yaml -n mygame --set image.tag=latest --set mygame.dataseUser=$DB_USER --set mygame.databasePassword=$DB_PASS --set mygame.appKey=$APP_KEY --set mygame.googleID=$GOOGLE_ID --set mygame.googleSecret=$GOOGLE_SECRET --set mygame.facebookSecret=$FACEBOOK_SECRET --set mygame.mixGoogleMapsKey=$MIX_GOOGLE_MAPS_KEY --set mygame.secretKey=$SECRET_KEY --set mygame.siteKey=$SITE_KEY
+                       helm upgrade myg ./helm/mygame -f ./helm/mygame-stage.yaml -n mygame --set image.tag=latest --set mygame.dataseUser=$DB_USER --set mygame.databasePassword=$DB_PASS_STAGE --set mygame.appKey=$APP_KEY --set mygame.googleID=$GOOGLE_ID --set mygame.googleSecret=$GOOGLE_SECRET --set mygame.facebookSecret=$FACEBOOK_SECRET --set mygame.mixGoogleMapsKey=$MIX_GOOGLE_MAPS_KEY --set mygame.secretKey=$SECRET_KEY --set mygame.siteKey=$SITE_KEY
                        """
                      }
                 }
