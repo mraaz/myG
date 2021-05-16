@@ -2150,7 +2150,16 @@ section#content-container {
           border-radius: 50%;
           content: '';
           margin-right: 5px;
+
+          @media screen and (max-width: $mobile) {
+            width: 45px;
+            height: 30px;
+            border-radius: 50%;
+            content: '';
+            margin-right: 5px;
+          }
         }
+
         .more__groups {
           cursor: pointer;
         }
