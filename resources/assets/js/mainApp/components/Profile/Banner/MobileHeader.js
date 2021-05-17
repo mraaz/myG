@@ -104,7 +104,7 @@ export default class Header extends React.Component {
     return (
       <div className='profile__mobile-header'>
         {this.renderInfo()}
-        <ProfileInfo />
+        <ProfileInfo {...this.props} />
       </div>
     )
   }
