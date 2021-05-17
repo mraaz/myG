@@ -1491,31 +1491,33 @@
         padding: inherit;
       }
     }
-    @media screen and (max-width: 575px) {
-      align-items: center;
-      margin-left: 48px;
-      margin-right: 39px;
-      width: auto;
-      .sponsors__btn {
-        font-family: Montserrat !important;
-        font-size: 1.5em;
-        font-weight: 700;
-        color: #000;
-        background: #e5c746;
-        border: 0;
-        cursor: pointer;
-        height: 60px;
-        margin-bottom: 10px;
-        border-radius: 4px;
-        width: 100%;
-        display: flex;
+    &.mobile {
+      @media screen and (max-width: 575px) {
         align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        padding: inherit;
-        &:focus {
-          margin: 0;
+        margin-left: 48px;
+        margin-right: 39px;
+        width: auto;
+        .sponsors__btn {
+          font-family: Montserrat !important;
+          font-size: 1.5em;
+          font-weight: 700;
+          color: #000;
+          background: #e5c746;
           border: 0;
+          cursor: pointer;
+          height: 60px;
+          margin-bottom: 10px;
+          border-radius: 4px;
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          padding: inherit;
+          &:focus {
+            margin: 0;
+            border: 0;
+          }
         }
       }
     }
@@ -1764,6 +1766,7 @@
   margin-right: 28px;
   background: #1d2326;
   z-index: 99;
+  padding-bottom: 10px;
   .info {
     display: flex;
     font-size: 1.1em;
@@ -1830,7 +1833,7 @@
 .mobile__buttons-group {
   margin-left: 48px;
   margin-right: 39px;
-  z-index: 99;
+  z-index: 0;
   position: relative;
   .button,
   .send-message-button {

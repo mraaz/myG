@@ -76,7 +76,7 @@ export default class Sponsors extends React.Component {
   render() {
     const {sponsors=[]} = this.props;
     const isMobile = detectMob()
-    return(<div className={`profile__sponsors-container1 ${isMobile ? 'mobile' : ''}`}>
+    return(<div className={`profile__sponsors-container1  mobile `}>
         {this.props.isSelf &&<button type="button" className="sponsors__btn" onClick={() =>this.editSponsor(sponsors)}>Manage Sponsors</button>}
         <div className="profile__sponsors-container">
         <div id="profile-sponsors">

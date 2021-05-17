@@ -217,7 +217,7 @@ export default class GameExperiences extends React.Component {
     return(
       <div id="profile-game-experiences">
         {this.renderHeaders()}
-        <div className="mobileShow"> 
+        <div className="mobileShow">  
           {this.renderAddGameExperience_mobile()}
         </div>
         <div className="scroll">
