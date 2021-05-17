@@ -497,7 +497,7 @@
     z-index: 2;
     font-family: 'Montserrat', sans-serif;
     position: relative;
-    &.mobileView {
+    @media screen and (max-width: $tablet) {
       height: 504px;
       margin-bottom: 20px;
     }
@@ -1487,11 +1487,11 @@
         margin: 0;
         border: 0;
       }
-      @media screen and (max-width: $tablet) {
+      @media screen and (max-width: 575px) {
         padding: inherit;
       }
     }
-    &.mobile {
+    @media screen and (max-width: 575px) {
       align-items: center;
       margin-left: 48px;
       margin-right: 39px;
@@ -1512,12 +1512,10 @@
         align-items: center;
         justify-content: center;
         cursor: pointer;
+        padding: inherit;
         &:focus {
           margin: 0;
           border: 0;
-        }
-        @media screen and (max-width: $tablet) {
-          padding: inherit;
         }
       }
     }
@@ -2031,5 +2029,20 @@
         }
       }
     }
+  }
+}
+
+.mobileShow {
+  display: none;
+}
+.desktopShow {
+  display: block;
+}
+@media screen and (max-width: 575px) {
+  .desktopShow {
+    display: none;
+  }
+  .mobileShow {
+    display: block;
   }
 }

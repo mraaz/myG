@@ -7,7 +7,6 @@ import { ignoreFunctions } from '../../../../common/render'
 import EditGameExperience from './edit';
 import { showMessengerAlert } from '../../../../common/alert';
 import { WithTooltip } from '../../Tooltip';
-import { detectMob } from '../../../utils/utils'
 
 export default class GameExperiences extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
@@ -215,14 +214,17 @@ export default class GameExperiences extends React.Component {
 
   render() {
     const gameExperiences = this.filterGameExperiences();
-    const isMobile = detectMob()
     return(
       <div id="profile-game-experiences">
         {this.renderHeaders()}
-        {isMobile && this.renderAddGameExperience_mobile()}
+        <div className="mobileShow"> 
+          {this.renderAddGameExperience_mobile()}
+        </div>
         <div className="scroll">
           {this.renderPageButtons()}
-          {!isMobile && this.renderAddGameExperience()}
+          <div className="desktopShow"> 
+            {this.renderAddGameExperience()}
+          </div>
           {gameExperiences.slice(this.state.page, this.state.page + this.getGamesPerPage()).map(this.renderGameExperience)}
           {!gameExperiences.length && !this.state.isSelf && this.renderEmptyState()}
           {this.renderEditGameExperienceModal()}
