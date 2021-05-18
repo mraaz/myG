@@ -10,11 +10,11 @@ import ProfileInfo from '../Info';
 import Sponsors from '../Sponsors';
 import GameExperiences from '../GameExperiences';
 import GamerSuggestions from '../GamerSuggestions';
+import MobileGamerSuggestions from '../GamerSuggestions/Mobile';
 import MyPosts from '../../MyPosts'
 import PostsFromUser from '../../PostsFromUser'
 import EditGameExperience from '../GameExperiences/edit';
-import { detectMob } from '../../../utils/utils'
-
+ 
 export class Profile extends React.Component {
   constructor(){
     super()
@@ -94,14 +94,20 @@ export class Profile extends React.Component {
     sponsorsPositions.push({ id: this.props.level >= 5 ? 'empty-2' : 'empty-locked-2' });
     const sponsorsIndexes = this.props.profile.isSelf ? sponsorsPositions : null;
     const sponsors = sponsorsIndexes ? sponsorsIndexes.map((sponsor, index) => profileSponsors[index] || sponsor) : profileSponsors;
-    const isMobile = detectMob()
     return(
       <div id="profile" ref={this.contentAreaRef}>
         <Banner profile={this.props.profile} updateProfile={this.props.updateProfile} />
-        {!isMobile && <ProfileInfo alias={this.props.alias} profile={this.props.profile} updateProfile={this.props.updateProfile} />}
+        <div className="desktopShow"> 
+          <ProfileInfo alias={this.props.alias} profile={this.props.profile} updateProfile={this.props.updateProfile} />
+        </div>
          {!!sponsors.length && <Sponsors isSelf={this.props.profile.isSelf} alias={this.props.alias} profile={this.props.profile} sponsors={sponsors} refetchSponsors={() => this.props.fetchProfile(this.props.alias)} />}
         <GameExperiences userId={this.props.userId} selectedGame={this.props.gameId} commendUser={this.commendUser} deleteExperience={this.deleteExperience} alias={this.props.alias} profile={this.props.profile} updateGame={this.props.updateGame} />
-        {!!this.props.profile.isSelf && <GamerSuggestions profile={this.props.profile} sendFriendRequest={this.props.sendFriendRequest} cancelFriendRequest={this.props.cancelFriendRequest} follow={this.props.follow} unfollow={this.props.unfollow}  /> }
+        <div className="desktopShow"> 
+        {!!this.props.profile.isSelf  && <GamerSuggestions profile={this.props.profile} sendFriendRequest={this.props.sendFriendRequest} cancelFriendRequest={this.props.cancelFriendRequest} follow={this.props.follow} unfollow={this.props.unfollow}  /> }
+        </div>
+        <div className="mobileShow"> 
+          {!!this.props.profile.isSelf && <MobileGamerSuggestions profile={this.props.profile} sendFriendRequest={this.props.sendFriendRequest} cancelFriendRequest={this.props.cancelFriendRequest} follow={this.props.follow} unfollow={this.props.unfollow}  /> }
+        </div>
         {!!this.props.profile.isSelf && <MyPosts initialData={this.props.initialData} /> }
         {!this.props.profile.isSelf && <PostsFromUser initialData={this.props.initialData} profile={this.props.profile} /> }
       </div>

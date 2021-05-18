@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import Uploader from '../../common/Uploader'
 import get from 'lodash.get'
 import Dossier from '../Dossier'
@@ -7,7 +7,7 @@ import { ignoreFunctions } from '../../../../common/render'
 import { openChatByContact } from '../../../../common/chat'
 import { showMessengerAlert } from '../../../../common/alert'
 
-export default class Header extends React.Component {
+export default class MobileAction extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     return ignoreFunctions(nextProps, nextState, this.props, this.state)
   }
@@ -16,50 +16,6 @@ export default class Header extends React.Component {
     editing: false,
     viewingFriends: false,
     hoveringIcon: false
-  }
-
-  onUpload = (source, key) => this.props.uploadProfileImage(this.props.alias, source, key)
-
-  renderIcon = () => {
-    if (this.props.profile.isSelf) {
-      return (
-        <Uploader onUpload={this.onUpload}>
-          <div
-            className='icon clickable'
-            style={{ backgroundImage: `url('${this.props.profile.image}')` }}
-            onMouseEnter={() => this.setState({ hoveringIcon: true })}
-            onMouseLeave={() => this.setState({ hoveringIcon: false })}
-          >
-            {this.state.hoveringIcon && <div className='hover-icon'>Update</div>}
-          </div>
-        </Uploader>
-      )
-    }
-    return (
-      <div
-        className='icon'
-        style={{
-          backgroundImage: `url('${this.props.profile.image}'), url('https://myG.gg/default_user/new-user-profile-picture.png')`
-        }}
-      />
-    )
-  }
-
-  renderInfo = () => {
-    const firstName = get(this.props, 'profile.firstName') || ''
-    const lastName = get(this.props, 'profile.lastName') || ''
-    const { isFriend, isSelf, visibilityName } = this.props.profile
-    const name = visibilityName === 'secret' || (visibilityName === 'friends' && !isFriend && !isSelf) ? '' : `${firstName} ${lastName}`
-    return (
-      <div className='info'>
-        {this.renderIcon()}
-        <div className={`status-${this.props.profile.status}`} />
-        <div className={`handle ${this.props.profile.isSelf ? 'self' : ''}`}>
-          <span className='alias'>@{this.props.profile.alias}</span>
-          <span className='name'>{name}</span>
-        </div>
-      </div>
-    )
   }
 
   unfriend = () => this.props.unfriend(this.props.profile.alias, this.props.profile.profileId)
@@ -206,11 +162,10 @@ export default class Header extends React.Component {
 
   render() {
     return (
-      <div id='header'>
-        {this.renderInfo()}
-        <div className='buttons'>
-          {this.renderConnectionButton()}
+      <Fragment>
+        <div className='mobile__buttons-group'>
           {this.renderSendMessageButton()}
+          {this.renderConnectionButton()}
           {this.renderFollowButton()}
           {this.renderViewFriendsButton()}
           {this.renderSocialHubButton()}
@@ -219,7 +174,7 @@ export default class Header extends React.Component {
           {this.renderSocialHub()}
           {this.renderViewFriends()}
         </div>
-      </div>
+      </Fragment>
     )
   }
 }
