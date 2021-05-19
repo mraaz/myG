@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import Uploader from '../../common/Uploader'
 import get from 'lodash.get'
 import Dossier from '../Dossier'
@@ -32,6 +32,7 @@ export default class Header extends React.Component {
             onMouseEnter={() => this.setState({ hoveringIcon: true })}
             onMouseLeave={() => this.setState({ hoveringIcon: false })}
           >
+            <img src={this.props.profile.image} style={{ width: '100%', height: '100%', borderRadius: '50%' }} />
             {this.state.hoveringIcon && <div className='hover-icon'>Update</div>}
           </div>
         </Uploader>
@@ -43,7 +44,9 @@ export default class Header extends React.Component {
         style={{
           backgroundImage: `url('${this.props.profile.image}'), url('https://myG.gg/default_user/new-user-profile-picture.png')`
         }}
-      />
+      >
+        <img src={this.props.profile.image} style={{ width: '100%', height: '100%', borderRadius: '50%' }} />
+      </div>
     )
   }
 
@@ -97,164 +100,11 @@ export default class Header extends React.Component {
     )
   }
 
-  unfriend = () => this.props.unfriend(this.props.profile.alias, this.props.profile.profileId)
-  unfollow = () => this.props.unfollow(this.props.profile.alias, this.props.profile.profileId)
-  cancelFriendRequest = () => this.props.cancelFriendRequest(this.props.profile.alias, this.props.profile.profileId)
-
-  renderConnectionButton = () => {
-    if (this.props.onlyProfile) return null
-    if (this.props.profile.isSelf) return null
-    if (this.props.profile.isFriend) {
-      return (
-        <div
-          className='button clickable'
-          onClick={() => showMessengerAlert('Fair dinkum! You sure you want to do this?', this.unfriend, null, 'Make it so')}
-        >
-          Remove Friend
-        </div>
-      )
-    }
-    if (this.props.profile.hasReceivedFriendRequest) {
-      const { alias, profileId, friendRequestId } = this.props.profile
-      return (
-        <div className='button clickable' onClick={() => this.props.confirmFriendRequest(alias, profileId, friendRequestId)}>
-          Accept Friend
-        </div>
-      )
-    }
-    if (this.props.profile.hasSentFriendRequest) {
-      return (
-        <div
-          className='button clickable'
-          onClick={() =>
-            showMessengerAlert('This will cancel the friend request, are you sure?', this.cancelFriendRequest, null, 'Make it so')
-          }
-        >
-          Request Sent
-        </div>
-      )
-    }
-    return (
-      <div
-        className='button clickable'
-        onClick={() => this.props.sendFriendRequest(this.props.profile.alias, this.props.profile.profileId)}
-      >
-        Connect
-      </div>
-    )
-  }
-
-  renderSendMessageButton = () => {
-    if (this.props.onlyProfile) return null
-    if (this.props.profile.isSelf) return null
-    if (!this.props.profile.isFriend) return null
-    return (
-      <div className='send-message-button clickable' onClick={() => openChatByContact(this.props.profile.profileId)}>
-        <div className='send-message-button-icon' style={{ backgroundImage: `url('https://myG.gg/platform_images/Dashboard/logo.svg')` }} />
-        Send Message
-      </div>
-    )
-  }
-
-  renderFollowButton = () => {
-    if (this.props.onlyProfile) return null
-    if (this.props.profile.isSelf) return null
-    if (this.props.profile.isFollower) {
-      return (
-        <div
-          className='button clickable'
-          onClick={() => showMessengerAlert('Fair dinkum! You sure you want to do this?', this.unfollow, null, 'Make it so')}
-        >
-          Unfollow
-        </div>
-      )
-    }
-    return (
-      <div className='button clickable' onClick={() => this.props.follow(this.props.profile.alias, this.props.profile.profileId)}>
-        Follow
-      </div>
-    )
-  }
-
-  renderViewFriendsButton = () => {
-    if (this.props.onlyProfile) return null
-    if (this.props.profile.isSelf) return null
-    return (
-      <div className='button clickable' onClick={() => this.setState({ viewingFriends: true })}>
-        View Friends
-      </div>
-    )
-  }
-
-  renderSocialHubButton = () => {
-    if (this.props.onlyProfile) return null
-    return (
-      <div className='button clickable' onClick={() => this.setState({ editing: 'social-view' })}>
-        Social Hub
-      </div>
-    )
-  }
-
-  renderAchievementsButton = () => {
-    if (this.props.onlyProfile || !this.props.isSelf) return null
-    return (
-      <div className='button clickable' onClick={() => window.router.push('/achievements/badges')}>
-        Achievements
-      </div>
-    )
-  }
-
-  renderProfileButton = () => {
-    if (!this.props.onlyProfile) return null
-    return (
-      <div className='button clickable' onClick={() => window.router.push(`/profile/${this.props.alias}`)}>
-        Go To Profile
-      </div>
-    )
-  }
-
-  renderSocialHub = () => {
-    if (this.props.onlyProfile) return null
-    if (!this.state.editing) return
-    return (
-      <Dossier
-        profile={this.props.profile}
-        updateProfile={this.props.updateProfile}
-        isSelf={this.props.isSelf}
-        tab={this.state.editing}
-        onClose={() => this.setState({ editing: false })}
-      />
-    )
-  }
-
-  renderViewFriends = () => {
-    if (this.props.onlyProfile) return null
-    if (!this.state.viewingFriends) return
-    return (
-      <ViewFriends
-        profile={this.props.profile}
-        sendFriendRequest={this.props.sendFriendRequest}
-        onClose={() => this.setState({ viewingFriends: false })}
-      />
-    )
-  }
-
   render() {
     return (
       <div className='profile__mobile-header'>
         {this.renderInfo()}
-        <ProfileInfo />
-        <div className='buttons'>
-          {this.renderConnectionButton()}
-          {this.renderSendMessageButton()}
-          {this.renderFollowButton()}
-          {this.renderViewFriendsButton()}
-          {this.renderSocialHubButton()}
-          {this.renderAchievementsButton()}
-          {this.renderProfileButton()}
-          {this.renderSocialHub()}
-          {this.renderViewFriends()}
-        </div>
+        <ProfileInfo {...this.props} />
       </div>
     )
   }

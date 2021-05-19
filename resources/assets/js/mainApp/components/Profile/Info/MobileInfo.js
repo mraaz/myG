@@ -90,10 +90,11 @@ export default class ProfileInfo extends React.Component {
           <div className='col-sm-6'>{this.renderPod('Country', this.state.country, 'left')}</div>
           <div className='col-sm-6'>{this.renderPod('Games currently playing', this.state.mostPlayedGames, 'left')}</div>
           <div className='col-sm-6'>{this.renderPod('Professional Team', this.state.team, 'left')}</div>
-          <div className='col-sm-6'>{this.renderEditButton()}</div>
+          <div className='col-sm-6'>
+            {this.renderEditButton()}
+            {this.renderEditInfo()}
+          </div>
         </div>
-
-        {this.renderEditInfo()}
       </div>
     )
   }

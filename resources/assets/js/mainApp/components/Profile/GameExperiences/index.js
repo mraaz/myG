@@ -54,8 +54,8 @@ export default class GameExperiences extends React.Component {
   }
 
   getGamesPerPage = () => {
-    const selfSize = 3;
-    const othersSize = 1;
+    const selfSize = 1;
+    const othersSize = 3;
     return this.state.isSelf ? selfSize : othersSize;
   }
 
@@ -104,6 +104,8 @@ export default class GameExperiences extends React.Component {
   }
 
   renderGameExperience = (game) => {
+
+    console.log('this.props.game   ', game)
     const { id, gameName, gameImage, mainFields } = game;
     const fields = mainFields
     const commended = this.props.profile && this.props.profile.commended || [];
@@ -169,8 +171,25 @@ export default class GameExperiences extends React.Component {
         <span className="title">Add New</span>
         <span className="subtitle">Game Experience</span>
       </div>
-    );
+    ); 
   }
+  renderAddGameExperience_mobile = () => {
+    if (!this.state.isSelf) return null;
+    return(
+      <div className="add-game-experience mobile clickable" onClick={() => this.setState({ selected: 'edit' })}>
+        <div className="mobile_col">
+        <div
+          className="icon"
+          style={{ backgroundImage: `url(${getAssetUrl('ic_profile_add')})` }}
+        />
+        </div> 
+        <div className="mobile_col"> 
+        <div className="title">Add New</div>
+        <div className="subtitle">Game Experience</div>
+        </div>
+      </div>
+    );
+  } 
 
   renderEditGameExperienceModal = () => {
     if (!this.state.selected) return null;
@@ -198,9 +217,14 @@ export default class GameExperiences extends React.Component {
     return(
       <div id="profile-game-experiences">
         {this.renderHeaders()}
+        <div className="mobileShow">  
+          {this.renderAddGameExperience_mobile()}
+        </div>
         <div className="scroll">
           {this.renderPageButtons()}
-          {this.renderAddGameExperience()}
+          <div className="desktopShow"> 
+            {this.renderAddGameExperience()}
+          </div>
           {gameExperiences.slice(this.state.page, this.state.page + this.getGamesPerPage()).map(this.renderGameExperience)}
           {!gameExperiences.length && !this.state.isSelf && this.renderEmptyState()}
           {this.renderEditGameExperienceModal()}

@@ -58,7 +58,7 @@
 <script>
   function removeIntruders() {
     const url = window.location.href;
-    if(url.includes("localhost") || url.includes("127.0.0.1") || url.includes("172.")) {
+    if(url.includes("localhost") || url.includes("127.0.0.1") || url.includes("172.") || url.includes("stage")) {
       document.getElementById('cfiblinks').setAttribute("style", "display:block");
     } else {
       //document.getElementById('cfiblinks').setAttribute("style", "display:block");

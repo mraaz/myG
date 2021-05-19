@@ -3,6 +3,7 @@ import axios from 'axios';
 import { ignoreFunctions } from '../../../../common/render'
 import notifyToast from '../../../../common/toast'
 import { registerSponsorClick } from '../../../../integration/http/quests'
+import { detectMob } from '../../../utils/utils'
 
 const defaultSponsorImage = 'https://myG.gg/platform_images/Communities/myG_logo.jpg';
 export default class Sponsors extends React.Component {
@@ -74,8 +75,9 @@ export default class Sponsors extends React.Component {
 
   render() {
     const {sponsors=[]} = this.props;
-    return(<div className="profile__sponsors-container1">
-        {this.props.isSelf &&<button type="button" className="sponsors__btn" onClick={() =>this.editSponsor(sponsors)}>Manage your Sponsors</button>}
+    const isMobile = detectMob()
+    return(<div className={`profile__sponsors-container1  mobile `}>
+        {this.props.isSelf &&<button type="button" className="sponsors__btn" onClick={() =>this.editSponsor(sponsors)}>Manage Sponsors</button>}
         <div className="profile__sponsors-container">
         <div id="profile-sponsors">
           {/* {this.renderEditSponsor(sponsors)} */}
