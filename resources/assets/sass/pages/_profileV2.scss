@@ -110,6 +110,9 @@
     justify-content: center;
     background-color: #1d2326;
     color: #e0e0e0;
+    @media screen and (max-width: 575px) {
+      top: 70px;
+    }
   }
 
   .background {
@@ -234,6 +237,9 @@
     height: 100%;
     border-bottom-left-radius: 8px;
     border-bottom-right-radius: 8px;
+    @media screen and (max-width: 575px) {
+      height: 92%;
+    }
 
     .css-1g6gooi {
       margin: 0;
@@ -1630,6 +1636,7 @@
     #profile-game-main-info {
       width: 100%;
       max-height: unset;
+      overflow: scroll;
     }
     #profile-game-main-info .input-container-row {
       width: 100%;
