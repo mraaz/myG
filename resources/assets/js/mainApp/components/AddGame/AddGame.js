@@ -34,11 +34,9 @@ const AddGame = ({
   updateMainSettingsState,
   optionalFieldsState,
   updateOptionalFieldsState,
-  additional_info,
+  additional_info
 }) => {
-  const refToTop = useRef()
   const contentAreaRef = useRef()
-  let lastScrollY = 0
   // Similar to componentDidMount and componentDidUpdate:
   useEffect(() => {
     const getInitialData_Tags = async function () {
@@ -68,35 +66,35 @@ const AddGame = ({
   const updateMainSettings = (stateUpdates) => {
     updateMainSettingsState((currentState) => ({
       ...currentState,
-      ...stateUpdates,
+      ...stateUpdates
     }))
   }
 
   const updateAdvancedSettings = (stateUpdates) => {
     updateAdvancedSettingsState((currentState) => ({
       ...currentState,
-      ...stateUpdates,
+      ...stateUpdates
     }))
   }
 
   const updateState = (stateUpdates) => {
     updateComponentState((currentState) => ({
       ...currentState,
-      ...stateUpdates,
+      ...stateUpdates
     }))
   }
 
   const updateOptionalSettings = (stateUpdates) => {
     updateOptionalFieldsState((currentState) => ({
       ...currentState,
-      ...stateUpdates,
+      ...stateUpdates
     }))
   }
 
   const createOption = (label, game_names_id) => ({
     label,
     value: label,
-    game_names_id,
+    game_names_id
   })
 
   const handleCreateTags = (inputValue) => {
@@ -120,7 +118,7 @@ const AddGame = ({
     const newOption = createOption(inputValue, null)
     updateAdvancedSettings({
       optionTags: [...optionTags, newOption],
-      tags: [...tags, newOption],
+      tags: [...tags, newOption]
     })
   }
 
@@ -142,7 +140,7 @@ const AddGame = ({
     value: inputValue,
     label: optionLabel,
     __isNew__: true,
-    isEqual: () => false,
+    isEqual: () => false
   })
 
   // api calls
@@ -185,9 +183,9 @@ const AddGame = ({
   const onPlayersSuggestionFetch = async (value) => {
     try {
       const {
-        data: { playerSearchResults },
+        data: { playerSearchResults }
       } = await axios.post(`/api/user/playerSearchResults`, {
-        alias: value,
+        alias: value
       })
       const parsedData = parsePlayersToSelectData(playerSearchResults)
       return parsedData
@@ -200,28 +198,28 @@ const AddGame = ({
   const getPlayersNumberView = () => {
     const numberStyle = {
       color: '#fff',
-      border: 'none',
+      border: 'none'
     }
     const dotStyle = {
       borderRadius: '4px 4px 0px 0px',
       border: 'none',
       bottom: '0px',
       height: '10px',
-      backgroundColor: '#b9b9b9',
+      backgroundColor: '#b9b9b9'
     }
     const railStyle = {
       backgroundColor: '#b9b9b9',
-      width: '400px',
+      width: '400px'
     }
     const handleStyle = {
       border: 'none',
       backgroundColor: '#E6C846',
       height: '16px',
-      width: '16px',
+      width: '16px'
     }
     const trackStyle = {
       backgroundColor: '#b9b9b9',
-      width: '400px',
+      width: '400px'
     }
 
     return (
@@ -239,7 +237,7 @@ const AddGame = ({
                 25: { label: 25, style: numberStyle },
                 50: { label: 50, style: numberStyle },
                 75: { label: 75, style: numberStyle },
-                100: { label: 100, style: numberStyle },
+                100: { label: 100, style: numberStyle }
               }}
               dotStyle={dotStyle}
               min={1}
@@ -251,9 +249,9 @@ const AddGame = ({
                 placement: 'top',
                 prefixCls: 'rc-slider-tooltip',
                 align: {
-                  offset: [0, -5],
+                  offset: [0, -5]
                 },
-                visible: true,
+                visible: true
               }}
               tipFormatter={(value) => {
                 if (value === 1) {
@@ -269,7 +267,7 @@ const AddGame = ({
           onClick={(value) => {
             updateMainSettings({
               isUnlimitedPlayers: value,
-              numberOfPlayers: value ? 0 : 1,
+              numberOfPlayers: value ? 0 : 1
             })
           }}
           labelText='Unlimited'
@@ -324,7 +322,8 @@ const AddGame = ({
           }}
           minDate={moment(mainSettingsState.startTime)}
           maxDate={moment(mainSettingsState.startTime).add(14, 'days')}
-          selected={mainSettingsState.endTime}>
+          selected={mainSettingsState.endTime}
+        >
           <img
             style={{ margin: '0 10px' }}
             src='https://myG.gg/platform_images/Dashboard/X+icon.svg'
@@ -333,7 +332,7 @@ const AddGame = ({
             onClick={() => {
               updateMainSettings({
                 isEndGameFieldSelected: false,
-                endTime: null,
+                endTime: null
               })
             }}
           />
@@ -356,9 +355,10 @@ const AddGame = ({
                 }
                 updateMainSettings({
                   isEndGameFieldSelected: true,
-                  endTime: moment(mainSettingsState.startTime).add(2, 'days'),
+                  endTime: moment(mainSettingsState.startTime).add(2, 'days')
                 })
-              }}>
+              }}
+            >
               Add End Time
             </div>
           )}
@@ -370,7 +370,8 @@ const AddGame = ({
                   className='text-set-to-repeat'
                   onClick={(value) => {
                     updateMainSettings({ isRepeatFieldSelected: true })
-                  }}>
+                  }}
+                >
                   Set To Repeat
                 </div>
               </React.Fragment>
@@ -388,14 +389,15 @@ const AddGame = ({
           <div
             style={{
               display: 'flex',
-              alignItems: 'center',
-            }}>
+              alignItems: 'center'
+            }}
+          >
             <CustomCron
               onChange={({ cron, occurrence, repeatEvery }) => {
                 updateMainSettings({
                   cron,
                   occurrence,
-                  repeatEvery,
+                  repeatEvery
                 })
               }}
               tabs={['Daily', 'Weekly', 'Monthly']}
@@ -415,7 +417,7 @@ const AddGame = ({
                   endTime: null,
                   cron: null,
                   occurrence: null,
-                  repeatEvery: null,
+                  repeatEvery: null
                 })
               }}
             />
@@ -471,7 +473,6 @@ const AddGame = ({
     } else if (value && value.additional_info) {
       const getAllExtraFilters = await axios.get(`/api/ScheduleGame/getHeader_ALL/${value.game_names_id}`)
       let additional_info_data = getAllExtraFilters.data.additional_info_data
-
       game_data_struct = {}
 
       let counter = 0,
@@ -610,7 +611,7 @@ const AddGame = ({
         value_three: null,
         value_four: null,
         value_five: null,
-        game_name_fields_img: value.game_name_fields_img,
+        game_name_fields_img: value.game_name_fields_img
       })
       const additional_infos = value ? value.additional_info : false
       updateState({ additional_info: additional_infos })
@@ -630,18 +631,18 @@ const AddGame = ({
         // padding: 20,
         '&:hover': {
           background: '#75c5cd',
-          color: '#fff',
+          color: '#fff'
         },
         '&:focus': {
           background: '#75c5cd',
-          color: '#fff',
+          color: '#fff'
         },
         '&:active': {
           background: '#75c5cd',
-          color: '#fff',
+          color: '#fff'
         },
         background: state.isFocused ? '#75c5cd' : '#fff',
-        color: state.isFocused ? '#fff' : '#424c58',
+        color: state.isFocused ? '#fff' : '#424c58'
       }),
       control: () => ({
         background: '#fff',
@@ -649,11 +650,11 @@ const AddGame = ({
         border: '1px solid #d7d7d7',
         display: 'flex',
         padding: '10px',
-        boxShadow: 'none',
+        boxShadow: 'none'
       }),
       placeholder: () => ({
-        color: '#b3b3b3',
-      }),
+        color: '#b3b3b3'
+      })
     }
     return (
       <div style={{ display: 'flex' }}>
@@ -693,22 +694,22 @@ const AddGame = ({
               activeLabel={'LATER'}
               colors={{
                 activeThumb: {
-                  base: 'rgb(0,0,0)',
+                  base: 'rgb(0,0,0)'
                 },
                 inactiveThumb: {
-                  base: 'rgb(229,199,70,1)',
+                  base: 'rgb(229,199,70,1)'
                 },
                 active: {
                   base: 'rgb(229,199,70,1)',
-                  hover: 'rgb(177, 191, 215)',
+                  hover: 'rgb(177, 191, 215)'
                 },
                 inactive: {
                   base: 'rgb(65,66,68)',
-                  hover: 'rgb(95,96,98)',
+                  hover: 'rgb(95,96,98)'
                 },
                 inactiveLabel: {
-                  base: 'rgb(0,0,0)',
-                },
+                  base: 'rgb(0,0,0)'
+                }
               }}
               trackStyle={styles.trackStyle}
               thumbStyle={styles.thumbStyle}
@@ -728,7 +729,7 @@ const AddGame = ({
                       updateMainSettings({
                         isEndGameFieldSelected: false,
                         endTime: null,
-                        startTime: value,
+                        startTime: value
                       })
                       return
                     }
@@ -912,9 +913,10 @@ const AddGame = ({
           backgroundImage: `url(${optionalFieldsState.game_name_fields_img})`,
           backgroundSize: 'cover',
           backgroundRepeat: 'no-repeat',
-          maxWidth: '480px',
+          maxWidth: '480px'
         }}
-        className={styles.optionalViewContainer}>
+        className={styles.optionalViewContainer}
+      >
         <div className={styles.optionalHeaderContainer}>
           <span>In-Game Fields </span>
           <span>(Optional)</span>
@@ -1030,7 +1032,7 @@ const AddGame = ({
           <div
             className={classNames([
               styles.menuLine,
-              state.selectedSettings === SETTINGS_ENUMS.ADVANCED ? styles.menuLineHighlighted : null,
+              state.selectedSettings === SETTINGS_ENUMS.ADVANCED ? styles.menuLineHighlighted : null
             ])}
           />
         </div>
@@ -1040,7 +1042,7 @@ const AddGame = ({
             <div
               className={classNames([
                 styles.menuLine,
-                state.selectedSettings === SETTINGS_ENUMS.INGAMEFIELD ? styles.menuLineHighlighted : null,
+                state.selectedSettings === SETTINGS_ENUMS.INGAMEFIELD ? styles.menuLineHighlighted : null
               ])}
             />
           </div>

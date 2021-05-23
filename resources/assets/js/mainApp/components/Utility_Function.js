@@ -10,32 +10,32 @@ const createOption = (label, game_names_id, gameImg, game_name_fields_img, addit
   gameImg,
   game_name_fields_img,
   additional_info: false,
-  game_headers,
+  game_headers
 })
 
 const createOption_GameTags = (label, game_tag_id) => ({
   label,
   value: label,
-  game_tag_id,
+  game_tag_id
 })
 
 const createOption_GameSkills = (label, game_skill_id) => ({
   label,
   value: label,
-  game_skill_id,
+  game_skill_id
 })
 
 const createOption_HashTags = (label, hash_tag_id) => ({
   label,
   value: label,
-  hash_tag_id,
+  hash_tag_id
 })
 
-const createOption_GrpHashTags = (label, group_hash_tag_id) => ({
-  label,
-  value: label,
-  group_hash_tag_id,
-})
+// const createOption_GrpHashTags = (label, group_hash_tag_id) => ({
+//   label,
+//   value: label,
+//   group_hash_tag_id
+// })
 
 export const getGameLabel = ({ game_img, game_name, gameName, label }) =>
   !!game_img ? (
@@ -44,9 +44,7 @@ export const getGameLabel = ({ game_img, game_name, gameName, label }) =>
       &nbsp;&nbsp;&nbsp;&nbsp;{game_name || gameName || label}
     </div>
   ) : (
-    <div style={{ fontWeight: 'bold', fontSize: '14px' }}>
-      {game_name || gameName || label}
-    </div>
+    <div style={{ fontWeight: 'bold', fontSize: '14px' }}>{game_name || gameName || label}</div>
   )
 
 export async function Game_name_values(inputValue) {
@@ -115,12 +113,12 @@ export async function Game_name_Tags(inputValue, game_names_id) {
   var allTags
   if (inputValue == '' || inputValue == undefined) {
     allTags = await axios.post('/api/Tags/getTopTagsforGames', {
-      game_names_id: game_names_id,
+      game_names_id: game_names_id
     })
   } else {
     allTags = await axios.post('/api/Tags/getTagsforGames', {
       inputValue: inputValue,
-      game_names_id: game_names_id,
+      game_names_id: game_names_id
     })
   }
   try {
@@ -144,7 +142,7 @@ export async function Schedule_Game_Tags(inputValue, gameId, noTopGameTags) {
   } else {
     allTags = await axios.post('/api/GameTags/getGameTags', {
       content: inputValue,
-      game_names_id: gameId,
+      game_names_id: gameId
     })
   }
   try {
@@ -170,7 +168,7 @@ export async function Schedule_Game_Skills(inputValue) {
     allSkills = await axios.get('/api/GameSkills/getTopGameSkills')
   } else {
     allSkills = await axios.post('/api/GameSkills/getGameSkills', {
-      content: inputValue,
+      content: inputValue
     })
   }
   try {
@@ -190,7 +188,7 @@ export async function Schedule_Game_Skills(inputValue) {
 }
 
 export async function Group_Hash_Tags(inputValue) {
-  let allTags
+  //let allTags
   return null
 
   // if (inputValue == '' || inputValue == undefined) {
@@ -230,7 +228,7 @@ export async function Hash_Tags(inputValue) {
     allTags = await axios.get('/api/HashTags/getTopHashTags')
   } else {
     allTags = await axios.post('/api/HashTags/getHashTags', {
-      content: inputValue,
+      content: inputValue
     })
   }
   try {
