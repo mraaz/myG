@@ -14,15 +14,10 @@ import {
   Type,
   Description,
   CommentsAndPrivacy,
-  AllowChat,
   AutoAcceptGamers,
   ListOnLFT,
   Recruiting,
   Exclusive,
-  WhoCanJoin,
-  AllCanJoin,
-  FriendsCanJoin,
-  LinkCanJoin,
   InvitationCanJoin,
   InviteFriends,
 } from './components';
@@ -46,18 +41,12 @@ const CreateTeam = ({ loading, intl }) => {
           <Type type={team.type} intl={intl} />
           <Description description={team.description} intl={intl} onChange={(description) => setTeam({ ...team, description })} />
           <CommentsAndPrivacy>
-            <AllowChat checked={team.allowChat} intl={intl} onChange={() => setTeam({ ...team, allowChat: !team.allowChat })} />
             <AutoAcceptGamers checked={team.autoAcceptGamers} intl={intl} onChange={() => setTeam({ ...team, autoAcceptGamers: !team.autoAcceptGamers })} />
+            <InvitationCanJoin checked={team.invitationCanJoin} intl={intl} onChange={() => setTeam({ ...team, invitationCanJoin: !team.invitationCanJoin })} />
             <ListOnLFT checked={team.listOnLFT} intl={intl} onChange={() => setTeam({ ...team, listOnLFT: !team.listOnLFT })} />
             <Recruiting checked={team.recruiting} intl={intl} onChange={() => setTeam({ ...team, recruiting: !team.recruiting })} />
             <Exclusive checked={team.exclusive} intl={intl} onChange={() => setTeam({ ...team, exclusive: !team.exclusive })} />
           </CommentsAndPrivacy>
-          <WhoCanJoin>
-            <AllCanJoin checked={team.allCanJoin} intl={intl} onChange={() => setTeam({ ...team, allCanJoin: !team.allCanJoin })} />
-            <FriendsCanJoin checked={team.friendsCanJoin} intl={intl} onChange={() => setTeam({ ...team, friendsCanJoin: !team.friendsCanJoin })} />
-            <LinkCanJoin checked={team.linkCanJoin} intl={intl} onChange={() => setTeam({ ...team, linkCanJoin: !team.linkCanJoin })} />
-            <InvitationCanJoin checked={team.invitationCanJoin} intl={intl} onChange={() => setTeam({ ...team, invitationCanJoin: !team.invitationCanJoin })} />
-          </WhoCanJoin>
           <InviteFriends invitedFriends={team.invitedFriends} intl={intl} onChange={(invitedFriends) => setTeam({ ...team, invitedFriends })} />
         </Column>
       </Content>

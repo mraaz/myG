@@ -143,16 +143,6 @@ export const CommentsAndPrivacy = ({ children }) => (
   </React.Fragment>
 );
 
-export const AllowChat = ({ checked, intl, onChange }) => (
-  <div className="team-input-container team-checkbox">
-    <MyGCheckbox
-      checked={checked}
-      onClick={onChange}
-      labelText={intl.formatMessage({ id: "teams.create.allow-chat", defaultMessage: "Allow Chat" })}
-    />
-  </div>
-);
-
 export const AutoAcceptGamers = ({ checked, intl, onChange }) => (
   <div className="team-input-container team-checkbox">
     <MyGCheckbox
@@ -189,46 +179,6 @@ export const Exclusive = ({ checked, intl, onChange }) => (
       checked={checked}
       onClick={onChange}
       labelText={intl.formatMessage({ id: "teams.create.exclusive", defaultMessage: "Exclusivity Team" })}
-    />
-  </div>
-);
-
-export const WhoCanJoin = ({ children }) => (
-  <React.Fragment>
-    <div className="team-input-container team-section-header">
-      <Label id="teams.create.who-can-join" defaultMessage="Who can Join your Team" />
-    </div>
-    {children}
-  </React.Fragment>
-);
-
-
-export const AllCanJoin = ({ checked, intl, onChange }) => (
-  <div className="team-input-container team-checkbox">
-    <MyGCheckbox
-      checked={checked}
-      onClick={onChange}
-      labelText={intl.formatMessage({ id: "teams.create.all-can-join", defaultMessage: "Everyone" })}
-    />
-  </div>
-);
-
-export const FriendsCanJoin = ({ checked, intl, onChange }) => (
-  <div className="team-input-container team-checkbox">
-    <MyGCheckbox
-      checked={checked}
-      onClick={onChange}
-      labelText={intl.formatMessage({ id: "teams.create.friends-can-join", defaultMessage: "Friends" })}
-    />
-  </div>
-);
-
-export const LinkCanJoin = ({ checked, intl, onChange }) => (
-  <div className="team-input-container team-checkbox">
-    <MyGCheckbox
-      checked={checked}
-      onClick={onChange}
-      labelText={intl.formatMessage({ id: "teams.create.link-can-join", defaultMessage: "Gamers with Link" })}
     />
   </div>
 );

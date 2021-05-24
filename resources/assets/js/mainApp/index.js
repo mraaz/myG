@@ -351,7 +351,7 @@ class Layout extends Component {
                 <FeatureEnabled allOf={[TEAMS]}>
                   <Route
                     exact
-                    path='/create-team'
+                    path='/createTeam'
                     component={() => (
                       <CreateTeam
                         userId={this.state.initialData && this.state.initialData.userInfo.id}
