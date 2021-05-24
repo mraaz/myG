@@ -7,11 +7,13 @@ const secretRolloutKey = '5f27277a8427506a57cba720'
 export const REPEAT_SCHEDULE = 'REPEAT_SCHEDULE'
 export const PROFILE_V2 = 'PROFILE_V2'
 export const CHANNEL = 'CHANNEL'
+export const TEAMS = 'TEAMS'
 
 const flags = {
   REPEAT_SCHEDULE: new Rox.Flag(),
   PROFILE_V2: new Rox.Flag(),
   CHANNEL: new Rox.Flag(),
+  TEAMS: new Rox.Flag(),
 }
 
 async function initRollout() {

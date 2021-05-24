@@ -1,6 +1,6 @@
 import React from 'react'
 
-const MyGButton = ({ customStyles, text, onClick }) => {
+const MyGButton = ({ customStyles, text, onClick, primary, secondary }) => {
   const styles = {
     button: {
       padding: '0 22px',
@@ -11,9 +11,11 @@ const MyGButton = ({ customStyles, text, onClick }) => {
       cursor: 'pointer',
     },
   }
-
+  const hasCssStyle = !!primary || !!secondary;
+  const cssStyle = `${primary ? 'myg-button-primary' : ''}` + `${secondary ? 'myg-button-secondary' : ''}`;
+  const objectStyle = hasCssStyle ? {} : { ...styles.button, ...customStyles };
   return (
-    <div style={{ ...styles.button, ...customStyles }} onClick={onClick}>
+    <div className={cssStyle} style={objectStyle} onClick={onClick}>
       {text}
     </div>
   )

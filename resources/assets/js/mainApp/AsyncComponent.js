@@ -162,6 +162,13 @@ const Channel = Loadable({
   },
 })
 
+const CreateTeam = Loadable({
+  loader: () => import('./components/Teams/Create'),
+  loading: function() {
+    return null
+  },
+})
+
 export {
   Home,
   ProfileContainer,
@@ -187,7 +194,5 @@ export {
   Onboarding,
   Channel,
   HashTagList,
-}
-function newFunction() {
-  return './components/MobileView/MobileMenuTop'
+  CreateTeam,
 }

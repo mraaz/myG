@@ -30,6 +30,7 @@ import { store, persistor } from '../redux/Store'
 import { loadUserInfoToReduxStore } from '../common/user'
 import { fetchNotifications } from '../common/notifications'
 import { registerAccess } from '../integration/http/quests';
+import { FeatureEnabled, TEAMS } from '../common/flags'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
 import {
@@ -55,6 +56,7 @@ import {
   Onboarding,
   Channel,
   HashTagList,
+  CreateTeam,
 } from './AsyncComponent'
 
 class Layout extends Component {
@@ -345,6 +347,21 @@ class Layout extends Component {
                     />
                   )}
                 />
+
+                <FeatureEnabled allOf={[TEAMS]}>
+                  <Route
+                    exact
+                    path='/create-team'
+                    component={() => (
+                      <CreateTeam
+                        userId={this.state.initialData && this.state.initialData.userInfo.id}
+                        alias={this.state.initialData && this.state.initialData.userInfo.alias}
+                        loading={!this.state.initialData}
+                        key={Math.random()}
+                      />
+                    )}
+                  />
+                </FeatureEnabled>
 
                 <Route
                   exact
