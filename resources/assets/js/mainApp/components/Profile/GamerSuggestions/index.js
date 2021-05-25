@@ -35,6 +35,8 @@ export class GamerSuggestions extends React.Component {
   renderGamerSuggestion = (profile, index) => {
     const isHovering = this.state.hovering === profile.alias;
     const games = profile.mostPlayedGames.length ? profile.mostPlayedGames : profile.gameExperiences.map(({ name }) => name);
+    console.log('games    ',games);
+    
     return(
       <div className="game-experience clickable" key={`${profile.alias}_${index}`}
       onClick={() => this.props.onboarding ? this.sendFriendRequest(profile.alias, profile.profileId) : window.router.push(`/profile/${profile.alias}`)}
