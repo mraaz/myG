@@ -2049,6 +2049,9 @@
 
 .mobileShow {
   display: none;
+  &.zIndex {
+    z-index: 99999999;
+  }
 }
 .desktopShow {
   display: block;
