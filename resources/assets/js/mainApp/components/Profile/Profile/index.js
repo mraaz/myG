@@ -9,6 +9,7 @@ import Banner from '../Banner';
 import ProfileInfo from '../Info';
 import Sponsors from '../Sponsors';
 import GameExperiences from '../GameExperiences';
+import MobileGameExperiences from '../GameExperiences/mobile';
 import GamerSuggestions from '../GamerSuggestions';
 import MobileGamerSuggestions from '../GamerSuggestions/Mobile';
 import MyPosts from '../../MyPosts'
@@ -101,7 +102,12 @@ export class Profile extends React.Component {
           <ProfileInfo alias={this.props.alias} profile={this.props.profile} updateProfile={this.props.updateProfile} />
         </div>
          {!!sponsors.length && <Sponsors isSelf={this.props.profile.isSelf} alias={this.props.alias} profile={this.props.profile} sponsors={sponsors} refetchSponsors={() => this.props.fetchProfile(this.props.alias)} />}
-        <GameExperiences userId={this.props.userId} selectedGame={this.props.gameId} commendUser={this.commendUser} deleteExperience={this.deleteExperience} alias={this.props.alias} profile={this.props.profile} updateGame={this.props.updateGame} />
+         <div className="desktopShow"> 
+          <GameExperiences userId={this.props.userId} selectedGame={this.props.gameId} commendUser={this.commendUser} deleteExperience={this.deleteExperience} alias={this.props.alias} profile={this.props.profile} updateGame={this.props.updateGame} />
+        </div>
+        <div className="mobileShow"> 
+          <MobileGameExperiences userId={this.props.userId} selectedGame={this.props.gameId} commendUser={this.commendUser} deleteExperience={this.deleteExperience} alias={this.props.alias} profile={this.props.profile} updateGame={this.props.updateGame} />
+        </div>
         <div className="desktopShow"> 
         {!!this.props.profile.isSelf  && <GamerSuggestions profile={this.props.profile} sendFriendRequest={this.props.sendFriendRequest} cancelFriendRequest={this.props.cancelFriendRequest} follow={this.props.follow} unfollow={this.props.unfollow}  /> }
         </div>
