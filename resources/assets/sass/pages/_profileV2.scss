@@ -2056,7 +2056,11 @@
 .desktopShow {
   display: block;
   z-index: 1;
+  &.zIndex {
+    z-index: 99999999;
+  }
 }
+
 @media screen and (max-width: 575px) {
   .desktopShow {
     display: none;

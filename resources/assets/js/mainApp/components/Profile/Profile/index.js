@@ -98,7 +98,7 @@ export class Profile extends React.Component {
     return(
       <div id="profile" ref={this.contentAreaRef}>
         <Banner profile={this.props.profile} updateProfile={this.props.updateProfile} />
-        <div className="desktopShow"> 
+        <div className="desktopShow zIndex"> 
           <ProfileInfo alias={this.props.alias} profile={this.props.profile} updateProfile={this.props.updateProfile} />
         </div>
          {!!sponsors.length && <Sponsors isSelf={this.props.profile.isSelf} alias={this.props.alias} profile={this.props.profile} sponsors={sponsors} refetchSponsors={() => this.props.fetchProfile(this.props.alias)} />}
