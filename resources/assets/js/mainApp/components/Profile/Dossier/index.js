@@ -19,7 +19,7 @@ export default class Dossier extends React.Component {
   render() {
     return(
       <div id="profile-dossier">
-          <div className="container">
+          <div className="container zIndex">
             <div className="tabs">
               {this.props.isSelf && this.state.tab !== 'social-view' && (
                 <div className={`tab clickable ${this.state.tab === 'info' ? 'selected' : 'unselected'}`}
