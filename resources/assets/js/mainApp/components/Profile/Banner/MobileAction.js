@@ -143,7 +143,7 @@ export default class MobileAction extends React.Component {
         updateProfile={this.props.updateProfile}
         isSelf={this.props.isSelf}
         tab={this.state.editing}
-        onClose={() => this.setState({ editing: false })}
+        onClose={() => this.setState({ editing: false, editing: '' })}
       />
     )
   }
@@ -163,7 +163,7 @@ export default class MobileAction extends React.Component {
   render() {
     return (
       <Fragment>
-        <div className='mobile__buttons-group'>
+        <div className={`mobile__buttons-group ${this.state.editing == 'social-view' ? 'zIndex' : ''}`}>
           {this.renderSendMessageButton()}
           {this.renderConnectionButton()}
           {this.renderFollowButton()}

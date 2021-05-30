@@ -105,10 +105,10 @@ export class Profile extends React.Component {
          <div className="desktopShow"> 
           <GameExperiences userId={this.props.userId} selectedGame={this.props.gameId} commendUser={this.commendUser} deleteExperience={this.deleteExperience} alias={this.props.alias} profile={this.props.profile} updateGame={this.props.updateGame} />
         </div>
-        <div className="mobileShow"> 
+        <div className="mobileShow">  
           <MobileGameExperiences userId={this.props.userId} selectedGame={this.props.gameId} commendUser={this.commendUser} deleteExperience={this.deleteExperience} alias={this.props.alias} profile={this.props.profile} updateGame={this.props.updateGame} />
         </div>
-        <div className="desktopShow"> 
+        <div className="desktopShow">
         {!!this.props.profile.isSelf  && <GamerSuggestions profile={this.props.profile} sendFriendRequest={this.props.sendFriendRequest} cancelFriendRequest={this.props.cancelFriendRequest} follow={this.props.follow} unfollow={this.props.unfollow}  /> }
         </div>
         <div className="mobileShow"> 

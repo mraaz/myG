@@ -2050,6 +2050,9 @@
 .mobileShow {
   display: none;
   &.zIndex {
+    z-index: 99;
+  }
+  .zIndex {
     z-index: 99999999;
   }
 }
@@ -2069,5 +2072,8 @@
   }
   .mobileShow {
     display: block;
+    .zIndex {
+      z-index: 99;
+    }
   }
 }
