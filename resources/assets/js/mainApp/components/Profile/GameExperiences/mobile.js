@@ -54,7 +54,7 @@ export default class GameExperiences extends React.Component {
   }
 
   getGamesPerPage = () => {
-    const selfSize = 2;
+    const selfSize = 1;
     const othersSize = 3;
     return this.state.isSelf ? selfSize : othersSize;
   }
@@ -147,7 +147,7 @@ export default class GameExperiences extends React.Component {
                 Delete
               </div>
             )}
-            {!!this.props.profile && !!this.props.profile.isFriend && !hasCommended && (
+            {!!this.props.profile && !this.props.profile.isFriend && !hasCommended && (
               <div className="hover-button clickable" onClick={(event) => { event.stopPropagation(); this.props.commendUser(id); }}>
                   Commend Me
               </div>
