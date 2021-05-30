@@ -21,7 +21,7 @@ export default class EditGameExperience extends React.Component {
     experience: null,
     background: [],
     team: null,
-    tags: [],
+    tags: []
   }
 
   componentDidMount() {
@@ -61,9 +61,9 @@ export default class EditGameExperience extends React.Component {
             team: experience.team || null,
             role: experience.role || null,
             experience: experience.experience ? { value: experience.experience, label: experience.experience } : null,
-            skills: experience.skills ? experience.skills.map((skill) => ({ value: skill, label: skill })) : [],
+            skills: experience.skills ? experience.skills.map((skill) => ({ value: skill, label: skill })) : []
           }))
-        : [],
+        : []
     }
   }
 
@@ -88,7 +88,7 @@ export default class EditGameExperience extends React.Component {
         team: experience.team,
         role: experience.role,
         experience: experience.experience && experience.experience.value,
-        skills: experience.skills && experience.skills.map((entry) => entry.value).join('|'),
+        skills: experience.skills && experience.skills.map((entry) => entry.value).join('|')
       }))
     }
     return updates
@@ -115,7 +115,7 @@ export default class EditGameExperience extends React.Component {
   }
 
   renderOptionsMenu = (bottom) => {
-    if (this.props.onboarding) return null;
+    if (this.props.onboarding) return null
     if (bottom && window.innerWidth > 575) return null
     const baseStyle = 'option'
     const experienceTabEnabled = this.state.level && this.state.level.value !== 'Casual'
@@ -166,8 +166,8 @@ export default class EditGameExperience extends React.Component {
 
   renderEditMenu = () => {
     if (window.innerWidth <= 575) {
-      return(
-        <div className='game-experience-content'>
+      return (
+        <div className='game-experience-content zIndex'>
           {this.renderEditMenuContent()}
           {this.renderOptionsMenu(true)}
         </div>

@@ -2049,18 +2049,30 @@
 .mobileShow {
   display: none;
   &.zIndex {
+    z-index: 99;
+  }
+  .zIndex {
     z-index: 99999999;
   }
 }
 .desktopShow {
   display: block;
-  z-index: 1;
+  &.zIndex {
+    z-index: 99999999;
+  }
+  .zIndex {
+    z-index: 99999999;
+  }
 }
+
 @media screen and (max-width: 575px) {
   .desktopShow {
     display: none;
   }
   .mobileShow {
     display: block;
+    .zIndex {
+      z-index: 99;
+    }
   }
 }

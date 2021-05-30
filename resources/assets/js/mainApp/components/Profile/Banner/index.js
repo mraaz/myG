@@ -61,7 +61,7 @@ export class Banner extends React.Component {
             onlyProfile={this.props.onlyProfile}
           />
         </div>
-        <div className="mobileShow zIndex"> 
+        <div className="mobileShow"> 
           <MobileHeader
             alias={this.props.profile.alias}
             profile={this.props.profile}
@@ -80,7 +80,7 @@ export class Banner extends React.Component {
         </div>
         <div className="profile-banner-shadow"></div>
       </div>  
-      <div className="mobileShow zIndex"> 
+      <div className="mobileShow"> 
           <MobileAction 
             alias={this.props.profile.alias}
             profile={this.props.profile}
