@@ -134,6 +134,7 @@ Route.get('/api/GameNames/:int/gameSearchResults', 'GameNameController.gameSearc
 Route.get('/api/GameNames/getTopGames', 'GameNameController.getTopGames')
 
 Route.get('/api/Tags', 'TagController.show')
+Route.get('/api/tags_v2', 'TagController.fetchTags')
 Route.post('/api/Tags/getTagsforGames', 'TagController.getTagsforGames')
 Route.post('/api/Tags/getTopTagsforGames', 'TagController.getTopTagsforGames')
 Route.post('/api/Tags', 'TagController.store')

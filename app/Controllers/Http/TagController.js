@@ -44,6 +44,18 @@ class TagController {
     }
   }
 
+  async fetchTags({ request }) {
+    try {
+      const tag = request.input('input');
+      const query = Database.table('tags');
+      if (tag) query.where('tag', 'like', '%' + tag + '%');
+      return query.orderBy('counter', 'desc').limit(88);
+    } catch (error) {
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      return [];
+    }
+  }
+
   async getTagsforGames({ auth, request, response }) {
     try {
       const allTags = await Database.table('tags')

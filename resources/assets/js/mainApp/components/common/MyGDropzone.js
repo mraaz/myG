@@ -19,6 +19,7 @@ class MyGDropzone extends React.Component {
       Remove_file(this.state.preview_files[0].key, this.state.preview_files[0].id)
     }
     this.setState({ preview_files: preview_files })
+    this.props.onChange(null);
   }
 
   handleAcceptedFiles = async (file, rejectedFiles) => {
@@ -32,10 +33,8 @@ class MyGDropzone extends React.Component {
     if (file.length > 0) {
       this.setState({ uploading: true })
       let post = await Upload_to_S3(file[0], file[0].name, 0, null)
-      if (!post) {
-        this.setState({ uploading: false })
-        return
-      }
+      this.setState({ uploading: false })
+      if (!post) return
       const new_preview_files = []
       new_preview_files.push({
         src: post.data.Location,
@@ -43,18 +42,21 @@ class MyGDropzone extends React.Component {
         id: post.data.aws_key_id,
       });
       this.setState({ preview_files: new_preview_files, uploading: false });
+      this.props.onChange(new_preview_files[0]);
     }
   }
 
   render() {
+    const hasImage = this.state.preview_files.length > 0 || !!this.props.image;
+    const imagePreview = !!hasImage && this.state.preview_files.length > 0 ? this.state.preview_files[0] : this.props.image;
     return (
       <div className='media__container myg-dropzone clickable' style={this.props.containerStyle || {}}>
-        {this.state.preview_files.length == 0 && (
+        {!hasImage && (
           <Dropzone
             onDrop={(acceptedFiles, rejectedFiles) => this.handleAcceptedFiles(acceptedFiles, rejectedFiles)}
             maxFiles={1}
             minSize={0}
-            maxSizeBytes={11185350}
+            maxSize={11185350}
             accept='image/jpeg,image/jpg,image/png,image/gif'
             disabled={this.state.uploading}
             className='dropzone-thumb'>
@@ -95,11 +97,11 @@ class MyGDropzone extends React.Component {
           </Dropzone>
         )}
         <section>
-          {this.state.preview_files.length > 0 && (
-            <div className='files__preview'>
-              <span className='image' key={this.state.preview_files[0].src}>
-                <img src={this.state.preview_files[0].src} key={this.state.preview_files[0].src} />
-                <span className='remove__image' onClick={(e) => this.handlePreviewRemove(e, this.state.preview_files[0].src)}>
+          {hasImage && (
+            <div className='myg-dropzone-preview'>
+              <span className='image' key={imagePreview.src}>
+                <img src={imagePreview.src} key={imagePreview.src} />
+                <span className='remove' onClick={(e) => this.handlePreviewRemove(e, imagePreview.src)}>
                   X
                     </span>
               </span>

@@ -1,14 +1,17 @@
 import React from 'react'
 import { FormattedMessage } from 'react-intl';
-import { EXPERIENCE_OPTIONS } from '../../../static/AddGame';
+import { EXPERIENCE_OPTIONS, REGION_OPTIONS, LANGUAGE_OPTIONS } from '../../../static/AddGame';
 import {
   MyGInput,
   MyGTextarea,
-  MyGDropzone,
-  MyGSideLine,
   MyGSelect,
   MyGCheckbox,
   MyGButton,
+  MyGSideLine,
+  MyGDropzone,
+  MyGGameSelect,
+  MyGTagSelect,
+  MyGFriendSelect,
 } from '../../common';
 
 export const defaultTeamFields = {
@@ -18,8 +21,9 @@ export const defaultTeamFields = {
   hashtags: [],
   moderators: [],
   type: '',
+  region: '',
+  language: '',
   description: '',
-  allowChat: true,
   autoAcceptGamers: true,
   listOnLFT: true,
   recruiting: true,
@@ -79,47 +83,91 @@ export const Name = ({ onChange, intl }) => (
   </div>
 );
 
-export const GameTitle = ({ intl, index }) => (
+export const GameTitle = ({ intl, index, game, onChange }) => (
   <div className="team-game-title">
     <Label id={`teams.create.game-title-${index + 1}`} defaultMessage={`${index + 1}`} />
-    <MyGInput containerStyles={{ width: '100%' }} inputStyles={{ width: '100%' }} placeholder={intl.formatMessage({ id: "teams.create.game-title", defaultMessage: "Enter Game Title" })} />
+    <MyGGameSelect
+      containerStyles={{ width: '100%' }}
+      controlStyles={{ width: '100%' }}
+      game={game}
+      dynamicFields={false}
+      disabled={false}
+      placeholder={intl.formatMessage({ id: "teams.create.game-title", defaultMessage: "Enter Game Title" })}
+      onChange={onChange}
+    />
   </div>
 );
 
-export const GameTitles = ({ games, intl }) => (
+export const GameTitles = ({ games, intl, onChange }) => (
   <div className="team-input-container">
     <Label id="teams.create.games" defaultMessage="Game Titles" />
-    {games.map((game, index) => <GameTitle key={game.id} index={index} intl={intl} />)}
+    {games.map((game, index) => (
+      <GameTitle key={index} index={index} intl={intl} game={game} onChange={({ game }) => {
+        const newGames = JSON.parse(JSON.stringify(games));
+        newGames.splice(index, 1, game);
+        onChange(newGames);
+      }} />
+    ))}
   </div>
 );
 
-export const FeaturedImage = () => (
+export const FeaturedImage = ({ image, onChange }) => (
   <div className="team-input-container">
     <Label id="teams.create.featured-image" defaultMessage="Featured Image" />
-    <MyGDropzone containerStyle={{ width: '100%' }} />
+    <MyGDropzone image={image} containerStyle={{ width: '100%' }} onChange={onChange} />
   </div>
 );
 
-export const Hashtags = ({ intl }) => (
+export const Hashtags = ({ intl, hashtags, onChange }) => (
   <div className="team-input-container">
     <Label id="teams.create.hashtags" defaultMessage="Add Hashtags" />
-    <MyGTextarea placeholder={intl.formatMessage({ id: "teams.create.hashtags-hint", defaultMessage: "#hello" })} />
+    <MyGTagSelect tags={hashtags} onChange={onChange} placeholder={intl.formatMessage({ id: "teams.create.hashtags-hint", defaultMessage: "#hello" })} />
   </div>
 );
 
-export const Moderators = ({ intl }) => (
+export const Moderators = ({ intl, moderators, onChange }) => (
   <div className="team-input-container">
     <Label id="teams.create.moderators" defaultMessage="Moderators" />
-    <MyGTextarea placeholder={intl.formatMessage({ id: "teams.create.moderators-hint", defaultMessage: "Enter your Friend's name to set them as a moderator" })} />
+    <MyGFriendSelect
+      containerStyles={{ width: '100%' }}
+      controlStyles={{ width: '100%' }}
+      friends={moderators}
+      disabled={false}
+      placeholder={intl.formatMessage({ id: "teams.create.moderators-hint", defaultMessage: "Enter your Friend's name to set them as a moderator" })}
+      onChange={onChange}
+    />
   </div>
 );
 
-export const Type = () => (
+export const Type = ({ type, onChange }) => (
   <div className="team-input-container">
     <Label id="teams.create.type" defaultMessage="Type" />
     <MyGSelect
+      value={type}
       options={EXPERIENCE_OPTIONS}
-      onChange={() => { }}
+      onChange={onChange}
+    />
+  </div>
+);
+
+export const Language = ({ language, onChange }) => (
+  <div className="team-input-container">
+    <Label id="teams.create.language" defaultMessage="Language" />
+    <MyGSelect
+      value={language}
+      options={LANGUAGE_OPTIONS}
+      onChange={onChange}
+    />
+  </div>
+);
+
+export const Region = ({ region, onChange }) => (
+  <div className="team-input-container">
+    <Label id="teams.create.region" defaultMessage="Region" />
+    <MyGSelect
+      value={region}
+      options={REGION_OPTIONS}
+      onChange={onChange}
     />
   </div>
 );
@@ -193,9 +241,16 @@ export const InvitationCanJoin = ({ checked, intl, onChange }) => (
   </div>
 );
 
-export const InviteFriends = ({ intl }) => (
+export const InviteFriends = ({ invitedFriends, onChange, intl }) => (
   <div className="team-input-container">
     <Label id="teams.create.invite-friends" defaultMessage="Invite Friends" />
-    <MyGTextarea placeholder={intl.formatMessage({ id: "teams.create.invite-friends-hint", defaultMessage: "Select up to ten of your friends to invite" })} />
+    <MyGFriendSelect
+      containerStyles={{ width: '100%' }}
+      controlStyles={{ width: '100%' }}
+      friends={invitedFriends}
+      disabled={false}
+      placeholder={intl.formatMessage({ id: "teams.create.invite-friends-hint", defaultMessage: "Select up to ten of your friends to invite" })}
+      onChange={onChange}
+    />
   </div>
 );

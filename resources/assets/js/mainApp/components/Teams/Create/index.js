@@ -12,6 +12,8 @@ import {
   Hashtags,
   Moderators,
   Type,
+  Region,
+  Language,
   Description,
   CommentsAndPrivacy,
   AutoAcceptGamers,
@@ -38,7 +40,9 @@ const CreateTeam = ({ loading, intl }) => {
           <Moderators moderators={team.moderators} intl={intl} onChange={(moderators) => setTeam({ ...team, moderators })} />
         </Column>
         <Column>
-          <Type type={team.type} intl={intl} />
+          <Type type={team.type} intl={intl} onChange={(type) => setTeam({ ...team, type })} />
+          <Region region={team.region} intl={intl} onChange={(region) => setTeam({ ...team, region })} />
+          <Language language={team.language} intl={intl} onChange={(language) => setTeam({ ...team, language })} />
           <Description description={team.description} intl={intl} onChange={(description) => setTeam({ ...team, description })} />
           <CommentsAndPrivacy>
             <AutoAcceptGamers checked={team.autoAcceptGamers} intl={intl} onChange={() => setTeam({ ...team, autoAcceptGamers: !team.autoAcceptGamers })} />

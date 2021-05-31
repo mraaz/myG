@@ -15,6 +15,8 @@
   "teams.create.hashtags": "Add Hashtags",
   "teams.create.moderators": "Moderators",
   "teams.create.type": "Type",
+  "teams.create.region": "Region",
+  "teams.create.language": "Language",
   "teams.create.description": "Description",
   "teams.create.comments-and-privacy": "Comments and Privacy",
   "teams.create.who-can-join": "Who can Join your Team",
