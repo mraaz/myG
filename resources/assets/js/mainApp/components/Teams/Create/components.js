@@ -28,10 +28,7 @@ export const defaultTeamFields = {
   listOnLFT: true,
   recruiting: true,
   exclusive: false,
-  allCanJoin: true,
-  friendsCanJoin: false,
-  linkCanJoin: false,
-  invitationCanJoin: false,
+  invitationOnly: false,
   invitedFriends: [],
   availability: [],
 };
@@ -55,7 +52,7 @@ export const TopBar = () => (
   </div>
 );
 
-export const BottomBar = ({ intl, onCancel, onCreate }) => (
+export const BottomBar = ({ intl, loading, onCancel, onCreate }) => (
   <div className="team-bottom-bar">
     <MyGButton
       secondary
@@ -64,6 +61,7 @@ export const BottomBar = ({ intl, onCancel, onCreate }) => (
     />
     <MyGButton
       primary
+      loading={loading}
       onClick={onCreate}
       text={intl.formatMessage({ id: "myg.create", defaultMessage: "Create" })}
     />
@@ -121,7 +119,7 @@ export const FeaturedImage = ({ image, onChange }) => (
 export const Hashtags = ({ intl, hashtags, onChange }) => (
   <div className="team-input-container">
     <Label id="teams.create.hashtags" defaultMessage="Add Hashtags" />
-    <MyGTagSelect tags={hashtags} onChange={onChange} placeholder={intl.formatMessage({ id: "teams.create.hashtags-hint", defaultMessage: "#hello" })} />
+    <MyGTagSelect endpoint={'/api/team/tags'} tags={hashtags} onChange={onChange} placeholder={intl.formatMessage({ id: "teams.create.hashtags-hint", defaultMessage: "#hello" })} />
   </div>
 );
 
@@ -231,7 +229,7 @@ export const Exclusive = ({ checked, intl, onChange }) => (
   </div>
 );
 
-export const InvitationCanJoin = ({ checked, intl, onChange }) => (
+export const InvitationOnly = ({ checked, intl, onChange }) => (
   <div className="team-input-container team-checkbox">
     <MyGCheckbox
       checked={checked}

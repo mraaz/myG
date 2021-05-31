@@ -7,17 +7,17 @@ import { Disable_keys } from '../Utility_Function'
 
 const MAX_TAGS_LENGTH = 8
 
-const fetchTagOptions = (input) => {
-  return axios.get('/api/tags_v2', { params: { input } }).then((response) => response.data);
+const fetchTagOptions = (input, endpoint) => {
+  return axios.get(endpoint, { params: { input } }).then((response) => response.data);
 }
 
-const MyGTagSelect = ({ tags, placeholder, onChange }) => {
+const MyGTagSelect = ({ tags, placeholder, endpoint, onChange }) => {
   const [input, setInput] = useState('');
   const [options, setOptions] = useState([]);
 
   useEffect(() => {
-    fetchTagOptions(input).then((options) => setOptions(options));
-  }, [input, setOptions]);
+    fetchTagOptions(input, endpoint).then((options) => setOptions(options));
+  }, [input, endpoint, setOptions]);
 
   const createOption = (label, game_names_id) => ({
     label,
@@ -60,7 +60,7 @@ const MyGTagSelect = ({ tags, placeholder, onChange }) => {
       isClearable
       isMulti
       placeholder={placeholder}
-      options={maxTags ? [] : options.map(({ tag }) => ({ label: tag, value: tag }))}
+      options={maxTags ? [] : options.map(({ content }) => ({ label: content, value: content }))}
       noOptionsMessage={() => {
         return maxOptions
           ? 'You have reached the max options value'

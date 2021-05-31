@@ -323,6 +323,22 @@ class AwsKeyController {
     }
   }
 
+  // Type 9 - Team Images
+  addTeamImage(key) {
+    try {
+      return AwsKey.create({ aws_key: key, type: 9 })
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error
+      })
+      return Promise.resolve(error)
+    }
+  }
+
   // Delete files with type as 0 from AWS if 24hrs have passed.
   async deleteFilesFromS3() {
     const oneDayAgo = new Date()

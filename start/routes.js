@@ -134,7 +134,6 @@ Route.get('/api/GameNames/:int/gameSearchResults', 'GameNameController.gameSearc
 Route.get('/api/GameNames/getTopGames', 'GameNameController.getTopGames')
 
 Route.get('/api/Tags', 'TagController.show')
-Route.get('/api/tags_v2', 'TagController.fetchTags')
 Route.post('/api/Tags/getTagsforGames', 'TagController.getTagsforGames')
 Route.post('/api/Tags/getTopTagsforGames', 'TagController.getTopTagsforGames')
 Route.post('/api/Tags', 'TagController.store')
@@ -486,6 +485,10 @@ Route.get('/api/achievements/monthly', 'AchievementsController.fetchMonthlyQuest
 Route.post('/api/achievements/daily', 'AchievementsController.redeemDaily')
 Route.post('/api/achievements/weekly', 'AchievementsController.redeemWeekly')
 Route.post('/api/achievements/monthly', 'AchievementsController.redeemMonthly')
+
+// Teams
+Route.post('/api/team', 'TeamController.createTeam')
+Route.get('/api/team/tags', 'TeamController.fetchTeamTags')
 
 // Triggering Jobs
 Route.get('/api/schedule/:job', 'SchedulerController.triggerJob')
