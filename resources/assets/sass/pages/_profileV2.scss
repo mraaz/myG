@@ -1970,6 +1970,7 @@
           padding: 0;
           @media screen and (max-width: $tablet) {
             width: 150px;
+            position: relative;
           }
 
           .picture-container {
@@ -2007,6 +2008,7 @@
             height: 50%;
             padding-top: 25px;
             background-color: #1d2326;
+            align-items: center;
           }
 
           .alias {
