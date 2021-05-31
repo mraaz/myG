@@ -45,7 +45,7 @@ export class Banner extends React.Component {
             <AnalyticsBox alias={this.props.profile.alias} containerStyle='analytics' />
         </Uploader>
         {this.renderBannerUploader()}
-        <div className="desktopShow">
+        <div className="desktopShow zIndex">
           <Header
             alias={this.props.profile.alias}
             profile={this.props.profile}
