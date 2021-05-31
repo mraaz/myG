@@ -2058,7 +2058,6 @@
 }
 .desktopShow {
   display: block;
-  z-index: 1;
   &.zIndex {
     z-index: 99999999;
   }
