@@ -348,6 +348,26 @@ class Layout extends Component {
                   )}
                 />
 
+                <Route
+                  exact
+                  path='/community/:name'
+                  component={(props) => (
+                    <CommunityView
+                      routeProps={props}
+                      initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
+                      key={Math.random()}
+                    />
+                  )}
+                />
+
+                <Route
+                  exact
+                  path='/setEncryptionParaphrase/:encryption'
+                  component={(props) => <EncryptionParaphraseRegistration routeProps={props} key={Math.random()} />}
+                />
+
+                <Route render={() => <h3> Oops! I couldn't find that </h3>} />
+
                 <FeatureEnabled allOf={[TEAMS]}>
                   <Route
                     exact
@@ -362,25 +382,6 @@ class Layout extends Component {
                     )}
                   />
                 </FeatureEnabled>
-
-                <Route
-                  exact
-                  path='/setEncryptionParaphrase/:encryption'
-                  component={(props) => <EncryptionParaphraseRegistration routeProps={props} key={Math.random()} />}
-                />
-                <Route
-                  exact
-                  path='/community/:name'
-                  component={(props) => (
-                    <CommunityView
-                      routeProps={props}
-                      initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
-                      key={Math.random()}
-                    />
-                  )}
-                />
-
-                <Route render={() => <h3> Oops! I couldn't find that </h3>} />
               </Switch>
             </section>
             <MessengerLoader

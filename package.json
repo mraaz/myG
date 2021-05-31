@@ -15,6 +15,7 @@
     "dev": "npm run build && node server.js",
     "style": "npm run sass && node server.js",
     "production": "./node_modules/.bin/webpack --env production NODE_ENV=production --mode=production",
+    "watch-all": "concurrently --kill-others -n css,react,backend -c cyan,magenta,blue \"npm run watch\" \"npm run watch2\" \"npm run watch-server\"",
     "watch": "gulp",
     "watch2": "webpack --watch --mode=development",
     "server": "adonis serve",
