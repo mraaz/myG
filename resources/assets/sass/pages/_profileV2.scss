@@ -514,7 +514,7 @@
       left: 0;
       right: 0;
       background: #01010161;
-      box-shadow: 0px 3px 45px #000;
+      // box-shadow: 0px 3px 45px #000;
     }
 
     @media (min-width: 575px) {
@@ -1969,6 +1969,7 @@
           padding: 0;
           @media screen and (max-width: $tablet) {
             width: 150px;
+            position: relative;
           }
 
           .picture-container {
@@ -2006,6 +2007,7 @@
             height: 50%;
             padding-top: 25px;
             background-color: #1d2326;
+            align-items: center;
           }
 
           .alias {
