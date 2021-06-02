@@ -73,13 +73,13 @@ const normalizeGroupsData = (data) => {
   }
 }
 
-const parsePlayersToSelectData = (data) => {
+const parsePlayersToSelectData = (data, customStyles) => {
   const selectData = []
   if (data && data.length) {
     data.forEach((player) => {
       selectData.push({
         label: (
-          <div style={{ display: 'flex', alignItems: 'center', backgroundColor: '#1d2326' }}>
+          <div style={{ display: 'flex', alignItems: 'center', backgroundColor: '#1d2326', ...(customStyles || {}) }}>
             <img style={{ display: 'inline', marginRight: '10px', borderRadius: '30px' }} src={player.profile_img} height={20} width={20} />
             <div style={{ display: 'inline', color: '#fff' }}>{player.alias || player.first}</div>
           </div>

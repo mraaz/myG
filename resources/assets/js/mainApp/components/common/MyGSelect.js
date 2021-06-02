@@ -1,4 +1,5 @@
 import React from 'react'
+import { injectIntl } from 'react-intl'
 import Select from 'react-select'
 
 const MyGSelect = ({
@@ -13,6 +14,7 @@ const MyGSelect = ({
   placeholder,
   onInputChange,
   disabled,
+  intl,
   ...props
 }) => {
   const customStyles = {
@@ -56,7 +58,7 @@ const MyGSelect = ({
         options={options}
         onFocus={onFocus}
         onChange={onChange}
-        placeholder={placeholder}
+        placeholder={placeholder || intl.formatMessage({ id: 'myg.select.hint', defaultValue: 'Select...' })}
         onInputChange={onInputChange}
         classNamePrefix='filter'
         {...props}
@@ -65,4 +67,4 @@ const MyGSelect = ({
   )
 }
 
-export default MyGSelect
+export default injectIntl(MyGSelect)

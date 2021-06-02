@@ -44,6 +44,7 @@ const uploadFile = (bucket, buffer, name, type) => {
     ContentType: type.mime,
     Key: name,
   }
+  if (process.env.MOCK_S3_UPLOAD) return Promise.resolve({ Key: 'MockKey', Location: 'https://cdn.mos.cms.futurecdn.net/VSy6kJDNq2pSXsCzb6cvYF.jpg' });
   return s3.upload(params).promise()
 }
 
