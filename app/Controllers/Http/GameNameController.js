@@ -21,7 +21,7 @@ class GameNameController {
       try {
         const newGameName = await GameNames.create({
           game_name: request.input('game_name').trim(),
-          user_id: auth.user.id,
+          user_id: auth.user.id
         })
 
         const gameSearchResults = await Database.table('game_names')
@@ -37,7 +37,7 @@ class GameNameController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
         return false
       }
@@ -57,7 +57,7 @@ class GameNameController {
 
         const createGame = await GameNames.create({
           game_name: game_name,
-          user_id: auth.user.id,
+          user_id: auth.user.id
         })
 
         const gameSearchResults = await Database.table('game_names')
@@ -73,7 +73,7 @@ class GameNameController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
         return false
       }
@@ -85,9 +85,7 @@ class GameNameController {
   async incrementGameCounter({ auth }, game_name) {
     if (auth.user) {
       try {
-        const incrementGameCounter = await GameNames.query()
-          .where({ id: game_name })
-          .increment('counter', 1)
+        const incrementGameCounter = await GameNames.query().where({ id: game_name }).increment('counter', 1)
         const gameSearchResults = await Database.table('game_names')
           .leftJoin('game_name_fields', 'game_name_fields.game_names_id', 'game_names.id')
           .where('game_names.id', game_name)
@@ -101,7 +99,7 @@ class GameNameController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
         return false
       }
@@ -113,12 +111,10 @@ class GameNameController {
   async decrementGameCounter({ auth }, game_id) {
     if (auth.user) {
       try {
-        const decrementGameCounter = await GameNames.query()
-          .where({ id: game_id })
-          .decrement('counter', 1)
+        const decrementGameCounter = await GameNames.query().where({ id: game_id }).decrement('counter', 1)
         const game_name = await Database.table('game_names')
           .where({
-            id: game_id,
+            id: game_id
           })
           .first()
 
@@ -132,7 +128,7 @@ class GameNameController {
 
           const delete_game = await Database.table('game_names')
             .where({
-              id: game_name.id,
+              id: game_name.id
             })
             .delete()
           await ElasticsearchRepository.removeGameName({ id: game_name.id })
@@ -151,7 +147,7 @@ class GameNameController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
         return false
       }
@@ -164,7 +160,7 @@ class GameNameController {
     try {
       const allGameNames = await GameNames.query().fetch()
       return {
-        allGameNames,
+        allGameNames
       }
     } catch (error) {
       LoggingRepository.log({
@@ -172,7 +168,7 @@ class GameNameController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -184,7 +180,7 @@ class GameNameController {
         .where({ game_name: decodeURIComponent(request.params.name) })
 
       return {
-        getOne,
+        getOne
       }
     } catch (error) {
       LoggingRepository.log({
@@ -192,7 +188,7 @@ class GameNameController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -211,7 +207,7 @@ class GameNameController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -229,7 +225,7 @@ class GameNameController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -238,6 +234,7 @@ class GameNameController {
     const gameSearchResults = await Database.table('game_names')
       .leftJoin('game_name_fields', 'game_name_fields.game_names_id', 'game_names.id')
       .select('game_names.*', 'game_name_fields.game_names_id as more_data')
+
     for await (let gameName of gameSearchResults) {
       await ElasticsearchRepository.storeGameName(gameName)
     }
@@ -266,21 +263,19 @@ class GameNameController {
     for await (let gameToDelete of gamesToDelete) {
       await apiController.internal_deleteFile({ auth }, '9', gameToDelete.id)
       await ElasticsearchRepository.removeGameName({ id: gameToDelete.id })
-      await Database.table('game_names')
-        .where({ id: gameToDelete.id })
-        .delete()
+      await Database.table('game_names').where({ id: gameToDelete.id }).delete()
     }
     const report = gamesToDelete.map((gameToDelete) => ({
       id: gameToDelete.id,
       userId: gameToDelete.user_id,
-      name: gameToDelete.game_name,
+      name: gameToDelete.game_name
     }))
     LoggingRepository.log({
       environment: process.env.NODE_ENV,
       type: 'task',
       source: 'backend',
       context: 'delete unused games',
-      message: JSON.stringify(report),
+      message: JSON.stringify(report)
     })
   }
 
@@ -290,61 +285,73 @@ class GameNameController {
         return {
           experience: true,
           platform: false,
-          region: false,
+          region: false
         }
       case 'League of Legends':
         return {
           experience: true,
           platform: false,
-          region: false,
+          region: false
         }
       case 'Mobile Legends: Bang Bang':
         return {
           experience: true,
           platform: false,
-          region: true,
+          region: true
         }
       case 'Overwatch':
         return {
           experience: true,
           platform: true,
-          region: false,
+          region: false
         }
       case 'Call of Duty: Warzone':
         return {
           experience: true,
           platform: true,
-          region: false,
+          region: false
         }
       case 'CSGO':
         return {
           experience: true,
           platform: true,
-          region: false,
+          region: false
         }
       case 'Fortnite':
         return {
           experience: true,
           platform: true,
-          region: false,
+          region: false
         }
       case 'PUBG':
         return {
           experience: true,
           platform: false,
-          region: false,
+          region: false
         }
       case 'Rocket League':
         return {
           experience: true,
           platform: true,
-          region: false,
+          region: false
+        }
+      case 'PUBG Mobile':
+        return {
+          experience: true,
+          platform: false,
+          region: false
+        }
+      case 'Halo 5 Guardians':
+        return {
+          experience: true,
+          platform: true,
+          region: false
         }
     }
     return {
       experience: true,
       platform: true,
-      region: true,
+      region: true
     }
   }
 }
