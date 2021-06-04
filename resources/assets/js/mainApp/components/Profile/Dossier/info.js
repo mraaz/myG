@@ -28,7 +28,7 @@ export class DossierInfo extends React.Component {
     visibilityCountry: 'secret',
     lookingForWork: false,
     hasMic: false,
-    underage: true,
+    underage: true
   }
 
   componentDidMount() {
@@ -50,7 +50,7 @@ export class DossierInfo extends React.Component {
     const languages = (get(this.props, 'profile.languages') || []).map((language) => ({ label: language, value: language }))
     const mostPlayedGames = (get(this.props, 'profile.mostPlayedGames') || []).map((game) => ({
       gameName: game,
-      gameNameValue: { label: game, value: game },
+      gameNameValue: { label: game, value: game }
     }))
     const visibilityName = get(this.props, 'profile.visibilityName') || 'secret'
     const visibilityEmail = get(this.props, 'profile.visibilityEmail') || 'secret'
@@ -70,7 +70,7 @@ export class DossierInfo extends React.Component {
       visibilityName,
       visibilityEmail,
       visibilityCountry,
-      lookingForWork,
+      lookingForWork
     }
   }
 
@@ -152,7 +152,8 @@ export class DossierInfo extends React.Component {
             disabled
             className='input'
             value={this.state.alias}
-            onChange={(event) => this.setState({ alias: event.target.value })}></input>
+            onChange={(event) => this.setState({ alias: event.target.value })}
+          ></input>
         </div>
       </div>
     )
@@ -167,7 +168,8 @@ export class DossierInfo extends React.Component {
             className='input'
             disabled
             value={this.state.email}
-            onChange={(event) => this.setState({ email: event.target.value })}></input>
+            onChange={(event) => this.setState({ email: event.target.value })}
+          ></input>
         </div>
         <div className='options'>
           <MyGCheckbox
@@ -209,10 +211,9 @@ export class DossierInfo extends React.Component {
   }
 
   handleDropDownChange = (index, game) => {
-    if (!game) return;
-    const gameName = game && game.game && game.game.value;
-    const gameNameValue = game && game.game;
-    console.log({ game, gameName, gameNameValue });
+    if (!game) return
+    const gameName = game && game.game && game.game.value
+    const gameNameValue = game && game.game
     return this.setState((previous) => {
       const mostPlayedGames = JSON.parse(JSON.stringify(previous.mostPlayedGames))
       if (!mostPlayedGames[0]) mostPlayedGames.push({})
@@ -224,10 +225,9 @@ export class DossierInfo extends React.Component {
   }
 
   renderGameInput = (index) => {
-    const mostPlayedGames = this.state.mostPlayedGames || [];
-    const game = mostPlayedGames[index];
-    const value = get(game, 'gameName');
-    console.log({ game, value });
+    const mostPlayedGames = this.state.mostPlayedGames || []
+    const game = mostPlayedGames[index]
+    const value = get(game, 'gameName')
     return (
       <div className='row'>
         <span className='hint'>Game #{index + 1}</span>
@@ -255,13 +255,14 @@ export class DossierInfo extends React.Component {
           value={this.state.country}
           onChange={(country) => this.setState({ country })}
           onSelect={(country) => this.setState({ country })}
-          searchOptions={{ types: ['(regions)'] }}>
+          searchOptions={{ types: ['(regions)'] }}
+        >
           {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
             <div className='input-container country'>
               <input
                 {...getInputProps({
                   placeholder: 'Search Places ...',
-                  className: 'input',
+                  className: 'input'
                 })}
               />
               {!!suggestions && suggestions.length > 0 && (
@@ -325,7 +326,7 @@ export class DossierInfo extends React.Component {
         <MyGSelect
           options={[
             { label: 'Waiting for Player 2', value: 'Waiting for Player 2' },
-            { label: 'Game in progress', value: 'Game in progress' },
+            { label: 'Game in progress', value: 'Game in progress' }
           ]}
           onChange={(relationship) => this.setState({ relationship })}
           value={this.state.relationship}
