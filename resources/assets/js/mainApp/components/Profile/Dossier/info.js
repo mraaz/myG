@@ -1,12 +1,11 @@
 import React from 'react'
 import get from 'lodash.get'
 import scriptLoader from 'react-async-script-loader'
-import AsyncCreatableSelect from 'react-select/async-creatable'
 import PlacesAutocomplete from 'react-places-autocomplete'
-import { Game_name_values, Disable_keys, getGameLabel } from '../../Utility_Function'
 import { getAssetUrl } from '../../../../common/assets'
 import MyGCheckbox from '../../common/MyGCheckbox'
 import MyGSelect from '../../common/MyGSelect'
+import MyGGameSelect from '../../common/MyGGameSelect'
 import { LANGUAGE_OPTIONS } from '../../../static/AddGame'
 import { ignoreFunctions } from '../../../../common/render'
 import { showMessengerAlert } from '../../../../common/alert'
@@ -209,11 +208,11 @@ export class DossierInfo extends React.Component {
     )
   }
 
-  handleDropDownChange = async (index, input) => {
-    const results = !!input && !!input.value && (await Game_name_values(input.value))
-    if (!results) return
-    const gameName = results[0] ? results[0].value : input && input.value
-    const gameNameValue = results[0] ? results[0] : input
+  handleDropDownChange = (index, game) => {
+    if (!game) return;
+    const gameName = game && game.game && game.game.value;
+    const gameNameValue = game && game.game;
+    console.log({ game, gameName, gameNameValue });
     return this.setState((previous) => {
       const mostPlayedGames = JSON.parse(JSON.stringify(previous.mostPlayedGames))
       if (!mostPlayedGames[0]) mostPlayedGames.push({})
@@ -224,36 +223,24 @@ export class DossierInfo extends React.Component {
     })
   }
 
-  loadOptions = async (input) => {
-    const defaultResponse = [{ label: input, value: input, gameName: input, gameNameValue: { label: input, value: input } }]
-    const results = await Game_name_values(input)
-    if (!results || !results.length) return defaultResponse
-    const currentGames = (this.state.mostPlayedGames || []).map(({ gameName }) => gameName)
-    return results.filter((result) => !currentGames.includes(result.value))
-  }
-
   renderGameInput = (index) => {
     const mostPlayedGames = this.state.mostPlayedGames || [];
     const game = mostPlayedGames[index];
     const value = get(game, 'gameName');
+    console.log({ game, value });
     return (
       <div className='row'>
         <span className='hint'>Game #{index + 1}</span>
         <div className='input-container-row game-title-select'>
-          <AsyncCreatableSelect
-            cacheOptions
-            defaultOptions
-            isValidNewOption={() => false}
-            loadOptions={this.loadOptions}
-            onChange={(input) => this.handleDropDownChange(index, input)}
-            value={value && { label: value, value: value }}
-            className='viewGame__name full-width'
-            placeholder='Search, select or create game title'
-            onInputChange={(inputValue) => (inputValue ? (inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88)) : '')}
-            onKeyDown={(e) => Disable_keys(e)}
-            isSearchable={true}
-            classNamePrefix='filter'
-            styles='background: red;'
+          <MyGGameSelect
+            menuPlacement='top'
+            containerStyles={{ width: '100%' }}
+            controlStyles={{ width: '100%' }}
+            game={value && { label: value, value: value }}
+            dynamicFields={false}
+            disabled={false}
+            placeholder={'Search, select or create game title'}
+            onChange={(game) => this.handleDropDownChange(index, game)}
           />
         </div>
       </div>
