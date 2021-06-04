@@ -196,3 +196,8 @@ export function confirmGroupPrivateKey(chatId) {
   logger.log('GUEST', 'HTTP', `Confirming group ${chatId} private key`);
   return axios.delete(`/api/chat/${chatId}/privateKey`).then(response => response.data);
 }
+
+export function clearChatNotifications(chatId) {
+  logger.log('GUEST', 'HTTP', `Clearing chat ${chatId} notifications`);
+  return axios.delete(`/api/chat/${chatId}/clearNotifications`).then(response => response.data);
+}
