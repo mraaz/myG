@@ -1,12 +1,11 @@
 import React from 'react'
 import get from 'lodash.get'
 import scriptLoader from 'react-async-script-loader'
-import AsyncCreatableSelect from 'react-select/async-creatable'
 import PlacesAutocomplete from 'react-places-autocomplete'
-import { Game_name_values, Disable_keys, getGameLabel } from '../../Utility_Function'
 import { getAssetUrl } from '../../../../common/assets'
 import MyGCheckbox from '../../common/MyGCheckbox'
 import MyGSelect from '../../common/MyGSelect'
+import MyGGameSelect from '../../common/MyGGameSelect'
 import { LANGUAGE_OPTIONS } from '../../../static/AddGame'
 import { ignoreFunctions } from '../../../../common/render'
 import { showMessengerAlert } from '../../../../common/alert'
@@ -29,7 +28,7 @@ export class DossierInfo extends React.Component {
     visibilityCountry: 'secret',
     lookingForWork: false,
     hasMic: false,
-    underage: true,
+    underage: true
   }
 
   componentDidMount() {
@@ -51,7 +50,7 @@ export class DossierInfo extends React.Component {
     const languages = (get(this.props, 'profile.languages') || []).map((language) => ({ label: language, value: language }))
     const mostPlayedGames = (get(this.props, 'profile.mostPlayedGames') || []).map((game) => ({
       gameName: game,
-      gameNameValue: { label: game, value: game },
+      gameNameValue: { label: game, value: game }
     }))
     const visibilityName = get(this.props, 'profile.visibilityName') || 'secret'
     const visibilityEmail = get(this.props, 'profile.visibilityEmail') || 'secret'
@@ -71,7 +70,7 @@ export class DossierInfo extends React.Component {
       visibilityName,
       visibilityEmail,
       visibilityCountry,
-      lookingForWork,
+      lookingForWork
     }
   }
 
@@ -153,7 +152,8 @@ export class DossierInfo extends React.Component {
             disabled
             className='input'
             value={this.state.alias}
-            onChange={(event) => this.setState({ alias: event.target.value })}></input>
+            onChange={(event) => this.setState({ alias: event.target.value })}
+          ></input>
         </div>
       </div>
     )
@@ -168,7 +168,8 @@ export class DossierInfo extends React.Component {
             className='input'
             disabled
             value={this.state.email}
-            onChange={(event) => this.setState({ email: event.target.value })}></input>
+            onChange={(event) => this.setState({ email: event.target.value })}
+          ></input>
         </div>
         <div className='options'>
           <MyGCheckbox
@@ -209,11 +210,10 @@ export class DossierInfo extends React.Component {
     )
   }
 
-  handleDropDownChange = async (index, input) => {
-    const results = !!input && !!input.value && (await Game_name_values(input.value))
-    if (!results) return
-    const gameName = results[0] ? results[0].value : input && input.value
-    const gameNameValue = results[0] ? results[0] : input
+  handleDropDownChange = (index, game) => {
+    if (!game) return
+    const gameName = game && game.game && game.game.value
+    const gameNameValue = game && game.game
     return this.setState((previous) => {
       const mostPlayedGames = JSON.parse(JSON.stringify(previous.mostPlayedGames))
       if (!mostPlayedGames[0]) mostPlayedGames.push({})
@@ -224,36 +224,23 @@ export class DossierInfo extends React.Component {
     })
   }
 
-  loadOptions = async (input) => {
-    const defaultResponse = [{ label: input, value: input, gameName: input, gameNameValue: { label: input, value: input } }]
-    const results = await Game_name_values(input)
-    if (!results || !results.length) return defaultResponse
-    const currentGames = (this.state.mostPlayedGames || []).map(({ gameName }) => gameName)
-    return results.filter((result) => !currentGames.includes(result.value))
-  }
-
   renderGameInput = (index) => {
-    const mostPlayedGames = this.state.mostPlayedGames || [];
-    const game = mostPlayedGames[index];
-    const value = get(game, 'gameName');
+    const mostPlayedGames = this.state.mostPlayedGames || []
+    const game = mostPlayedGames[index]
+    const value = get(game, 'gameName')
     return (
       <div className='row'>
         <span className='hint'>Game #{index + 1}</span>
         <div className='input-container-row game-title-select'>
-          <AsyncCreatableSelect
-            cacheOptions
-            defaultOptions
-            isValidNewOption={() => false}
-            loadOptions={this.loadOptions}
-            onChange={(input) => this.handleDropDownChange(index, input)}
-            value={value && { label: value, value: value }}
-            className='viewGame__name full-width'
-            placeholder='Search, select or create game title'
-            onInputChange={(inputValue) => (inputValue ? (inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88)) : '')}
-            onKeyDown={(e) => Disable_keys(e)}
-            isSearchable={true}
-            classNamePrefix='filter'
-            styles='background: red;'
+          <MyGGameSelect
+            menuPlacement='top'
+            containerStyles={{ width: '100%' }}
+            controlStyles={{ width: '100%' }}
+            game={value && { label: value, value: value }}
+            dynamicFields={false}
+            disabled={false}
+            placeholder={'Search, select or create game title'}
+            onChange={(game) => this.handleDropDownChange(index, game)}
           />
         </div>
       </div>
@@ -268,13 +255,14 @@ export class DossierInfo extends React.Component {
           value={this.state.country}
           onChange={(country) => this.setState({ country })}
           onSelect={(country) => this.setState({ country })}
-          searchOptions={{ types: ['(regions)'] }}>
+          searchOptions={{ types: ['(regions)'] }}
+        >
           {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
             <div className='input-container country'>
               <input
                 {...getInputProps({
                   placeholder: 'Search Places ...',
-                  className: 'input',
+                  className: 'input'
                 })}
               />
               {!!suggestions && suggestions.length > 0 && (
@@ -338,7 +326,7 @@ export class DossierInfo extends React.Component {
         <MyGSelect
           options={[
             { label: 'Waiting for Player 2', value: 'Waiting for Player 2' },
-            { label: 'Game in progress', value: 'Game in progress' },
+            { label: 'Game in progress', value: 'Game in progress' }
           ]}
           onChange={(relationship) => this.setState({ relationship })}
           value={this.state.relationship}

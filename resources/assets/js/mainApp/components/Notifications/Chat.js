@@ -199,6 +199,7 @@ export default class Chat extends Component {
 
               return (
                 <div
+                  chat-notification-id={chatNoti.chatId}
                   className={`notification ${chatNoti.hasRead == false ? 'unread' : ''}`}
                   key={chatNoti.id}
                   onClick={(e) => this.handleClickNotiFication(chatNoti.chatId, index, chatNoti.type)}>

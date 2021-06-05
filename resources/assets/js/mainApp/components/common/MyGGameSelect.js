@@ -82,7 +82,7 @@ export default class MyGGameSelect extends React.Component {
       ...provided,
       color: '#fff',
       fontSize: '16px',
-      backgroundColor: '#2D363A',
+      backgroundColor: '#171a1c',
       ...(this.props.optionStyles || {}),
     }),
     menu: (provided) => ({
@@ -97,7 +97,7 @@ export default class MyGGameSelect extends React.Component {
   render() {
     return (
       <AsyncCreatableSelect
-        value={this.props.game.label ? this.props.game : null}
+        value={this.props.game && this.props.game.label ? this.props.game : null}
         disabled={this.props.disabled}
         placeholder={this.props.placeholder}
         loadOptions={this.loadTitleOptions}
@@ -106,6 +106,7 @@ export default class MyGGameSelect extends React.Component {
         styles={this.customStyles()}
         onKeyDown={Disable_keys}
         isSearchable={true}
+        menuPlacement={this.props.menuPlacement || 'bottom'}
         cacheOptions
         defaultOptions
         isClearable

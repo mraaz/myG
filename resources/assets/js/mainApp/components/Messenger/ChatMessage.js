@@ -305,9 +305,7 @@ export default class ChatMessage extends React.Component {
     if (isImage) return this.renderImage(content, expirationDate)
     if (isSound) return this.renderSound(content, expirationDate)
     if (isVideo) return this.renderVideo(content, expirationDate)
-    const url = content.match(
-      new RegExp('([a-zA-Z0-9]+://)?([a-zA-Z0-9_]+:[a-zA-Z0-9_]+@)?([a-zA-Z0-9.-]+\\.[A-Za-z]{2,4})(:[0-9]+)?(/.*)?')
-    )
+    const url = content.match(/((http|ftp|https):\/\/)?([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?/);
     if (shouldConvertToUrl && url) return this.renderUrl(url[0], convertColonsToEmojis(content))
     return convertColonsToEmojis(content)
   }

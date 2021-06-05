@@ -410,6 +410,7 @@ Route.get('/api/chat/paginated/search', 'ChatController.searchPaginated')
 Route.get('/api/chat/:chatId/privateKey', 'ChatController.fetchGroupPrivateKeyRequests')
 Route.post('/api/chat/:chatId/privateKey', 'ChatController.requestGroupPrivateKey')
 Route.delete('/api/chat/:chatId/privateKey', 'ChatController.confirmGroupPrivateKey')
+Route.delete('/api/chat/:chatId/clearNotifications', 'ChatController.clearNotifications')
 
 // Channels
 Route.get('/api/channel/:channelId', 'ChatController.fetchChannel')
