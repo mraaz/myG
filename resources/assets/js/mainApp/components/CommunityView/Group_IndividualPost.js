@@ -59,7 +59,7 @@ export default class Group_IndividualPost extends Component {
       hideComments: false,
       commentShowCount: 2,
       showPostExtraOption: false,
-      featured_enabled: false,
+      featured_enabled: false
     }
     this.imageFileType = ['jpeg', 'jpg', 'png', 'gif']
     this.videoFileType = ['mov', 'webm', 'mpg', 'mp4', 'avi', 'ogg']
@@ -91,34 +91,34 @@ export default class Group_IndividualPost extends Component {
 
   click_like_btn = async (post_id) => {
     this.setState({
-      total: this.state.total + 1,
+      total: this.state.total + 1
     })
 
     try {
       const mylike = await axios.post('/api/likes', {
-        post_id: post_id,
+        post_id: post_id
       })
     } catch (error) {
       logToElasticsearch('error', 'IndividualComment', 'Failed click_like_btn:' + ' ' + error)
     }
     if (this.state.total == 0) {
       this.setState({
-        admirer_first_name: this.props.user.userInfo.alias,
+        admirer_first_name: this.props.user.userInfo.alias
       })
     }
 
     this.setState({
-      show_like: true,
+      show_like: true
     })
 
     this.setState({
-      like: !this.state.like,
+      like: !this.state.like
     })
   }
 
   click_unlike_btn = async (post_id) => {
     this.setState({
-      total: this.state.total - 1,
+      total: this.state.total - 1
     })
 
     try {
@@ -130,18 +130,19 @@ export default class Group_IndividualPost extends Component {
 
     if (this.state.total == 0) {
       this.setState({
-        show_like: false,
+        show_like: false
       })
     }
 
     this.setState({
-      like: !this.state.like,
+      like: !this.state.like
     })
   }
 
   componentDidMount() {
     let { post } = this.props
-    let media_url = ''
+    let media_url = '',
+      post_timestamp = ''
     const self = this
     if (post.media_url) {
       try {
@@ -158,7 +159,9 @@ export default class Group_IndividualPost extends Component {
         }
       }
     }
-    let post_timestamp = moment(this.props.post.updated_at, 'YYYY-MM-DD HH:mm:ssZ')
+    if (this.props.post.created_at) {
+      post_timestamp = moment(this.props.post.created_at, 'YYYY-MM-DD HH:mm:ssZ')
+    }
 
     if (this.props.post.total == 0) {
       this.setState({ show_like: false })
@@ -173,16 +176,14 @@ export default class Group_IndividualPost extends Component {
       post_time: post_timestamp.local().fromNow(),
       content: this.props.post.content,
       featured_enabled: this.props.featured,
-      galleryItems,
+      galleryItems
     })
     if (this.props.post.no_of_comments != 0) {
       this.setState({
         zero_comments: true,
-        comment_total: this.props.post.no_of_comments,
+        comment_total: this.props.post.no_of_comments
       })
     }
-
-    var post_id = this.props.post.id
 
     this.pullComments()
   }
@@ -197,7 +198,7 @@ export default class Group_IndividualPost extends Component {
         self.setState({
           myComments: myComments.data.allComments,
           value: '',
-          comment_total: myComments.data.allComments.length,
+          comment_total: myComments.data.allComments.length
         })
       } catch (error) {
         logToElasticsearch('error', 'IndividualComment', 'Failed pullComments:' + ' ' + error)
@@ -219,7 +220,7 @@ export default class Group_IndividualPost extends Component {
     this.setState({
       show_comments: !show_comments,
       show_more_comments: !show_more_comments,
-      hideComments: false,
+      hideComments: false
     })
   }
 
@@ -231,7 +232,7 @@ export default class Group_IndividualPost extends Component {
     }
     this.setState({
       show_comments: !show_comments,
-      show_more_comments: true,
+      show_more_comments: true
     })
     if (!show_comments) {
       this.focusTextInput()
@@ -244,7 +245,7 @@ export default class Group_IndividualPost extends Component {
     }
     this.setState({
       pull_once: false,
-      show_comments: true,
+      show_comments: true
     })
   }
   insert_image_comment = () => {
@@ -263,7 +264,7 @@ export default class Group_IndividualPost extends Component {
 
   doUploadS3 = async (file, name) => {
     this.setState({
-      uploading: true,
+      uploading: true
     })
 
     try {
@@ -272,17 +273,17 @@ export default class Group_IndividualPost extends Component {
       this.setState({
         preview_file: [post.data.Location],
         file_keys: post.data.Key,
-        aws_key_id: [post.data.aws_key_id],
+        aws_key_id: [post.data.aws_key_id]
       })
     } catch (error) {
       toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file.'} />)
     }
     this.setState({
-      uploading: false,
+      uploading: false
     })
 
     this.setState({
-      uploading: false,
+      uploading: false
     })
   }
 
@@ -300,7 +301,7 @@ export default class Group_IndividualPost extends Component {
           content: this.state.value.trim(),
           post_id: this.props.post.id,
           media_url: this.state.preview_file.length > 0 ? JSON.stringify(this.state.preview_file) : '',
-          aws_key_id: aws_key_id.length > 0 ? aws_key_id : '',
+          aws_key_id: aws_key_id.length > 0 ? aws_key_id : ''
         })
 
         let { post, user } = this.props
@@ -310,12 +311,12 @@ export default class Group_IndividualPost extends Component {
           preview_file: '',
           file_keys: '',
           value: '',
-          aws_key_id: [],
+          aws_key_id: []
         })
 
         this.setState({
           comment_total: this.state.comment_total + 1,
-          zero_comments: true,
+          zero_comments: true
         })
       } catch (error) {
         logToElasticsearch('error', 'IndividualComment', 'Failed saveComment:' + ' ' + error)
@@ -330,7 +331,7 @@ export default class Group_IndividualPost extends Component {
     }
     if (this.state.value2.trim() == '') {
       this.setState({
-        value: '',
+        value: ''
       })
       return
     }
@@ -340,12 +341,12 @@ export default class Group_IndividualPost extends Component {
     const editPost = async function () {
       try {
         const myEditPost = await axios.post(`/api/post/update/${post_id}`, {
-          content: self.state.value2,
+          content: self.state.value2
         })
         self.setState({
           content: self.state.value2,
           edit_post: false,
-          value2: '',
+          value2: ''
         })
       } catch (error) {
         logToElasticsearch('error', 'IndividualComment', 'Failed editPost:' + ' ' + error)
@@ -387,7 +388,7 @@ export default class Group_IndividualPost extends Component {
     if (e.key === 'Escape') {
       this.setState({
         edit_post: false,
-        value2: '',
+        value2: ''
       })
     }
 
@@ -423,7 +424,7 @@ export default class Group_IndividualPost extends Component {
 
   clickedDropdown = () => {
     this.setState({
-      dropdown: !this.state.dropdown,
+      dropdown: !this.state.dropdown
     })
   }
 
@@ -432,7 +433,7 @@ export default class Group_IndividualPost extends Component {
     this.setState({
       edit_post: true,
       value2: this.state.content.trim(),
-      dropdown: false,
+      dropdown: false
     })
     setTimeout(
       function () {
@@ -449,7 +450,7 @@ export default class Group_IndividualPost extends Component {
     try {
       const myPost_delete = axios.delete(`/api/post/delete/${post_id}`)
       this.setState({
-        post_deleted: true,
+        post_deleted: true
       })
     } catch (error) {
       logToElasticsearch('error', 'IndividualComment', 'Failed delete_exp:' + ' ' + error)
@@ -469,13 +470,14 @@ export default class Group_IndividualPost extends Component {
         focusConfirmBtn={false}
         showCloseButton={true}
         onConfirm={() => this.hideAlert('true')}
-        onCancel={() => this.hideAlert('false')}>
+        onCancel={() => this.hideAlert('false')}
+      >
         You will not be able to recover this entry!
       </SweetAlert>
     )
 
     this.setState({
-      alert: getAlert(),
+      alert: getAlert()
     })
   }
   showReportAlert(id) {
@@ -491,18 +493,19 @@ export default class Group_IndividualPost extends Component {
         focusConfirmBtn={false}
         showCloseButton={true}
         onConfirm={() => this.handleReportClick('true', id)}
-        onCancel={() => this.handleReportClick('false', id)}></SweetAlert>
+        onCancel={() => this.handleReportClick('false', id)}
+      ></SweetAlert>
     )
 
     this.setState({
-      alert: getAlert(),
+      alert: getAlert()
     })
   }
 
   hideAlert(text) {
     this.setState({
       alert: null,
-      dropdown: false,
+      dropdown: false
     })
     if (text == 'true') {
       this.delete_exp()
@@ -518,7 +521,7 @@ export default class Group_IndividualPost extends Component {
 
     this.setState({
       preview_file: [],
-      file_keys: '',
+      file_keys: ''
     })
   }
 
@@ -556,7 +559,7 @@ export default class Group_IndividualPost extends Component {
 
     const featureToggle = axios.post('/api/post/featureToggle/', {
       post_id,
-      featured_enabled,
+      featured_enabled
     })
 
     toast.success(<Toast_style text={`\Great! Post has been successfully ${featured_enabled ? 'featured' : 'unfeatured'} `} />)
@@ -584,7 +587,7 @@ export default class Group_IndividualPost extends Component {
       show_more_comments = false,
       galleryItems = [],
       hideComments,
-      showPostExtraOption,
+      showPostExtraOption
     } = this.state
     if (post_deleted != true) {
       var show_media = false
@@ -596,7 +599,7 @@ export default class Group_IndividualPost extends Component {
       const { userInfo = {} } = user
 
       if (post != undefined) {
-        profile_img = post.profile_img        
+        profile_img = post.profile_img
       }
 
       if (media_urls != [] && media_urls != null) {
@@ -650,8 +653,9 @@ export default class Group_IndividualPost extends Component {
                   className='profile__image'
                   style={{
                     backgroundImage: `url('${profile_img}')`,
-                    backgroundSize: 'cover',
-                  }}>
+                    backgroundSize: 'cover'
+                  }}
+                >
                   <div className='online__status'></div>
                 </div>
               </Link>
@@ -661,14 +665,15 @@ export default class Group_IndividualPost extends Component {
                     <Link to={`/profile/${post.alias}`}>{`@${post.alias} `}</Link>
                   </div>
                   {post.visibility === 0 && (
-                  <div className='private__post__lock'>
-                    <WithTooltip
+                    <div className='private__post__lock'>
+                      <WithTooltip
                         position={{ bottom: '-46px', left: '-22px' }}
                         style={{ display: 'inline-block', padding: '0 0 0 10px' }}
-                        text='private'>
-                      <img src='https://myg.gg/platform_images/Dashboard/lock_icon_small.svg' alt='lock_svg' />
-                    </WithTooltip>
-                  </div>
+                        text='private'
+                      >
+                        <img src='https://myg.gg/platform_images/Dashboard/lock_icon_small.svg' alt='lock_svg' />
+                      </WithTooltip>
+                    </div>
                   )}
                 </div>
                 <div className='post__time'>{this.state.post_time}</div>
@@ -778,8 +783,9 @@ export default class Group_IndividualPost extends Component {
                 className='profile__image'
                 style={{
                   backgroundImage: `url('${userInfo.profile_img}')`,
-                  backgroundSize: 'cover',
-                }}>
+                  backgroundSize: 'cover'
+                }}
+              >
                 <Link to={`/profile/${post.alias}`} className='user-img'></Link>
                 <div className='online__status'></div>
               </div>

@@ -157,8 +157,8 @@ export default class IndividualPost extends Component {
     }
     let post_timestamp = moment()
     try {
-      if (this.props.post.updated_at) {
-        post_timestamp = moment(this.props.post.updated_at, 'YYYY-MM-DD HH:mm:ssZ')
+      if (this.props.post.created_at) {
+        post_timestamp = moment(this.props.post.created_at, 'YYYY-MM-DD HH:mm:ssZ')
       }
 
       if (this.props.post.total == 0) {
@@ -653,14 +653,15 @@ export default class IndividualPost extends Component {
                     </div>
                   )}
                   {post.visibility === 0 && (
-                  <div className='private__post__lock'>
-                    <WithTooltip
+                    <div className='private__post__lock'>
+                      <WithTooltip
                         position={{ bottom: '-46px', left: '-22px' }}
                         style={{ display: 'inline-block', padding: '0 0 0 10px' }}
-                        text='private'>
-                      <img src='https://myg.gg/platform_images/Dashboard/lock_icon_small.svg' alt='lock_svg' />
-                    </WithTooltip>
-                  </div>
+                        text='private'
+                      >
+                        <img src='https://myg.gg/platform_images/Dashboard/lock_icon_small.svg' alt='lock_svg' />
+                      </WithTooltip>
+                    </div>
                   )}
                 </div>
                 <div className='post__time'>{this.state.post_time}</div>
@@ -730,7 +731,11 @@ export default class IndividualPost extends Component {
                     : `${this.state.admirer_first_name} liked this update`}
                 </div>
               )}
-              {!this.state.show_like && <div className='other-users'><FormattedMessage id="individual-post.show-like" defaultMessage="Be the first to like this!" /></div>}
+              {!this.state.show_like && (
+                <div className='other-users'>
+                  <FormattedMessage id='individual-post.show-like' defaultMessage='Be the first to like this!' />
+                </div>
+              )}
             </div>
             {show_more_comments && myComments.length > 0 && (
               <div className='show__comments_count' onClick={this.show_more_comments}>{` View all (${myComments.length}) comments`}</div>

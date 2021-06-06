@@ -37,10 +37,10 @@ class PostController {
         // const validation = await validate(request.input('video'), rules)
         let pattern = new RegExp(
           '^(https?:\\/\\/)?' + // protocol
-          '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
-          '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
-          '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
-          '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+            '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
+            '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+            '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+            '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
             '(\\#[-a-z\\d_]*)?$',
           'i'
         ) // fragment locator
@@ -59,7 +59,7 @@ class PostController {
             type: 'text',
             group_id: null,
             visibility: request.input('visibility'),
-            media_url: request.input('media_url'),
+            media_url: request.input('media_url')
           })
 
           if (request.input('hash_tags') != undefined && request.input('hash_tags') != null && request.input('hash_tags').length > 0) {
@@ -74,7 +74,7 @@ class PostController {
               type: 'text',
               group_id: arrGroups_id[i],
               visibility: request.input('visibility'),
-              media_url: request.input('media_url'),
+              media_url: request.input('media_url')
             })
             if (request.input('hash_tags') != undefined && request.input('hash_tags') != null && request.input('hash_tags').length > 0) {
               await this.process_hash_tags({ auth }, request.input('hash_tags'), newPost.id)
@@ -102,7 +102,7 @@ class PostController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -122,9 +122,7 @@ class PostController {
         await PHController.store({ auth }, post_id, hash_tag_id)
       } else {
         await PHController.store({ auth }, post_id, arrTags[i].hash_tag_id)
-        const update_counter = await HashTags.query()
-          .where({ id: arrTags[i].hash_tag_id })
-          .increment('counter', 1)
+        const update_counter = await HashTags.query().where({ id: arrTags[i].hash_tag_id }).increment('counter', 1)
       }
     }
   }
@@ -205,7 +203,7 @@ class PostController {
         .orderBy('posts.created_at', 'desc')
         .paginate(request.params.counter, grp_limit)
 
-      const category = request.params.counter % 5
+      //const category = request.params.counter % 5
 
       let _1stpass = [...ppl_im_following_Posts.data, ...groups_im_in_Posts.data]
 
@@ -222,61 +220,60 @@ class PostController {
         _1stpass = [..._1stpass, ...welcome_Posts]
       }
 
-    // **RAAZ removed since we're not having AD's atm
-         //let get_sponsored_posts = undefined
+      // **RAAZ removed since we're not having AD's atm
+      //let get_sponsored_posts = undefined
 
+      //   if (!isNaN(category) && _1stpass.length > 2) {
+      //     let get_Origin_info = await Database.from('users_additional_infos')
+      //       .where('user_id', '=', auth.user.id)
+      //       .first()
 
-    //   if (!isNaN(category) && _1stpass.length > 2) {
-    //     let get_Origin_info = await Database.from('users_additional_infos')
-    //       .where('user_id', '=', auth.user.id)
-    //       .first()
+      //     if (get_Origin_info == undefined) {
+      //       get_Origin_info = { logged_in_country_code: null }
+      //     }
 
-    //     if (get_Origin_info == undefined) {
-    //       get_Origin_info = { logged_in_country_code: null }
-    //     }
+      //     if (get_Origin_info.in_eu == true) get_Origin_info.logged_in_country_code = 'EU'
 
-    //     if (get_Origin_info.in_eu == true) get_Origin_info.logged_in_country_code = 'EU'
+      //     const get_sponsored_posts_total = await Database.from('sponsored_posts')
+      //       .where('visibility', '=', 1)
+      //       .where('category', '=', category)
+      //       .count('* as total')
 
-    //     const get_sponsored_posts_total = await Database.from('sponsored_posts')
-    //       .where('visibility', '=', 1)
-    //       .where('category', '=', category)
-    //       .count('* as total')
+      //     get_sponsored_posts = await Database.from('sponsored_posts')
+      //       .leftJoin('sponsored_posts_transactions', 'sponsored_posts_transactions.sponsored_posts_id', 'sponsored_posts.id')
+      //       .where('visibility', '=', 1)
+      //       .where('category', '=', category)
+      //       .where('sponsored_posts_transactions.id', 'is', null)
+      //       .where((bd) => {
+      //         bd.orWhere({ country_code: get_Origin_info.logged_in_country_code }).orWhere('country_code', 'is', null)
+      //       })
+      //       .select('sponsored_posts.*')
+      //       .orderBy('updated_at', 'desc')
+      //       .limit(Math.floor(Math.random() * parseInt(get_sponsored_posts_total[0].total)))
 
-    //     get_sponsored_posts = await Database.from('sponsored_posts')
-    //       .leftJoin('sponsored_posts_transactions', 'sponsored_posts_transactions.sponsored_posts_id', 'sponsored_posts.id')
-    //       .where('visibility', '=', 1)
-    //       .where('category', '=', category)
-    //       .where('sponsored_posts_transactions.id', 'is', null)
-    //       .where((bd) => {
-    //         bd.orWhere({ country_code: get_Origin_info.logged_in_country_code }).orWhere('country_code', 'is', null)
-    //       })
-    //       .select('sponsored_posts.*')
-    //       .orderBy('updated_at', 'desc')
-    //       .limit(Math.floor(Math.random() * parseInt(get_sponsored_posts_total[0].total)))
+      //     if (get_sponsored_posts != undefined && get_sponsored_posts.length > 0) {
+      //       const randValue = Math.floor(Math.random() * (get_sponsored_posts.length - 1 + 1)) + 0
+      //       get_sponsored_posts = get_sponsored_posts[randValue]
+      //     } else {
+      //       get_sponsored_posts = await Database.from('sponsored_posts')
+      //         .where('visibility', '=', 1)
+      //         .select('*')
+      //         .orderBy('updated_at', 'desc')
+      //         .limit(88)
+      //       const randValue = Math.floor(Math.random() * (get_sponsored_posts.length - 1 + 1)) + 0
+      //       get_sponsored_posts = get_sponsored_posts[randValue]
+      //     }
 
-    //     if (get_sponsored_posts != undefined && get_sponsored_posts.length > 0) {
-    //       const randValue = Math.floor(Math.random() * (get_sponsored_posts.length - 1 + 1)) + 0
-    //       get_sponsored_posts = get_sponsored_posts[randValue]
-    //     } else {
-    //       get_sponsored_posts = await Database.from('sponsored_posts')
-    //         .where('visibility', '=', 1)
-    //         .select('*')
-    //         .orderBy('updated_at', 'desc')
-    //         .limit(88)
-    //       const randValue = Math.floor(Math.random() * (get_sponsored_posts.length - 1 + 1)) + 0
-    //       get_sponsored_posts = get_sponsored_posts[randValue]
-    //     }
-
-    //     if (get_sponsored_posts != undefined) {
-    //       get_sponsored_posts.sponsored_post = true
-    //       _1stpass.splice(1, 0, get_sponsored_posts)
-    //     }
-    //   }
+      //     if (get_sponsored_posts != undefined) {
+      //       get_sponsored_posts.sponsored_post = true
+      //       _1stpass.splice(1, 0, get_sponsored_posts)
+      //     }
+      //   }
 
       const myPosts = await this.get_additional_info({ auth }, _1stpass)
 
       return {
-        myPosts,
+        myPosts
       }
     } catch (error) {
       LoggingRepository.log({
@@ -284,7 +281,7 @@ class PostController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -302,7 +299,7 @@ class PostController {
       myPosts = await this.get_additional_info({ auth }, myPosts)
 
       return {
-        myPosts,
+        myPosts
       }
     } catch (error) {
       LoggingRepository.log({
@@ -310,7 +307,7 @@ class PostController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -325,7 +322,7 @@ class PostController {
       myPost = await this.get_additional_info({ auth }, myPost)
 
       return {
-        myPost,
+        myPost
       }
     } catch (error) {
       LoggingRepository.log({
@@ -333,14 +330,14 @@ class PostController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
 
   /**
    * For showing a users own posts, including private posts. Designed to be triggered when looking at your own profile.
-   * 
+   *
    * @param {auth, request, response} param0 Data sent from the frontend.
    * @returns {Object | string} A Object containing the users own posts, including private posts, or a string indicating you aren't logged in.
    */
@@ -351,11 +348,11 @@ class PostController {
 
   /**
    * For showing all the posts of a specific user. Designed to be triggered when looking at another users profile.
-   * 
+   *
    * @param {auth, request, response} param0 Data sent from the frontend.
    * @returns {Object | string} A Object containing a list of posts from a specific user, excluding private posts, or a string indicating you aren't logged in.
    */
-  async showUsersPosts({  auth, request, response }) {
+  async showUsersPosts({ auth, request, response }) {
     if (!auth.user.id) return 'You are not Logged In!'
     return await this.showPosts(auth, request.params.userId, request.params.paginateNo, [1])
   }
@@ -363,7 +360,7 @@ class PostController {
   /**
    * Private function, to be triggered by `showUsersPosts` and `showMyPosts`.
    * The underlying shared logic for fetching posts for a user.
-   * 
+   *
    * @param {Object} auth A object containing authentication information.
    * @param {string} user_id The user whos posts are being queried.
    * @param {number} paginateNo The pagination number we are up to.
@@ -383,7 +380,7 @@ class PostController {
       myPosts = await this.get_additional_info({ auth }, myPosts.data)
 
       return {
-        myPosts,
+        myPosts
       }
     } catch (error) {
       LoggingRepository.log({
@@ -391,7 +388,7 @@ class PostController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -409,7 +406,7 @@ class PostController {
       groupPosts = await this.get_game_data(groupPosts)
 
       return {
-        groupPosts,
+        groupPosts
       }
     } catch (error) {
       LoggingRepository.log({
@@ -417,7 +414,7 @@ class PostController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -458,7 +455,7 @@ class PostController {
       groupPosts = await this.get_game_data(groupPosts)
 
       return {
-        groupPosts,
+        groupPosts
       }
     } catch (error) {
       LoggingRepository.log({
@@ -466,7 +463,7 @@ class PostController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -501,7 +498,7 @@ class PostController {
       }
 
       return {
-        groupPosts,
+        groupPosts
       }
     } catch (error) {
       LoggingRepository.log({
@@ -509,7 +506,7 @@ class PostController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -521,7 +518,7 @@ class PostController {
         .count('* as no_of_my_posts')
 
       return {
-        no_of_my_posts,
+        no_of_my_posts
       }
     } catch (error) {
       LoggingRepository.log({
@@ -529,7 +526,7 @@ class PostController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -537,9 +534,7 @@ class PostController {
   async destroy({ auth, request, response }) {
     if (auth.user) {
       try {
-        const security_check = await Database.from('posts')
-          .where({ id: request.params.id })
-          .first()
+        const security_check = await Database.from('posts').where({ id: request.params.id }).first()
 
         if (security_check == undefined || security_check.user_id != auth.user.id) {
           return
@@ -550,7 +545,7 @@ class PostController {
 
         const delete_post = await Database.table('posts')
           .where({
-            id: request.params.id,
+            id: request.params.id
           })
           .delete()
 
@@ -562,7 +557,7 @@ class PostController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -573,9 +568,7 @@ class PostController {
   async update({ auth, request, response }) {
     if (auth.user) {
       try {
-        const security_check = await Database.from('posts')
-          .where({ id: request.params.id })
-          .first()
+        const security_check = await Database.from('posts').where({ id: request.params.id }).first()
 
         if (security_check == undefined || security_check.user_id != auth.user.id) {
           return
@@ -592,7 +585,7 @@ class PostController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     }
@@ -643,7 +636,7 @@ class PostController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
       return post
     }
@@ -663,7 +656,7 @@ class PostController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     }
@@ -689,7 +682,7 @@ class PostController {
       myPosts = await this.get_additional_info({ auth }, myPosts.data)
 
       return {
-        myPosts,
+        myPosts
       }
     } catch (error) {
       LoggingRepository.log({
@@ -697,7 +690,7 @@ class PostController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -738,7 +731,7 @@ class PostController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
