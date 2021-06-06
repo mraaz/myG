@@ -1641,6 +1641,30 @@ class NotificationController_v2 {
     }
   }
 
+  // Activity Type 29 - Team Invitation
+  async addTeamInvitation({ requestingUserId, teamId, friendId }) {
+    try {
+      await Notification.create({
+        user_id: requestingUserId,
+        other_user_id: friendId,
+        team_id: teamId,
+        activity_type: 29,
+      });
+      const userId = friendId
+      const notifications = await this.count({ auth: { user: { id: userId } }, request: null });
+      await ChatRepository.publishNotifications({ userId, notifications });
+      return 'Saved item';
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error
+      });
+    }
+  }
+
   async count({ auth, request }) {
     return NotificationsRepository.count({ auth, request })
   }

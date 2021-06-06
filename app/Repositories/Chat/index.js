@@ -1148,6 +1148,12 @@ class ChatRepository {
     return new DefaultSchema({ success: true });
   }
 
+  async clearNotifications({ requestingUserId, requestedChatId }) {
+    await UserChatNotification.query().where('user_id', requestingUserId).andWhere('chat_id', requestedChatId).delete();
+    const { unreadMessages: chats } = await this.fetchUnreadMessages({ requestingUserId, count: true })
+    await this.publishNotifications({ userId: requestingUserId, notifications: { chats } })
+  }
+
   async acceptGameGroupInvitation({ requestedUserId, requestedGameId }) {
     const { chat } = await this.fetchChatByGameId({ requestedGameId });
     await this.addContactsToChat({ requestedChatId: chat.chatId, contacts: [requestedUserId] });

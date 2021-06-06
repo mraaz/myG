@@ -965,6 +965,25 @@ class ChatController {
       })
     }
   }
+
+  async clearNotifications({ auth, params, response }) {
+    try {
+      const requestingUserId = auth.user.id
+      if (!requestingUserId) throw new Error('Auth Error')
+      const requestedChatId = params.chatId
+      log('CHAT', `User ${requestingUserId} clearing Chat Notifications ${requestedChatId}`)
+      const result = await ChatRepository.clearNotifications({ requestingUserId, requestedChatId })
+      return response.send(result)
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
+    }
+  }
 }
 
 module.exports = ChatController

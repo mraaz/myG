@@ -410,6 +410,7 @@ Route.get('/api/chat/paginated/search', 'ChatController.searchPaginated')
 Route.get('/api/chat/:chatId/privateKey', 'ChatController.fetchGroupPrivateKeyRequests')
 Route.post('/api/chat/:chatId/privateKey', 'ChatController.requestGroupPrivateKey')
 Route.delete('/api/chat/:chatId/privateKey', 'ChatController.confirmGroupPrivateKey')
+Route.delete('/api/chat/:chatId/clearNotifications', 'ChatController.clearNotifications')
 
 // Channels
 Route.get('/api/channel/:channelId', 'ChatController.fetchChannel')
@@ -485,6 +486,10 @@ Route.get('/api/achievements/monthly', 'AchievementsController.fetchMonthlyQuest
 Route.post('/api/achievements/daily', 'AchievementsController.redeemDaily')
 Route.post('/api/achievements/weekly', 'AchievementsController.redeemWeekly')
 Route.post('/api/achievements/monthly', 'AchievementsController.redeemMonthly')
+
+// Teams
+Route.post('/api/team', 'TeamController.createTeam')
+Route.get('/api/team/tags', 'TeamController.fetchTeamTags')
 
 // Triggering Jobs
 Route.get('/api/schedule/:job', 'SchedulerController.triggerJob')

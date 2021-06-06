@@ -31,6 +31,7 @@ import { getAssetUrl } from '../../../common/assets'
 import { showMessengerAlert } from '../../../common/alert'
 import logger from '../../../common/logger'
 import { ignoreFunctions } from '../../../common/render'
+import { clearChatNotifications } from '../../../integration/http/chat'
 
 export class Chat extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
@@ -60,6 +61,10 @@ export class Chat extends React.Component {
     document.addEventListener('scroll', this.handleMessageListScroll, { passive: true })
     document.addEventListener('wheel', this.handleMessageListScroll, { passive: true })
     this.props.prepareChat(this.props.chatId, this.props.userId, this.props.contactId, this.props.isGroup)
+    clearChatNotifications(this.props.chatId).then(() => {
+      const chatNotification = document.querySelector("[chat-notification-id='2']");
+      if (chatNotification) chatNotification.remove();
+    });
     if (!this.props.isGuest) this.props.checkSelfDestruct(this.props.chatId)
     if (this.props.isGroup && !this.props.privateKey && this.props.isGroupOwner && this.props.messages.length <= 1) this.resetGroupKey();
   }
