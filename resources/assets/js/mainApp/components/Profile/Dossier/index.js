@@ -13,7 +13,12 @@ export default class Dossier extends React.Component {
   }
 
   componentDidMount() {
+    document.querySelector(".messenger").style.display = 'none';
     this.setState({ tab: !this.props.isSelf ? 'social' : this.props.tab });
+  }
+
+  componentWillUnmount() {
+    document.querySelector(".messenger").style.display = null;
   }
 
   render() {

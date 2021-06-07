@@ -21,7 +21,12 @@ export default class ViewFriendsModal extends React.Component {
   }
 
   componentDidMount() {
+    document.querySelector(".messenger").style.display = 'none';
     this.paginateFriends();
+  }
+
+  componentWillUnmount() {
+    document.querySelector(".messenger").style.display = null;
   }
 
   paginateFriends = () => {
@@ -146,7 +151,7 @@ export default class ViewFriendsModal extends React.Component {
 
   render() {
     return (
-      <div id="view-friends-modal" onClick={this.props.onClose}>
+      <div id="view-friends-modal">
         <div className="container">
           {this.renderClose()}
           {this.renderFilters()}
