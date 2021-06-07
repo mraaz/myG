@@ -311,6 +311,10 @@
       padding-top: 8px;
     }
 
+    .long-hint {
+      width: 100% !important;
+    }
+
     .hint {
       margin-right: 16px;
       font-size: 14px;
@@ -980,6 +984,7 @@
 
     .container {
       @extend .base-container;
+      max-width: 60vw;
       @media screen and (max-width: 575px) {
         margin-bottom: 50px;
       }

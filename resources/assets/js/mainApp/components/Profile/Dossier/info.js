@@ -364,7 +364,7 @@ export class DossierInfo extends React.Component {
   renderGameHeader = () => {
     return (
       <div className='renderGameHeader'>
-        <span className='hint'>Games you are currently playing...</span>
+        <span className='hint long-hint'>Games you are currently playing...</span>
       </div>
     )
   }
