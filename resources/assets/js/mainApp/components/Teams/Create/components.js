@@ -13,6 +13,7 @@ import {
   MyGTagSelect,
   MyGFriendSelect,
 } from '../../common';
+import { WithTooltip } from '../../Tooltip';
 
 export const defaultTeamFields = {
   name: '',
@@ -77,7 +78,7 @@ export const Label = (props) => (
 export const Name = ({ onChange, intl }) => (
   <div className="team-input-container">
     <Label id="teams.create.name" defaultMessage="Team Name" />
-    <MyGInput containerStyles={{ width: '100%' }} inputStyles={{ width: '100%' }} onChange={(event) => onChange(event.target.value)} placeholder={intl.formatMessage({ id: "teams.create.name-hint", defaultMessage: "must be unique" })} />
+    <MyGInput maxLength={40} containerStyles={{ width: '100%' }} inputStyles={{ width: '100%' }} onChange={(event) => onChange(event.target.value)} placeholder={intl.formatMessage({ id: "teams.create.name-hint", defaultMessage: "must be unique" })} />
   </div>
 );
 
@@ -174,6 +175,7 @@ export const Description = ({ intl, onChange }) => (
   <div className="team-input-container">
     <Label id="teams.create.description" defaultMessage="Description" />
     <MyGTextarea
+      maxLength={250}
       placeholder={intl.formatMessage({ id: "teams.create.description-hint", defaultMessage: "Enter a description for your team" })}
       onChange={(event) => onChange(event.target.value)}
     />
@@ -206,6 +208,13 @@ export const ListOnLFT = ({ checked, intl, onChange }) => (
       onClick={onChange}
       labelText={intl.formatMessage({ id: "teams.create.list-on-lft", defaultMessage: "Listed on LFT" })}
     />
+    <WithTooltip
+      position={{ bottom: '25px', left: '-150px' }}
+      style={{ display: 'inline-block', padding: '0 0 0 10px' }}
+      text={intl.formatMessage({ id: "teams.create.list-on-lft-tooltip", defaultMessage: "Whether this team will appear on Looking for Teams" })}
+    >
+      <span className="team-question-mark">?</span>
+    </WithTooltip>
   </div>
 );
 

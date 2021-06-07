@@ -5,7 +5,7 @@ import { Toast_style } from '../Utility_Function'
 import { MyGCreateableSelect } from '../common'
 import { Disable_keys } from '../Utility_Function'
 
-const MAX_TAGS_LENGTH = 8
+const MAX_TAGS_LENGTH = 3
 
 const fetchTagOptions = (input, endpoint) => {
   return axios.get(endpoint, { params: { input } }).then((response) => response.data);
@@ -29,7 +29,7 @@ const MyGTagSelect = ({ tags, placeholder, endpoint, onChange }) => {
     if (tags && tags.length >= MAX_TAGS_LENGTH) {
       return toast.success(<Toast_style text={'Sorry mate! Max of 8 tags.'} />);
     }
-    if (input.length > 88) {
+    if (input.length > 250) {
       return toast.success(<Toast_style text={'Sorry mate! Game tags length is too long.'} />);
     }
     if (/['/.%#$,;`\\]/.test(input)) {

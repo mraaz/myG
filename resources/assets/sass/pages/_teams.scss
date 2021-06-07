@@ -29,6 +29,9 @@
   .team-checkbox {
     margin: 0 16px !important;
     font-size: 14px;
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: flex-start !important;
   }
 
   .team-game-title {
@@ -54,6 +57,12 @@
     background-color: #1d2326;
     padding: 16px;
     width: 100%;
+  }
+
+  .team-question-mark {
+    color: #e5c746;
+    font-size: 16px;
+    font-weight: bold;
   }
 
   .team-top-bar {

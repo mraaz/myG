@@ -9,16 +9,24 @@ export function ignoreFunctions(nextProps, nextState, currentProps, currentState
   for (const key of Object.keys(nextProps)) {
     if (isFunction(nextProps[key])) continue
     if (key.endsWith('Ref')) continue
-    if (JSON.stringify(nextProps[key]) !== JSON.stringify(currentProps[key])) {
-      logger.log('EXPLAIN', `returning true due to prop ${key} - ${JSON.stringify(currentProps[key])} -> ${JSON.stringify(nextProps[key])}`)
+    if (stringifyProp(nextProps[key]) !== stringifyProp(currentProps[key])) {
+      logger.log('EXPLAIN', `returning true due to prop ${key} - ${currentProps[key]} -> ${nextProps[key]}`)
       return true
     }
   }
   for (const key of Object.keys(nextState)) {
     if (nextState[key] !== currentState[key]) {
-      logger.log('EXPLAIN', `returning true due to state ${key} - ${JSON.stringify(currentState[key])} -> ${JSON.stringify(nextState[key])}`)
+      logger.log('EXPLAIN', `returning true due to state ${key} - ${currentState[key]} -> ${nextState[key]}`)
       return true
     }
   }
   return false
+}
+
+function stringifyProp(prop) {
+  try {
+    return JSON.stringify(prop);
+  } catch(_) {
+    return prop;
+  }
 }
