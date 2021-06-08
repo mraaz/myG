@@ -155,8 +155,9 @@ class ProfileController {
       const alias = params.alias
       const experience = request.only(['experience']).experience || ''
       const level = request.only(['level']).level || ''
-      log('PROFILE', `User ${requestingUserId} fetching Friends for profile ${alias}, with experience ${experience} and level ${level}`)
-      const { friends } = await ProfileRepository.fetchFriendsForGamer({ requestingUserId, alias, experience, level })
+      const requestedPage = parseInt(request.only(['page']).page, 10) || 'ALL'
+      log('PROFILE', `User ${requestingUserId} fetching Friends page ${requestedPage} for profile ${alias}, with experience ${experience} and level ${level}`)
+      const { friends } = await ProfileRepository.fetchFriendsForGamer({ requestingUserId, alias, experience, level, requestedPage })
       return response.send({ friends })
     } catch (error) {
       LoggingRepository.log({

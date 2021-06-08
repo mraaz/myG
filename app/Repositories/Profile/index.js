@@ -188,14 +188,16 @@ class ProfileRepository {
     return response.map((friend) => friend.alias);
   }
 
-  async fetchFriendsForGamer({ requestingUserId, alias }) {
+  async fetchFriendsForGamer({ requestingUserId, alias, requestedPage }) {
     const friendRequests = await this.fetchFriendRequests({ isSelf: true, requestingUserId });
     const myFriends = await this.fetchFriends({ isSelf: true, requestingUserId });
     const profileId = await this.fetchProfileId({ alias });
     const response = await Database.table('friends')
       .innerJoin('users', 'users.id', 'friends.user_id')
-      .where('friends.friend_id', profileId);
-    const friends = response.map((profile) => ({
+      .where('friends.friend_id', profileId)
+      .andWhere('users.id', '!=', requestingUserId)
+      .paginate(requestedPage !== 'ALL' ? requestedPage : 0, requestedPage !== 'ALL' ? 4 : 1000);
+    const friends = response.data.map((profile) => ({
       profileId: profile.id,
       alias: profile.alias,
       image: profile.profile_img,
@@ -227,7 +229,7 @@ class ProfileRepository {
   }
 
   async fetchSponsors({ profileId }) {
-    return Database.table('sponsors').where('sponsors.user_id', profileId).where('sponsors.group_id', 'is', null ).select();
+    return Database.table('sponsors').where('sponsors.user_id', profileId).where('sponsors.group_id', 'is', null).select();
   }
 
   async hasSentFriendRequest({ isSelf, requestingUserId, profileId }) {
@@ -249,9 +251,9 @@ class ProfileRepository {
 
   async fetchMostPlayedGames({ profileId }) {
     const response = await Database.table('user_most_played_games')
-    .innerJoin('game_names', 'game_names.id', 'user_most_played_games.game_name_id')
-    .where('user_most_played_games.user_id', '=', profileId)
-    .select('game_names.game_name');
+      .innerJoin('game_names', 'game_names.id', 'user_most_played_games.game_name_id')
+      .where('user_most_played_games.user_id', '=', profileId)
+      .select('game_names.game_name');
     return response && response.map(element => element.game_name);
   }
 
@@ -312,7 +314,7 @@ class ProfileRepository {
       const gameController = new GameNameController();
       const createGame = (gameName) => gameController.createGame({ auth: { user: { id: requestingUserId } } }, gameName)
       for (const gameName of mostPlayedGames.filter(gameName => !!gameName)) {
-        const game = await Database.from('game_names').where({ game_name: gameName }).select('id' ,'game_name');
+        const game = await Database.from('game_names').where({ game_name: gameName }).select('id', 'game_name');
         const gameId = game && game[0] ? game[0].id : (await createGame(gameName)).id;
         const experience = await GameExperience.query().where({ user_id: requestingUserId }).andWhere({ game_names_id: gameId }).first();
         if (!experience) await this.updateGame({ requestingUserId, game: gameId, level: 'Casual', experience: 'Less than 1 year' });
@@ -384,17 +386,17 @@ class ProfileRepository {
     }))
 
     const { profile } = await this.fetchProfileInfo({ requestingUserId, id: requestingUserId });
-    if (profile.onboarding == 2 ){
+    if (profile.onboarding == 2) {
       const getVerifiedGrps = await Database.table('groups')
-        .where({ verified: 1, game_names_id: game})
+        .where({ verified: 1, game_names_id: game })
         .select('id')
         .first()
 
-      if (getVerifiedGrps != undefined){
+      if (getVerifiedGrps != undefined) {
         const usergroupController = new UsergroupController();
-        const auth = { user: { id: requestingUserId} };
+        const auth = { user: { id: requestingUserId } };
         const request = { input: () => getVerifiedGrps.id };
-        await usergroupController.store({auth, request}, true)
+        await usergroupController.store({ auth, request }, true)
       }
     }
     await ElasticsearchRepository.storeUser({ user: profile });
@@ -411,7 +413,7 @@ class ProfileRepository {
   }
 
   async fetchGamerSuggestions({ requestingUserId }) {
-    const auth = { user: { id: requestingUserId} };
+    const auth = { user: { id: requestingUserId } };
     const request = { input: () => 1 };
     const connectionController = new ConnectionController();
     const { data } = await connectionController.gamers_you_might_know({ auth, request });

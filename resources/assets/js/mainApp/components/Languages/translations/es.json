@@ -32,6 +32,7 @@
   "teams.create.allow-chat": "Permitir chat",
   "teams.create.auto-accept-gamers": "Aceptación automática de jugadores",
   "teams.create.list-on-lft": "Incluido en LFT",
+  "teams.create.list-on-lft-tooltip": "Si este equipo aparecerá en \"Buscando Equipos\"",
   "teams.create.recruiting": "Reclutamiento activo",
   "teams.create.exclusive": "Equipo de exclusividad",
   "teams.create.all-can-join": "Todos",

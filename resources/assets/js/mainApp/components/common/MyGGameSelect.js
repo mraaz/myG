@@ -90,6 +90,7 @@ export default class MyGGameSelect extends React.Component {
       color: '#fff',
       fontSize: '16px',
       backgroundColor: '#2D363A',
+      zIndex: 1000,
       ...(this.props.menuStyles || {}),
     }),
   });
