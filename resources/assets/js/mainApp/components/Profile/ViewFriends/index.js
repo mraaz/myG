@@ -17,13 +17,23 @@ export default class ViewFriendsModal extends React.Component {
     experience: '',
     level: '',
     search: '',
+    page: 1,
   }
 
   componentDidMount() {
+    document.querySelector(".messenger").style.display = 'none';
+    this.paginateFriends();
+  }
+
+  componentWillUnmount() {
+    document.querySelector(".messenger").style.display = null;
+  }
+
+  paginateFriends = () => {
     this.setState({ loading: true });
     const alias = this.props.profile.alias;
-    const { experience, level } = this.state;
-    fetchFriends({ alias, experience, level }).then(({ friends }) => this.setState({ friends, loading: false }));
+    const { experience, level, page } = this.state;
+    return fetchFriends({ alias, experience, level, page }).then(({ friends }) => this.setState({ friends, loading: false }));
   }
 
   renderClose = () => {
@@ -38,7 +48,10 @@ export default class ViewFriendsModal extends React.Component {
 
   renderNoFriends = () => (
     <div className="no-friends">
-      <span className="title">No friends were found for this gamer :(</span>
+      <span className="title">
+        {this.state.page === 1 && "No friends were found for this gamer :("}
+        {this.state.page !== 1 && "Nothing else to see here ¯\\_(ツ)_/¯"}
+      </span>
     </div>
   )
 
@@ -50,7 +63,7 @@ export default class ViewFriendsModal extends React.Component {
   )
 
   renderFilters = () => {
-    return(
+    return (
       <div className="filter" onClick={(event) => event.stopPropagation()}>
         <div className="input-container-row">
           <input
@@ -66,7 +79,7 @@ export default class ViewFriendsModal extends React.Component {
   renderFriends = () => {
     if (this.state.loading) return this.renderLoader();
     if (!this.state.friends.length) return this.renderNoFriends();
-    return(
+    return (
       <div className="friend-list">
         {this.state.friends.filter((friend) => friend.alias.includes(this.state.search)).map(this.renderFriend)}
       </div>
@@ -108,13 +121,43 @@ export default class ViewFriendsModal extends React.Component {
     this.setState(previous => ({ sentRequest: [...previous.sentRequest, friend.profileId] }));
   }
 
+  renderPreviousButton = () => {
+    if (this.state.loading) return null;
+    if (this.state.page === 1) return null;
+    return (
+      <div className="previous-button clickable"
+        style={{ backgroundImage: `url(${getAssetUrl('ic_profile_chevron_left')})` }}
+        onClick={(event) => {
+          event.stopPropagation();
+          this.setState(previous => ({ page: previous.page - 1 }), this.paginateFriends);
+        }}
+      />
+    );
+  }
+
+  renderNextButton = () => {
+    if (this.state.loading) return null;
+    if (!this.state.friends.length) return null;
+    return (
+      <div className="next-button clickable"
+        style={{ backgroundImage: `url(${getAssetUrl('ic_profile_chevron_right')})` }}
+        onClick={(event) => {
+          event.stopPropagation();
+          this.setState(previous => ({ page: previous.page + 1 }), this.paginateFriends);
+        }}
+      />
+    );
+  }
+
   render() {
-    return(
-      <div id="view-friends-modal" onClick={this.props.onClose}>
+    return (
+      <div id="view-friends-modal">
         <div className="container">
           {this.renderClose()}
           {this.renderFilters()}
           {this.renderFriends()}
+          {this.renderPreviousButton()}
+          {this.renderNextButton()}
         </div>
       </div>
     );

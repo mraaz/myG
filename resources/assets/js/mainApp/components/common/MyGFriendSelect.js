@@ -12,11 +12,11 @@ export default class MyGFriendSelect extends React.Component {
 
   fetchFriends = async (keywords) => {
     return axios.post(`/api/user/keywordSearchResults`, { keywords, counter: 1 })
-      .then((response) => parsePlayersToSelectData(response.data.playerSearchResults.data, { backgroundColor: '#2D363A' }));
+      .then((response) => parsePlayersToSelectData(response.data.playerSearchResults.data, { backgroundColor: '#171a1c' }));
   }
 
   onChange = async (input) => {
-    console.log(this.props.friends, input)
+    if (input.length > 10) input = input.slice(0, 10);
     this.props.onChange(input);
   }
 
@@ -81,7 +81,7 @@ export default class MyGFriendSelect extends React.Component {
       ...provided,
       color: '#fff',
       fontSize: '16px',
-      backgroundColor: '#2D363A',
+      backgroundColor: '#171a1c',
       ...(this.props.optionStyles || {}),
     }),
     menu: (provided) => ({
@@ -93,10 +93,17 @@ export default class MyGFriendSelect extends React.Component {
     }),
   });
 
+  renderLabel = (friend) => (
+    <div style={{ display: 'flex', alignItems: 'center', backgroundColor: '#2D363A'  }}>
+      <img style={{ display: 'inline', marginRight: '10px', borderRadius: '30px' }} src={friend.img} height={20} width={20} />
+      <div style={{ display: 'inline', color: '#fff' }}>{friend.name}</div>
+    </div>
+  );
+
   render() {
     return (
       <AsyncSelect
-        value={this.props.friends}
+        value={this.props.friends.map((friend) => ({ ...friend, label: this.renderLabel(friend) }))}
         disabled={this.props.disabled}
         placeholder={this.props.placeholder}
         loadOptions={this.fetchFriends}
