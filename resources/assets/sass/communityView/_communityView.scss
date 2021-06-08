@@ -32,6 +32,8 @@
       @media screen and (max-width: 998px) {
         right: 5px;
         left: auto;
+        top: auto;
+        z-index: 2;
       }
     }
     .featuredImageInput {
