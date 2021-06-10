@@ -36,6 +36,7 @@ nameOverride: ''
 fullnameOverride: ''
 hpa:
   enabled: true
+  averageCpuUtilization: 90
 serviceAccount:
   # Specifies whether a service account should be created
   create: false
