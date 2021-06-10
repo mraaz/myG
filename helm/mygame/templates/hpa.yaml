@@ -10,7 +10,13 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: {{ template "mygame.fullname" . }}
-  targetCPUUtilizationPercentage: {{ .Values.hpa.averageCpuUtilization }}
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: {{ .Values.hpa.averageCpuUtilization }}
   behavior:
     scaleDown:
       stabilizationWindowSeconds: 180
