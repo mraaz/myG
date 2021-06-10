@@ -35,6 +35,12 @@ imagePullSecrets: []
 nameOverride: ''
 fullnameOverride: ''
 
+hpa:
+  enabled: false
+  minReplicas: 3
+  maxReplicas: 6
+  averageCpuUtilization: 80
+
 serviceAccount:
   # Specifies whether a service account should be created
   create: false
