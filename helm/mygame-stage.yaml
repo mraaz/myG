@@ -34,7 +34,8 @@ imagePullSecrets:
   - name: mygame-dockerhub
 nameOverride: ''
 fullnameOverride: ''
-
+hpa:
+  enabled: true
 serviceAccount:
   # Specifies whether a service account should be created
   create: false
