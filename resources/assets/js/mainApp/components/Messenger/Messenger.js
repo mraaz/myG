@@ -12,6 +12,7 @@ import EncryptionLogin from './Context/EncryptionLogin'
 import ConnectionWarning from './Context/ConnectionWarning'
 import StatusTimerWrapper from '../StatusTimerWrapper'
 import WindowFocusHandler from '../WindowFocusHandler'
+import ChatNotifications from './ChatNotifications';
 
 import { handleLink } from '../../../common/link'
 import { monitorChats, closeSubscriptions, monitorSocketConnection } from '../../../integration/ws/chat'
@@ -58,10 +59,6 @@ class Messenger extends React.Component {
     monitorChats(this.props.userId, false)
     handleLink(this.props.userId)
     monitorSocketConnection()
-  }
-
-  componentWillUnmount() {
-    closeSubscriptions()
   }
 
   onSearch = (searchInput) => {
@@ -271,6 +268,12 @@ class Messenger extends React.Component {
     )
   }
 
+  renderChatNotifications = () => {
+    return (
+      <ChatNotifications notifications={this.props.notifications} openChat={this.props.openChat} />
+    )
+  }
+
   render() {
     logger.log('RENDER', 'Messenger')
     if (parseInt(this.props.level) < 2) return this.renderLockedChat()
@@ -288,6 +291,7 @@ class Messenger extends React.Component {
           {this.renderStatusMonitor()}
           {this.renderFocusMonitor()}
         </section>
+        {this.renderChatNotifications()}
       </React.Fragment>
     )
   }
@@ -295,6 +299,7 @@ class Messenger extends React.Component {
 
 function mapStateToProps(state) {
   const chats = state.chat.chats || []
+  const notifications = state.chat.notifications || []
   const contacts = state.user.contacts || []
   const groups = []
   const contactsWithChats = {}
@@ -318,6 +323,7 @@ function mapStateToProps(state) {
     games: state.user.games,
     contacts,
     groups,
+    notifications,
     blockedUsers: state.chat.blockedUsers,
     pin: state.encryption.pin,
     invalidPin: state.encryption.invalidPin,

@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { store } from '../redux/Store'
-import { openChatAction, createChatAction } from '../redux/actions/chatAction'
+import { openChatAction, createChatAction, dismissNotificationAction } from '../redux/actions/chatAction'
 import { isOneDayBehind, isYesterday } from './date'
 import { getAssetUrl } from './assets'
 import { decryptMessage, deserializeKey } from '../integration/encryption'
@@ -81,4 +81,8 @@ export function openChatByContact(contactId) {
 export function unencryptMessage(message) {
   const privateKey = deserializeKey(store.getState().chat.privateKey);
   return decryptMessage(message, privateKey);
+}
+
+export function dismissNotification(notificationId) {
+  store.dispatch(dismissNotificationAction(notificationId));
 }

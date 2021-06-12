@@ -303,6 +303,13 @@ export function removeFromGroupAction(chatId, userId) {
   }
 }
 
+export function dismissNotificationAction(notificationId) {
+  return {
+    type: 'DISMISS_NOTIFICATION',
+    payload: { notificationId },
+  }
+}
+
 export function openChatAction(chatId, chat) {
   return {
     type: 'OPEN_CHAT',

@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid'
 import logger from '../../common/logger'
 import { reEncryptMessages, sendGroupKeys } from '../../common/encryption'
 import { encryptMessage, decryptMessage, deserializeKey, getPublicKey } from '../../integration/encryption'
@@ -18,6 +19,7 @@ const initialState = {
   contacts: [],
   unreadMessages: [],
   blockedUsers: [],
+  notifications: [],
   preparingMessenger: false,
   guestLink: null,
   notificationSoundsDisabled: false,
@@ -241,10 +243,20 @@ export default function reducer(state = initialState, action) {
       }
     }
 
+    case 'DISMISS_NOTIFICATION': {
+      logger.log('CHAT', `Redux -> Dismiss Notification: `, action.payload, state.notifications)
+      const notifications = JSON.parse(JSON.stringify(state.notifications || [])) || []
+      return {
+        ...state,
+        notifications: notifications.filter((notification) => notification.notificationId !== action.payload.notificationId),
+      }
+    }
+
     case 'OPEN_CHAT': {
       logger.log('CHAT', `Redux -> Open Chat: `, action.payload)
       const chatId = action.payload.chatId
       const chats = JSON.parse(JSON.stringify(state.chats))
+      const notifications = JSON.parse(JSON.stringify(state.notifications || [])) || []
       let chat = chats.find((candidate) => candidate.chatId === chatId)
       if (!chat) {
         chat = action.payload.chat
@@ -254,10 +266,12 @@ export default function reducer(state = initialState, action) {
       chat.minimised = false
       chat.maximised = false
       const openChats = chats.filter((candidate) => !candidate.closed && candidate.chatId !== chatId)
-      if (openChats.length > 3) Array.from(Array(openChats.length - 3)).forEach((_, index) => (openChats[index].closed = true))
+      const maxOpenedChats = window.innerWidth <= 1365 ? 0 : 3;
+      if (openChats.length > maxOpenedChats) Array.from(Array(openChats.length - maxOpenedChats)).forEach((_, index) => (openChats[index].closed = true))
       return {
         ...state,
         chats,
+        notifications: notifications.filter((notification) => notification.chatId !== chatId),
       }
     }
 
@@ -350,6 +364,7 @@ export default function reducer(state = initialState, action) {
       const chatId = message.chatId
       const chats = JSON.parse(JSON.stringify(state.chats))
       const chat = chats.find((candidate) => candidate.chatId === chatId)
+      const decryptedMessage = prepareMessage(state, chat, message)
 
       const shouldIgnoreMessage = !chat || state.blockedUsers.find((user) => user.userId === message.senderId)
       if (shouldIgnoreMessage) return state
@@ -370,28 +385,43 @@ export default function reducer(state = initialState, action) {
         }
       }
 
-      const isNotActivelyLooking = !chat.muted && !window.focused && message.senderId !== userId && !message.keyReceiver
-      if (isNotActivelyLooking) {
-        playMessageSound(state.notificationSoundsDisabled)
-        showNotification(state, chat, message)
-        showNewMessageIndicator()
-      }
-
-      const shouldOpenChat = !chat.muted && !message.keyReceiver
-      if (shouldOpenChat) {
-        const openChats = chats.filter((candidate) => !candidate.closed && candidate.chatId !== chatId)
-        if (openChats.length > 3) Array.from(Array(openChats.length - 3)).forEach((_, index) => (openChats[index].closed = true))
-        chat.closed = false
-      }
-
       if (!chat.messages) chat.messages = []
       const mustClearPendingMessages = message.senderId === userId
       if (mustClearPendingMessages) chat.messages = chat.messages.filter((existing) => existing.uuid !== message.uuid)
-      chat.messages.push(prepareMessage(state, chat, message))
+      chat.messages.push(decryptedMessage);
+
+      const openChats = chats.filter((candidate) => !candidate.closed && candidate.chatId !== chatId)
+      const shouldShowMessage = !chat.muted && !message.senderId !== userId && !message.keyReceiver
+      const isNotActivelyLooking = !window.focused
+      const cannotOpenChat = window.innerWidth > 1365 ? openChats.length >= 4 : openChats.length > 0 || !window.location.href.includes('mobile-chat');
+      const notifications = JSON.parse(JSON.stringify(state.notifications || [])) || [];
+
+      if (shouldShowMessage) {
+
+        if (!cannotOpenChat) {
+          chat.closed = false;
+        }
+
+        if (cannotOpenChat) {
+          const notificationId = uuidv4()
+          const title = decryptedMessage.senderName
+          const content = decryptedMessage.content
+          const received = Date.now()
+          notifications.push({ notificationId, chatId, title, content, received })
+        }
+
+        if (isNotActivelyLooking) {
+          playMessageSound(state.notificationSoundsDisabled)
+          showNotification(state, chat, message)
+          showNewMessageIndicator()
+        }
+
+      }
 
       return {
         ...state,
         chats,
+        notifications,
       }
     }
 
@@ -479,7 +509,6 @@ export default function reducer(state = initialState, action) {
       logger.log('CHAT', `Redux -> On Chat Deleted: `, action.payload)
       const chatId = parseInt(action.payload.chatId)
       const chats = JSON.parse(JSON.stringify(state.chats))
-        
         .filter((chat) => parseInt(chat.chatId) !== parseInt(chatId))
       if (state.guestId) notifyToast('This Group has been deleted.')
       return {
@@ -623,7 +652,6 @@ export default function reducer(state = initialState, action) {
       logger.log('CHAT', `Redux -> User Exited Group: `, action.meta)
       const { chatId } = action.meta
       const chats = JSON.parse(JSON.stringify(state.chats))
-        
         .filter((chat) => parseInt(chat.chatId) !== parseInt(chatId))
       return {
         ...state,
@@ -657,7 +685,6 @@ export default function reducer(state = initialState, action) {
       const { userId: thisUserId } = action.meta
       if (parseInt(userId) === parseInt(thisUserId)) {
         const chats = JSON.parse(JSON.stringify(state.chats))
-          
           .filter((chat) => parseInt(chat.chatId) !== parseInt(chatId))
         return {
           ...state,
@@ -976,4 +1003,8 @@ function contactPublicKeyUpdated(state, contactId, publicKey) {
   const contact = contacts.find((contact) => parseInt(contact.contactId) === parseInt(contactId))
   if (contact) contact.publicKey = publicKey
   return { ...state, contacts }
+}
+
+function closeLastOpenedChats(chats) {
+  if (chats.length > 3) Array.from(Array(chats.length - 3)).forEach((_, index) => (chats[index].closed = true));
 }
