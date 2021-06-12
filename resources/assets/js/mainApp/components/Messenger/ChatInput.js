@@ -126,11 +126,14 @@ export default class ChatInput extends React.Component {
       : this.props.blocked
       ? 'Unblock to send messages'
       : 'Type your message here'
+    const lineHeight = 20;
+    const height = this.state.input.split('\n').length * lineHeight;
     return (
       <div className='chat-component-input-with-reply-container'>
         {this.props.replyingTo && <p className='chat-component-message-reply-no-margin'>replying to {this.renderMessage(this.props.replyingTo.content)}</p>}
         <div className='chat-component-input-container'>
           <textarea
+            style={{ height: height === 20 ? '40px' : `${height}px`, lineHeight: `${lineHeight}px` }}
             ref={this.input}
             rows={1}
             maxLength={2000}
