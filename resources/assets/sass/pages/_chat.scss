@@ -1,3 +1,4 @@
+
 .channel-header {
   border-bottom: 2px solid #1e2326;
   display: flex;
@@ -29,6 +30,37 @@
   width: 100% !important;
   margin: auto !important;
   display: flex !important;
+}
+
+.chat-component-header-status-indicator {
+  position: absolute;
+  margin-top: 25px;
+  border-radius: 6px;
+  width: 12px;
+  height: 12px;
+}
+
+.chat-component-header-status-indicator-static {
+  margin-top: 25px;
+  border-radius: 6px;
+  width: 12px;
+  height: 12px;
+}
+
+.chat-component-header-status-indicator-online {
+  background-color: #68bd45;
+}
+
+.chat-component-header-status-indicator-playing {
+  background-color: #fd323c;
+}
+
+.chat-component-header-status-indicator-afk {
+  background-color: #d8bd43;
+}
+
+.chat-component-header-status-indicator-offline {
+  background-color: #08507d;
 }
 
 .messenger {
@@ -126,37 +158,6 @@
       width: 40px;
       height: 40px;
       margin-right: 12px;
-    }
-
-    .chat-component-header-status-indicator {
-      position: absolute;
-      margin-top: 25px;
-      border-radius: 6px;
-      width: 12px;
-      height: 12px;
-    }
-
-    .chat-component-header-status-indicator-static {
-      margin-top: 25px;
-      border-radius: 6px;
-      width: 12px;
-      height: 12px;
-    }
-
-    .chat-component-header-status-indicator-online {
-      background-color: #68bd45;
-    }
-
-    .chat-component-header-status-indicator-playing {
-      background-color: #fd323c;
-    }
-
-    .chat-component-header-status-indicator-afk {
-      background-color: #d8bd43;
-    }
-
-    .chat-component-header-status-indicator-offline {
-      background-color: #08507d;
     }
 
     .chat-component-header-options {

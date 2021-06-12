@@ -5,6 +5,54 @@
   z-index: 0 !important;
 }
 
+.messenger-collapsed {
+  width: 80px;
+  height: 100vh;
+  background-color: #151b26;
+  position: fixed;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  transition: 0.5s;
+  overflow-y: scroll;
+}
+
+.messenger-collapsed-contact {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  margin: 4px;
+}
+
+.messenger-collapsed-contact-name {
+  color: white;
+  font-size: 16px;
+  text-align: center;
+  margin-top: 4px;
+}
+
+.messenger-contact-icon {
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  border-radius: 20px;
+  position: relative;
+  width: 40px;
+  height: 40px;
+  margin-right: 12px;
+}
+
+.messenger-contact-online-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 100px;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
 .chat-notifications {
   display: flex;
   flex-direction: 'column';
@@ -64,6 +112,7 @@
   position: relative;
   width: 16vw;
   min-width: 300px;
+  transition: 0.5s;
   background-color: #151b26;
   border-left: 2px solid #222b37;
   z-index: 1002;
@@ -127,6 +176,7 @@
     display: flex;
     flex-direction: column;
     height: 95vh;
+    min-width: 300px;
     overflow-y: scroll;
   }
 
@@ -191,17 +241,6 @@
     user-select: none;
   }
 
-  .messenger-contact-icon {
-    background-repeat: no-repeat;
-    background-position: center center;
-    background-size: cover;
-    border-radius: 20px;
-    position: relative;
-    width: 40px;
-    height: 40px;
-    margin-right: 12px;
-  }
-
   .messenger-game-icon {
     background-repeat: no-repeat;
     background-position: center center;
@@ -211,15 +250,6 @@
     width: 40px;
     height: 40px;
     margin-right: 12px;
-  }
-
-  .messenger-contact-online-indicator {
-    width: 12px;
-    height: 12px;
-    border-radius: 100px;
-    position: absolute;
-    bottom: 0;
-    right: 0;
   }
 
   .messenger-contact-body {
@@ -413,7 +443,7 @@
     flex-direction: column;
     position: fixed;
     bottom: 0;
-    min-width: 10.8%;
+    min-width: 300px;
   }
 
   .messenger-footer-container-full {

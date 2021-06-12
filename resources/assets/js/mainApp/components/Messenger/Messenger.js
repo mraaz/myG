@@ -38,6 +38,7 @@ import { searchPaginatedAction } from '../../../redux/actions/paginationAction'
 import { uploadGameIcon } from '../../../integration/http/chat'
 import logger from '../../../common/logger'
 import { ignoreFunctions } from '../../../common/render'
+import { GoogleAnalytics } from '../../../common/analytics';
 
 class Messenger extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
@@ -48,6 +49,7 @@ class Messenger extends React.Component {
     showingSettings: false,
     searchInput: '',
     blockSettings: false,
+    collapsed: false,
     windowFocused: true,
     dividerExpanded: {
       general: true,
@@ -274,8 +276,60 @@ class Messenger extends React.Component {
     )
   }
 
+  openChat = (contact) => {
+    GoogleAnalytics.chatContactClicked({ contactId: contact.contactId })
+    if (this.props.disconnected) return
+    if (contact.chat && contact.chat.chatId) return this.props.openChat(contact.chat.chatId, contact.chat)
+    this.props.createChat([contact.contactId], this.props.userId)
+  }
+
+  renderCollapseOption = () => {
+    if (this.props.mobile) return null;
+    return (
+      <div className='sidebar-menu-toggle' style={{ textAlign: 'left' }} onClick={() => this.setState({ collapsed: true })}>
+        <img style={{ transform: 'rotate(180deg)', margin: 8 }} src='https://myG.gg/platform_images/Dashboard/btn_Uncollapse_Menu.svg' className='img-fluid' />
+      </div>
+    );
+  }
+
+  renderCollapsedMessenger = () => {
+    if (!this.state.collapsed) return null;
+    if (this.props.mobile) return null;
+    const profile_img = 'https://myG.gg/default_user/new-user-profile-picture.png'
+    return (
+      <React.Fragment>
+        <div className="messenger-collapsed">
+          <div className='toggle-menu' style={{ marginBottom: 12 }} onClick={() => this.setState({ collapsed: false })}>
+            <img src='https://myG.gg/platform_images/Dashboard/toggle_menu_collapsed.svg' height='24' width='24' />
+          </div>
+          {(this.props.contacts || []).map((contact) => (
+            <div className="messenger-collapsed-contact clickable"
+              key={contact.contactId}
+              onClick={() => this.openChat(contact)}
+            >
+              <div
+                className='messenger-contact-icon'
+                style={{ marginRight: 0, backgroundImage: `url('${contact.icon}'), url('${profile_img}')` }}
+              >
+                <div className={`messenger-contact-online-indicator chat-component-header-status-indicator-${contact.status}`} />
+              </div>
+              <span className="messenger-collapsed-contact-name">{contact.name}</span>
+            </div>
+          ))}
+        </div>
+        <section className='messenger' style={{ width: 0, minWidth: 0 }}>
+          {this.renderChats()}
+          {this.renderStatusMonitor()}
+          {this.renderFocusMonitor()}
+        </section>
+        {this.renderChatNotifications()}
+      </React.Fragment>
+    );
+  }
+
   render() {
     logger.log('RENDER', 'Messenger')
+    if (this.state.collapsed) return this.renderCollapsedMessenger();
     if (parseInt(this.props.level) < 2) return this.renderLockedChat()
     const topBarSpacer = this.props.mobileMenuActive ? { height: '90vh', marginTop: '80px' } : {};
     const mobileMessengerWidth = window.innerWidth < 575 ? '100vw' : `calc(100vw - ${document.getElementById('main-sidebar').offsetWidth}px)`
@@ -283,6 +337,7 @@ class Messenger extends React.Component {
       <React.Fragment>
         <section className={`messenger${this.props.mobile ? ' mobile-messenger' : ''}`}>
           <div className='messenger-content' style={this.props.mobile && { width: mobileMessengerWidth, ...topBarSpacer }}>
+            {this.renderCollapseOption()}
             {this.renderBody()}
             {this.renderSettings()}
             {this.renderFooter()}
