@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import debounce from 'lodash.debounce';
 import Contact from './Contact'
 import LoadingIndicator from '../../LoadingIndicator'
 import { getAssetUrl } from '../../../../common/assets'
@@ -20,8 +21,9 @@ class Section extends React.Component {
   }
 
   static getDerivedStateFromProps(props, state) {
-    if (props.contacts.length > state.previousCount)
+    if (props.contacts.length > state.previousCount) {
       return { page: state.page + 1, previousCount: props.contacts.length, canShowLoader: true }
+    }
     else return { canShowLoader: false }
   }
 
@@ -50,12 +52,15 @@ class Section extends React.Component {
     const contactsList = this.contactsListRef.current
     if (!contactsList) return
     const hasScrolledToBottom = contactsList.scrollHeight - contactsList.scrollTop === 200
-    if (hasScrolledToBottom) this.fetchContacts(true)
+    if (hasScrolledToBottom) this.onScroll();
   }
 
-  fetchContacts(hasScrolled) {
-    const page = this.state.page + hasScrolled ? 1 : 0
-    this.props.fetchContactsPaginated(page, this.props.status, this.props.gameId, null, !page)
+  onScroll = debounce(() => {
+    this.fetchContacts();
+  }, 500)
+
+  fetchContacts = () => {
+    this.props.fetchContactsPaginated(this.state.page, this.props.status, this.props.gameId, null, !this.state.page)
   }
 
   expand = () => {
@@ -142,7 +147,7 @@ export function mapStateToProps(state, props) {
   return {
     loading: state.pagination.contactsLoading,
     loadingMore: state.pagination.contactsLoadingMore,
-    contacts: contacts.sort(compareLastMessages),
+    contacts,
     chats,
   }
 }

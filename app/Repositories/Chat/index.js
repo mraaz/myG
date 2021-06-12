@@ -603,6 +603,7 @@ class ChatRepository {
   async fetchContactsPaginated({ requestingUserId, requestedPage, status, search }) {
     let query = Database.from('friends')
       .innerJoin('users', 'users.id', 'friends.friend_id')
+      .orderBy('alias', 'asc')
       .where({ user_id: requestingUserId })
     if (status) query = query.andWhere({ status: status })
     if (search) query = query.andWhere('alias', 'like', `%${search}%`)
