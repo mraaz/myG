@@ -385,16 +385,12 @@ export default function reducer(state = initialState, action) {
         }
       }
 
-      if (!chat.messages) chat.messages = []
-      const mustClearPendingMessages = message.senderId === userId
-      if (mustClearPendingMessages) chat.messages = chat.messages.filter((existing) => existing.uuid !== message.uuid)
-      chat.messages.push(decryptedMessage);
-
       const openChats = chats.filter((candidate) => !candidate.closed && candidate.chatId !== chatId)
       const shouldShowMessage = !chat.muted && !message.senderId !== userId && !message.keyReceiver
       const isNotActivelyLooking = !window.focused
       const cannotOpenChat = window.innerWidth > 1365 ? openChats.length >= 4 : openChats.length > 0 || !window.location.href.includes('mobile-chat');
       const notifications = JSON.parse(JSON.stringify(state.notifications || [])) || [];
+      decryptedMessage.unread = shouldShowMessage && cannotOpenChat;
 
       if (shouldShowMessage) {
 
@@ -417,6 +413,11 @@ export default function reducer(state = initialState, action) {
         }
 
       }
+
+      if (!chat.messages) chat.messages = []
+      const mustClearPendingMessages = message.senderId === userId
+      if (mustClearPendingMessages) chat.messages = chat.messages.filter((existing) => existing.uuid !== message.uuid)
+      chat.messages.push(decryptedMessage);
 
       return {
         ...state,

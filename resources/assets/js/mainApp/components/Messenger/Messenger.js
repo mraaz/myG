@@ -278,10 +278,11 @@ class Messenger extends React.Component {
     logger.log('RENDER', 'Messenger')
     if (parseInt(this.props.level) < 2) return this.renderLockedChat()
     const topBarSpacer = this.props.mobileMenuActive ? { height: '90vh', marginTop: '80px' } : {};
+    const mobileMessengerWidth = window.innerWidth < 575 ? '100vw' : `calc(100vw - ${document.getElementById('main-sidebar').offsetWidth}px)`
     return (
       <React.Fragment>
         <section className={`messenger${this.props.mobile ? ' mobile-messenger' : ''}`}>
-          <div className='messenger-content' style={this.props.mobile && { width: '100vw', ...topBarSpacer }}>
+          <div className='messenger-content' style={this.props.mobile && { width: mobileMessengerWidth, ...topBarSpacer }}>
             {this.renderBody()}
             {this.renderSettings()}
             {this.renderFooter()}

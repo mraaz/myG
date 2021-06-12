@@ -64,13 +64,17 @@ class Recents extends React.Component {
   }
 
   renderMessage = (message) => {
+    const decryptedMessage = this.decryptMessage(message)
     return (
       <div key={`recent-${message.messageId}`} className='recent-message clickable' onClick={() => this.openChat(message)}>
         <p className='title'>
           from {message.senderId === this.props.userId ? 'you' : message.senderName} on {message.title}
         </p>
         <div className='content'>
-          <span className='message'>{this.renderContent(this.decryptMessage(message).content)}</span>
+          <div className="message-content-container">
+            {!!decryptedMessage.isUnread && <div className="unread-indicator" />}
+            <span className='message'>{this.renderContent(decryptedMessage.content)}</span>
+          </div>
           <span className='time'>at {formatAMPM(new Date(message.createdAt))}</span>
         </div>
       </div>
@@ -82,9 +86,10 @@ class Recents extends React.Component {
     if (message.unencryptedContent) return { ...message, content: message.unencryptedContent }
     const isSent = message.senderId === this.props.userId
     const chat = (!isSent && this.getChat(message)) || {}
+    const chatMessage = (chat.messages || []).find((chatMessage) => chatMessage.uuid === message.uuid) || {}
     const key = isSent ? this.props.privateKey : chat.isGroup ? chat.privateKey : this.props.privateKey
     const content = decryptMessage(isSent ? message.backup : message.content, key)
-    return { ...message, content }
+    return { ...message, content, isUnread: !!chatMessage.unread }
   }
 
   renderContent = (content) => {
