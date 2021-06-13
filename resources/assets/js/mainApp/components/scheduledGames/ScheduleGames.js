@@ -4,6 +4,7 @@
  * Email : nitin.1992tyagi@gmail.com
  */
 import React, { Component, Fragment } from 'react'
+import ToggleButton from 'react-toggle-button'
 import GameFilter from './gameFilter'
 import GameList from './gameList'
 import GameDetails from './gameDetails'
@@ -12,6 +13,7 @@ import NoRecord from './NoRecord.js'
 import { PullDataFunction as getScheduleGames } from './getScheduleGames'
 import axios from 'axios'
 import MobileScheduledGames from '../MobileView/MobileScheduledGames'
+import { FeatureEnabled, TEAMS } from '../../../common/flags'
 
 export default class ScheduleGames extends Component {
   constructor() {
@@ -25,6 +27,7 @@ export default class ScheduleGames extends Component {
       commentData: {},
       singleView: false,
       moreplease: true,
+      onlyTeamMatches: false,
       counter: 1,
       scheduleGamesView: {},
       showAllComment: false,
@@ -116,7 +119,7 @@ export default class ScheduleGames extends Component {
   }
   getScheduleGamesChangeCall = async (data = {}) => {
     const { counter, scheduleGames = [] } = this.state
-    const scheduleGamesRes = await getScheduleGames({ ...this.state, ...data, counter: 1 })
+    const scheduleGamesRes = await getScheduleGames({ ...this.state, ...data, counter: 1, onlyTeamMatches: this.state.onlyTeamMatches })
 
     if (scheduleGamesRes && scheduleGamesRes.data && scheduleGamesRes.data.latestScheduledGames.length == 0) {
       this.setState({
@@ -167,6 +170,20 @@ export default class ScheduleGames extends Component {
     })
   }
 
+  renderOnlyTeamMatchesFilter = () => {
+    return (
+      <FeatureEnabled allOf={[TEAMS]}>
+        <div id='filter-team-game' className='row'>
+          <div className='hint'>Show only team matches</div>
+          <ToggleButton
+            value={this.state.onlyTeamMatches}
+            onToggle={() => this.setState(previous => ({ onlyTeamMatches: !previous.onlyTeamMatches }), this.getScheduleGamesChangeCall)}
+          />
+        </div>
+      </FeatureEnabled>
+    );
+  }
+
   render() {
     const { params = {} } = this.props.routeProps.match
     const { id = '' } = params
@@ -197,6 +214,7 @@ export default class ScheduleGames extends Component {
           </div>
           <section className='viewGame__container'>
             {id == '' && <GameFilter handleChange={this.handleChange} />}
+            {this.renderOnlyTeamMatchesFilter()}
             <div className={`gameList__section ${singleView ? 'singleGameView__container' : 'GameView__container'}`}>
               {!singleView && scheduleGames.length > 0 ? (
                 <Fragment>

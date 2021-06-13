@@ -12,6 +12,7 @@ import MyGSideLine from './MyGSideLine';
 import MyGDropzone from './MyGDropzone';
 import MyGGameSelect from './MyGGameSelect';
 import MyGTagSelect from './MyGTagSelect';
+import MyGTeamSelect from './MyGTeamSelect';
 import MyGFriendSelect from './MyGFriendSelect';
 
 export {
@@ -29,5 +30,6 @@ export {
     MyGDropzone,
     MyGGameSelect,
     MyGTagSelect,
+    MyGTeamSelect,
     MyGFriendSelect,
 };

@@ -12,10 +12,10 @@ import '../../styles/AddGame/AddGameStyles.scss'
 import ToggleButton from 'react-toggle-button'
 
 import { SETTINGS_ENUMS, styles, EXPERIENCE_OPTIONS, REGION_OPTIONS, PLATFORM_OPTIONS, LANGUAGE_OPTIONS } from '../../static/AddGame'
-import { MyGCheckbox, MyGTextarea, MyGAsyncSelect, MyGCreateableSelect, MyGSelect, MyGDatePicker } from '../common'
+import { MyGCheckbox, MyGTextarea, MyGAsyncSelect, MyGCreateableSelect, MyGSelect, MyGTeamSelect, MyGDatePicker } from '../common'
 import { Game_name_values, Schedule_Game_Tags, Disable_keys } from '../Utility_Function'
 import { parsePlayersToSelectData } from '../../utils/InvitePlayersUtils'
-import { FeatureEnabled, REPEAT_SCHEDULE } from '../../../common/flags'
+import { FeatureEnabled, REPEAT_SCHEDULE, TEAMS } from '../../../common/flags'
 import { logToElasticsearch } from '../../../integration/http/logger'
 import { detectMob } from '../../utils/utils'
 
@@ -859,6 +859,17 @@ const AddGame = ({
               isMulti
             />
           </div>
+          <FeatureEnabled allOf={[TEAMS]}>
+            <React.Fragment>
+              <div className='field-title'>Team Match</div>
+              <div className='platform-select'>
+                <MyGTeamSelect
+                  team={advancedSettingsState.team}
+                  onChange={(team) => updateAdvancedSettings({ team })}
+                />
+              </div>
+            </React.Fragment>
+          </FeatureEnabled>
           <div className='field-title'>Description</div>
           <div className='description-text-area description-text-area-match'>
             <div>
