@@ -7,6 +7,7 @@ import IndividualSponsoredPost from './IndividualSponsoredPost'
 import ComposeSection from './ComposeSection_v2'
 import GamerSuggestions from './Profile/GamerSuggestions'
 import Channel from './Channel'
+import { Composer } from './DraftCompose/Composer'
 
 import { FeatureEnabled, CHANNEL } from '../../common/flags'
 import { logToElasticsearch } from '../../integration/http/logger'
@@ -122,6 +123,10 @@ class Posts extends Component {
     const { myPosts = [], moreplease, isFetching = false, post_submit_loading = false } = this.state
     return (
       <Fragment>
+        <h1>Draft Box below</h1>
+        <hr />
+        <Composer></Composer>
+        <hr />
         <ComposeSection
           successCallback={this.composeSuccess}
           initialData={this.props.initialData == undefined ? 'loading' : this.props.initialData}

@@ -3,6 +3,7 @@ import axios from 'axios'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import Group_IndividualPost from './Group_IndividualPost'
 import ComposeSection from '../ComposeSection_v2'
+import { DraftCompose } from '../DraftCompose/DraftCompose'
 
 import { logToElasticsearch } from '../../../integration/http/logger'
 
@@ -156,12 +157,14 @@ export default class Posts extends Component {
           </span>
         </div>
         {[0, 1, 2, 3].includes(this.props.current_user_permission) && (
+          <Fragment>
           <ComposeSection
             successCallback={this.composeSuccess}
             initialData={this.props.initialData == undefined ? 'loading' : this.props.initialData}
             communityBox={true}
             group_id={this.props.group_id}
           />
+          </Fragment>
         )}
         {post_submit_loading && (
           <div className='timeline-item'>
@@ -182,6 +185,10 @@ export default class Posts extends Component {
             </div>
           </div>
         )}
+        <h1>Draft Box below</h1>
+        <hr />
+        {/* <DraftCompose></DraftCompose> */}
+        <hr />
         {myPosts.length > 0 && !post_submit_loading && (
           <section id='posts' className={isFetching ? '' : `active`}>
             <div className='GroupMember__post__list' onScroll={this.handleScroll} ref={this.scrollRef}>

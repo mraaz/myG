@@ -4,6 +4,7 @@ import { toast } from 'react-toastify'
 import { Toast_style } from '../Utility_Function'
 import YourCommunityBox from './YourCommunityBox'
 import SuggestedCommunityBox from './SuggestedCommunitybox'
+import { DraftCompose } from '../DraftCompose/DraftCompose'
 
 import { logToElasticsearch } from '../../../integration/http/logger'
 
@@ -307,6 +308,8 @@ export default class GroupMain extends Component {
     return (
       <Fragment>
         <section className={`postCompose__container ${overlay_active ? 'zI1000' : ''}`}>
+          {/* <DraftCompose></DraftCompose> */}
+
           {this.state.yourCommunityTab && (
             <div className='arrow__right' onClick={this.next_data}>
               {this.state.more_data && <img src='https://myG.gg/platform_images/Communities/Group+971.svg' alt='arrow-right' />}

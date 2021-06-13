@@ -139,7 +139,7 @@ export default class ComposeSection extends Component {
     }
 
     try {
-      const post = await axios.post('/api/post', {
+      const data = {
         content: content,
         video: this.state.video,
         user_id: this.props.initialData.userInfo.id,
@@ -149,7 +149,11 @@ export default class ComposeSection extends Component {
         media_url: media_url.length > 0 ? JSON.stringify(media_url) : '',
         aws_key_id: aws_key_id.length > 0 ? aws_key_id : '',
         hash_tags: hash_tags,
-      })
+      }
+      
+      console.log('actual post', data)
+
+      const post = await axios.post('/api/post', data)
       if (post.data == 'video_link_failed') {
         toast.success(<Toast_style text={`Strewth mate! Invalid video link`} />)
         return

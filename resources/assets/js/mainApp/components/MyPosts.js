@@ -8,6 +8,7 @@ import axios from 'axios'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import IndividualPost from './IndividualPost'
 import ComposeSection from './ComposeSection_v2'
+import { DraftCompose } from './DraftCompose/DraftCompose'
 
 import { logToElasticsearch } from '../../integration/http/logger'
 
@@ -115,6 +116,10 @@ export default class MyPosts extends Component {
           successCallback={this.composeSuccess}
           initialData={this.props.initialData == undefined ? 'loading' : this.props.initialData}
         />
+        <h1>Draft Box below</h1>
+        <hr />
+        {/* <DraftCompose></DraftCompose> */}
+        <hr />
         {post_submit_loading && (
           <div className='timeline-item'>
             <div className='animated-background'>
