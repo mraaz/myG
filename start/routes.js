@@ -147,6 +147,7 @@ Route.post('/api/GameSkills/getGameSkills', 'GameSkillController.getGameSkills')
 Route.post('/api/HashTags', 'HashTagController.store')
 Route.get('/api/HashTags/getTopHashTags', 'HashTagController.getTopHashTags')
 Route.post('/api/HashTags/getHashTags', 'HashTagController.getHashTags')
+Route.post('/api/HashTags/getMatchingHashTags', 'HashTagController.getMatchingHashTags')
 
 Route.post('/api/likes/', 'LikeController.store')
 Route.get('/api/likes/:id', 'LikeController.show')

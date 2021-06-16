@@ -1,0 +1,166 @@
+@import '../../../../../../../node_modules/@draft-js-plugins/mention/lib/plugin.css';
+@import '../../../../../../../node_modules/@draft-js-plugins/emoji/lib/plugin.css';
+
+.editorWrapper {
+  &.individual_reply_composer {
+    width: 100%;
+  }
+}
+
+.editor {
+  &.post_composer {
+    background: #171a1c 0 0 no-repeat padding-box;
+    resize: none;
+    overflow-y: scroll;
+    width: 100%;
+    min-height: 80px;
+    border: 0.5px solid #273137;
+    color: #657172;
+    padding: 30px;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 14px;
+    font-family: Montserrat, sans-serif;
+    line-height: unset;
+
+    box-sizing: border-box;
+    // border: .5px solid #273137;
+
+    cursor: text;
+    // padding: 16px;
+    // border-radius: 2px;
+    // margin-bottom: 2em;
+    // box-shadow: inset 0px 1px 8px -3px #ababab;
+    // background: #fefefe;
+
+    &:global(.public-DraftEditor-content) {
+      min-height: 140px;
+    }
+  }
+
+  &.individual_reply_composer {
+    position: relative;
+    z-index: 2;
+    border: none;
+    height: 40px;
+    width: 100%;
+    border: 1px solid #273035;
+    border-radius: 4px 0 0 4px;
+    background: #1d2326 0 0 no-repeat padding-box;
+    resize: none;
+    overflow: auto;
+    color: #657172;
+    font-size: 12px;
+    padding: 8px 20px;
+    top: 20px;
+
+    .public-DraftStyleDefault-block {
+      overflow-x: auto;
+      white-space: pre;
+    }
+  }
+}
+
+.hashtagsList {
+  white-space: pre-line;
+  padding-top: 15px;
+}
+
+#draftComposer:focus-visible {
+  outline: auto 1px;
+}
+
+.hashtag {
+  color: #e5c746;
+  font-family: cursive;
+}
+
+.emojiBox {
+  display: flex;
+  padding: 6px 20px;
+  height: 60px;
+  justify-content: flex-start;
+  align-items: center;
+
+  span.addToBoxLabel {
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 14px;
+    font-family: Montserrat, sans-serif;
+    color: #657172;
+    padding: 0 20px 0 0;
+  }
+}
+
+// .mention {
+//   color: #4a85bb;
+//   text-decoration: none;
+// }
+
+// .mentionSuggestions {
+//   border-top: 1px solid #eee;
+//   background: #fff;
+//   border-radius: 2px;
+//   cursor: pointer;
+//   padding-top: 8px;
+//   padding-bottom: 8px;
+//   display: flex;
+//   flex-direction: column;
+//   box-sizing: border-box;
+//   transform-origin: 50% 0%;
+//   transform: scaleY(0);
+//   margin: -16px;
+// }
+
+// .mentionSuggestionsEntryContainer {
+//   display: table;
+//   width: 100%;
+// }
+
+// .mentionSuggestionsEntryContainerLeft,
+// .mentionSuggestionsEntryContainerRight {
+//   display: table-cell;
+//   vertical-align: middle;
+// }
+
+// .mentionSuggestionsEntryContainerRight {
+//   width: 100%;
+//   padding-left: 8px;
+// }
+
+// .mentionSuggestionsEntry {
+//   padding: 7px 10px 3px 10px;
+//   transition: background-color 0.4s cubic-bezier(0.27, 1.27, 0.48, 0.56);
+// }
+
+// .mentionSuggestionsEntry:active {
+//   background-color: #cce7ff;
+// }
+
+// .mentionSuggestionsEntryFocused {
+//   padding: 7px 10px 3px 10px;
+//   transition: background-color 0.4s cubic-bezier(0.27, 1.27, 0.48, 0.56);
+//   background-color: #e6f3ff;
+// }
+
+// .mentionSuggestionsEntryText,
+// .mentionSuggestionsEntryTitle {
+//   white-space: nowrap;
+//   overflow: hidden;
+//   text-overflow: ellipsis;
+// }
+
+// .mentionSuggestionsEntryText {
+// }
+
+// .mentionSuggestionsEntryTitle {
+//   font-size: 80%;
+//   color: #a7a7a7;
+// }
+
+// .mentionSuggestionsEntryAvatar {
+//   display: block;
+//   width: 30px;
+//   height: 30px;
+//   border-radius: 50%;
+// }

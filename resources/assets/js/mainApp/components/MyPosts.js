@@ -8,7 +8,6 @@ import axios from 'axios'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import IndividualPost from './IndividualPost'
 import ComposeSection from './ComposeSection_v2'
-import { DraftCompose } from './DraftCompose/DraftCompose'
 
 import { logToElasticsearch } from '../../integration/http/logger'
 
@@ -20,14 +19,14 @@ export default class MyPosts extends Component {
       myPosts: [],
       moreplease: true,
       isFetching: false,
-      post_submit_loading: false,
+      post_submit_loading: false
     }
   }
 
   componentDidMount() {
     window.scrollTo({
       top: 500,
-      behavior: 'smooth',
+      behavior: 'smooth'
     })
     this.fetchMoreData()
   }
@@ -59,21 +58,21 @@ export default class MyPosts extends Component {
 
         const data = await axios({
           method: 'GET',
-          url: `/api/getmypost/${counter}`,
+          url: `/api/getmypost/${counter}`
         })
 
         if (data.data.myPosts.length == 0) {
           this.setState({
             myPosts: [...myPosts],
             moreplease: false,
-            isFetching: false,
+            isFetching: false
           })
           return
         }
         this.setState({
           myPosts: [...myPosts, ...data.data.myPosts],
           moreplease: data.data.myPosts.lastPage == counter ? false : true,
-          isFetching: false,
+          isFetching: false
         })
       } catch (error) {
         logToElasticsearch('error', 'MyPosts', 'fetchMoreData' + ' ' + error)
@@ -84,7 +83,7 @@ export default class MyPosts extends Component {
     this.setState(
       {
         counter: count ? count : myCounter + 1,
-        isFetching: true,
+        isFetching: true
       },
       () => {
         getPosts()
@@ -96,13 +95,13 @@ export default class MyPosts extends Component {
     const { myPosts = [] } = this.state
     this.setState(
       {
-        post_submit_loading: true,
+        post_submit_loading: true
       },
       () => {
         this.setState({
           myPosts: [...data.data.myPosts, ...myPosts],
           moreplease: data.data.myPosts.lastPage == 1 ? false : true,
-          post_submit_loading: false,
+          post_submit_loading: false
         })
       }
     )
@@ -116,9 +115,6 @@ export default class MyPosts extends Component {
           successCallback={this.composeSuccess}
           initialData={this.props.initialData == undefined ? 'loading' : this.props.initialData}
         />
-        <h1>Draft Box below</h1>
-        <hr />
-        {/* <DraftCompose></DraftCompose> */}
         <hr />
         {post_submit_loading && (
           <div className='timeline-item'>

@@ -8,12 +8,14 @@ export const REPEAT_SCHEDULE = 'REPEAT_SCHEDULE'
 export const PROFILE_V2 = 'PROFILE_V2'
 export const CHANNEL = 'CHANNEL'
 export const TEAMS = 'TEAMS'
+export const DRAFT_JS = 'DRAFT_JS'
 
 const flags = {
   REPEAT_SCHEDULE: new Rox.Flag(),
   PROFILE_V2: new Rox.Flag(),
   CHANNEL: new Rox.Flag(),
   TEAMS: new Rox.Flag(),
+  DRAFT_JS: new Rox.Flag()
 }
 
 async function initRollout() {
@@ -22,21 +24,21 @@ async function initRollout() {
   await Rox.setup(secretRolloutKey, options)
 }
 
-initRollout().then(function() {})
+initRollout().then(function () {})
 
 export function checkFlag(flag) {
-  const isLocalhost = window.location.href.startsWith('http://localhost');
-  const isNgrok = window.location.href.includes('ngrok');
-  if (isLocalhost || isNgrok) return isFlagEnabledDevelopment(flag);
-  return isFlagEnabledProduction(flag);
+  const isLocalhost = window.location.href.startsWith('http://localhost')
+  const isNgrok = window.location.href.includes('ngrok')
+  if (isLocalhost || isNgrok) return isFlagEnabledDevelopment(flag)
+  return isFlagEnabledProduction(flag)
 }
 
 function isFlagEnabledProduction(flag) {
-  return flags[`${flag}`].isEnabled();
+  return flags[`${flag}`].isEnabled()
 }
 
 function isFlagEnabledDevelopment(flag) {
-  return window.FEATURES_ON && window.FEATURES_ON.includes(flag);
+  return window.FEATURES_ON && window.FEATURES_ON.includes(flag)
 }
 
 export class FeatureEnabled extends React.Component {

@@ -3,7 +3,6 @@ import axios from 'axios'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import Group_IndividualPost from './Group_IndividualPost'
 import ComposeSection from '../ComposeSection_v2'
-import { DraftCompose } from '../DraftCompose/DraftCompose'
 
 import { logToElasticsearch } from '../../../integration/http/logger'
 
@@ -16,7 +15,7 @@ export default class Posts extends Component {
       moreplease: true,
       post_submit_loading: false,
       activeTab: 'All',
-      fetching: false,
+      fetching: false
     }
     this.scrollRef = React.createRef()
   }
@@ -24,7 +23,7 @@ export default class Posts extends Component {
   componentDidMount() {
     window.scrollTo({
       top: 500,
-      behavior: 'smooth',
+      behavior: 'smooth'
     })
     this.fetchMoreData()
   }
@@ -61,19 +60,19 @@ export default class Posts extends Component {
         const myPosts = await axios.post('/api/get_group_posts', {
           counter: this.state.counter,
           group_id: this.props.group_id,
-          type: this.state.activeTab,
+          type: this.state.activeTab
         })
         if (myPosts.data.groupPosts.groupPosts.length == 0) {
           this.setState({
             moreplease: false,
-            fetching: false,
+            fetching: false
           })
           return
         }
 
         this.setState({
           myPosts: this.state.myPosts.concat(myPosts.data.groupPosts.groupPosts),
-          fetching: false,
+          fetching: false
         })
       } catch (error) {
         logToElasticsearch('error', 'Posts', 'Failed at myPosts' + ' ' + error)
@@ -84,7 +83,7 @@ export default class Posts extends Component {
     this.setState(
       {
         counter: this.state.counter + 1,
-        fetching: true,
+        fetching: true
       },
       () => {
         getPosts()
@@ -95,7 +94,7 @@ export default class Posts extends Component {
   composeSuccess = async (data) => {
     this.setState(
       {
-        post_submit_loading: true,
+        post_submit_loading: true
       },
       () => {
         const { myPosts = [] } = this.state
@@ -103,7 +102,7 @@ export default class Posts extends Component {
           this.setState({
             myPosts: [...data.data.myPosts, ...myPosts],
             moreplease: data.data.myPosts.lastPage == 1 ? false : true,
-            post_submit_loading: false,
+            post_submit_loading: false
           })
         }
       }
@@ -115,17 +114,17 @@ export default class Posts extends Component {
       const myPosts = await axios.post('/api/get_group_posts', {
         counter: this.state.counter,
         group_id: this.props.group_id,
-        type: this.state.activeTab,
+        type: this.state.activeTab
       })
       if (myPosts.data.groupPosts.groupPosts.length == 0) {
         this.setState({
-          myPosts: [],
+          myPosts: []
         })
         return
       }
 
       this.setState({
-        myPosts: [...myPosts.data.groupPosts.groupPosts],
+        myPosts: [...myPosts.data.groupPosts.groupPosts]
       })
     })
   }
@@ -158,12 +157,12 @@ export default class Posts extends Component {
         </div>
         {[0, 1, 2, 3].includes(this.props.current_user_permission) && (
           <Fragment>
-          <ComposeSection
-            successCallback={this.composeSuccess}
-            initialData={this.props.initialData == undefined ? 'loading' : this.props.initialData}
-            communityBox={true}
-            group_id={this.props.group_id}
-          />
+            <ComposeSection
+              successCallback={this.composeSuccess}
+              initialData={this.props.initialData == undefined ? 'loading' : this.props.initialData}
+              communityBox={true}
+              group_id={this.props.group_id}
+            />
           </Fragment>
         )}
         {post_submit_loading && (
@@ -185,9 +184,6 @@ export default class Posts extends Component {
             </div>
           </div>
         )}
-        <h1>Draft Box below</h1>
-        <hr />
-        {/* <DraftCompose></DraftCompose> */}
         <hr />
         {myPosts.length > 0 && !post_submit_loading && (
           <section id='posts' className={isFetching ? '' : `active`}>

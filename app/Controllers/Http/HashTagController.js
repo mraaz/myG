@@ -13,19 +13,23 @@ class HashTagController {
       try {
         const newHashTag = await HashTags.create({
           content: content.trim(),
-          user_id: auth.user.id,
+          user_id: auth.user.id
         })
         return newHashTag.id
       } catch (error) {
         if (error.code == 'ER_DUP_ENTRY') {
-          const newHashTag = await Database.table('hash_tags')
-            .where({ content: content.trim() })
-            .first()
+          const newHashTag = await Database.table('hash_tags').where({ content: content.trim() }).first()
 
           return newHashTag.id
         }
 
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error
+        })
       }
     }
   }
@@ -37,24 +41,53 @@ class HashTagController {
         .limit(88)
 
       return {
-        allTags,
+        allTags
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error
+      })
     }
   }
 
   async getTopHashTags({ auth, request, response }) {
     try {
-      const allTags = await Database.table('hash_tags')
-        .orderBy('counter', 'desc')
-        .limit(18)
+      const allTags = await Database.table('hash_tags').orderBy('counter', 'desc').limit(18)
 
       return {
-        allTags,
+        allTags
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error
+      })
+    }
+  }
+
+  async getMatchingHashTags({ auth, request, response }) {
+    try {
+      const tags = request.input('content')
+      const allMatchingTags = await Database.table('hash_tags').whereIn('content', tags).limit(88)
+
+      return {
+        allMatchingTags
+      }
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error
+      })
     }
   }
 }

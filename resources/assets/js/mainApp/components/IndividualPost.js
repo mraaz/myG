@@ -24,6 +24,11 @@ import ImageGallery from './common/ImageGallery/ImageGallery'
 import ReportPost from './common/ReportPost'
 import { WithTooltip } from './Tooltip'
 
+import { checkFlag, FeatureEnabled, FeatureDisabled, DRAFT_JS } from '../../common/flags'
+import { convertFromRaw } from 'draft-js'
+import { SimpleStaticComments, ReplyComposer } from './Draftjs'
+import { isJson } from './Draftjs/DraftEditors/DraftHelperFunctions'
+
 export default class IndividualPost extends Component {
   constructor() {
     super()
@@ -165,12 +170,19 @@ export default class IndividualPost extends Component {
         this.setState({ show_like: false })
       }
 
+      // Determine how to handle content, if no draft, make sure no draft comes through, If draft, take it all through
+      let postContent = this.props.post.content
+      if (!checkFlag(DRAFT_JS) && isJson(postContent)) {
+        // must be ContentState object, convert to plain text to pass to old comment
+        postContent = convertFromRaw(JSON.parse(postContent)).getPlainText()
+      }
+
       this.setState({
         like: this.props.post.do_I_like_it,
         total: this.props.post.total,
         admirer_first_name: this.props.post.admirer_first_name,
         post_time: post_timestamp.local().fromNow(),
-        content: this.props.post.content,
+        content: postContent,
         galleryItems
       })
       if (this.props.post.no_of_comments != 0) {
@@ -669,19 +681,33 @@ export default class IndividualPost extends Component {
               <div className='post__content'>
                 {!this.state.edit_post && this.state.showmore && (
                   <Fragment>
-                    <p style={{ whiteSpace: 'pre-line' }}>
-                      {`${this.state.content}  `}
-                      {this.renderHashTags(hash_tags)}
-                      <strong onClick={this.toggleShowmore}>{' ... '}See less</strong>
-                    </p>
+                    <FeatureEnabled allOf={[DRAFT_JS]}>
+                      {this.state.content && <SimpleStaticComments commentText={this.state.content}></SimpleStaticComments>}
+                      <p className='hashtagsList'>{this.renderHashTags(hash_tags)}</p>
+                    </FeatureEnabled>
+
+                    <FeatureDisabled anyOf={[DRAFT_JS]}>
+                      <p style={{ whiteSpace: 'pre-line' }}>
+                        {`${this.state.content}  `}
+                        {this.renderHashTags(hash_tags)}
+                        <strong onClick={this.toggleShowmore}>{' ... '}See less</strong>
+                      </p>
+                    </FeatureDisabled>
                   </Fragment>
                 )}
                 {!this.state.edit_post && !this.state.showmore && (
                   <Fragment>
-                    <p style={{ whiteSpace: 'pre-line' }}>
-                      {`${this.state.content.slice(0, 254)}  `} {this.renderHashTags(hash_tags)}
-                      {this.state.content.length > 254 && <strong onClick={this.toggleShowmore}> {' ... '} See more</strong>}
-                    </p>
+                    <FeatureEnabled allOf={[DRAFT_JS]}>
+                      {this.state.content && <SimpleStaticComments commentText={this.state.content}></SimpleStaticComments>}
+                      <p className='hashtagsList'>{this.renderHashTags(hash_tags)}</p>
+                    </FeatureEnabled>
+
+                    <FeatureDisabled anyOf={[DRAFT_JS]}>
+                      <p style={{ whiteSpace: 'pre-line' }}>
+                        {`${this.state.content.slice(0, 254)}  `} {this.renderHashTags(hash_tags)}
+                        {this.state.content.length > 254 && <strong onClick={this.toggleShowmore}> {' ... '} See more</strong>}
+                      </p>
+                    </FeatureDisabled>
                   </Fragment>
                 )}
                 {this.state.edit_post && (
@@ -752,15 +778,20 @@ export default class IndividualPost extends Component {
               </div>
             )}
             <div className='compose-comment'>
-              <textarea
-                name='name'
-                placeholder='Write a comment...'
-                value={this.state.value}
-                onChange={this.handleChange}
-                maxLength='254'
-                onKeyDown={(e) => this.detectKey(e, true)}
-                ref={this.setTextInputRef}
-              />
+              <FeatureEnabled allOf={[DRAFT_JS]}>
+                <ReplyComposer></ReplyComposer>
+              </FeatureEnabled>
+              <FeatureDisabled anyOf={[DRAFT_JS]}>
+                <textarea
+                  name='name'
+                  placeholder='Write a comment...'
+                  value={this.state.value}
+                  onChange={this.handleChange}
+                  maxLength='254'
+                  onKeyDown={(e) => this.detectKey(e, true)}
+                  ref={this.setTextInputRef}
+                />
+              </FeatureDisabled>
               <div className='insert__images' onClick={this.insert_image_comment}>
                 <input
                   type='file'

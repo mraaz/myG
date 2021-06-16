@@ -11,13 +11,15 @@ import { toast } from 'react-toastify'
 import { Toast_style } from './Utility_Function'
 import ImageGallery from './common/ImageGallery/ImageGallery.js'
 import { logToElasticsearch } from '../../integration/http/logger'
+import { PostComposer } from './Draftjs'
+import { checkFlag, FeatureEnabled, FeatureDisabled, DRAFT_JS } from '../../common/flags'
 
 const MAX_HASH_TAGS = 21
 
 const createOption = (label, hash_tag_id) => ({
   label,
   value: label,
-  hash_tag_id,
+  hash_tag_id
 })
 
 export default class ComposeSection extends Component {
@@ -43,7 +45,7 @@ export default class ComposeSection extends Component {
       group_id: [],
       options_tags: '',
       value_tags: [],
-      isShowAllGroup: false,
+      isShowAllGroup: false
     }
 
     this.openPhotoPost = this.openPhotoPost.bind(this)
@@ -58,7 +60,7 @@ export default class ComposeSection extends Component {
 
   callbackPostFileModalClose() {
     this.setState({
-      bFileModalOpen: false,
+      bFileModalOpen: false
     })
   }
 
@@ -69,7 +71,7 @@ export default class ComposeSection extends Component {
         bFileModalOpen: false,
         group_id: callbackData.selected_group,
         selected_group_data: callbackData.selected_group_data,
-        visibility: callbackData.visibility,
+        visibility: callbackData.visibility
       })
     } catch (error) {
       logToElasticsearch('error', 'ComposeSection_v2', 'Failed callbackPostFileModalConfirm:' + ' ' + error)
@@ -79,20 +81,20 @@ export default class ComposeSection extends Component {
   openPhotoPost() {
     this.setState({
       bFileModalOpen: true,
-      fileType: 'photo',
+      fileType: 'photo'
     })
   }
 
   openVideoPost() {
     this.setState({
       bFileModalOpen: true,
-      fileType: 'video',
+      fileType: 'video'
     })
   }
   openAudioPost() {
     this.setState({
       bFileModalOpen: true,
-      fileType: 'audio',
+      fileType: 'audio'
     })
   }
   handleClear = () => {
@@ -106,7 +108,7 @@ export default class ComposeSection extends Component {
       group_id: [],
       value_tags: [],
       visibility: 1,
-      video: '',
+      video: ''
     })
   }
 
@@ -148,10 +150,8 @@ export default class ComposeSection extends Component {
         group_id: this.props.group_id ? this.props.group_id : this.state.group_id.toString(),
         media_url: media_url.length > 0 ? JSON.stringify(media_url) : '',
         aws_key_id: aws_key_id.length > 0 ? aws_key_id : '',
-        hash_tags: hash_tags,
+        hash_tags: hash_tags
       }
-      
-      console.log('actual post', data)
 
       const post = await axios.post('/api/post', data)
       if (post.data == 'video_link_failed') {
@@ -173,7 +173,7 @@ export default class ComposeSection extends Component {
           selected_group: [],
           group_id: [],
           open_compose_textTab: true,
-          video: '',
+          video: ''
         },
         () => {
           media_url = []
@@ -190,7 +190,7 @@ export default class ComposeSection extends Component {
     const name = event.target.name
     const value = event.target.type == 'checkbox' ? event.target.checked : event.target.value
     this.setState({
-      [name]: value,
+      [name]: value
     })
   }
 
@@ -220,7 +220,7 @@ export default class ComposeSection extends Component {
     if (e.key === 'Escape') {
       this.setState({
         edit_post: false,
-        value2: '',
+        value2: ''
       })
     }
   }
@@ -232,12 +232,12 @@ export default class ComposeSection extends Component {
       if (this.props.initialData.userInfo != undefined) {
         this.setState({
           profile_img: this.props.initialData.userInfo.profile_img,
-          alias: this.props.initialData.userInfo.alias,
+          alias: this.props.initialData.userInfo.alias
         })
       }
     }
 
-    const getHash_tags = async function() {
+    const getHash_tags = async function () {
       try {
         //const gamers_you_might_know = await axios.get('/api/user/gamers_you_might_know')
 
@@ -256,8 +256,12 @@ export default class ComposeSection extends Component {
       open_compose_textTab = false
     }
     if (label == 'text') {
-      setTimeout(function() {
-        document.getElementById('composeTextarea').focus()
+      setTimeout(function () {
+        if (checkFlag(DRAFT_JS)) {
+          document.getElementById('draftComposer').focus()
+        } else {
+          document.getElementById('composeTextarea').focus()
+        }
       }, 0)
     }
     this.setState({ open_compose_textTab, overlay_active: true })
@@ -285,7 +289,7 @@ export default class ComposeSection extends Component {
     var instance = this
 
     this.setState({
-      uploading: true,
+      uploading: true
     })
 
     try {
@@ -295,15 +299,15 @@ export default class ComposeSection extends Component {
       new_preview_files.push({
         src: post.data.Location,
         key: post.data.Key,
-        id: post.data.aws_key_id,
+        id: post.data.aws_key_id
       })
       instance.setState({
         preview_files: new_preview_files,
-        uploading: false,
+        uploading: false
       })
     } catch (error) {
       instance.setState({
-        uploading: false,
+        uploading: false
       })
       toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file. Close this window and try again'} />)
     }
@@ -331,13 +335,13 @@ export default class ComposeSection extends Component {
     value: inputValue,
     label: optionLabel,
     __isNew__: true,
-    isEqual: () => false,
+    isEqual: () => false
   })
 
   getOptions_tags = (inputValue) => {
     const self = this
 
-    const getInitialData = async function(inputValue) {
+    const getInitialData = async function (inputValue) {
       try {
         var results = await Hash_Tags(inputValue)
         self.setState({ options_tags: results })
@@ -379,6 +383,7 @@ export default class ComposeSection extends Component {
 
   render() {
     const {
+      profile_img,
       open_compose_textTab,
       bFileModalOpen,
       preview_files = [],
@@ -387,7 +392,9 @@ export default class ComposeSection extends Component {
       overlay_active,
       post_content = '',
       isShowAllGroup = false,
-      visibility,
+      uploading,
+      video,
+      visibility
     } = this.state
     const isButtonDisable = post_content != '' || preview_files.length > 0 ? true : false
     const groups = [...selected_group_data]
@@ -398,213 +405,247 @@ export default class ComposeSection extends Component {
 
     return (
       <Fragment>
-        <section className={`postCompose__container ${overlay_active ? 'zI1000' : ''}`}>
-          <div className='compose__type__section'>
-            <div className={`share__thought ${open_compose_textTab ? 'active' : ''}`} onClick={(e) => this.togglePostTypeTab('text')}>
-              {`Share your thoughts ...`}
-            </div>
-            <div className='devider'></div>
-            <div className={`add__post__image ${open_compose_textTab ? '' : 'active'}`} onClick={(e) => this.togglePostTypeTab('media')}>
-              {` Add video or photos`}
-            </div>
-          </div>
-          {open_compose_textTab && (
-            <div className='text__editor__section'>
-              <div className='media'>
-                {preview_filesData.length > 0 && (
-                  <ImageGallery items={preview_filesData} showFullscreenButton={false} showGalleryFullscreenButton={false} />
-                )}
+        <FeatureEnabled allOf={[DRAFT_JS]}>
+          <PostComposer
+            addGroupToggle={this.addGroupToggle}
+            allGroups={AllGroups}
+            communityBox={communityBox}
+            groupId={group_id}
+            groups={groups}
+            handleAcceptedFiles={this.handleAcceptedFiles}
+            handleOverlayClick={this.handleOverlayClick}
+            handleFocus_txtArea={this.handleFocus_txtArea}
+            handlePreviewRemove={this.handlePreviewRemove}
+            isShowAllGroup={isShowAllGroup}
+            openComposeTextTab={open_compose_textTab}
+            overlayActive={overlay_active}
+            previewFilesData={preview_filesData}
+            profileImg={profile_img}
+            successCallback={this.props.successCallback}
+            togglePostTypeTab={this.togglePostTypeTab}
+            toggleShowAllGroup={this.toggleShowAllGroup}
+            uploading={uploading}
+            userId={this.props.initialData.userInfo.id}
+            video={video}
+            visibility={visibility}
+          ></PostComposer>
+        </FeatureEnabled>
+
+        <FeatureDisabled anyOf={[DRAFT_JS]}>
+          <section className={`postCompose__container ${overlay_active ? 'zI1000' : ''}`}>
+            <div className='compose__type__section'>
+              <div className={`share__thought ${open_compose_textTab ? 'active' : ''}`} onClick={(e) => this.togglePostTypeTab('text')}>
+                {`Share your thoughts ...`}
               </div>
-              <textarea
-                onChange={this.handleChange_txtArea}
-                onFocus={this.handleFocus_txtArea}
-                onKeyDown={this.detectKey}
-                maxLength='2048'
-                value={post_content}
-                placeholder="What's up... "
-                id={`composeTextarea`}
-              />
+              <div className='devider'></div>
+              <div className={`add__post__image ${open_compose_textTab ? '' : 'active'}`} onClick={(e) => this.togglePostTypeTab('media')}>
+                {` Add video or photos`}
+              </div>
             </div>
-          )}
-          {open_compose_textTab && (
-            <div className='video_box'>
-              <input
-                className='video-input'
-                placeholder='Enter link to video here'
-                value={this.state.video}
-                onChange={(event) => this.setState({ video: event.target.value })}
-              />
-            </div>
-          )}
-          {!open_compose_textTab && (
-            <div className='media__container'>
-              <Dropzone
-                onDrop={(acceptedFiles, rejectedFiles) => this.handleAcceptedFiles(acceptedFiles, rejectedFiles)}
-                accept='image/jpeg,image/jpg,image/png,image/gif,video/mp4,video/webm,video/ogg'
-                minSize={0}
-                maxSize={52428800}
-                multiple
-                disabled={this.state.uploading}>
-                {(props) => {
-                  return (
-                    <section className='custom__html'>
-                      <div className='text'>Drop your image or video</div>
-                      <div className='images'>
-                        <span className=' button photo-btn'>
-                          <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Image.svg`} />
-                        </span>
-                        <span className='button video-btn'>
-                          <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Video.svg`} />
-                        </span>
-                      </div>
-                      <div className='text'>
-                        Or <span>click here </span> to select
-                      </div>
-                      {this.state.uploading && (
-                        <div className='text'>
-                          <span>Uploading... </span>
+            {open_compose_textTab && (
+              <div className='text__editor__section'>
+                <div className='media'>
+                  {preview_filesData.length > 0 && (
+                    <ImageGallery items={preview_filesData} showFullscreenButton={false} showGalleryFullscreenButton={false} />
+                  )}
+                </div>
+                <textarea
+                  onChange={this.handleChange_txtArea}
+                  onFocus={this.handleFocus_txtArea}
+                  onKeyDown={this.detectKey}
+                  maxLength='2048'
+                  value={post_content}
+                  placeholder="What's up... "
+                  id={`composeTextarea`}
+                />
+              </div>
+            )}
+            {open_compose_textTab && (
+              <div className='video_box'>
+                <input
+                  className='video-input'
+                  placeholder='Enter link to video here'
+                  value={this.state.video}
+                  onChange={(event) => this.setState({ video: event.target.value })}
+                />
+              </div>
+            )}
+            {!open_compose_textTab && (
+              <div className='media__container'>
+                <Dropzone
+                  onDrop={(acceptedFiles, rejectedFiles) => this.handleAcceptedFiles(acceptedFiles, rejectedFiles)}
+                  accept='image/jpeg,image/jpg,image/png,image/gif,video/mp4,video/webm,video/ogg'
+                  minSize={0}
+                  maxSize={52428800}
+                  multiple
+                  disabled={this.state.uploading}
+                >
+                  {(props) => {
+                    return (
+                      <section className='custom__html'>
+                        <div className='text'>Drop your image or video</div>
+                        <div className='images'>
+                          <span className=' button photo-btn'>
+                            <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Image.svg`} />
+                          </span>
+                          <span className='button video-btn'>
+                            <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Video.svg`} />
+                          </span>
                         </div>
-                      )}
-                      {preview_filesData.length > 0 && (
-                        <div className='files__preview_compose'>
-                          {preview_filesData.slice(0, 3).map((file) => {
-                            const splitUrl = file.src.split('.')
-                            let fileType = splitUrl[splitUrl.length - 1]
-                            if (file.src.includes('video') || this.videoFileType.includes(fileType)) {
+                        <div className='text'>
+                          Or <span>click here </span> to select
+                        </div>
+                        {this.state.uploading && (
+                          <div className='text'>
+                            <span>Uploading... </span>
+                          </div>
+                        )}
+                        {preview_filesData.length > 0 && (
+                          <div className='files__preview_compose'>
+                            {preview_filesData.slice(0, 3).map((file) => {
+                              const splitUrl = file.src.split('.')
+                              let fileType = splitUrl[splitUrl.length - 1]
+                              if (file.src.includes('video') || this.videoFileType.includes(fileType)) {
+                                return (
+                                  <span className='image' key={file.src}>
+                                    <video className='post-video' controls>
+                                      <source src={file.src}></source>
+                                    </video>
+                                    <span
+                                      className='remove__image'
+                                      onClick={(e) => this.handlePreviewRemove(e, file.src, file.key, file.id)}
+                                    >
+                                      X
+                                    </span>
+                                  </span>
+                                )
+                              }
                               return (
                                 <span className='image' key={file.src}>
-                                  <video className='post-video' controls>
-                                    <source src={file.src}></source>
-                                  </video>
+                                  <img src={file.src} key={file.src} />
                                   <span className='remove__image' onClick={(e) => this.handlePreviewRemove(e, file.src, file.key, file.id)}>
                                     X
                                   </span>
                                 </span>
                               )
-                            }
-                            return (
-                              <span className='image' key={file.src}>
-                                <img src={file.src} key={file.src} />
-                                <span className='remove__image' onClick={(e) => this.handlePreviewRemove(e, file.src, file.key, file.id)}>
-                                  X
-                                </span>
-                              </span>
-                            )
+                            })}
+                            {preview_filesData.length > 3 ? `(${preview_filesData.length})...` : ''}
+                          </div>
+                        )}
+                      </section>
+                    )
+                  }}
+                </Dropzone>
+                {/* <div className=' button photo-btn' onClick={() => this.openPhotoPost()}>
+                <i className='far fa-images' />
+              </div>
+              <div className='button video-btn' onClick={() => this.openVideoPost()}>
+                <i className='far fa-play-circle' />
+              </div>
+              <div className='button video-btn' onClick={() => this.openAudioPost()}>
+                <i className='far fa-volume-up' />
+              </div> */}
+              </div>
+            )}
+            {open_compose_textTab && (
+              <div className='hashTag_section'>
+                <div className='hashtag_label'>Add Hashtags</div>
+                <div className='hashtag_input'>
+                  <MyGCreateableSelect
+                    isClearable
+                    isMulti
+                    onKeyDown={Disable_keys}
+                    onCreateOption={this.handleCreateHashTags}
+                    getNewOptionData={this.getNewOptionData}
+                    options={this.state.options_tags}
+                    value={this.state.value_tags}
+                    onChange={this.handleChange_Hash_tags}
+                    onInputChange={this.getOptions_tags}
+                    classNamePrefix='filter'
+                    className='hash_tag_name_box'
+                    placeholder='Search, Select or create Hash Tags'
+                  />
+                </div>
+              </div>
+            )}
+            {open_compose_textTab && !communityBox && (
+              <div className='compose__people__section'>
+                <div className='label'>Post on: </div>
+                <div className='people_selected_container'>
+                  <div className='people_selected_list'>
+                    <div
+                      className='default_circle profile-image'
+                      style={{
+                        backgroundImage: `url('${this.state.profile_img}')`,
+                        backgroundSize: 'cover'
+                      }}
+                    ></div>
+                    <div className='people_label'>Your Feed</div>
+                  </div>
+                  {groups.splice(0, 3).map((g) => {
+                    return (
+                      <div className='people_selected_list'>
+                        <div
+                          className='default_circle profile-image'
+                          style={{
+                            backgroundImage: `url('${g.group_img}')`,
+                            backgroundSize: 'cover'
+                          }}
+                        ></div>
+                        <div className='people_label'>{g.name}</div>
+                      </div>
+                    )
+                  })}
+                  {AllGroups.length > 3 && (
+                    <div className='all__selected_groups people_selected_list'>
+                      <span className='more__groups' onClick={this.toggleShowAllGroup}>
+                        ...
+                      </span>
+
+                      {isShowAllGroup && (
+                        <div className='group__details'>
+                          {AllGroups.splice(3, AllGroups.length).map((group) => {
+                            return <div className='people_label'>{group.name}</div>
                           })}
-                          {preview_filesData.length > 3 ? `(${preview_filesData.length})...` : ''}
                         </div>
                       )}
-                    </section>
-                  )
-                }}
-              </Dropzone>
-              {/* <div className=' button photo-btn' onClick={() => this.openPhotoPost()}>
-              <i className='far fa-images' />
-            </div>
-            <div className='button video-btn' onClick={() => this.openVideoPost()}>
-              <i className='far fa-play-circle' />
-            </div>
-            <div className='button video-btn' onClick={() => this.openAudioPost()}>
-              <i className='far fa-volume-up' />
-            </div> */}
-            </div>
-          )}
-          {open_compose_textTab && (
-            <div className='hashTag_section'>
-              <div className='hashtag_label'>Add Hashtags</div>
-              <div className='hashtag_input'>
-                <MyGCreateableSelect
-                  isClearable
-                  isMulti
-                  onKeyDown={Disable_keys}
-                  onCreateOption={this.handleCreateHashTags}
-                  getNewOptionData={this.getNewOptionData}
-                  options={this.state.options_tags}
-                  value={this.state.value_tags}
-                  onChange={this.handleChange_Hash_tags}
-                  onInputChange={this.getOptions_tags}
-                  classNamePrefix='filter'
-                  className='hash_tag_name_box'
-                  placeholder='Search, Select or create Hash Tags'
-                />
-              </div>
-            </div>
-          )}
-          {open_compose_textTab && !communityBox && (
-            <div className='compose__people__section'>
-              <div className='label'>Post on: </div>
-              <div className='people_selected_container'>
-                <div className='people_selected_list'>
-                  <div
-                    className='default_circle profile-image'
-                    style={{
-                      backgroundImage: `url('${this.state.profile_img}')`,
-                      backgroundSize: 'cover',
-                    }}></div>
-                  <div className='people_label'>Your Feed</div>
-                </div>
-                {groups.splice(0, 3).map((g) => {
-                  return (
-                    <div className='people_selected_list'>
-                      <div
-                        className='default_circle profile-image'
-                        style={{
-                          backgroundImage: `url('${g.group_img}')`,
-                          backgroundSize: 'cover',
-                        }}></div>
-                      <div className='people_label'>{g.name}</div>
                     </div>
-                  )
-                })}
-                {AllGroups.length > 3 && (
-                  <div className='all__selected_groups people_selected_list'>
-                    <span className='more__groups' onClick={this.toggleShowAllGroup}>
-                      ...
-                    </span>
-
-                    {isShowAllGroup && (
-                      <div className='group__details'>
-                        {AllGroups.splice(3, AllGroups.length).map((group) => {
-                          return <div className='people_label'>{group.name}</div>
-                        })}
-                      </div>
-                    )}
-                  </div>
-                )}
+                  )}
+                </div>
+                <div className='post_for'>
+                  {visibility == 1 && '(Everyone)'}
+                  {visibility == 2 && '(Friends)'}
+                  {visibility == 3 && '(Followers)'}
+                  {visibility == 0 && '(Private)'}
+                </div>
+                <div className='add_more_people'>
+                  <button type='button' className='add__people' onClick={this.addGroupToggle}>
+                    +
+                  </button>
+                </div>
               </div>
-              <div className='post_for'>
-                {visibility == 1 && '(Everyone)'}
-                {visibility == 2 && '(Friends)'}
-                {visibility == 3 && '(Followers)'}
-                {visibility == 0 && '(Private)'}
-              </div>
-              <div className='add_more_people'>
-                <button type='button' className='add__people' onClick={this.addGroupToggle}>
-                  +
-                </button>
-              </div>
+            )}
+            <div className='compose__button'>
+              <button type='button' disabled={!isButtonDisable} className='add__post' onClick={this.submitForm}>
+                Post
+              </button>
             </div>
-          )}
-          <div className='compose__button'>
-            <button type='button' disabled={!isButtonDisable} className='add__post' onClick={this.submitForm}>
-              Post
-            </button>
-          </div>
 
-          {bFileModalOpen && (
-            <PostFileModal
-              bOpen={bFileModalOpen}
-              callbackClose={this.callbackPostFileModalClose}
-              callbackConfirm={this.callbackPostFileModalConfirm}
-              callbackContentConfirm={this.submitForm}
-              open_compose_textTab={open_compose_textTab}
-              selected_group_data={selected_group_data}
-              selected_group={group_id}
-              visibility={this.state.visibility}
-            />
-          )}
-        </section>
-        <div className={`highlight_overlay ${overlay_active ? 'active' : ''}`} onClick={this.handleOverlayClick}></div>
+            {bFileModalOpen && (
+              <PostFileModal
+                bOpen={bFileModalOpen}
+                callbackClose={this.callbackPostFileModalClose}
+                callbackConfirm={this.callbackPostFileModalConfirm}
+                callbackContentConfirm={this.submitForm}
+                open_compose_textTab={open_compose_textTab}
+                selected_group_data={selected_group_data}
+                selected_group={group_id}
+                visibility={this.state.visibility}
+              />
+            )}
+          </section>
+          <div className={`highlight_overlay ${overlay_active ? 'active' : ''}`} onClick={this.handleOverlayClick}></div>
+        </FeatureDisabled>
       </Fragment>
     )
   }

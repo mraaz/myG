@@ -14,6 +14,9 @@ import { Upload_to_S3, Remove_file } from './AWS_utilities'
 
 import { logToElasticsearch } from '../../integration/http/logger'
 import ReportPost from './common/ReportPost'
+import { FeatureEnabled, FeatureDisabled, DRAFT_JS } from '../../common/flags'
+
+import { SimpleStaticComments } from './Draftjs'
 
 export default class IndividualComment extends Component {
   constructor() {
@@ -520,7 +523,15 @@ export default class IndividualComment extends Component {
               {'  '}
               {!this.state.show_edit_comment && (
                 <div className='comment-content'>
-                  <p style={{ whiteSpace: 'pre-line' }}>{this.state.content}</p>
+                  {/* If draftjs is enabled, turn on draftjs comments */}
+                  <FeatureEnabled allOf={[DRAFT_JS]}>
+                    {this.state.content && <SimpleStaticComments commentText={this.state.content}></SimpleStaticComments>}
+                  </FeatureEnabled>
+                  {/* If draftjs is disabled, turn on original comments */}
+                  <FeatureDisabled anyOf={[DRAFT_JS]}>
+                    <p style={{ whiteSpace: 'pre-line' }}>{this.state.content}</p>
+                  </FeatureDisabled>
+
                   {media_urls.length > 0 && (
                     <div className='show__comment__image'>
                       {media_urls.map((img) => {
