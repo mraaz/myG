@@ -101,11 +101,18 @@ class Recents extends React.Component {
   }
 
   render() {
+    const unreadMessages = (this.props.chats || [])
+      .map((chat) => (chat.messages || []))
+      .reduce((prev, acc) => [...prev, ...acc], [])
+      .filter((message) => (message || {}).unread);
     const chevronType = this.props.messages.length && this.props.expanded ? 'down' : 'right'
     return (
       <div className='messenger-body-section' key='recents'>
         <div className='messenger-body-section-header clickable' onClick={this.expand}>
-          <p className='messenger-body-section-header-name'>recents</p>
+          <div className='messenger-body-section-header-info'>
+            {!!unreadMessages.length && <div className="unread-indicator" />}
+            <p className='messenger-body-section-header-name'>recents</p>
+          </div>
           <div className='messenger-body-section-header-info'>
             <div
               className='messenger-body-section-header-icon'

@@ -388,6 +388,14 @@
 }
 
 .messenger {
+  .unread-indicator {
+    background-color: #fd323c;
+    margin-right: 8px;
+    border-radius: 1000px;
+    width: 12px;
+    height: 12px;
+  }
+
   .recent-message {
     display: flex;
     flex-direction: column;
@@ -396,14 +404,6 @@
     .message-content-container {    display: flex;
       flex-direction: row;
       align-items: center;
-    }
-
-    .unread-indicator {
-      background-color: #fd323c;
-      margin-right: 8px;
-      border-radius: 1000px;
-      width: 12px;
-      height: 12px;
     }
 
     .title {

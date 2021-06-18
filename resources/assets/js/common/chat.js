@@ -53,8 +53,8 @@ export function withDatesAndLogsAndLastReads(messages, entryLogs, contactsMap, l
   return unreversedMessages
 }
 
-export function openChat(chatId) {
-  store.dispatch(openChatAction(chatId))
+export function openChat(chatId, chat) {
+  store.dispatch(openChatAction(chatId, chat))
 }
 
 export function openChatForGame(gameId) {

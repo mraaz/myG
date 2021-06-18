@@ -1,11 +1,12 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import Recents from './Recents'
 import Contacts from './Contacts'
 import Groups from './Groups'
 import { getAssetUrl } from '../../../../common/assets'
 import { ignoreFunctions } from '../../../../common/render'
 
-export default class General extends React.Component {
+class General extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     return ignoreFunctions(nextProps, nextState, this.props, this.state)
   }
@@ -63,6 +64,10 @@ export default class General extends React.Component {
   }
 
   render() {
+    const unreadMessages = (this.props.chats || [])
+      .map((chat) => (chat.messages || []))
+      .reduce((prev, acc) => [...prev, ...acc], [])
+      .filter((message) => (message || {}).unread);
     if (this.props.search) return null
     return (
       <div key={'general'} className='messenger-body-section' style={{ backgroundColor: '#40494C' }}>
@@ -80,6 +85,9 @@ export default class General extends React.Component {
               }}
             />
             <p className='messenger-body-section-header-name'>General</p>
+            {!!unreadMessages.length && (
+              <div className="messenger-body-section-header-counter">{unreadMessages.length}</div>
+            )}
           </div>
           <div className='messenger-body-section-header-info'>
             <div
@@ -100,3 +108,11 @@ export default class General extends React.Component {
     )
   }
 }
+
+export function mapStateToProps(state) {
+  return {
+    chats: state.chat.chats,
+  }
+}
+
+export default connect(mapStateToProps)(General)

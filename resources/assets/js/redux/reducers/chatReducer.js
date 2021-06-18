@@ -12,6 +12,7 @@ import {
 } from '../../integration/http/chat'
 import notifyToast from '../../common/toast'
 import { getAssetUrl } from '../../common/assets'
+import { openChat } from '../../common/chat'
 
 const initialState = {
   chats: [],
@@ -26,6 +27,35 @@ const initialState = {
   autoSelfDestruct: false,
   pushNotificationsEnabled: true,
 }
+
+const emptyChat = {
+  chatId: '',
+  messages: [],
+  contacts: [],
+  fullContacts: [],
+  guests: [],
+  owners: [],
+  moderators: [],
+  entryLogs: [],
+  lastReads: [],
+  blockedUsers: [],
+  isGroup: false,
+  loadingMessages: false,
+  noMoreMessages: false,
+  muted: false,
+  selfDestruct: false,
+  typing: false,
+  maximised: false,
+  minimised: false,
+  closed: true,
+  gameMessage: '',
+  icon: '',
+  title: '',
+  status: '',
+  lastRead: '',
+  publicKey: '',
+  privateKey: '',
+};
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
@@ -84,8 +114,9 @@ export default function reducer(state = initialState, action) {
       action.payload.contacts &&
         action.payload.contacts.forEach((contact) => !contactIds.includes(contact.contactId) && contacts.push(contact))
       const existingChat = chats.find((candidate) => candidate.chatId === chatId)
-      const chat = existingChat || action.payload.chat
       if (!existingChat) chats.push(chat)
+      else Object.assign(existingChat, action.payload.chat)
+      const chat = existingChat || action.payload.chat
       chat.fullContacts = action.payload.contacts
       chat.links = action.payload.links
       chat.entryLogs = action.payload.entryLogs
@@ -363,7 +394,9 @@ export default function reducer(state = initialState, action) {
       const userId = action.meta.userId
       const chatId = message.chatId
       const chats = JSON.parse(JSON.stringify(state.chats))
-      const chat = chats.find((candidate) => candidate.chatId === chatId)
+      const existingChat = chats.find((candidate) => candidate.chatId === chatId)
+      const chat = existingChat || { ...emptyChat, chatId, contacts: [message.senderId].filter(Boolean), title: message.senderName  }
+      if (!existingChat) chats.push(chat)
       const decryptedMessage = prepareMessage(state, chat, message)
 
       const shouldIgnoreMessage = !chat || state.blockedUsers.find((user) => user.userId === message.senderId)
@@ -388,6 +421,7 @@ export default function reducer(state = initialState, action) {
       const openChats = chats.filter((candidate) => !candidate.closed && candidate.chatId !== chatId)
       const shouldShowMessage = !chat.muted && !message.senderId !== userId && !message.keyReceiver
       const isNotActivelyLooking = !window.focused
+      const isFromChannel = !!message.channelId;
       const cannotOpenChat = window.innerWidth > 1365 ? openChats.length >= 4 : openChats.length > 0 || !window.location.href.includes('mobile-chat');
       const notifications = JSON.parse(JSON.stringify(state.notifications || [])) || [];
       decryptedMessage.unread = shouldShowMessage && cannotOpenChat;
@@ -398,12 +432,14 @@ export default function reducer(state = initialState, action) {
           chat.closed = false;
         }
 
-        if (cannotOpenChat) {
-          const notificationId = uuidv4()
+        if (cannotOpenChat && !isFromChannel) {
           const title = decryptedMessage.senderName
           const content = decryptedMessage.content
-          const received = Date.now()
-          notifications.push({ notificationId, chatId, title, content, received })
+          notifyToast(content, title, () => {
+            openChat(chatId, chat);
+            const requiresRedirect = window.innerWidth <= 1365 && !window.location.href.includes('mobile-chat')
+            if (requiresRedirect) window.router.push('/mobile-chat');
+          });
         }
 
         if (isNotActivelyLooking) {
@@ -636,6 +672,7 @@ export default function reducer(state = initialState, action) {
       if (userId === thisUserId) return state
       const chats = JSON.parse(JSON.stringify(state.chats))
       const chat = chats.find((candidate) => candidate.chatId === chatId)
+      if (!chat) return state
       if (!chat.typing) chat.typing = []
       const userTypingIndex = chat.typing.indexOf(userId)
       const isUserAlreadyTyping = userTypingIndex !== -1
@@ -780,6 +817,7 @@ export default function reducer(state = initialState, action) {
       const { guestId, userId, chatId, lastRead } = action.payload
       const chats = JSON.parse(JSON.stringify(state.chats))
       const chat = chats.find((candidate) => candidate.chatId === chatId)
+      if (!chat) return state;
       if (userId === thisUserId) chat.lastRead = lastRead
       else {
         if (!chat.lastReads) chat.lastReads = {}
