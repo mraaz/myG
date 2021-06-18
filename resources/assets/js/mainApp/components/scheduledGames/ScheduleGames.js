@@ -29,7 +29,7 @@ export default class ScheduleGames extends Component {
       scheduleGamesView: {},
       showAllComment: false,
       fetching: false,
-      slideOptionText: 'Exclude expired games',
+      slideOptionText: 'Exclude expired games'
     }
     this.contentAreaRef = React.createRef()
     this.lastScrollY = 0
@@ -75,7 +75,7 @@ export default class ScheduleGames extends Component {
         singleScheduleGamesPayload: scheduleGames.data,
         selected_game: { ...game },
         showRightSideInfo: true,
-        showAllComment: false,
+        showAllComment: false
       })
     }
   }
@@ -89,7 +89,7 @@ export default class ScheduleGames extends Component {
         scheduleGamesView: {},
         selected_game: {},
         showRightSideInfo: false,
-        showAllComment: false,
+        showAllComment: false
       },
       () => {
         let params = new URLSearchParams(window.location.search)
@@ -101,17 +101,20 @@ export default class ScheduleGames extends Component {
     )
   }
 
-  handleChange = async (data, name) => {
+  handleChange = async (data) => {
     this.setState({ singleScheduleGamesPayload: {}, showRightSideInfo: false }, () => {
-      if (name == 'game_name') {
-        this.setState({ ...data }, () => {
-          this.getScheduleGamesChangeCall()
-        })
-      } else {
-        this.setState({ ...data }, () => {
-          this.getScheduleGamesChangeCall()
-        })
-      }
+      this.setState({ ...data }, () => {
+        this.getScheduleGamesChangeCall()
+      })
+      //   if (name == 'game_name') {
+      //     this.setState({ ...data }, () => {
+      //       this.getScheduleGamesChangeCall()
+      //     })
+      //   } else {
+      //     this.setState({ ...data }, () => {
+      //       this.getScheduleGamesChangeCall()
+      //     })
+      //   }
     })
   }
   getScheduleGamesChangeCall = async (data = {}) => {
@@ -121,7 +124,7 @@ export default class ScheduleGames extends Component {
     if (scheduleGamesRes && scheduleGamesRes.data && scheduleGamesRes.data.latestScheduledGames.length == 0) {
       this.setState({
         moreplease: false,
-        scheduleGames: {},
+        scheduleGames: {}
       })
       return
     }
@@ -139,7 +142,7 @@ export default class ScheduleGames extends Component {
     if (scheduleGamesRes.data && scheduleGamesRes.data.latestScheduledGames.length == 0) {
       this.setState({
         moreplease: false,
-        fetching: false,
+        fetching: false
       })
       return
     }
@@ -160,9 +163,9 @@ export default class ScheduleGames extends Component {
     })
   }
   updateSingleScheduleGamesPayload = (id) => {
-    axios.get(`/api/ScheduleGame/additional_game_info/${id}`).then(additionalGameInformation => {
+    axios.get(`/api/ScheduleGame/additional_game_info/${id}`).then((additionalGameInformation) => {
       this.setState({
-        singleScheduleGamesPayload: additionalGameInformation.data,
+        singleScheduleGamesPayload: additionalGameInformation.data
       })
     })
   }
@@ -182,7 +185,7 @@ export default class ScheduleGames extends Component {
       singleView,
       scheduleGamesView = {},
       showAllComment,
-      fetching,
+      fetching
     } = this.state
     const { latestScheduledGames = [] } = scheduleGamesView
 

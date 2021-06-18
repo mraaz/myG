@@ -25,7 +25,7 @@ const assets = {
   ic_chat_group_muted: 'ic_chat_group_muted.png',
   ic_chat_group_not_moderator: 'ic_chat_group_not_moderator.svg',
   ic_chat_group_owner: 'ic_chat_group_owner.png',
-  ic_chat_group_remove: 'ic_chat_group_remove.png',
+  //ic_chat_group_remove: 'ic_chat_group_remove.png',
   ic_chat_group_remove: 'ic_chat_group_remove.svg',
   ic_chat_group_unmuted: 'ic_chat_group_unmuted.png',
   ic_chat_maximise: 'ic_chat_maximise.svg',
@@ -92,8 +92,7 @@ const assets = {
   ic_badge_game_create_gray: 'ic_badge_game_create_gray.svg',
   ic_badge_age_yellow: 'ic_badge_age_yellow.svg',
   ic_badge_age_gray: 'ic_badge_age_gray.svg',
-  ic_achievements_clock: 'ic_achievements_clock.svg',
-
+  ic_achievements_clock: 'ic_achievements_clock.svg'
 }
 
 export function getAssetUrl(asset) {

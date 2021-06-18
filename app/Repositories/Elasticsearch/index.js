@@ -111,7 +111,6 @@ class ElasticsearchRepository {
           eighteen_plus: !!gameInfo.eighteen_plus,
           marked_as_deleted: !!gameInfo.marked_as_deleted,
           allow_comments: !!gameInfo.allow_comments,
-          visibility: !!gameInfo.visibility,
           start_date_time: gameInfo.start_date_time.replace ? gameInfo.start_date_time.replace(' ', 'T') : gameInfo.start_date_time,
           end_date_time: gameInfo.end_date_time.replace ? gameInfo.end_date_time.replace(' ', 'T') : gameInfo.end_date_time,
           expiry: gameInfo.expiry.replace ? gameInfo.expiry.replace(' ', 'T') : gameInfo.expiry,
