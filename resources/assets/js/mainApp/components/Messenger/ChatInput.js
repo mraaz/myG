@@ -133,7 +133,7 @@ export default class ChatInput extends React.Component {
         {this.props.replyingTo && <p className='chat-component-message-reply-no-margin'>replying to {this.renderMessage(this.props.replyingTo.content)}</p>}
         <div className='chat-component-input-container'>
           <textarea
-            style={{ height: height === 20 ? '40px' : `${height}px`, lineHeight: `${lineHeight}px` }}
+            style={{ height: height === 20 ? '40px' : `${height > 100 ? 100 : height}px`, lineHeight: `${lineHeight}px` }}
             ref={this.input}
             rows={1}
             maxLength={2000}
