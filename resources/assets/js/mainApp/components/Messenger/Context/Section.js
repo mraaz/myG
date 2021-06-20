@@ -1,19 +1,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import debounce from 'lodash.debounce';
 import Contact from './Contact'
 import LoadingIndicator from '../../LoadingIndicator'
 import { getAssetUrl } from '../../../../common/assets'
 import { ignoreFunctions } from '../../../../common/render'
 import { fetchContactsPaginatedAction } from '../../../../redux/actions/paginationAction'
-
-function compareLastMessages(f1, f2) {
-  const c1 = f1.chat || {}
-  const c2 = f2.chat || {}
-  const m1 = (c1.messages || [])[(c1.messages || []).length - 1] || { createdAt: 0 }
-  const m2 = (c2.messages || [])[(c2.messages || []).length - 1] || { createdAt: 0 }
-  return new Date(m2.createdAt) - new Date(m1.createdAt)
-}
 
 class Section extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
@@ -21,10 +12,11 @@ class Section extends React.Component {
   }
 
   static getDerivedStateFromProps(props, state) {
-    if (props.contacts.length > state.previousCount) {
-      return { page: state.page + 1, previousCount: props.contacts.length, canShowLoader: true }
+    const loadedAllContacts = props.contacts.length === props.contactsCount && props.contactsCount !== 0;
+    if (loadedAllContacts) return { loadingMore: false };
+    if (props.contacts.length > state.previousCount || state.page === 0 && state.previousCount > 10) {
+      return { page: state.page + 1, previousCount: props.contacts.length, loadingMore: false }
     }
-    else return { canShowLoader: false }
   }
 
   constructor(props) {
@@ -32,7 +24,7 @@ class Section extends React.Component {
     this.state = {
       page: 0,
       previousCount: 0,
-      canShowLoader: true,
+      loadingMore: false,
     }
     this.contactsListRef = React.createRef()
   }
@@ -55,9 +47,11 @@ class Section extends React.Component {
     if (hasScrolledToBottom) this.onScroll();
   }
 
-  onScroll = debounce(() => {
-    this.fetchContacts();
-  }, 500)
+  onScroll = () => {
+    const loadedAllContacts = this.props.contacts.length === this.props.contactsCount && this.props.contactsCount !== 0;
+    if (loadedAllContacts || this.state.loadingMore) return;
+    this.setState({ loadingMore: true }, this.fetchContacts);
+  }
 
   fetchContacts = () => {
     this.props.fetchContactsPaginated(this.state.page, this.props.status, this.props.gameId, null, !this.state.page)
@@ -82,8 +76,16 @@ class Section extends React.Component {
   }
 
   renderLoadingMore = () => {
-    if (!this.props.loadingMore || !this.props.expanded || this.props.loading || !this.state.canShowLoader) return null
-    return <div className='messenger-body-section-loader'>loading more...</div>
+    if (!this.state.loadingMore || !this.props.expanded) return null
+    return (
+      <div className='messenger-loading-container' style={{ opacity: 0.5 }}>
+        <p className='messenger-loading-hint-top'>hang on</p>
+        <div className='messenger-loading-indicator'>
+          <LoadingIndicator />
+        </div>
+        <p className='messenger-loading-hint-bottom'>loading more...</p>
+      </div>
+    )
   }
 
   renderEmpty = () => {
@@ -147,6 +149,7 @@ export function mapStateToProps(state, props) {
   return {
     loading: state.pagination.contactsLoading,
     loadingMore: state.pagination.contactsLoadingMore,
+    contactsCount: state.pagination.contactsCount,
     contacts,
     chats,
   }

@@ -332,7 +332,8 @@ class Messenger extends React.Component {
     if (this.state.collapsed) return this.renderCollapsedMessenger();
     if (parseInt(this.props.level) < 2) return this.renderLockedChat()
     const topBarSpacer = this.props.mobileMenuActive ? { height: '90vh', marginTop: '80px' } : {};
-    const mobileMessengerWidth = window.innerWidth < 575 ? '100vw' : `calc(100vw - ${document.getElementById('main-sidebar').offsetWidth}px)`
+    const sideBar = document.getElementById('main-sidebar') || { offsetWidth: 80 };
+    const mobileMessengerWidth = window.innerWidth < 575 ? '100vw' : `calc(100vw - ${sideBar.offsetWidth}px)`
     return (
       <React.Fragment>
         <section className={`messenger${this.props.mobile ? ' mobile-messenger' : ''}`}>
