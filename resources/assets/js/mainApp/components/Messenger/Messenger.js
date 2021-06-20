@@ -39,6 +39,7 @@ import { uploadGameIcon } from '../../../integration/http/chat'
 import logger from '../../../common/logger'
 import { ignoreFunctions } from '../../../common/render'
 import { GoogleAnalytics } from '../../../common/analytics';
+import { WithTooltip } from '../Tooltip';
 
 class Messenger extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
@@ -313,7 +314,11 @@ class Messenger extends React.Component {
               >
                 <div className={`messenger-contact-online-indicator chat-component-header-status-indicator-${contact.status}`} />
               </div>
-              <span className="messenger-collapsed-contact-name">{contact.name}</span>
+              <WithTooltip text={contact.name} position={{ left: '-8px' }} disabled={contact.name.length <= 6}>
+                <span className="messenger-collapsed-contact-name">
+                  {contact.name.slice(0, 6) + (contact.name.length > 6 ? '...' : '')}
+                </span>
+              </WithTooltip>
             </div>
           ))}
         </div>
