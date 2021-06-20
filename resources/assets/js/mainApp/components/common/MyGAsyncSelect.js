@@ -20,7 +20,7 @@ const MyGAsyncSelect = ({
     container: (provided) => ({
       ...provided,
       width: '100%',
-      ...styles.container,
+      ...styles.container
     }),
     control: (provided) => ({
       ...provided,
@@ -29,36 +29,32 @@ const MyGAsyncSelect = ({
       width: '100%',
       minHeight: '38px',
       color: '#fff',
-      ...styles.control,
-    }),
-    menuList: (provided) => ({
-      ...provided,
-      backgroundColor: '#fff',
+      ...styles.control
     }),
     menuList: (provided) => ({
       ...provided,
       backgroundColor: '#fff',
       color: '#384952',
-      ...styles.menuList,
+      ...styles.menuList
     }),
     singleValue: (provided) => ({
       ...provided,
-      color: '#fff',
+      color: '#fff'
     }),
     input: (provided) => ({
       ...provided,
-      color: '#fff',
+      color: '#fff'
     }),
     multiValue: (provided) => ({
       ...provided,
       backgroundColor: '#1C2326',
       border: '1px solid',
-      borderRadius: '4px',
+      borderRadius: '4px'
     }),
     multiValueLabel: (provided) => ({
       ...provided,
-      color: '#fff',
-    }),
+      color: '#fff'
+    })
   }
 
   return (
@@ -81,7 +77,7 @@ const MyGAsyncSelect = ({
 }
 
 MyGAsyncSelect.defaultProps = {
-  styles: {},
+  styles: {}
 }
 
 export default MyGAsyncSelect

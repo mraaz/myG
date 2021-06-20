@@ -24,7 +24,7 @@ export default class IndividualNotification extends Component {
       chat: null,
       redirect_: false,
       redirect_link: '',
-      redirect_tmp: '',
+      redirect_tmp: ''
     }
   }
 
@@ -38,9 +38,9 @@ export default class IndividualNotification extends Component {
 
     try {
       setAsFriendRedux(notification.user_id)
-      GoogleAnalytics.userFriendMade(notification.user_id);
+      GoogleAnalytics.userFriendMade(notification.user_id)
       const createFriend = axios.post('/api/friends/create', {
-        friend_id: notification.user_id,
+        friend_id: notification.user_id
       })
     } catch (error) {
       logToElasticsearch('error', 'IndividualNotification', 'Failed clickedAccept_2:' + ' ' + error)
@@ -48,7 +48,7 @@ export default class IndividualNotification extends Component {
 
     this.setState({
       actionClicked: false,
-      actionClickedAccept: true,
+      actionClickedAccept: true
     })
   }
 
@@ -61,7 +61,7 @@ export default class IndividualNotification extends Component {
     }
     this.setState({
       actionClicked: false,
-      actionClickedDeny: true,
+      actionClickedDeny: true
     })
   }
 
@@ -80,7 +80,7 @@ export default class IndividualNotification extends Component {
     var activity_type
     var tmpStr = ''
 
-    const getMoreNoti = async function() {
+    const getMoreNoti = async function () {
       try {
         switch (notification.activity_type) {
           case 2:
@@ -262,7 +262,6 @@ export default class IndividualNotification extends Component {
               notification.game_name +
               '. Start date is ' +
               myStartDateTime2.format('Do MMM YY - h:mm a')
-            notification.schedule_games_GUID = notification.schedule_games_GUID
 
             break
           case 16:
@@ -333,7 +332,7 @@ export default class IndividualNotification extends Component {
       self.forceUpdate()
     }
 
-    const getinitialData = async function() {
+    const getinitialData = async function () {
       if (notification.no_of_my_notis == 1) {
         try {
           const getunread = await axios.get(`/api/notifications/getunread/${notification.post_id}/${notification.activity_type}`)
@@ -364,14 +363,14 @@ export default class IndividualNotification extends Component {
         }
 
         self.setState({
-          notification_str: notification.alias + ' ' + activity_type,
+          notification_str: notification.alias + ' ' + activity_type
         })
       } else {
         getMoreNoti()
       }
     }
 
-    const getschedulegameData = async function() {
+    const getschedulegameData = async function () {
       try {
         if (notification.read_status == 0) {
           self.state.unread = true
@@ -389,14 +388,14 @@ export default class IndividualNotification extends Component {
             myStartDateTime.format('Do MMM YY - h:mm a') +
             ' - ' +
             myEndDateTime.format('Do MMM YY - h:mm a') +
-            ' )',
+            ' )'
         })
       } catch (error) {
         logToElasticsearch('error', 'IndividualNotification', 'Failed getschedulegameData:' + ' ' + error)
       }
     }
 
-    const getGroupData = async function() {
+    const getGroupData = async function () {
       try {
         if (notification.read_status == 0) {
           self.state.unread = true
@@ -404,12 +403,12 @@ export default class IndividualNotification extends Component {
 
         if (notification.activity_type == 12) {
           self.setState({
-            notification_str: notification.name + ' - ' + notification.alias + ' wants to join this group. What ya reckon?',
+            notification_str: notification.name + ' - ' + notification.alias + ' wants to join this group. What ya reckon?'
           })
         } else if (notification.activity_type == 17) {
           //const getGroupInfo = await axios.get(`/api/groups/${notification.group_id}`)
           self.setState({
-            notification_str: 'Epic! You have been accepted to group: ' + notification.name,
+            notification_str: 'Epic! You have been accepted to group: ' + notification.name
           })
         }
       } catch (error) {
@@ -417,7 +416,7 @@ export default class IndividualNotification extends Component {
       }
     }
 
-    const getGameApprovalData = async function() {
+    const getGameApprovalData = async function () {
       try {
         if (notification.read_status == 0) {
           self.state.unread = true
@@ -432,14 +431,14 @@ export default class IndividualNotification extends Component {
             ' created by ' +
             notification.alias +
             ' --- Accept Msg: ' +
-            notification.accept_msg,
+            notification.accept_msg
         })
       } catch (error) {
         logToElasticsearch('error', 'IndividualNotification', 'Failed getGameApprovalData:' + ' ' + error)
       }
     }
 
-    const getArchive_scheduled_game_Data = async function() {
+    const getArchive_scheduled_game_Data = async function () {
       try {
         // const getunread = await axios.get(
         //   `/api/notifications/getunread_archive_schedule_game/${notification.archive_schedule_game_id}/${notification.activity_type}`
@@ -465,7 +464,7 @@ export default class IndividualNotification extends Component {
             '. It was meant to start: ' +
             myStartDateTime.format('Do MMM YY - h:mm a') +
             '. Their reason for cancelling was: ' +
-            notification.reason_for_cancel,
+            notification.reason_for_cancel
         })
       } catch (error) {
         logToElasticsearch('error', 'IndividualNotification', 'Failed getArchive_scheduled_game_Data:' + ' ' + error)
@@ -479,7 +478,7 @@ export default class IndividualNotification extends Component {
       this.setState({ chat, notification_str })
     }
 
-    const getGroupKickedData = async function() {
+    const getGroupKickedData = async function () {
       try {
         if (notification.read_status == 0) {
           self.state.unread = true
@@ -487,21 +486,21 @@ export default class IndividualNotification extends Component {
         //const groupInfo = await axios.get(`/api/groups/${notification.group_id}`)
 
         self.setState({
-          notification_str: 'Sorry mate! You were kicked from this community: ' + notification.name,
+          notification_str: 'Sorry mate! You were kicked from this community: ' + notification.name
         })
       } catch (error) {
         logToElasticsearch('error', 'IndividualNotification', 'Failed getGroupKickedData:' + ' ' + error)
       }
     }
 
-    const getDingInfo = async function() {
+    const getDingInfo = async function () {
       try {
         if (notification.read_status == 0) {
           self.state.unread = true
         }
 
         self.setState({
-          notification_str: 'Ding! Congratz, you reached a new level!',
+          notification_str: 'Ding! Congratz, you reached a new level!'
         })
       } catch (error) {
         logToElasticsearch('error', 'IndividualNotification', 'Failed getDingInfo:' + ' ' + error)
@@ -676,16 +675,18 @@ export default class IndividualNotification extends Component {
             to={`/profile/${notification.alias}`}
             className='user-img'
             style={{
-              backgroundImage: `url('${notification.profile_img}')`,
-            }}></Link>
+              backgroundImage: `url('${notification.profile_img}')`
+            }}
+          ></Link>
         )}
         {!show_profile_img && (
           <Link
             to={`/profile/${notification.alias}`}
             className='user-img'
             style={{
-              backgroundImage: `url('https://myG.gg/default_user/new-user-profile-picture.png')`,
-            }}></Link>
+              backgroundImage: `url('https://myG.gg/default_user/new-user-profile-picture.png')`
+            }}
+          ></Link>
         )}
 
         {this.state.post && !this.state.unread && (

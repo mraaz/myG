@@ -192,7 +192,7 @@ export default class GameExperiences extends React.Component {
   renderEditGameExperienceModal = () => {
     if (!this.state.selected) return null;
     const gameExperience = this.state.gameExperiences.find(experience => parseInt(experience.id, 10) === parseInt(this.state.selected, 10));
-    if (this.state.selected !== 'edit' && !gameExperience) return null;
+    if (this.state.selected != 'edit' && !gameExperience) return null;
     return <EditGameExperience
       alias={this.props.alias}
       profile={this.props.profile}

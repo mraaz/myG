@@ -16,18 +16,18 @@ import { GoogleAnalytics } from '../../../common/analytics'
 import { logToElasticsearch } from '../../../integration/http/logger'
 
 const buttonStatus = {
-  '0': 'Join',
-  '1': 'Joined',
-  '3': 'Pending',
-  '4': 'Co-Hosting',
-  '5': 'Hosting',
+  0: 'Join',
+  1: 'Joined',
+  3: 'Pending',
+  4: 'Co-Hosting',
+  5: 'Hosting'
 }
 const queryMapping = {
   1: 'one',
   2: 'two',
   3: 'three',
   4: 'four',
-  5: 'five',
+  5: 'five'
 }
 
 const JoinStatus = (props) => {
@@ -62,7 +62,7 @@ const JoinStatus = (props) => {
   const getOption = (data = '', k = '') => {
     let key = { ...fieldKey }
     let arr = []
-    if ((data != null) & (data != '')) {
+    if (data != null && data != '') {
       arr = data != null ? data.split(',') : []
     }
 
@@ -99,7 +99,7 @@ const JoinStatus = (props) => {
         value_one: null,
         value_four: null,
         value_five: null,
-        ...query,
+        ...query
       })
     } catch (error) {
       logToElasticsearch('error', 'JoinButtonAction', 'Failed saveJoinGame:' + ' ' + error)

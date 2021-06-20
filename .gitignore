@@ -128,3 +128,13 @@ database/migrations/1623607932368_team_members_schema.js
 database/migrations/1622459220993_notifications_schema.js
 database/migrations/1622459135442_team_tags_schema.js
 database/migrations/1622458818211_teams_schema.js
+.scannerwork/.sonar_lock
+.scannerwork/css-bundle/bin/server
+.scannerwork/css-bundle/lib/src/server.d.ts
+.scannerwork/css-bundle/lib/src/server.js
+.scannerwork/css-bundle/lib/src/server.js.map
+.scannerwork/css-bundle/lib/tsconfig.tsbuildinfo
+.scannerwork/css-bundle/package/package.json
+.scannerwork/css-bundle/package/yarn.lock
+.scannerwork/css-bundle/stylelintconfig.json
+.scannerwork/report-task.txt
