@@ -9,7 +9,7 @@ export default class EncryptionLogin extends React.Component {
   }
 
   state = {
-    pin: '',
+    pin: ''
   }
 
   onKeyPressed = (event) => {
@@ -37,7 +37,7 @@ export default class EncryptionLogin extends React.Component {
         <p className='messenger-encryption-login-title'>Enter Chat Password</p>
         <input
           className='messenger-encryption-login-input'
-          type='password'
+          type='text'
           autoComplete='off'
           placeholder='Chat Password'
           value={this.state.pin}
@@ -54,7 +54,8 @@ export default class EncryptionLogin extends React.Component {
               'WARNING!!! Are you sure you wish to create a new key? ALL your chat history will be lost. Check your email for your current encryption key.',
               () => this.props.generateKeys()
             )
-          }>
+          }
+        >
           generate new chat password *
         </div>
         <div className='messenger-encryption-login-divider' />

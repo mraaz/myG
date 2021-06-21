@@ -13,6 +13,7 @@ const MyGCreateableSelect = ({
   styles,
   onCreateOption,
   noOptionsMessage,
+  inputProps,
   ...otherProps
 }) => {
   const customStyles = {
@@ -67,6 +68,7 @@ const MyGCreateableSelect = ({
         onCreateOption={onCreateOption}
         noOptionsMessage={noOptionsMessage}
         classNamePrefix='filter'
+        inputProps={{ ...inputProps, autoComplete: 'off', autoCorrect: 'off', spellCheck: 'off' }}
         {...otherProps}
       />
     </div>
