@@ -296,10 +296,10 @@ class Messenger extends React.Component {
 
   renderCollapseContact = (contact) => {
     const profile_img = 'https://myG.gg/default_user/new-user-profile-picture.png'
-    const contactId = get(contact, 'contactId', '')
-    const name = get(contact, 'name', '')
-    const icon = get(contact, 'icon', '')
-    const status = get(contact, 'status', '')
+    const contactId = get(contact, 'contactId', '') || ''
+    const name = get(contact, 'name', '') || ''
+    const icon = get(contact, 'icon', '') || ''
+    const status = get(contact, 'status', '') || ''
     return (
       <div className="messenger-collapsed-contact clickable"
         key={contactId}
