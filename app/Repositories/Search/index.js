@@ -66,7 +66,7 @@ class SearchRepository {
 
   buildGamesQuery = (input) => {;
     const now = moment().utc();
-    const query = { query: { bool: { must: [] } } };
+    const query = { query: { bool: { must: [], must_not: [] } } };
     query.size = 10;
     query.from = ((parseInt(input.counter) || 1) - 1) * 10;
     query.query.bool.must.push({ match: { visibility: true } });
@@ -86,6 +86,7 @@ class SearchRepository {
     if (input.value_five) query.query.bool.must.push({ match: { 'dynamic_fields.value_five.keyword': typeof input.value_five === 'string' ? input.value_five : input.value_five[Object.keys(input.value_five)[0]] } });
     if (input.mic !== null) query.query.bool.must.push({ match: { mic: !!input.mic } });
     if (input.eighteen_plus !== null) query.query.bool.must.push({ match: { eighteen_plus: !!input.eighteen_plus } });
+    if (input.onlyTeamMatches) query.query.bool.must.push({ exists: { field: 'team_id' } });
     return query;
   }
 

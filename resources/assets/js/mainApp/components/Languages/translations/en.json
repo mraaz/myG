@@ -44,5 +44,6 @@
   "myg.dropzone.loading": "Uploading...",
   "myg.cancel": "Cancel",
   "myg.create": "Create",
-  "myg.select.hint": "Select..."
+  "myg.select.hint": "Select...",
+  "myg.team-select.hint": "Select which team will play this match"
 }

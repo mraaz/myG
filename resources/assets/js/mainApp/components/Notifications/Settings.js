@@ -14,6 +14,7 @@ import { logToElasticsearch } from '../../../integration/http/logger'
 import {
   logoutAction,
   toggleMainChannelAction,
+  toggleOnlineNotificationsAction,
   toggleNotificationSoundsAction,
   togglePushNotificationsAction,
 } from '../../../redux/actions/userAction'
@@ -217,6 +218,22 @@ class Settings extends Component {
                 />
               </div>
             </div>
+            <div className='option'>
+              <div className='title'>Online Notifications</div>
+              <div className='button__switch browser__notification'>
+                <label className={`switchLabel ${this.props.onlineNotificationsEnabled ? 'on' : 'off'}`} onClick={() => this.props.toggleOnlineNotifications(this.props.userId)}>
+                  {this.props.onlineNotificationsEnabled ? 'on' : 'off'}
+                </label>
+                <input
+                  id='switch-orange'
+                  type='checkbox'
+                  className='switch'
+                  value={this.props.onlineNotificationsEnabled}
+                  checked={this.props.onlineNotificationsEnabled}
+                  onChange={() => this.props.toggleOnlineNotifications(this.props.userId)}
+                />
+              </div>
+            </div>
             <div className='option languages'>
               <div className='title'><FormattedMessage id="settings.languages" defaultMessage="Languages" /></div>
               <MyGSelect
@@ -338,6 +355,7 @@ function mapStateToProps(state) {
     userId: state.user.userId,
     language: state.user.language,
     mainChannelEnabled: state.user.mainChannelEnabled,
+    onlineNotificationsEnabled: state.user.onlineNotificationsEnabled,
     notificationSoundsDisabled: state.user.notificationSoundsDisabled,
     pushNotificationsEnabled: state.user.pushNotificationsEnabled,
   }
@@ -348,6 +366,7 @@ function mapDispatchToProps(dispatch) {
     logout: () => dispatch(logoutAction()),
     togglePushNotifications: (userId) => dispatch(togglePushNotificationsAction(userId)),
     toggleMainChannel: (disabled) => dispatch(toggleMainChannelAction(disabled)),
+    toggleOnlineNotifications: (disabled) => dispatch(toggleOnlineNotificationsAction(disabled)),
     toggleNotificationSounds: (disabled) => dispatch(toggleNotificationSoundsAction(disabled)),
   }
 }

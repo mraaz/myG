@@ -17,6 +17,7 @@ const GameTagController = use('./GameTagController')
 const AttendeeController = use('./AttendeeController')
 const LoggingRepository = require('../../Repositories/Logging')
 const ChatRepository = require('../../Repositories/Chat')
+const NotificationsRepository = require('../../Repositories/Notifications')
 const ElasticsearchRepository = require('../../Repositories/Elasticsearch')
 const AchievementsRepository = require('../../Repositories/Achievements')
 const SearchRepository = require('../../Repositories/Search')
@@ -100,6 +101,7 @@ class ScheduleGameController {
           accept_msg: request.input('accept_msg'),
           schedule_games_GUID: uuidv1(),
           allow_comments: request.input('allow_comments'),
+          team_id: request.input('team_id'),
           autoJoin: request.input('autoJoin'),
           cron: request.input('cron'),
           occurrence: request.input('occurrence'),
@@ -253,6 +255,18 @@ class ScheduleGameController {
         await ChatRepository.publishOnMainChannel(
           `Hi all, ${gameInfo.alias} is looking for a match of ${gameInfo.game_name}, are you game?`
         )
+
+        // If a game is created for a team, all team members are notified
+        const teamId = request.input('team_id');
+        if (teamId) {
+          const gameId = gameInfo.id;
+          const members = await Database.from('team_members').where('team_id', teamId).select('user_id');
+          const requestingUserId = gameInfo.user_id;
+          for (const member of members) {
+            const userId = member.user_id;
+            await NotificationsRepository.notifyTeamGameCreated({ requestingUserId, userId, teamId, gameId });
+          }
+        }
 
         return newScheduleGame
       } catch (error) {
@@ -977,6 +991,7 @@ class ScheduleGameController {
       'region',
       'tags',
       'mic',
+      'onlyTeamMatches',
       'eighteen_plus',
       'value_one',
       'value_two',
@@ -991,6 +1006,7 @@ class ScheduleGameController {
     if (query.end_date_time) query.end_date_time = moment(query.end_date_time).format('YYYY-MM-DD HH:mm:ss')
     if (query.mic) query.mic = !!query.mic
     if (query.eighteen_plus) query.eighteen_plus = !!query.eighteen_plus
+    if (query.onlyTeamMatches) query.onlyTeamMatches = !!query.onlyTeamMatches
     if (query.tags && query.tags.length > 0) {
       query.tags = query.tags.split(',')
       const tagNames = await Database.from('schedule_games_tags')

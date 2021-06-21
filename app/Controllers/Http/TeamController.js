@@ -23,7 +23,26 @@ class TeamController {
         message: (error && error.message) || error,
       });
       response.status(500);
-      return response.send(error);
+      return response.send(error.message);
+    }
+  }
+
+  async fetchTeams({ auth, request, response }) {
+    try {
+      const requestingUserId = auth.user.id
+      if (!requestingUserId) throw new Error('Auth Error')
+      const filterByRequestingUser = request.only('filterByRequestingUser').filterByRequestingUser
+      return response.send(await TeamRepository.fetchTeams({ requestingUserId, filterByRequestingUser }));
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
+      response.status(500);
+      return response.send(error.message);
     }
   }
 
@@ -43,6 +62,8 @@ class TeamController {
         context: __filename,
         message: (error && error.message) || error,
       })
+      response.status(500);
+      return response.send(error.message);
     }
   }
 }

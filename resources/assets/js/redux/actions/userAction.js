@@ -158,6 +158,12 @@ export function toggleMainChannelAction() {
   }
 }
 
+export function toggleOnlineNotificationsAction() {
+  return {
+    type: 'TOGGLE_ONLINE_NOTIFICATIONS',
+  }
+}
+
 export function fetchStatsAction(alias) {
   return {
     type: 'FETCH_STATS',

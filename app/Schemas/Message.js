@@ -5,6 +5,7 @@ class Message {
     this.uuid = forceString(data.uuid)
     this.messageId = forceInt(data.messageId)
     this.chatId = forceInt(data.chatId)
+    this.channelId = forceString(data.channelId)
     this.senderId = forceInt(data.senderId)
     this.keyReceiver = forceInt(data.keyReceiver)
     this.senderName = forceString(data.senderName)

@@ -16,8 +16,9 @@ export async function SubmitDataFunction(myG) {
     autoJoin = true,
     repeat_game = undefined,
     co_hosts = null,
-    tags = []
-
+    tags = [],
+    team_id = null
+    
   if (myG.selected_region != undefined && myG.selected_region != null && myG.selected_region.length != 0) {
     myRegion = Convert_to_comma_delimited_value(myG.selected_region)
   }
@@ -49,6 +50,8 @@ export async function SubmitDataFunction(myG) {
     }
     tags = JSON.stringify(myG.tags)
   }
+
+  if (myG.team && myG.team.team_id) team_id = myG.team.team_id
 
   if (myG.show_times == false) {
     myG.startDate = moment()
@@ -99,6 +102,7 @@ export async function SubmitDataFunction(myG) {
       co_hosts: co_hosts,
       repeat_game: repeat_game,
       tags: tags,
+      team_id: team_id,
       cron: myG.cron,
       occurrence: myG.occurrence,
       repeatEvery: myG.repeatEvery,

@@ -46,7 +46,10 @@ const CreateTeam = ({ loading, intl }) => {
   useEffect(() => {
     console.log(team);
     if (!creating) return;
-    createTeam(team).then(() => setCreated(true)).catch((error) => notifyToast(error.message));
+    createTeam(team).then(() => setCreated(true)).catch((error) => {
+      setCreating(false);
+      notifyToast(error.response && error.response.data || error.message);
+    });
   }, [team, creating, createTeam, setCreated]);
   if (loading) return null;
   if (created) {

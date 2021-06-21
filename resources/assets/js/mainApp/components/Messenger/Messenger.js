@@ -12,6 +12,7 @@ import EncryptionLogin from './Context/EncryptionLogin'
 import ConnectionWarning from './Context/ConnectionWarning'
 import StatusTimerWrapper from '../StatusTimerWrapper'
 import WindowFocusHandler from '../WindowFocusHandler'
+import ChatNotifications from './ChatNotifications';
 
 import { handleLink } from '../../../common/link'
 import { monitorChats, closeSubscriptions, monitorSocketConnection } from '../../../integration/ws/chat'
@@ -37,6 +38,8 @@ import { searchPaginatedAction } from '../../../redux/actions/paginationAction'
 import { uploadGameIcon } from '../../../integration/http/chat'
 import logger from '../../../common/logger'
 import { ignoreFunctions } from '../../../common/render'
+import { GoogleAnalytics } from '../../../common/analytics';
+import { WithTooltip } from '../Tooltip';
 
 class Messenger extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
@@ -47,6 +50,7 @@ class Messenger extends React.Component {
     showingSettings: false,
     searchInput: '',
     blockSettings: false,
+    collapsed: false,
     windowFocused: true,
     dividerExpanded: {
       general: true,
@@ -58,10 +62,6 @@ class Messenger extends React.Component {
     monitorChats(this.props.userId, false)
     handleLink(this.props.userId)
     monitorSocketConnection()
-  }
-
-  componentWillUnmount() {
-    closeSubscriptions()
   }
 
   onSearch = (searchInput) => {
@@ -271,14 +271,79 @@ class Messenger extends React.Component {
     )
   }
 
+  renderChatNotifications = () => {
+    return (
+      <ChatNotifications notifications={this.props.notifications} openChat={this.props.openChat} />
+    )
+  }
+
+  openChat = (contact) => {
+    GoogleAnalytics.chatContactClicked({ contactId: contact.contactId })
+    if (this.props.disconnected) return
+    if (contact.chat && contact.chat.chatId) return this.props.openChat(contact.chat.chatId, contact.chat)
+    this.props.createChat([contact.contactId], this.props.userId)
+  }
+
+  renderCollapseOption = () => {
+    if (this.props.mobile) return null;
+    return (
+      <div className='sidebar-menu-toggle' style={{ textAlign: 'left' }} onClick={() => this.setState({ collapsed: true })}>
+        <img style={{ transform: 'rotate(180deg)', margin: 8 }} src='https://myG.gg/platform_images/Dashboard/btn_Uncollapse_Menu.svg' className='img-fluid' />
+      </div>
+    );
+  }
+
+  renderCollapsedMessenger = () => {
+    if (!this.state.collapsed) return null;
+    if (this.props.mobile) return null;
+    const profile_img = 'https://myG.gg/default_user/new-user-profile-picture.png'
+    return (
+      <React.Fragment>
+        <div className="messenger-collapsed">
+          <div className='toggle-menu' style={{ marginBottom: 12 }} onClick={() => this.setState({ collapsed: false })}>
+            <img src='https://myG.gg/platform_images/Dashboard/toggle_menu_collapsed.svg' height='24' width='24' />
+          </div>
+          {(this.props.contacts || []).map((contact) => (
+            <div className="messenger-collapsed-contact clickable"
+              key={contact.contactId}
+              onClick={() => this.openChat(contact)}
+            >
+              <div
+                className='messenger-contact-icon'
+                style={{ marginRight: 0, backgroundImage: `url('${contact.icon}'), url('${profile_img}')` }}
+              >
+                <div className={`messenger-contact-online-indicator chat-component-header-status-indicator-${contact.status}`} />
+              </div>
+              <WithTooltip text={contact.name} position={{ left: '-8px' }} disabled={contact.name.length <= 6}>
+                <span className="messenger-collapsed-contact-name">
+                  {contact.name.slice(0, 6) + (contact.name.length > 6 ? '...' : '')}
+                </span>
+              </WithTooltip>
+            </div>
+          ))}
+        </div>
+        <section className='messenger' style={{ width: 0, minWidth: 0 }}>
+          {this.renderChats()}
+          {this.renderStatusMonitor()}
+          {this.renderFocusMonitor()}
+        </section>
+        {this.renderChatNotifications()}
+      </React.Fragment>
+    );
+  }
+
   render() {
     logger.log('RENDER', 'Messenger')
+    if (this.state.collapsed) return this.renderCollapsedMessenger();
     if (parseInt(this.props.level) < 2) return this.renderLockedChat()
     const topBarSpacer = this.props.mobileMenuActive ? { height: '90vh', marginTop: '80px' } : {};
+    const sideBar = document.getElementById('main-sidebar') || { offsetWidth: 80 };
+    const mobileMessengerWidth = window.innerWidth < 575 ? '100vw' : `calc(100vw - ${sideBar.offsetWidth}px)`
     return (
       <React.Fragment>
         <section className={`messenger${this.props.mobile ? ' mobile-messenger' : ''}`}>
-          <div className='messenger-content' style={this.props.mobile && { width: '100vw', ...topBarSpacer }}>
+          <div className='messenger-content' style={this.props.mobile && { width: mobileMessengerWidth, ...topBarSpacer }}>
+            {this.renderCollapseOption()}
             {this.renderBody()}
             {this.renderSettings()}
             {this.renderFooter()}
@@ -288,6 +353,7 @@ class Messenger extends React.Component {
           {this.renderStatusMonitor()}
           {this.renderFocusMonitor()}
         </section>
+        {this.renderChatNotifications()}
       </React.Fragment>
     )
   }
@@ -295,6 +361,7 @@ class Messenger extends React.Component {
 
 function mapStateToProps(state) {
   const chats = state.chat.chats || []
+  const notifications = state.chat.notifications || []
   const contacts = state.user.contacts || []
   const groups = []
   const contactsWithChats = {}
@@ -318,6 +385,7 @@ function mapStateToProps(state) {
     games: state.user.games,
     contacts,
     groups,
+    notifications,
     blockedUsers: state.chat.blockedUsers,
     pin: state.encryption.pin,
     invalidPin: state.encryption.invalidPin,
