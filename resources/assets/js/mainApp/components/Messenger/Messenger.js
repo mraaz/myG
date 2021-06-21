@@ -1,4 +1,5 @@
 import React from 'react'
+import get from 'lodash.get'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { FormattedMessage } from 'react-intl';
@@ -293,34 +294,42 @@ class Messenger extends React.Component {
     );
   }
 
+  renderCollapseContact = (contact) => {
+    const profile_img = 'https://myG.gg/default_user/new-user-profile-picture.png'
+    const contactId = get(contact, 'contactId', '')
+    const name = get(contact, 'name', '')
+    const icon = get(contact, 'icon', '')
+    const status = get(contact, 'status', '')
+    return (
+      <div className="messenger-collapsed-contact clickable"
+        key={contactId}
+        onClick={() => this.openChat(contact)}
+      >
+        <div
+          className='messenger-contact-icon'
+          style={{ marginRight: 0, backgroundImage: `url('${icon}'), url('${profile_img}')` }}
+        >
+          <div className={`messenger-contact-online-indicator chat-component-header-status-indicator-${status}`} />
+        </div>
+        <WithTooltip text={name} position={{ left: '-32px' }} disabled={name.length <= 6}>
+          <span className="messenger-collapsed-contact-name">
+            {name.slice(0, 6) + (name.length > 6 ? '...' : '')}
+          </span>
+        </WithTooltip>
+      </div>
+    );
+  }
+
   renderCollapsedMessenger = () => {
     if (!this.state.collapsed) return null;
     if (this.props.mobile) return null;
-    const profile_img = 'https://myG.gg/default_user/new-user-profile-picture.png'
     return (
       <React.Fragment>
         <div className="messenger-collapsed">
           <div className='toggle-menu' style={{ marginBottom: 12 }} onClick={() => this.setState({ collapsed: false })}>
             <img src='https://myG.gg/platform_images/Dashboard/toggle_menu_collapsed.svg' height='24' width='24' />
           </div>
-          {(this.props.contacts || []).map((contact) => (
-            <div className="messenger-collapsed-contact clickable"
-              key={contact.contactId}
-              onClick={() => this.openChat(contact)}
-            >
-              <div
-                className='messenger-contact-icon'
-                style={{ marginRight: 0, backgroundImage: `url('${contact.icon}'), url('${profile_img}')` }}
-              >
-                <div className={`messenger-contact-online-indicator chat-component-header-status-indicator-${contact.status}`} />
-              </div>
-              <WithTooltip text={contact.name} position={{ left: '-8px' }} disabled={contact.name.length <= 6}>
-                <span className="messenger-collapsed-contact-name">
-                  {contact.name.slice(0, 6) + (contact.name.length > 6 ? '...' : '')}
-                </span>
-              </WithTooltip>
-            </div>
-          ))}
+          {(this.props.contacts || []).map(this.renderCollapseContact)}
         </div>
         <section className='messenger' style={{ width: 0, minWidth: 0 }}>
           {this.renderChats()}
