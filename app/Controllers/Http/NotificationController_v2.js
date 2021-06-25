@@ -612,9 +612,50 @@ class NotificationController_v2 {
           .orderBy('notifications.created_at', 'desc')
           .paginate(request.input('counter'), set_limit)
 
+        const team_invite_notis = await Database.from('notifications')
+          .innerJoin('users', 'users.id', 'notifications.other_user_id')
+          .innerJoin('teams', 'teams.id', 'notifications.team_id')
+          .where({ other_user_id: auth.user.id })
+          .whereIn('activity_type', [29])
+          .select(
+            'notifications.id',
+            'notifications.activity_type',
+            'notifications.read_status',
+            'teams.id',
+            'teams.name',
+            'users.alias',
+            'users.profile_img',
+            'notifications.created_at'
+          )
+          .orderBy('notifications.created_at', 'desc')
+          .paginate(request.input('counter'), set_limit)
+
+        const team_game_notis = await Database.from('notifications')
+          .innerJoin('users', 'users.id', 'notifications.other_user_id')
+          .innerJoin('schedule_games', 'schedule_games.id', 'notifications.schedule_games_id')
+          .innerJoin('game_names', 'game_names.id', 'schedule_games.game_names_id')
+          .innerJoin('teams', 'teams.id', 'notifications.team_id')
+          .where({ other_user_id: auth.user.id })
+          .whereIn('activity_type', [30])
+          .select(
+            'notifications.id',
+            'notifications.activity_type',
+            'notifications.read_status',
+            'teams.id',
+            'teams.name',
+            'game_names.game_name',
+            'users.alias',
+            'users.profile_img',
+            'notifications.created_at'
+          )
+          .orderBy('notifications.created_at', 'desc')
+          .paginate(request.input('counter'), set_limit)
+
         singleArr.push(...user_notis.data)
         singleArr.push(...group_member_approved.data)
         singleArr.push(...user_ding.data)
+        singleArr.push(...team_invite_notis.data)
+        singleArr.push(...team_game_notis.data)
       }
 
       // const chat_group_invite = await Database.from('notifications')

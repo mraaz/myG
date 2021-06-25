@@ -1,5 +1,6 @@
 import uniq from 'lodash.uniq';
 import logger from '../../common/logger'
+import notifyToast from '../../common/toast'
 
 const initialState = {
   isStatusLocked: false,
@@ -10,12 +11,14 @@ const initialState = {
   foundUsers: [],
   notificationSoundsDisabled: false,
   mainChannelEnabled: true,
+  onlineNotificationsEnabled: true,
   autoSelfDestruct: false,
   pushNotificationsEnabled: true,
   userTransactionStates: { user_level: 1 },
   statsUpdatedFromWebsocket: false,
   statsForAlias: {},
   onlineUsers: [],
+  notifiedOnline: [],
 }
 
 export default function reducer(
@@ -43,6 +46,7 @@ export default function reducer(
         icon: action.payload.profile_img,
         notificationSoundsDisabled: !!action.payload.notification_sounds_disabled,
         autoSelfDestruct: !!action.payload.chat_auto_self_destruct,
+        notifiedOnline: [],
         ...action.payload,
       }
     }
@@ -145,15 +149,21 @@ export default function reducer(
 
     case 'ON_STATUS_CHANGED': {
       logger.log('USER', `Redux -> On Status Changed: `, action.payload)
-      const { contactId, status, lastSeen } = action.payload
+      const { contactId, status, lastSeen, alias } = action.payload
       const contacts = JSON.parse(JSON.stringify(state.contacts))
+      const notifiedOnline = JSON.parse(JSON.stringify(state.notifiedOnline))
       const existing = contacts.find((contact) => contact.contactId === contactId)
       const contact = existing || { contactId }
       Object.assign(contact, { status, lastSeen })
       if (!existing) contacts.push(contact)
+      if (status === 'online' && !notifiedOnline.includes(alias) && state.onlineNotificationsEnabled) {
+        notifiedOnline.push(alias);
+        notifyToast('has come online', alias);
+      }
       return {
         ...state,
         contacts,
+        notifiedOnline,
       }
     }
 
@@ -286,6 +296,14 @@ export default function reducer(
       return {
         ...state,
         mainChannelEnabled: !state.mainChannelEnabled,
+      }
+    }
+
+    case 'TOGGLE_ONLINE_NOTIFICATIONS': {
+      logger.log('CHAT', `Redux -> Toggled Online Notifications`)
+      return {
+        ...state,
+        onlineNotificationsEnabled: !state.onlineNotificationsEnabled,
       }
     }
 

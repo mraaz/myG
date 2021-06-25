@@ -19,7 +19,7 @@ const MyGCreateableSelect = ({
     container: (provided) => ({
       ...provided,
       // width: '422px',
-      ...styles.container,
+      ...styles.container
     }),
     control: (provided) => ({
       ...provided,
@@ -28,35 +28,31 @@ const MyGCreateableSelect = ({
       width: '100%',
       minHeight: '38px',
       color: '#fff',
-      ...styles.control,
+      ...styles.control
     }),
     menuList: (provided) => ({
       ...provided,
       backgroundColor: '#fff',
-    }),
-    menuList: (provided) => ({
-      ...provided,
-      backgroundColor: '#fff',
-      color: '#384952',
+      color: '#384952'
     }),
     singleValue: (provided) => ({
       ...provided,
-      color: '#fff',
+      color: '#fff'
     }),
     input: (provided) => ({
       ...provided,
-      color: '#fff',
+      color: '#fff'
     }),
     multiValue: (provided) => ({
       ...provided,
       backgroundColor: '#1C2326',
       border: '1px solid',
-      borderRadius: '4px',
+      borderRadius: '4px'
     }),
     multiValueLabel: (provided) => ({
       ...provided,
-      color: '#fff',
-    }),
+      color: '#fff'
+    })
   }
   return (
     <div className='game-title-select'>
@@ -78,7 +74,7 @@ const MyGCreateableSelect = ({
 }
 
 MyGCreateableSelect.defaultProps = {
-  styles: {},
+  styles: {}
 }
 
 export default MyGCreateableSelect

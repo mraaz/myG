@@ -280,10 +280,13 @@ export function Disable_keys(e) {
   }
 }
 
-export const Toast_style = (props) => (
-  <div className='individual-toasts'>
-    <img width={48} src={'https://myG.gg/logos/Logo.png'}></img>
-    <div>{props.text}</div>
+export const Toast_style = ({ title, text, onClick }) => (
+  <div className='individual-toasts clickable' onClick={onClick}>
+    <img width={48} style={{ marginRight: 4 }} src={'https://myG.gg/logos/Logo.png'}></img>
+    <div className="toast-content">
+      {title && <div className="toast-title">{title}</div>}
+      <div>{text}</div>
+    </div>
   </div>
 )
 

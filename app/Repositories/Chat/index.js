@@ -81,7 +81,7 @@ class ChatRepository {
 
   async fetchChat({ requestingUserId, requestedChatId }) {
     const chat = (await Database
-      .select('user_chats.chat_id', 'user_chats.user_id', 'user_chats.muted', 'chats.self_destruct', 'user_chats.deleted_messages', 'user_chats.created_at', 'user_chats.updated_at', 'chats.isPrivate', 'chats.isGroup', 'chats.icon', 'chats.title', 'chats.public_key', 'chats.contacts', 'chats.owners', 'chats.moderators', 'chats.guests', 'chats.individual_game_id', 'chats.game_id', 'chats.game_message', 'chat_last_reads.last_read_message_id', ' chat_last_cleareds.last_cleared_message_id')
+      .select('user_chats.chat_id', 'user_chats.user_id', 'user_chats.muted', 'chats.self_destruct', 'user_chats.deleted_messages', 'user_chats.created_at', 'user_chats.updated_at', 'chats.channel_id', 'chats.isPrivate', 'chats.isGroup', 'chats.icon', 'chats.title', 'chats.public_key', 'chats.contacts', 'chats.owners', 'chats.moderators', 'chats.guests', 'chats.individual_game_id', 'chats.game_id', 'chats.game_message', 'chat_last_reads.last_read_message_id', ' chat_last_cleareds.last_cleared_message_id')
       .from('user_chats')
       .leftJoin('chats', 'user_chats.chat_id', 'chats.id')
       .leftJoin('chat_last_reads', function () { this.on('chat_last_reads.chat_id', 'user_chats.chat_id').andOn('chat_last_reads.user_id', 'user_chats.user_id') })
@@ -95,6 +95,7 @@ class ChatRepository {
     lastReadsRaw.forEach(lastRead => lastReadsObject[lastRead.user_id] = lastRead.last_read_message_id);
     const chatSchema = new ChatSchema({
       chatId: chat.chat_id,
+      channelId: chat.channel_id,
       muted: chat.muted,
       isPrivate: chat.isPrivate,
       isGroup: chat.isGroup,
@@ -603,6 +604,7 @@ class ChatRepository {
   async fetchContactsPaginated({ requestingUserId, requestedPage, status, search }) {
     let query = Database.from('friends')
       .innerJoin('users', 'users.id', 'friends.friend_id')
+      .orderBy('alias', 'asc')
       .where({ user_id: requestingUserId })
     if (status) query = query.andWhere({ status: status })
     if (search) query = query.andWhere('alias', 'like', `%${search}%`)
@@ -832,11 +834,13 @@ class ChatRepository {
       reply_content: replyContent,
       reply_backup: replyBackup,
     };
-    const message = await Chat.find(requestedChatId).then(chat => chat.messages().create(messageData));
+    const chatEntry = await Chat.find(requestedChatId);
+    const message = await chatEntry.messages().create(messageData);
     const messageSchema = new MessageSchema({
       messageId: message.id,
       uuid: message.uuid,
       chatId: requestedChatId,
+      channelId: chatEntry.channel_id,
       senderId: requestingUserId,
       keyReceiver: message.key_receiver,
       senderName: message.sender_name,
@@ -906,7 +910,6 @@ class ChatRepository {
       uuid: message.uuid,
       chatId: message.chat_id,
       senderId: message.sender_id,
-      title: message.title,
       keyReceiver: message.key_receiver,
       title: message.sender_name,
       senderName: messageData.sender_name,

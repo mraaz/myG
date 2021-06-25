@@ -127,6 +127,7 @@ export async function PullDataFunction(myG) {
       mic: myG.mic ? myG.mic.value : null,
       eighteen_plus: myG.eighteen_plus ? myG.eighteen_plus.value : null,
       game_languages: myLanguage,
+      onlyTeamMatches: myG.onlyTeamMatches,
     })
     return allscheduledGames
   } catch (error) {

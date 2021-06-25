@@ -1,4 +1,5 @@
 const Database = use('Database')
+const Notification = use('App/Models/Notification')
 const LoggingRepository = require('../Logging')
 const ChatRepository = require('../Chat')
 
@@ -58,10 +59,34 @@ class NotificationsRepository {
     }
   }
 
+  // Activity Type 30 - Team Game Created
+  async notifyTeamGameCreated({ requestingUserId, userId, teamId, gameId }) {
+    try {
+      await Notification.create({
+        user_id: requestingUserId,
+        other_user_id: userId,
+        team_id: teamId,
+        schedule_games_id: gameId,
+        activity_type: 30,
+      });
+      const notifications = await this.count({ auth: { user: { id: userId } }, request: null });
+      await ChatRepository.publishNotifications({ userId, notifications });
+      return 'Saved item';
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error
+      });
+    }
+  }
+
   async count({ auth, request }) {
     const requestingUserId = auth.user.id
     if (!requestingUserId) throw new Error('Auth Error')
-    const { getUnread_count_Approvals: approvals, getUnread_count_Alerts: alerts } = await this.getUnread_count({ auth, request: request || { input: () => {} } })
+    const { getUnread_count_Approvals: approvals, getUnread_count_Alerts: alerts } = await this.getUnread_count({ auth, request: request || { input: () => { } } })
     const { unreadMessages: chats } = await ChatRepository.fetchUnreadMessages({ requestingUserId, count: true })
     return {
       approvals,
