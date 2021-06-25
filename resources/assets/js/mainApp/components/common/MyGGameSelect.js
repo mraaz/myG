@@ -111,7 +111,6 @@ export default class MyGGameSelect extends React.Component {
         cacheOptions
         defaultOptions
         isClearable
-        inputProps={{ ...inputProps, autoComplete: 'off', autoCorrect: 'off', spellCheck: 'off' }}
       />
     )
   }
