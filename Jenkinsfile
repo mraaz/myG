@@ -37,11 +37,11 @@ pipeline {
         stage('Code Checkout') {
             when {
                 expression {
-                   return env.GIT_BRANCH == "origin/stage"
+                   return env.GIT_BRANCH == "origin/master"
                 }
             }
             steps {
-                  git branch: 'stage',
+                  git branch: 'master',
                       credentialsId: 'git-private-key',
                       url: 'https://github.com/mraaz/myG'
             }
@@ -81,7 +81,7 @@ pipeline {
                     sh "mv frontend.tar.gz ./public/"
                 }
                 withAWS(credentials: "myg-aws-credentials") {
-                    s3Upload(file:'public', bucket:'myg-frontend', path:'myg.gg')
+                    s3Upload(file:'public', bucket:'mygame-prod-frontend', path:'myg.gg')
                     cfInvalidate(distribution:"${DISTRIBUTION}", paths:['/*'])
                 }
               }
@@ -89,7 +89,7 @@ pipeline {
         stage('Docker Build') {
             when {
                 expression {
-                   return env.GIT_BRANCH == "origin/stage"
+                   return env.GIT_BRANCH == "origin/master"
                 }
             }
             steps {
@@ -102,7 +102,7 @@ pipeline {
         stage('Docker Publish') {
             when {
                 expression {
-                   return env.GIT_BRANCH == "origin/stage"
+                   return env.GIT_BRANCH == "origin/master"
                 }
             }
             steps {
