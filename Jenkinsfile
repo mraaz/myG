@@ -36,8 +36,10 @@ pipeline {
         }
         stage('Initialize Docker'){
             steps {
-                def dockerHome = tool 'docker'
-                env.PATH = "${dockerHome}/bin:${env.PATH}"
+                expression {
+                    def dockerHome = tool 'docker'
+                    env.PATH = "${dockerHome}/bin:${env.PATH}"
+                }
             }
         }
         stage('Code Checkout') {
@@ -47,9 +49,9 @@ pipeline {
                 }
             }
             steps {
-                  git branch: 'master',
-                      credentialsId: 'git-private-key',
-                      url: 'https://github.com/mraaz/myG'
+                git branch: 'master',
+                credentialsId: 'git-private-key',
+                url: 'https://github.com/mraaz/myG'
             }
         }
         stage('Publish Frontend Stage') {
