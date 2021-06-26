@@ -27,12 +27,14 @@ pipeline {
             defaultContainer 'jnlp'
             yamlFile 'build.yaml'
         }
+    }
+    agent {
         docker {
             image 'gradle:6.7-jdk11'
             reuseNode true
         }
     }
-     stages {
+    stages {
         stage('Setup environment variables') {
           steps {
            sh(script: 'env')
