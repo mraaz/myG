@@ -188,16 +188,18 @@ class PostController {
         .orWhere('groups.user_id', '=', auth.user.id)
         .select('groups.id')
 
-      var today = new Date()
-      var priorDate = new Date().setDate(today.getDate() - 7)
-      const cutOff_date = new Date(priorDate)
+      // *** UnDO once we have alot more content on the site ***
+
+      //   var today = new Date()
+      //   var priorDate = new Date().setDate(today.getDate() - 7)
+      //   const cutOff_date = new Date(priorDate)
 
       let groups_im_in_Posts = await Database.from('posts')
         .innerJoin('users', 'users.id', 'posts.user_id')
         .innerJoin('groups', 'groups.id', 'posts.group_id')
         .whereIn('posts.group_id', all_groups_im_in_ish)
         .where('posts.visibility', '=', 1)
-        .where('posts.created_at', '>', cutOff_date)
+        //.where('posts.created_at', '>', cutOff_date)
         .whereNot('posts.user_id', '=', auth.user.id)
         .select('*', 'posts.id', 'posts.updated_at')
         .orderBy('posts.created_at', 'desc')
