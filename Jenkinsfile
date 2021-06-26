@@ -34,14 +34,6 @@ pipeline {
            sh(script: 'env')
           }
         }
-        stage('Initialize Docker'){
-            steps {
-                expression {
-                    def dockerHome = tool 'docker'
-                    env.PATH = "${dockerHome}/bin:${env.PATH}"
-                }
-            }
-        }
         stage('Code Checkout') {
             when {
                 expression {
