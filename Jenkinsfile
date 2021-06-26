@@ -27,6 +27,10 @@ pipeline {
             defaultContainer 'jnlp'
             yamlFile 'build.yaml'
         }
+        docker {
+            image 'gradle:6.7-jdk11'
+            reuseNode true
+        }
     }
      stages {
         stage('Setup environment variables') {
