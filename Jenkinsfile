@@ -4,6 +4,7 @@ pipeline {
         REGISTRY_CREDENTIAL = 'docker-hub-credential'
         GITHUB = 'git@github.com:/mraaz/myG'
         GITHUB_CREDENTIAL = 'git-private-key'
+        DOMAIN = 'localhost'
         DB_USER = credentials('db_user')
         DB_PASS = credentials('db_pass')
         DB_PASS_STAGE = credentials('db_pass_stage')
