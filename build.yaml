@@ -13,7 +13,7 @@ spec:
       privileged: true
       volumeMounts:
         - name: dockersock
-          mountPath: /var/run/docker.sock
+          mountPath: /var/run/docker.sock:/var/run/docker.sock
     - name: helm
       image: lachlanevenson/k8s-helm:v3.6.0
       command:
@@ -22,4 +22,4 @@ spec:
   volumes:
     - name: dockersock
       hostPath:
-        path: /var/run/docker.sock
+        path: /var/run/docker.sock:/var/run/docker.sock
