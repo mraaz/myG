@@ -23,11 +23,10 @@ pipeline {
         nodejs "default"
     }
     agent {
-        docker { image 'node:14-alpine' }
-        // kubernetes {
-        //     defaultContainer 'jnlp'
-        //     yamlFile 'build.yaml'
-        // }
+        kubernetes {
+            defaultContainer 'jnlp'
+            yamlFile 'build.yaml'
+        }
     }
     stages {
         stage('Setup environment variables') {

@@ -15,7 +15,7 @@ spec:
         - name: dockersock
           mountPath: /var/run/docker.sock
     - name: helm
-      image: lachlanevenson/k8s-helm:v3.2.4
+      image: lachlanevenson/k8s-helm:v3.6.0
       command:
         - cat
       tty: true
