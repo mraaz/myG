@@ -23,17 +23,12 @@ pipeline {
     tools {
         nodejs "default"
     }
-    agent any
-    // agent {
-    //     // kubernetes {
-    //     //     defaultContainer 'jnlp'
-    //     //     yamlFile 'build.yaml'
-    //     // }
-    //     docker { 
-    //       image 'node:8'
-    //       args '-u root:root'
-    //     }
-    // }
+    agent {
+        kubernetes {
+            defaultContainer 'jnlp'
+            yamlFile 'build.yaml'
+        }
+    }
     stages {
         stage('Setup environment variables') {
           steps {
@@ -60,7 +55,7 @@ pipeline {
             }
             steps {
                 container('docker') {
-                    sh "docker build -t ${REGISTRY}:$TAG ."
+                    sh "docker build -t --privileged -v /var/run/docker.sock:/var/run/docker.sock ${REGISTRY}:$TAG ."
                     sh "docker tag myg2020/myg:$TAG myg2020/myg:latest"
                 }
             }
