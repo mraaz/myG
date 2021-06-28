@@ -27,10 +27,7 @@ pipeline {
         //     defaultContainer 'jnlp'
         //     yamlFile 'build.yaml'
         // }
-        agent{
             docker { image 'node:14-alpine' }
-
-        }
     }
     stages {
         stage('Setup environment variables') {
