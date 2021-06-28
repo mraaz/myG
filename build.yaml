@@ -7,11 +7,12 @@ spec:
   containers:
     - name: docker
       image: docker:20.10.7
-      command:
-        - cat
+      command: ['sleep', '99d']
+      env:
+        - name: DOCKER_HOST
+          value: tcp://localhost:2375
       tty: true
-      securityContext:
-        privileged: true
+      privileged: true
       volumeMounts:
         - name: dockersock
           mountPath: /var/run/docker.sock

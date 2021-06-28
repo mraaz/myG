@@ -4,7 +4,6 @@ pipeline {
         REGISTRY_CREDENTIAL = 'docker-hub-credential'
         GITHUB = 'git@github.com:/mraaz/myG'
         GITHUB_CREDENTIAL = 'git-private-key'
-        DOMAIN = 'localhost'
         DB_USER = credentials('db_user')
         DB_PASS = credentials('db_pass')
         DB_PASS_STAGE = credentials('db_pass_stage')
@@ -55,7 +54,7 @@ pipeline {
             }
             steps {
                 container('docker') {
-                    sh "docker build -t --privileged -v /var/run/docker.sock:/var/run/docker.sock ${REGISTRY}:$TAG ."
+                    sh "docker build -t ${REGISTRY}:$TAG ."
                     sh "docker tag myg2020/myg:$TAG myg2020/myg:latest"
                 }
             }
