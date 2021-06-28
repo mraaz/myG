@@ -81,7 +81,7 @@ pipeline {
                     sh "mv frontend.tar.gz ./public/"
                 }
                 withAWS(credentials: "myg-aws-credentials") {
-                    s3Upload(file:'public', bucket:'mygame-prod-frontend', path:'')
+                    s3Upload( acl: 'PublicRead', file:'public', bucket:'mygame-prod-frontend', path:'')
                     cfInvalidate(distribution:"${DISTRIBUTION}", paths:['/*'])
                 }
               }
