@@ -17,7 +17,7 @@ const MAX_HASH_TAGS = 21
 const createOption = (label, hash_tag_id) => ({
   label,
   value: label,
-  hash_tag_id,
+  hash_tag_id
 })
 
 export default class ComposeSection extends Component {
@@ -43,7 +43,7 @@ export default class ComposeSection extends Component {
       group_id: [],
       options_tags: '',
       value_tags: [],
-      isShowAllGroup: false,
+      isShowAllGroup: false
     }
 
     this.openPhotoPost = this.openPhotoPost.bind(this)
@@ -58,7 +58,7 @@ export default class ComposeSection extends Component {
 
   callbackPostFileModalClose() {
     this.setState({
-      bFileModalOpen: false,
+      bFileModalOpen: false
     })
   }
 
@@ -69,7 +69,7 @@ export default class ComposeSection extends Component {
         bFileModalOpen: false,
         group_id: callbackData.selected_group,
         selected_group_data: callbackData.selected_group_data,
-        visibility: callbackData.visibility,
+        visibility: callbackData.visibility
       })
     } catch (error) {
       logToElasticsearch('error', 'ComposeSection_v2', 'Failed callbackPostFileModalConfirm:' + ' ' + error)
@@ -79,20 +79,20 @@ export default class ComposeSection extends Component {
   openPhotoPost() {
     this.setState({
       bFileModalOpen: true,
-      fileType: 'photo',
+      fileType: 'photo'
     })
   }
 
   openVideoPost() {
     this.setState({
       bFileModalOpen: true,
-      fileType: 'video',
+      fileType: 'video'
     })
   }
   openAudioPost() {
     this.setState({
       bFileModalOpen: true,
-      fileType: 'audio',
+      fileType: 'audio'
     })
   }
   handleClear = () => {
@@ -106,7 +106,7 @@ export default class ComposeSection extends Component {
       group_id: [],
       value_tags: [],
       visibility: 1,
-      video: '',
+      video: ''
     })
   }
 
@@ -148,7 +148,7 @@ export default class ComposeSection extends Component {
         group_id: this.props.group_id ? this.props.group_id : this.state.group_id.toString(),
         media_url: media_url.length > 0 ? JSON.stringify(media_url) : '',
         aws_key_id: aws_key_id.length > 0 ? aws_key_id : '',
-        hash_tags: hash_tags,
+        hash_tags: hash_tags
       })
       if (post.data == 'video_link_failed') {
         toast.success(<Toast_style text={`Strewth mate! Invalid video link`} />)
@@ -169,7 +169,7 @@ export default class ComposeSection extends Component {
           selected_group: [],
           group_id: [],
           open_compose_textTab: true,
-          video: '',
+          video: ''
         },
         () => {
           media_url = []
@@ -186,7 +186,7 @@ export default class ComposeSection extends Component {
     const name = event.target.name
     const value = event.target.type == 'checkbox' ? event.target.checked : event.target.value
     this.setState({
-      [name]: value,
+      [name]: value
     })
   }
 
@@ -216,7 +216,7 @@ export default class ComposeSection extends Component {
     if (e.key === 'Escape') {
       this.setState({
         edit_post: false,
-        value2: '',
+        value2: ''
       })
     }
   }
@@ -228,12 +228,12 @@ export default class ComposeSection extends Component {
       if (this.props.initialData.userInfo != undefined) {
         this.setState({
           profile_img: this.props.initialData.userInfo.profile_img,
-          alias: this.props.initialData.userInfo.alias,
+          alias: this.props.initialData.userInfo.alias
         })
       }
     }
 
-    const getHash_tags = async function() {
+    const getHash_tags = async function () {
       try {
         //const gamers_you_might_know = await axios.get('/api/user/gamers_you_might_know')
 
@@ -252,7 +252,7 @@ export default class ComposeSection extends Component {
       open_compose_textTab = false
     }
     if (label == 'text') {
-      setTimeout(function() {
+      setTimeout(function () {
         document.getElementById('composeTextarea').focus()
       }, 0)
     }
@@ -281,7 +281,7 @@ export default class ComposeSection extends Component {
     var instance = this
 
     this.setState({
-      uploading: true,
+      uploading: true
     })
 
     try {
@@ -291,15 +291,15 @@ export default class ComposeSection extends Component {
       new_preview_files.push({
         src: post.data.Location,
         key: post.data.Key,
-        id: post.data.aws_key_id,
+        id: post.data.aws_key_id
       })
       instance.setState({
         preview_files: new_preview_files,
-        uploading: false,
+        uploading: false
       })
     } catch (error) {
       instance.setState({
-        uploading: false,
+        uploading: false
       })
       toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file. Close this window and try again'} />)
     }
@@ -327,13 +327,13 @@ export default class ComposeSection extends Component {
     value: inputValue,
     label: optionLabel,
     __isNew__: true,
-    isEqual: () => false,
+    isEqual: () => false
   })
 
   getOptions_tags = (inputValue) => {
     const self = this
 
-    const getInitialData = async function(inputValue) {
+    const getInitialData = async function (inputValue) {
       try {
         var results = await Hash_Tags(inputValue)
         self.setState({ options_tags: results })
@@ -383,7 +383,7 @@ export default class ComposeSection extends Component {
       overlay_active,
       post_content = '',
       isShowAllGroup = false,
-      visibility,
+      visibility
     } = this.state
     const isButtonDisable = post_content != '' || preview_files.length > 0 ? true : false
     const groups = [...selected_group_data]
@@ -426,7 +426,7 @@ export default class ComposeSection extends Component {
             <div className='video_box'>
               <input
                 className='video-input'
-                placeholder='Enter link to video here'
+                placeholder='Enter link to video here!'
                 value={this.state.video}
                 onChange={(event) => this.setState({ video: event.target.value })}
               />
@@ -440,7 +440,8 @@ export default class ComposeSection extends Component {
                 minSize={0}
                 maxSize={52428800}
                 multiple
-                disabled={this.state.uploading}>
+                disabled={this.state.uploading}
+              >
                 {(props) => {
                   return (
                     <section className='custom__html'>
@@ -535,8 +536,9 @@ export default class ComposeSection extends Component {
                     className='default_circle profile-image'
                     style={{
                       backgroundImage: `url('${this.state.profile_img}')`,
-                      backgroundSize: 'cover',
-                    }}></div>
+                      backgroundSize: 'cover'
+                    }}
+                  ></div>
                   <div className='people_label'>Your Feed</div>
                 </div>
                 {groups.splice(0, 3).map((g) => {
@@ -546,8 +548,9 @@ export default class ComposeSection extends Component {
                         className='default_circle profile-image'
                         style={{
                           backgroundImage: `url('${g.group_img}')`,
-                          backgroundSize: 'cover',
-                        }}></div>
+                          backgroundSize: 'cover'
+                        }}
+                      ></div>
                       <div className='people_label'>{g.name}</div>
                     </div>
                   )
