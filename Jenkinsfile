@@ -23,9 +23,13 @@ pipeline {
         nodejs "default"
     }
     agent {
-        kubernetes {
-            defaultContainer 'jnlp'
-            yamlFile 'build.yaml'
+        // kubernetes {
+        //     defaultContainer 'jnlp'
+        //     yamlFile 'build.yaml'
+        // }
+        agent{
+            docker { image 'node:14-alpine' }
+
         }
     }
     stages {
