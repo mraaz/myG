@@ -15,6 +15,7 @@ const initialState = {
   afk: [],
   offline: [],
   foundContacts: [],
+  contactsCount: 0,
   groups: [],
   games: [],
   recents: [],
@@ -31,6 +32,7 @@ export default function reducer(state = initialState, action) {
       return initialState
 
     case 'PAGINATED_CONTACTS_PENDING': {
+      logger.log('PAGINATION', `Redux -> Fetching Contacts: `, action.payload, action.meta)
       return {
         ...state,
         contactsLoading: action.meta.refresh,
@@ -69,6 +71,7 @@ export default function reducer(state = initialState, action) {
           ...state,
           contactsLoading: false,
           contactsLoadingMore: false,
+          contactsCount: action.payload.count,
           foundContacts: action.payload.contacts,
         }
       }
@@ -80,6 +83,7 @@ export default function reducer(state = initialState, action) {
         ...state,
         contactsLoading: false,
         contactsLoadingMore: false,
+        contactsCount: action.payload.count,
         [action.meta.status]: contacts,
       }
     }

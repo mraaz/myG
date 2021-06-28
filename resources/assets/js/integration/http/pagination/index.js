@@ -8,7 +8,7 @@ export function fetchRecents() {
 
 export function fetchContactsPaginated(page, status, gameId, search) {
   logger.log('PAGINATED', 'HTTP', `Fetching Contacts`);
-  const request = `/api/chat/paginated/contact?${page ? `&page=${page}` : ''}${status ? `&status=${status}` : ''}${gameId ? `&gameId=${gameId}` : ''}${search ? `&search=${search}` : ''}`;
+  const request = `/api/chat/paginated/contact?${page !== undefined ? `&page=${page}` : ''}${status ? `&status=${status}` : ''}${gameId ? `&gameId=${gameId}` : ''}${search ? `&search=${search}` : ''}`;
   return axios.get(request).then(response => response.data);
 }
 

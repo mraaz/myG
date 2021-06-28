@@ -286,6 +286,20 @@ export default class Alerts extends Component {
           </div>
         )
         break
+      case 29:
+        return (
+          <div className='notification__text'>
+            {`${props.alias} has invited you to join the team ${props.name}`}
+          </div>
+        )
+        break
+      case 30:
+        return (
+          <div className='notification__text'>
+          {`A game of ${props.game_name} has been scheduled for team ${props.name}`}
+          </div>
+        )
+        break
 
       default:
         break
@@ -374,9 +388,8 @@ export default class Alerts extends Component {
               const time = this.handleTime(noti.created_at)
               return (
                 <div
-                  className={`notification alert ${
-                    noti.read == undefined ? (noti.read_status == 0 ? 'unread' : '') : noti.read == false ? 'unread' : ''
-                  }`}
+                  className={`notification alert ${noti.read == undefined ? (noti.read_status == 0 ? 'unread' : '') : noti.read == false ? 'unread' : ''
+                    }`}
                   key={`${noti.id}`}
                   onClick={(e) => this.handleClickNotiFication(noti.id, index, noti.activity_type)}>
                   <div
@@ -388,9 +401,8 @@ export default class Alerts extends Component {
                   </div>
                   <div className='notification-content'>
                     <div
-                      className={`notification-description ${
-                        noti.read == undefined ? (noti.read_status == 0 ? 'unread' : '') : noti.read == false ? 'unread' : ''
-                      }`}>
+                      className={`notification-description ${noti.read == undefined ? (noti.read_status == 0 ? 'unread' : '') : noti.read == false ? 'unread' : ''
+                        }`}>
                       <span className='username__link' onClick={(e) => this.handleClickNotiFication(noti.id, index, noti.activity_type)}>
                         <Link to={`/profile/${noti.first_user_alias || noti.alias}`}>
                           <span className='notification-username'>

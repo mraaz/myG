@@ -20,7 +20,7 @@ const MyGSelect = ({
   const customStyles = {
     container: (provided) => ({
       ...provided,
-      width: width || '422px',
+      width: width || '422px'
     }),
     control: (provided) => ({
       ...provided,
@@ -28,25 +28,21 @@ const MyGSelect = ({
       border: 'none',
       width: innerWidth || '422px',
       minHeight: '38px',
-      color: '#fff',
+      color: '#fff'
     }),
     menuList: (provided) => ({
       ...provided,
       backgroundColor: '#fff',
-    }),
-    menuList: (provided) => ({
-      ...provided,
-      backgroundColor: '#fff',
-      color: '#384952',
+      color: '#384952'
     }),
     singleValue: (provided) => ({
       ...provided,
-      color: '#fff',
+      color: '#fff'
     }),
     input: (provided) => ({
       ...provided,
-      color: '#fff',
-    }),
+      color: '#fff'
+    })
   }
 
   return (

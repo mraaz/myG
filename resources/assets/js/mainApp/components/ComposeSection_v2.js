@@ -507,7 +507,7 @@ export default class ComposeSection extends Component {
             <div className='video_box'>
               <input
                 className='video-input'
-                placeholder='Enter link to video here'
+                placeholder='Enter link to video here!'
                 value={this.state.video}
                 onChange={(event) => this.setState({ video: event.target.value })}
               />

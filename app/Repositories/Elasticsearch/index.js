@@ -24,17 +24,21 @@ class ElasticsearchRepository {
   // TODO: Paginate this using the scroll API:
   // https://www.elastic.co/guide/en/elasticsearch/reference/6.8/search-request-scroll.html
   async fetchAllUsersIds() {
-    return this.getElasticsearchClient().search({ index: 'users', body: {
-      _source: "",  query: { match_all: {} }, size: 10000,
-    }}).then((result) => result.hits.hits.map((hit) => hit._id));
+    return this.getElasticsearchClient().search({
+      index: 'users', body: {
+        _source: "", query: { match_all: {} }, size: 10000,
+      }
+    }).then((result) => result.hits.hits.map((hit) => hit._id));
   }
 
   // TODO: Paginate this using the scroll API:
   // https://www.elastic.co/guide/en/elasticsearch/reference/6.8/search-request-scroll.html
   async fetchAllGamesIds() {
-    return this.getElasticsearchClient().search({ index: 'games', body: {
-      _source: "",  query: { match_all: {} }, size: 10000,
-    }}).then((result) => result.hits.hits.map((hit) => hit._id));
+    return this.getElasticsearchClient().search({
+      index: 'games', body: {
+        _source: "", query: { match_all: {} }, size: 10000,
+      }
+    }).then((result) => result.hits.hits.map((hit) => hit._id));
   }
 
   async storeUser({ user }) {
@@ -97,25 +101,26 @@ class ElasticsearchRepository {
 
   async storeGame({ gameInfo }) {
     log('ELASTICSEARCH', `Storing game in Elasticsearch: ${gameInfo.id}`);
+    const doc = {
+      ...gameInfo,
+      visibility: !!gameInfo.visibility,
+      vacancy: !!gameInfo.vacancy,
+      autoJoin: !!gameInfo.autoJoin,
+      autoJoinHost: !!gameInfo.autoJoinHost,
+      mic: !!gameInfo.mic,
+      eighteen_plus: !!gameInfo.eighteen_plus,
+      marked_as_deleted: !!gameInfo.marked_as_deleted,
+      allow_comments: !!gameInfo.allow_comments,
+      start_date_time: gameInfo.start_date_time.replace ? gameInfo.start_date_time.replace(' ', 'T') : gameInfo.start_date_time,
+      end_date_time: gameInfo.end_date_time.replace ? gameInfo.end_date_time.replace(' ', 'T') : gameInfo.end_date_time,
+      expiry: gameInfo.expiry.replace ? gameInfo.expiry.replace(' ', 'T') : gameInfo.expiry,
+    };
+    if (!doc.team_id) delete doc.team_id;
     return this.getElasticsearchClient().update({
       index: 'games',
       id: gameInfo.id,
       body: {
-        doc: {
-          ...gameInfo,
-          visibility: !!gameInfo.visibility,
-          vacancy: !!gameInfo.vacancy,
-          autoJoin: !!gameInfo.autoJoin,
-          autoJoinHost: !!gameInfo.autoJoinHost,
-          mic: !!gameInfo.mic,
-          eighteen_plus: !!gameInfo.eighteen_plus,
-          marked_as_deleted: !!gameInfo.marked_as_deleted,
-          allow_comments: !!gameInfo.allow_comments,
-          visibility: !!gameInfo.visibility,
-          start_date_time: gameInfo.start_date_time.replace ? gameInfo.start_date_time.replace(' ', 'T') : gameInfo.start_date_time,
-          end_date_time: gameInfo.end_date_time.replace ? gameInfo.end_date_time.replace(' ', 'T') : gameInfo.end_date_time,
-          expiry: gameInfo.expiry.replace ? gameInfo.expiry.replace(' ', 'T') : gameInfo.expiry,
-        },
+        doc,
         doc_as_upsert: true,
       }
     }).then(() => ({ success: true, error: null })).catch(error => {
@@ -153,22 +158,28 @@ class ElasticsearchRepository {
   // TODO: Paginate this using the scroll API:
   // https://www.elastic.co/guide/en/elasticsearch/reference/6.8/search-request-scroll.html
   async fetchAllGameNameIds() {
-    return this.getElasticsearchClient().search({ index: 'game_names', body: {
-      _source: "",  query: { match_all: {} }, size: 10000,
-    }}).then((result) => result.hits.hits.map((hit) => hit._id));
+    return this.getElasticsearchClient().search({
+      index: 'game_names', body: {
+        _source: "", query: { match_all: {} }, size: 10000,
+      }
+    }).then((result) => result.hits.hits.map((hit) => hit._id));
   }
 
   async fetchTopGameNames() {
-    return this.getElasticsearchClient().search({ index: 'game_names', body: {
-      query: { match_all: {} },
-      sort: [{ counter: { order: "desc" } }],
-    }}).then((result) => result.hits.hits.map((hit) => hit._source));
+    return this.getElasticsearchClient().search({
+      index: 'game_names', body: {
+        query: { match_all: {} },
+        sort: [{ counter: { order: "desc" } }],
+      }
+    }).then((result) => result.hits.hits.map((hit) => hit._source));
   }
 
   async searchGameNames(input) {
-    return this.getElasticsearchClient().search({ index: 'game_names', body: {
-      query: { match: { game_name: { query: input, fuzziness: "auto" } } },
-    }}).then((result) => result.hits.hits.map((hit) => hit._source));
+    return this.getElasticsearchClient().search({
+      index: 'game_names', body: {
+        query: { match: { game_name: { query: input, fuzziness: "auto" } } },
+      }
+    }).then((result) => result.hits.hits.map((hit) => hit._source));
   }
 
   async storeGameName(gameName) {

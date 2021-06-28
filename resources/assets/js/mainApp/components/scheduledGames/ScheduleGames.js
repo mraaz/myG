@@ -4,6 +4,7 @@
  * Email : nitin.1992tyagi@gmail.com
  */
 import React, { Component, Fragment } from 'react'
+import ToggleButton from 'react-toggle-button'
 import GameFilter from './gameFilter'
 import GameList from './gameList'
 import GameDetails from './gameDetails'
@@ -12,6 +13,7 @@ import NoRecord from './NoRecord.js'
 import { PullDataFunction as getScheduleGames } from './getScheduleGames'
 import axios from 'axios'
 import MobileScheduledGames from '../MobileView/MobileScheduledGames'
+import { FeatureEnabled, TEAMS } from '../../../common/flags'
 
 export default class ScheduleGames extends Component {
   constructor() {
@@ -25,11 +27,12 @@ export default class ScheduleGames extends Component {
       commentData: {},
       singleView: false,
       moreplease: true,
+      onlyTeamMatches: false,
       counter: 1,
       scheduleGamesView: {},
       showAllComment: false,
       fetching: false,
-      slideOptionText: 'Exclude expired games',
+      slideOptionText: 'Exclude expired games'
     }
     this.contentAreaRef = React.createRef()
     this.lastScrollY = 0
@@ -75,7 +78,7 @@ export default class ScheduleGames extends Component {
         singleScheduleGamesPayload: scheduleGames.data,
         selected_game: { ...game },
         showRightSideInfo: true,
-        showAllComment: false,
+        showAllComment: false
       })
     }
   }
@@ -89,7 +92,7 @@ export default class ScheduleGames extends Component {
         scheduleGamesView: {},
         selected_game: {},
         showRightSideInfo: false,
-        showAllComment: false,
+        showAllComment: false
       },
       () => {
         let params = new URLSearchParams(window.location.search)
@@ -101,27 +104,30 @@ export default class ScheduleGames extends Component {
     )
   }
 
-  handleChange = async (data, name) => {
+  handleChange = async (data) => {
     this.setState({ singleScheduleGamesPayload: {}, showRightSideInfo: false }, () => {
-      if (name == 'game_name') {
-        this.setState({ ...data }, () => {
-          this.getScheduleGamesChangeCall()
-        })
-      } else {
-        this.setState({ ...data }, () => {
-          this.getScheduleGamesChangeCall()
-        })
-      }
+      this.setState({ ...data }, () => {
+        this.getScheduleGamesChangeCall()
+      })
+      //   if (name == 'game_name') {
+      //     this.setState({ ...data }, () => {
+      //       this.getScheduleGamesChangeCall()
+      //     })
+      //   } else {
+      //     this.setState({ ...data }, () => {
+      //       this.getScheduleGamesChangeCall()
+      //     })
+      //   }
     })
   }
   getScheduleGamesChangeCall = async (data = {}) => {
     const { counter, scheduleGames = [] } = this.state
-    const scheduleGamesRes = await getScheduleGames({ ...this.state, ...data, counter: 1 })
+    const scheduleGamesRes = await getScheduleGames({ ...this.state, ...data, counter: 1, onlyTeamMatches: this.state.onlyTeamMatches })
 
     if (scheduleGamesRes && scheduleGamesRes.data && scheduleGamesRes.data.latestScheduledGames.length == 0) {
       this.setState({
         moreplease: false,
-        scheduleGames: {},
+        scheduleGames: {}
       })
       return
     }
@@ -139,7 +145,7 @@ export default class ScheduleGames extends Component {
     if (scheduleGamesRes.data && scheduleGamesRes.data.latestScheduledGames.length == 0) {
       this.setState({
         moreplease: false,
-        fetching: false,
+        fetching: false
       })
       return
     }
@@ -160,11 +166,25 @@ export default class ScheduleGames extends Component {
     })
   }
   updateSingleScheduleGamesPayload = (id) => {
-    axios.get(`/api/ScheduleGame/additional_game_info/${id}`).then(additionalGameInformation => {
+    axios.get(`/api/ScheduleGame/additional_game_info/${id}`).then((additionalGameInformation) => {
       this.setState({
-        singleScheduleGamesPayload: additionalGameInformation.data,
+        singleScheduleGamesPayload: additionalGameInformation.data
       })
     })
+  }
+
+  renderOnlyTeamMatchesFilter = () => {
+    return (
+      <FeatureEnabled allOf={[TEAMS]}>
+        <div id='filter-team-game' className='row'>
+          <div className='hint'>Show only team matches</div>
+          <ToggleButton
+            value={this.state.onlyTeamMatches}
+            onToggle={() => this.setState(previous => ({ onlyTeamMatches: !previous.onlyTeamMatches }), this.getScheduleGamesChangeCall)}
+          />
+        </div>
+      </FeatureEnabled>
+    );
   }
 
   render() {
@@ -182,7 +202,7 @@ export default class ScheduleGames extends Component {
       singleView,
       scheduleGamesView = {},
       showAllComment,
-      fetching,
+      fetching
     } = this.state
     const { latestScheduledGames = [] } = scheduleGamesView
 
@@ -197,6 +217,7 @@ export default class ScheduleGames extends Component {
           </div>
           <section className='viewGame__container'>
             {id == '' && <GameFilter handleChange={this.handleChange} />}
+            {this.renderOnlyTeamMatchesFilter()}
             <div className={`gameList__section ${singleView ? 'singleGameView__container' : 'GameView__container'}`}>
               {!singleView && scheduleGames.length > 0 ? (
                 <Fragment>

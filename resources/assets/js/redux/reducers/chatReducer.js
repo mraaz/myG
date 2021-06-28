@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid'
 import logger from '../../common/logger'
 import { reEncryptMessages, sendGroupKeys } from '../../common/encryption'
 import { encryptMessage, decryptMessage, deserializeKey, getPublicKey } from '../../integration/encryption'
@@ -11,6 +12,7 @@ import {
 } from '../../integration/http/chat'
 import notifyToast from '../../common/toast'
 import { getAssetUrl } from '../../common/assets'
+import { openChat } from '../../common/chat'
 
 const initialState = {
   chats: [],
@@ -18,12 +20,42 @@ const initialState = {
   contacts: [],
   unreadMessages: [],
   blockedUsers: [],
+  notifications: [],
   preparingMessenger: false,
   guestLink: null,
   notificationSoundsDisabled: false,
   autoSelfDestruct: false,
   pushNotificationsEnabled: true,
 }
+
+const emptyChat = {
+  chatId: '',
+  messages: [],
+  contacts: [],
+  fullContacts: [],
+  guests: [],
+  owners: [],
+  moderators: [],
+  entryLogs: [],
+  lastReads: [],
+  blockedUsers: [],
+  isGroup: false,
+  loadingMessages: false,
+  noMoreMessages: false,
+  muted: false,
+  selfDestruct: false,
+  typing: false,
+  maximised: false,
+  minimised: false,
+  closed: true,
+  gameMessage: '',
+  icon: '',
+  title: '',
+  status: '',
+  lastRead: '',
+  publicKey: '',
+  privateKey: '',
+};
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
@@ -82,8 +114,9 @@ export default function reducer(state = initialState, action) {
       action.payload.contacts &&
         action.payload.contacts.forEach((contact) => !contactIds.includes(contact.contactId) && contacts.push(contact))
       const existingChat = chats.find((candidate) => candidate.chatId === chatId)
-      const chat = existingChat || action.payload.chat
       if (!existingChat) chats.push(chat)
+      else Object.assign(existingChat, action.payload.chat)
+      const chat = existingChat || action.payload.chat
       chat.fullContacts = action.payload.contacts
       chat.links = action.payload.links
       chat.entryLogs = action.payload.entryLogs
@@ -241,10 +274,20 @@ export default function reducer(state = initialState, action) {
       }
     }
 
+    case 'DISMISS_NOTIFICATION': {
+      logger.log('CHAT', `Redux -> Dismiss Notification: `, action.payload, state.notifications)
+      const notifications = JSON.parse(JSON.stringify(state.notifications || [])) || []
+      return {
+        ...state,
+        notifications: notifications.filter((notification) => notification.notificationId !== action.payload.notificationId),
+      }
+    }
+
     case 'OPEN_CHAT': {
       logger.log('CHAT', `Redux -> Open Chat: `, action.payload)
       const chatId = action.payload.chatId
       const chats = JSON.parse(JSON.stringify(state.chats))
+      const notifications = JSON.parse(JSON.stringify(state.notifications || [])) || []
       let chat = chats.find((candidate) => candidate.chatId === chatId)
       if (!chat) {
         chat = action.payload.chat
@@ -254,10 +297,12 @@ export default function reducer(state = initialState, action) {
       chat.minimised = false
       chat.maximised = false
       const openChats = chats.filter((candidate) => !candidate.closed && candidate.chatId !== chatId)
-      if (openChats.length > 3) Array.from(Array(openChats.length - 3)).forEach((_, index) => (openChats[index].closed = true))
+      const maxOpenedChats = window.innerWidth <= 1365 ? 0 : 3;
+      if (openChats.length > maxOpenedChats) Array.from(Array(openChats.length - maxOpenedChats)).forEach((_, index) => (openChats[index].closed = true))
       return {
         ...state,
         chats,
+        notifications: notifications.filter((notification) => notification.chatId !== chatId),
       }
     }
 
@@ -349,7 +394,10 @@ export default function reducer(state = initialState, action) {
       const userId = action.meta.userId
       const chatId = message.chatId
       const chats = JSON.parse(JSON.stringify(state.chats))
-      const chat = chats.find((candidate) => candidate.chatId === chatId)
+      const existingChat = chats.find((candidate) => candidate.chatId === chatId)
+      const chat = existingChat || { ...emptyChat, chatId, contacts: [message.senderId].filter(Boolean), title: message.senderName  }
+      if (!existingChat) chats.push(chat)
+      const decryptedMessage = prepareMessage(state, chat, message)
 
       const shouldIgnoreMessage = !chat || state.blockedUsers.find((user) => user.userId === message.senderId)
       if (shouldIgnoreMessage) return state
@@ -370,28 +418,47 @@ export default function reducer(state = initialState, action) {
         }
       }
 
-      const isNotActivelyLooking = !chat.muted && !window.focused && message.senderId !== userId && !message.keyReceiver
-      if (isNotActivelyLooking) {
-        playMessageSound(state.notificationSoundsDisabled)
-        showNotification(state, chat, message)
-        showNewMessageIndicator()
-      }
+      const openChats = chats.filter((candidate) => !candidate.closed && candidate.chatId !== chatId)
+      const shouldShowMessage = !chat.muted && !message.senderId !== userId && !message.keyReceiver
+      const isNotActivelyLooking = !window.focused
+      const isFromChannel = !!message.channelId;
+      const cannotOpenChat = window.innerWidth > 1365 ? openChats.length >= 4 : openChats.length > 0 || !window.location.href.includes('mobile-chat');
+      const notifications = JSON.parse(JSON.stringify(state.notifications || [])) || [];
+      decryptedMessage.unread = shouldShowMessage && cannotOpenChat;
 
-      const shouldOpenChat = !chat.muted && !message.keyReceiver
-      if (shouldOpenChat) {
-        const openChats = chats.filter((candidate) => !candidate.closed && candidate.chatId !== chatId)
-        if (openChats.length > 3) Array.from(Array(openChats.length - 3)).forEach((_, index) => (openChats[index].closed = true))
-        chat.closed = false
+      if (shouldShowMessage) {
+
+        if (!cannotOpenChat) {
+          chat.closed = false;
+        }
+
+        if (cannotOpenChat && !isFromChannel) {
+          const title = decryptedMessage.senderName
+          const content = decryptedMessage.content
+          notifyToast(content, title, () => {
+            openChat(chatId, chat);
+            const requiresRedirect = window.innerWidth <= 1365 && !window.location.href.includes('mobile-chat')
+            if (requiresRedirect) window.router.push('/mobile-chat');
+          });
+        }
+
+        if (isNotActivelyLooking) {
+          playMessageSound(state.notificationSoundsDisabled)
+          showNotification(state, chat, message)
+          showNewMessageIndicator()
+        }
+
       }
 
       if (!chat.messages) chat.messages = []
       const mustClearPendingMessages = message.senderId === userId
       if (mustClearPendingMessages) chat.messages = chat.messages.filter((existing) => existing.uuid !== message.uuid)
-      chat.messages.push(prepareMessage(state, chat, message))
+      chat.messages.push(decryptedMessage);
 
       return {
         ...state,
         chats,
+        notifications,
       }
     }
 
@@ -479,7 +546,6 @@ export default function reducer(state = initialState, action) {
       logger.log('CHAT', `Redux -> On Chat Deleted: `, action.payload)
       const chatId = parseInt(action.payload.chatId)
       const chats = JSON.parse(JSON.stringify(state.chats))
-        
         .filter((chat) => parseInt(chat.chatId) !== parseInt(chatId))
       if (state.guestId) notifyToast('This Group has been deleted.')
       return {
@@ -606,6 +672,7 @@ export default function reducer(state = initialState, action) {
       if (userId === thisUserId) return state
       const chats = JSON.parse(JSON.stringify(state.chats))
       const chat = chats.find((candidate) => candidate.chatId === chatId)
+      if (!chat) return state
       if (!chat.typing) chat.typing = []
       const userTypingIndex = chat.typing.indexOf(userId)
       const isUserAlreadyTyping = userTypingIndex !== -1
@@ -623,7 +690,6 @@ export default function reducer(state = initialState, action) {
       logger.log('CHAT', `Redux -> User Exited Group: `, action.meta)
       const { chatId } = action.meta
       const chats = JSON.parse(JSON.stringify(state.chats))
-        
         .filter((chat) => parseInt(chat.chatId) !== parseInt(chatId))
       return {
         ...state,
@@ -657,7 +723,6 @@ export default function reducer(state = initialState, action) {
       const { userId: thisUserId } = action.meta
       if (parseInt(userId) === parseInt(thisUserId)) {
         const chats = JSON.parse(JSON.stringify(state.chats))
-          
           .filter((chat) => parseInt(chat.chatId) !== parseInt(chatId))
         return {
           ...state,
@@ -752,6 +817,7 @@ export default function reducer(state = initialState, action) {
       const { guestId, userId, chatId, lastRead } = action.payload
       const chats = JSON.parse(JSON.stringify(state.chats))
       const chat = chats.find((candidate) => candidate.chatId === chatId)
+      if (!chat) return state;
       if (userId === thisUserId) chat.lastRead = lastRead
       else {
         if (!chat.lastReads) chat.lastReads = {}
@@ -976,4 +1042,8 @@ function contactPublicKeyUpdated(state, contactId, publicKey) {
   const contact = contacts.find((contact) => parseInt(contact.contactId) === parseInt(contactId))
   if (contact) contact.publicKey = publicKey
   return { ...state, contacts }
+}
+
+function closeLastOpenedChats(chats) {
+  if (chats.length > 3) Array.from(Array(chats.length - 3)).forEach((_, index) => (chats[index].closed = true));
 }

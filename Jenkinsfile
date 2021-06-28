@@ -28,7 +28,7 @@ pipeline {
             yamlFile 'build.yaml'
         }
     }
-     stages {
+    stages {
         stage('Setup environment variables') {
           steps {
            sh(script: 'env')
@@ -37,13 +37,30 @@ pipeline {
         stage('Code Checkout') {
             when {
                 expression {
-                   return env.GIT_BRANCH == "origin/stage"
+                   return env.GIT_BRANCH == "origin/master"
                 }
             }
             steps {
-                  git branch: 'stage',
-                      credentialsId: 'git-private-key',
-                      url: 'https://github.com/mraaz/myG'
+                git branch: 'master',
+                credentialsId: 'git-private-key',
+                url: 'https://github.com/mraaz/myG'
+            }
+        }
+        stage('Docker Publish') {
+            when {
+                expression {
+                   return env.GIT_BRANCH == "origin/master"
+                }
+            }
+            steps {
+                container('docker') {
+                    withDockerRegistry([credentialsId: "${REGISTRY_CREDENTIAL}", url: ""]) {
+                        sh "docker push ${REGISTRY}:$TAG"
+                        sh "docker push ${REGISTRY}:latest"
+                    }
+                }
+
+
             }
         }
         stage('Publish Frontend Stage') {
@@ -61,7 +78,7 @@ pipeline {
                     sh "mv frontend.tar.gz ./public/"
                 }
                 withAWS(credentials: "myg-aws-credentials") {
-                    s3Upload(file:'public', bucket:'myg-stage-frontend', path:'stage.myg.gg')
+                    s3Upload(file:'public', bucket:'myg-stage-frontend', path:'')
                     cfInvalidate(distribution:"${DISTRIBUTION}", paths:['/*'])
                 }
               }
@@ -81,41 +98,28 @@ pipeline {
                     sh "mv frontend.tar.gz ./public/"
                 }
                 withAWS(credentials: "myg-aws-credentials") {
-                    s3Upload(file:'public', bucket:'myg-frontend', path:'myg.gg')
+                    s3Upload( acl: 'PublicRead', file:'public', bucket:'mygame-prod-frontend', path:'')
                     cfInvalidate(distribution:"${DISTRIBUTION}", paths:['/*'])
                 }
               }
         }
-        stage('Docker Build') {
-            when {
-                expression {
-                   return env.GIT_BRANCH == "origin/stage"
-                }
-            }
-            steps {
-                container('docker') {
-                    sh "docker build -t ${REGISTRY}:$TAG ."
-                    sh "docker tag myg2020/myg:$TAG myg2020/myg:latest"
-                }
-            }
-        }
-        stage('Docker Publish') {
-            when {
-                expression {
-                   return env.GIT_BRANCH == "origin/stage"
-                }
-            }
-            steps {
-                container('docker') {
-                    withDockerRegistry([credentialsId: "${REGISTRY_CREDENTIAL}", url: ""]) {
-                        sh "docker push ${REGISTRY}:$TAG"
-                        sh "docker push ${REGISTRY}:latest"
-                    }
-                }
-              
-             
-            }
-        }
+        // stage('Docker Publish') {
+        //     when {
+        //         expression {
+        //            return env.GIT_BRANCH == "origin/master"
+        //         }
+        //     }
+        //     steps {
+        //         container('docker') {
+        //             withDockerRegistry([credentialsId: "${REGISTRY_CREDENTIAL}", url: ""]) {
+        //                 sh "docker push ${REGISTRY}:$TAG"
+        //                 sh "docker push ${REGISTRY}:latest"
+        //             }
+        //         }
+
+
+        //     }
+        // }
         stage('Deploy image to stage') {
             when {
                 expression {

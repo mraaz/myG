@@ -167,7 +167,7 @@ class UserRepository {
   }
 
   async updateStatus({ requestingUserId, requestedStatus, forceStatus }) {
-    const { status: currentStatus, status_locked } = (await User.query().where('id', '=', requestingUserId).first()).toJSON();
+    const { status: currentStatus, status_locked, alias } = (await User.query().where('id', '=', requestingUserId).first()).toJSON();
     const cannotChangeStatus = requestedStatus !== 'offline' && !forceStatus && status_locked;
     if (cannotChangeStatus) return { status: new StatusSchema({ value: currentStatus, locked: status_locked }) };
     const shouldLockStatus = requestedStatus !== 'online' && forceStatus;
@@ -175,7 +175,7 @@ class UserRepository {
     if (forceStatus) changes.last_status = requestedStatus;
     if (requestedStatus === 'offline') changes.last_seen = new Date();
     await User.query().where('id', '=', requestingUserId).update(changes);
-    ChatRepository._notifyChatEvent({ contactId: requestingUserId, action: 'status', payload: { contactId: requestingUserId, status: requestedStatus, lastSeen: changes.last_seen } });
+    ChatRepository._notifyChatEvent({ contactId: requestingUserId, action: 'status', payload: { alias, contactId: requestingUserId, status: requestedStatus, lastSeen: changes.last_seen } });
     return { status: new StatusSchema({ value: requestedStatus, locked: shouldLockStatus }) };
   }
 

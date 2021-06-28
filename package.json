@@ -22,7 +22,8 @@
     "watch-server": "adonis serve --dev",
     "sass": "gulp styles",
     "js": "gulp webpack",
-    "build": "npm run sass && npm run js"
+    "build": "npm run sass && npm run js",
+    "sonar": "node sonarqube-scanner.js"
   },
   "keywords": [
     "adonisjs",
@@ -147,6 +148,7 @@
     "gulp-sass": "^4.1.0",
     "gulp-shell": "^0.6.3",
     "gulp-watch": "^4.3.9",
+    "sonarqube-scanner": "^2.8.1",
     "webpack-bundle-analyzer": "^4.4.0"
   },
   "autoload": {
