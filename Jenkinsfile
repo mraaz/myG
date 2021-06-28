@@ -61,7 +61,7 @@ pipeline {
                     sh "mv frontend.tar.gz ./public/"
                 }
                 withAWS(credentials: "myg-aws-credentials") {
-                    s3Upload(file:'public', bucket:'myg-stage-frontend', path:'stage.myg.gg')
+                    s3Upload(file:'public', bucket:'myg-stage-frontend', path:'')
                     cfInvalidate(distribution:"${DISTRIBUTION}", paths:['/*'])
                 }
               }
@@ -81,7 +81,7 @@ pipeline {
                     sh "mv frontend.tar.gz ./public/"
                 }
                 withAWS(credentials: "myg-aws-credentials") {
-                    s3Upload(file:'public', bucket:'mygame-prod-frontend', path:'myg.gg')
+                    s3Upload(file:'public', bucket:'mygame-prod-frontend', path:'')
                     cfInvalidate(distribution:"${DISTRIBUTION}", paths:['/*'])
                 }
               }
