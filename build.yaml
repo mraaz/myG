@@ -7,10 +7,8 @@ spec:
   containers:
     - name: docker
       image: docker:20.10.7
-      command: ['sleep', '99d']
-      env:
-        - name: DOCKER_HOST
-          value: tcp://localhost:2375
+      command:
+        - cat
       tty: true
       privileged: true
       volumeMounts:
