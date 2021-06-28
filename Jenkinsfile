@@ -53,10 +53,11 @@ pipeline {
                 }
             }
             steps {
-                container('docker') {
-                    sh "docker build -t ${REGISTRY}:$TAG ."
-                    sh "docker tag myg2020/myg:$TAG myg2020/myg:latest"
-                }
+                sh "docker build -t ${REGISTRY}:$TAG ."
+                sh "docker tag myg2020/myg:$TAG myg2020/myg:latest"
+                // container('docker') {
+                    
+                // }
             }
         }
         stage('Publish Frontend Stage') {
