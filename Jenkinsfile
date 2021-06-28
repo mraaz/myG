@@ -46,19 +46,6 @@ pipeline {
                 url: 'https://github.com/mraaz/myG'
             }
         }
-        stage('Docker Build') {
-            when {
-                expression {
-                   return env.GIT_BRANCH == "origin/master"
-                }
-            }
-            steps {
-                container('docker') {
-                    sh "docker build -t ${REGISTRY}:$TAG ."
-                    sh "docker tag myg2020/myg:$TAG myg2020/myg:latest"
-                }
-            }
-        }
         stage('Publish Frontend Stage') {
           when {
                 expression {
@@ -89,66 +76,15 @@ pipeline {
                 withNPM(npmrcConfig: 'ee91dee8-05da-4b62-88ba-174a08a3fba4') {
                     sh "npm install"
                     sh "npm run build"
-                    //sh "npm run production"
-                    //sh "tar -zcvf frontend.tar.gz ./public/"
-                    //sh "mv frontend.tar.gz ./public/"
+                    sh "npm run production"
+                    sh "tar -zcvf frontend.tar.gz ./public/"
+                    sh "mv frontend.tar.gz ./public/"
                 }
                 withAWS(credentials: "myg-aws-credentials") {
-                    //s3Upload(file:'public', bucket:'mygame-prod-frontend', path:'myg.gg')
-                    //cfInvalidate(distribution:"${DISTRIBUTION}", paths:['/*'])
+                    s3Upload(file:'public', bucket:'mygame-prod-frontend', path:'myg.gg')
+                    cfInvalidate(distribution:"${DISTRIBUTION}", paths:['/*'])
                 }
               }
-        }
-        stage('Docker Publish') {
-            when {
-                expression {
-                   return env.GIT_BRANCH == "origin/master"
-                }
-            }
-            steps {
-                container('docker') {
-                    withDockerRegistry([credentialsId: "${REGISTRY_CREDENTIAL}", url: ""]) {
-                        sh "docker push ${REGISTRY}:$TAG"
-                        sh "docker push ${REGISTRY}:latest"
-                    }
-                }
-              
-             
-            }
-        }
-        stage('Deploy image to stage') {
-            when {
-                expression {
-                   return env.GIT_BRANCH == "origin/stage"
-                }
-            }
-            steps {
-                container('helm') {
-                     withCredentials([file(credentialsId: 'kubernetes-stage-credential', variable: 'config')]) {
-                       sh """
-                       export KUBECONFIG=\${config}
-                       helm upgrade myg ./helm/mygame -f ./helm/mygame-stage.yaml -n mygame --set image.tag=latest --set mygame.dataseUser=$DB_USER --set mygame.databasePassword=$DB_PASS_STAGE --set mygame.appKey=$APP_KEY --set mygame.googleID=$GOOGLE_ID --set mygame.googleSecret=$GOOGLE_SECRET --set mygame.facebookSecret=$FACEBOOK_SECRET --set mygame.mixGoogleMapsKey=$MIX_GOOGLE_MAPS_KEY --set mygame.secretKey=$SECRET_KEY --set mygame.siteKey=$SITE_KEY
-                       """
-                     }
-                }
-               }
-        }
-      stage('Deploy image to prod') {
-            when {
-                expression {
-                   return env.GIT_BRANCH == "origin/master"
-                }
-            }
-            steps {
-                container('helm') {
-                     withCredentials([file(credentialsId: 'kubernetes-credential', variable: 'config')]) {
-                       sh """
-                       export KUBECONFIG=\${config}
-                       helm upgrade myg ./helm/mygame -f ./helm/mygame.yaml -n mygame --set image.tag=latest --set mygame.dataseUser=$DB_USER --set mygame.databasePassword=$DB_PASS --set mygame.appKey=$APP_KEY --set mygame.awsKey=$AWS_KEY --set mygame.awsSecret=$AWS_SECRET --set mygame.googleID=$GOOGLE_ID --set mygame.googleSecret=$GOOGLE_SECRET --set mygame.facebookSecret=$FACEBOOK_SECRET --set mygame.mixGoogleMapsKey=$MIX_GOOGLE_MAPS_KEY --set mygame.secretKey=$SECRET_KEY --set mygame.siteKey=$SITE_KEY
-                       """
-                     }
-                }
-               }
         }
     }
 }
