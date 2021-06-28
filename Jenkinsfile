@@ -23,11 +23,10 @@ pipeline {
         nodejs "default"
     }
     agent {
-        // kubernetes {
-        //     defaultContainer 'jnlp'
-        //     yamlFile 'build.yaml'
-        // }
-            docker { image 'node:14-alpine' }
+        kubernetes {
+            defaultContainer 'jnlp'
+            yamlFile 'build.yaml'
+        }
     }
     stages {
         stage('Setup environment variables') {
@@ -54,11 +53,10 @@ pipeline {
                 }
             }
             steps {
-                sh "docker build -t ${REGISTRY}:$TAG ."
-                sh "docker tag myg2020/myg:$TAG myg2020/myg:latest"
-                // container('docker') {
-                    
-                // }
+                container('docker') {
+                    sh "docker build -t ${REGISTRY}:$TAG ."
+                    sh "docker tag myg2020/myg:$TAG myg2020/myg:latest"
+                }
             }
         }
         stage('Publish Frontend Stage') {
