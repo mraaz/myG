@@ -298,3 +298,36 @@ export function Convert_to_comma_delimited_value(array_to_convert) {
 export async function Update_ip_settings() {
   axios.get('/api/users_additional_infos/')
 }
+
+/**
+ * Tests a string to see if it is valid JSON, returning true if it is, otherwise false.
+ *
+ * @param {string} potentialJsonString The potential JSON
+ * @returns {boolean} true if `potentialJsonString` is valid JSON, otherwise false
+ */
+export function Is_json(potentialJsonString) {
+  try {
+    JSON.parse(potentialJsonString)
+  } catch (error) {
+    return false
+  }
+  return true
+}
+
+/**
+ * Debounce Function, used to delay the activation of another function by a specified amount of time, or until cleared for a new request.
+ * Does not handle throwing away old requests.
+ * @param {Function} callback The callback function to be delayed.
+ * @param {number} delay The amount of time to delay the function by, in milliseconds.
+ */
+export const Debounce_activation = (callback, delay) => {
+  let timer
+  return function () {
+    let self = this
+    let args = arguments
+    clearTimeout(timer)
+    timer = setTimeout(() => {
+      callback.apply(self, args)
+    }, delay)
+  }
+}

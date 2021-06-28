@@ -43,7 +43,8 @@ export default class IndividualComment extends Component {
       file_keys: '',
       aws_key_id: [],
       hideReplies: false,
-      replyShowCount: 1
+      replyShowCount: 1,
+      editorState: null
     }
     this.textInput = null
     this.fileInputRef = React.createRef()
@@ -526,6 +527,13 @@ export default class IndividualComment extends Component {
                   {/* If draftjs is enabled, turn on draftjs comments */}
                   <FeatureEnabled allOf={[DRAFT_JS]}>
                     {this.state.content && <SimpleStaticComments commentText={this.state.content}></SimpleStaticComments>}
+                    {/* {editorState && (
+                      <DraftComposer
+                        editorType={COMPOSER_TYPE_ENUM.INDIVIDUAL_COMMENT_STATIC}
+                        editorState={editorState}
+                        setEditorState={(state) => this.setState({ editorState: state })}
+                      ></DraftComposer>
+                    )} */}
                   </FeatureEnabled>
                   {/* If draftjs is disabled, turn on original comments */}
                   <FeatureDisabled anyOf={[DRAFT_JS]}>

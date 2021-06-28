@@ -2,6 +2,7 @@
 @import '../../../../../../../node_modules/@draft-js-plugins/emoji/lib/plugin.css';
 
 .editorWrapper {
+  &.post_composer,
   &.individual_reply_composer {
     width: 100%;
   }
@@ -48,7 +49,7 @@
     border-radius: 4px 0 0 4px;
     background: #1d2326 0 0 no-repeat padding-box;
     resize: none;
-    overflow: auto;
+    overflow: visible;
     color: #657172;
     font-size: 12px;
     padding: 8px 20px;
@@ -92,75 +93,88 @@
   }
 }
 
-// .mention {
-//   color: #4a85bb;
-//   text-decoration: none;
-// }
+// myG Mentions theme
 
-// .mentionSuggestions {
-//   border-top: 1px solid #eee;
-//   background: #fff;
-//   border-radius: 2px;
-//   cursor: pointer;
-//   padding-top: 8px;
-//   padding-bottom: 8px;
-//   display: flex;
-//   flex-direction: column;
-//   box-sizing: border-box;
-//   transform-origin: 50% 0%;
-//   transform: scaleY(0);
-//   margin: -16px;
-// }
+.myG__mention {
+  color: #575f67;
+  cursor: pointer;
+  display: inline-block;
+  background: #eedb89;
+  padding-left: 2px;
+  padding-right: 2px;
+  text-decoration: none;
+}
 
-// .mentionSuggestionsEntryContainer {
-//   display: table;
-//   width: 100%;
-// }
+.myG__mentionSuggestions {
+  border: 1px solid #273137;
+  max-width: 500px;
+  border-radius: 8px;
+  position: absolute;
+  z-index: 10000;
+}
 
-// .mentionSuggestionsEntryContainerLeft,
-// .mentionSuggestionsEntryContainerRight {
-//   display: table-cell;
-//   vertical-align: middle;
-// }
+.myG__mentionSuggestionsEntryContainer {
+  display: flex;
+  flex-direction: row;
+  padding: 10px 18px;
+  background-color: #171a1c;
 
-// .mentionSuggestionsEntryContainerRight {
-//   width: 100%;
-//   padding-left: 8px;
-// }
+  &.column {
+    flex-direction: column;
+  }
 
-// .mentionSuggestionsEntry {
-//   padding: 7px 10px 3px 10px;
-//   transition: background-color 0.4s cubic-bezier(0.27, 1.27, 0.48, 0.56);
-// }
+  &.myG__mentionSuggestionsEntryFocused {
+    background-color: #273137;
+    border-radius: 8px;
+  }
 
-// .mentionSuggestionsEntry:active {
-//   background-color: #cce7ff;
-// }
+  .myG__mentionSuggestionsEntryContainerUpper {
+    display: block;
+  }
 
-// .mentionSuggestionsEntryFocused {
-//   padding: 7px 10px 3px 10px;
-//   transition: background-color 0.4s cubic-bezier(0.27, 1.27, 0.48, 0.56);
-//   background-color: #e6f3ff;
-// }
+  .myG__mentionSuggestionsEntryContainerLower {
+    display: flex;
+    flex-direction: row;
+    color: #657172;
+    font-weight: normal;
+  }
 
-// .mentionSuggestionsEntryText,
-// .mentionSuggestionsEntryTitle {
-//   white-space: nowrap;
-//   overflow: hidden;
-//   text-overflow: ellipsis;
-// }
+  .myG__mentionSuggestionsEntryContainerLeft {
+  }
 
-// .mentionSuggestionsEntryText {
-// }
+  .myG__mentionSuggestionsEntryContainerRight {
+    padding-left: 10px;
+    display: flex;
+    align-items: center;
+  }
 
-// .mentionSuggestionsEntryTitle {
-//   font-size: 80%;
-//   color: #a7a7a7;
-// }
+  .myG__mentionSuggestionsEntryCreateLabel {
+    color: #fff;
+    font-weight: bold;
+    padding-right: 5px;
+  }
 
-// .mentionSuggestionsEntryAvatar {
-//   display: block;
-//   width: 30px;
-//   height: 30px;
-//   border-radius: 50%;
-// }
+  .myG__mentionSuggestionsEntryHashtag {
+    color: #fff;
+    font-weight: bold;
+
+    &.highlighted {
+      color: #e5c746;
+    }
+  }
+
+  .myG__mentionSuggestionsEntryHashtagCount {
+  }
+
+  .myG__mentionSuggestionsEntryAvatar {
+    display: block;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+  }
+
+  .myG__mentionSuggestionsEntryText {
+    color: #fff;
+    font-weight: bold;
+  }
+}
