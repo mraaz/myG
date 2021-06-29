@@ -13,8 +13,6 @@ const ApiController = use('./ApiController')
 const CommonController = use('./CommonController')
 const AchievementsRepository = require('../../Repositories/Achievements')
 
-const RedisRepository = require('../../Repositories/Redis')
-
 //const { validate } = use('Validator')
 
 const MAX_HASH_TAGS = 21
@@ -122,7 +120,7 @@ class PostController {
         await PHController.store({ auth }, post_id, hash_tag_id)
       } else {
         await PHController.store({ auth }, post_id, arrTags[i].hash_tag_id)
-        const update_counter = await HashTags.query().where({ id: arrTags[i].hash_tag_id }).increment('counter', 1)
+        await HashTags.query().where({ id: arrTags[i].hash_tag_id }).increment('counter', 1)
       }
     }
   }
@@ -188,16 +186,18 @@ class PostController {
         .orWhere('groups.user_id', '=', auth.user.id)
         .select('groups.id')
 
-      var today = new Date()
-      var priorDate = new Date().setDate(today.getDate() - 7)
-      const cutOff_date = new Date(priorDate)
+      // *** UnDO once we have alot more content on the site ***
+
+      //   var today = new Date()
+      //   var priorDate = new Date().setDate(today.getDate() - 7)
+      //   const cutOff_date = new Date(priorDate)
 
       let groups_im_in_Posts = await Database.from('posts')
         .innerJoin('users', 'users.id', 'posts.user_id')
         .innerJoin('groups', 'groups.id', 'posts.group_id')
         .whereIn('posts.group_id', all_groups_im_in_ish)
         .where('posts.visibility', '=', 1)
-        .where('posts.created_at', '>', cutOff_date)
+        //.where('posts.created_at', '>', cutOff_date)
         .whereNot('posts.user_id', '=', auth.user.id)
         .select('*', 'posts.id', 'posts.updated_at')
         .orderBy('posts.created_at', 'desc')
@@ -645,7 +645,7 @@ class PostController {
   async featureToggle({ auth, request, response }) {
     if (auth.user) {
       try {
-        const updatePost = await Post.query()
+        await Post.query()
           .where({ id: request.input('post_id') })
           .update({ featured: request.input('featured_enabled') })
 
@@ -717,10 +717,10 @@ class PostController {
 
       const myGroups = this.splitArrayEvenly(arr, 5)
 
-      //Nested for loop OK cause this table will be >~100 records
-      for (var i = 0; i < myGroups.length; i++) {
-        for (var j = 0; j < myGroups[i].length; j++) {
-          const updateSponsoredPost = await SponsoredPost.query()
+      //Nested for loop OK cause this table will be <~100 records
+      for (let i = 0; i < myGroups.length; i++) {
+        for (let j = 0; j < myGroups[i].length; j++) {
+          await SponsoredPost.query()
             .where({ id: myGroups[i][j] })
             .update({ category: i + 1 })
         }
