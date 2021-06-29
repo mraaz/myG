@@ -46,23 +46,7 @@ pipeline {
                 url: 'https://github.com/mraaz/myG'
             }
         }
-        stage('Docker Publish') {
-            when {
-                expression {
-                   return env.GIT_BRANCH == "origin/master"
-                }
-            }
-            steps {
-                container('docker') {
-                    withDockerRegistry([credentialsId: "${REGISTRY_CREDENTIAL}", url: ""]) {
-                        sh "docker push ${REGISTRY}:$TAG"
-                        sh "docker push ${REGISTRY}:latest"
-                    }
-                }
-
-
-            }
-        }
+        
         stage('Publish Frontend Stage') {
           when {
                 expression {
@@ -103,23 +87,21 @@ pipeline {
                 }
               }
         }
-        // stage('Docker Publish') {
-        //     when {
-        //         expression {
-        //            return env.GIT_BRANCH == "origin/master"
-        //         }
-        //     }
-        //     steps {
-        //         container('docker') {
-        //             withDockerRegistry([credentialsId: "${REGISTRY_CREDENTIAL}", url: ""]) {
-        //                 sh "docker push ${REGISTRY}:$TAG"
-        //                 sh "docker push ${REGISTRY}:latest"
-        //             }
-        //         }
-
-
-        //     }
-        // }
+        stage('Docker Publish') {
+            when {
+                expression {
+                   return env.GIT_BRANCH == "origin/master"
+                }
+            }
+            steps {
+                container('docker') {
+                    withDockerRegistry([credentialsId: "${REGISTRY_CREDENTIAL}", url: ""]) {
+                        sh "docker push ${REGISTRY}:$TAG"
+                        sh "docker push ${REGISTRY}:latest"
+                    }
+                }
+            }
+        }
         stage('Deploy image to stage') {
             when {
                 expression {
