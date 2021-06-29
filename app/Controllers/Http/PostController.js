@@ -13,8 +13,6 @@ const ApiController = use('./ApiController')
 const CommonController = use('./CommonController')
 const AchievementsRepository = require('../../Repositories/Achievements')
 
-const RedisRepository = require('../../Repositories/Redis')
-
 //const { validate } = use('Validator')
 
 const MAX_HASH_TAGS = 21
@@ -122,7 +120,7 @@ class PostController {
         await PHController.store({ auth }, post_id, hash_tag_id)
       } else {
         await PHController.store({ auth }, post_id, arrTags[i].hash_tag_id)
-        const update_counter = await HashTags.query().where({ id: arrTags[i].hash_tag_id }).increment('counter', 1)
+        await HashTags.query().where({ id: arrTags[i].hash_tag_id }).increment('counter', 1)
       }
     }
   }
@@ -647,7 +645,7 @@ class PostController {
   async featureToggle({ auth, request, response }) {
     if (auth.user) {
       try {
-        const updatePost = await Post.query()
+        await Post.query()
           .where({ id: request.input('post_id') })
           .update({ featured: request.input('featured_enabled') })
 
@@ -719,10 +717,10 @@ class PostController {
 
       const myGroups = this.splitArrayEvenly(arr, 5)
 
-      //Nested for loop OK cause this table will be >~100 records
-      for (var i = 0; i < myGroups.length; i++) {
-        for (var j = 0; j < myGroups[i].length; j++) {
-          const updateSponsoredPost = await SponsoredPost.query()
+      //Nested for loop OK cause this table will be <~100 records
+      for (let i = 0; i < myGroups.length; i++) {
+        for (let j = 0; j < myGroups[i].length; j++) {
+          await SponsoredPost.query()
             .where({ id: myGroups[i][j] })
             .update({ category: i + 1 })
         }
