@@ -6,7 +6,6 @@ pipeline {
         GITHUB_CREDENTIAL = 'git-private-key'
         DB_USER = credentials('db_user')
         DB_PASS = credentials('db_pass')
-        DB_PASS_STAGE = credentials('db_pass_stage')
         APP_KEY = credentials('appkey')
         AWS_KEY = credentials('aws_key')
         AWS_SECRET = credentials('aws_secret')
@@ -28,7 +27,7 @@ pipeline {
             yamlFile 'build.yaml'
         }
     }
-    stages {
+     stages {
         stage('Setup environment variables') {
           steps {
            sh(script: 'env')
@@ -41,12 +40,11 @@ pipeline {
                 }
             }
             steps {
-                git branch: 'master',
-                credentialsId: 'git-private-key',
-                url: 'https://github.com/mraaz/myG'
+                  git branch: 'master',
+                      credentialsId: 'git-private-key',
+                      url: 'https://github.com/mraaz/myG'
             }
         }
-        
         stage('Publish Frontend Stage') {
           when {
                 expression {
@@ -62,7 +60,7 @@ pipeline {
                     sh "mv frontend.tar.gz ./public/"
                 }
                 withAWS(credentials: "myg-aws-credentials") {
-                    s3Upload(file:'public', bucket:'myg-stage-frontend', path:'')
+                    s3Upload(file:'public', bucket:'myg-stage-frontend', path:'stage.myg.gg')
                     cfInvalidate(distribution:"${DISTRIBUTION}", paths:['/*'])
                 }
               }
@@ -87,6 +85,19 @@ pipeline {
                 }
               }
         }
+        stage('Docker Build') {
+            when {
+                expression {
+                   return env.GIT_BRANCH == "origin/master"
+                }
+            }
+            steps {
+                container('docker') {
+                    sh "docker build -t ${REGISTRY}:$TAG ."
+                    sh "docker tag myg2020/myg:$TAG myg2020/myg:latest"
+                }
+            }
+        }
         stage('Docker Publish') {
             when {
                 expression {
@@ -100,6 +111,8 @@ pipeline {
                         sh "docker push ${REGISTRY}:latest"
                     }
                 }
+              
+             
             }
         }
         stage('Deploy image to stage') {
@@ -113,7 +126,7 @@ pipeline {
                      withCredentials([file(credentialsId: 'kubernetes-stage-credential', variable: 'config')]) {
                        sh """
                        export KUBECONFIG=\${config}
-                       helm upgrade myg ./helm/mygame -f ./helm/mygame-stage.yaml -n mygame --set image.tag=latest --set mygame.dataseUser=$DB_USER --set mygame.databasePassword=$DB_PASS_STAGE --set mygame.appKey=$APP_KEY --set mygame.googleID=$GOOGLE_ID --set mygame.googleSecret=$GOOGLE_SECRET --set mygame.facebookSecret=$FACEBOOK_SECRET --set mygame.mixGoogleMapsKey=$MIX_GOOGLE_MAPS_KEY --set mygame.secretKey=$SECRET_KEY --set mygame.siteKey=$SITE_KEY
+                       helm upgrade myg ./helm/mygame -f ./helm/mygame-stage.yaml -n mygame --set image.tag=latest --set mygame.dataseUser=$DB_USER --set mygame.databasePassword=$DB_PASS --set mygame.appKey=$APP_KEY --set mygame.googleID=$GOOGLE_ID --set mygame.googleSecret=$GOOGLE_SECRET --set mygame.facebookSecret=$FACEBOOK_SECRET --set mygame.mixGoogleMapsKey=$MIX_GOOGLE_MAPS_KEY --set mygame.secretKey=$SECRET_KEY --set mygame.siteKey=$SITE_KEY
                        """
                      }
                 }
