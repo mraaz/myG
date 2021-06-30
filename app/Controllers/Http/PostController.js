@@ -135,7 +135,7 @@ class PostController {
         .where('followers.user_id', '=', auth.user.id)
         .where('posts.visibility', '=', 1)
         .where('posts.group_id', 'is', null)
-        .select('*', 'posts.id', 'posts.updated_at')
+        .select('*', 'posts.id', 'posts.updated_at', 'posts.created_at')
         .orderBy('posts.created_at', 'desc')
         .paginate(request.params.counter, 10)
 
@@ -199,7 +199,7 @@ class PostController {
         .where('posts.visibility', '=', 1)
         //.where('posts.created_at', '>', cutOff_date)
         .whereNot('posts.user_id', '=', auth.user.id)
-        .select('*', 'posts.id', 'posts.updated_at')
+        .select('*', 'posts.id', 'posts.updated_at', 'posts.created_at')
         .orderBy('posts.created_at', 'desc')
         .paginate(request.params.counter, grp_limit)
 
@@ -215,7 +215,7 @@ class PostController {
           .innerJoin('users', 'users.id', 'posts.user_id')
           .whereBetween('posts.id', [1, 3])
           .orderBy('posts.id', 'asc')
-          .select('*', 'posts.id', 'posts.updated_at')
+          .select('*', 'posts.id', 'posts.updated_at', 'posts.created_at')
 
         _1stpass = [..._1stpass, ...welcome_Posts]
       }
@@ -373,7 +373,7 @@ class PostController {
         .innerJoin('users', 'users.id', 'posts.user_id')
         .where({ user_id })
         .whereIn('posts.visibility', visibility)
-        .select('*', 'posts.id', 'posts.updated_at')
+        .select('*', 'posts.id', 'posts.updated_at', 'posts.created_at')
         .orderBy('posts.created_at', 'desc')
         .paginate(paginateNo, 10)
 
