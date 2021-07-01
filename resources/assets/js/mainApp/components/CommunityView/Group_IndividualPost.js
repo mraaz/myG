@@ -169,13 +169,14 @@ export default class Group_IndividualPost extends Component {
     if (this.props.post.profile_img != null) {
       this.setState({ show_profile_img: true })
     }
+
     this.setState({
       like: this.props.post.do_I_like_it,
       total: this.props.post.total,
       admirer_first_name: this.props.post.admirer_first_name,
       post_time: post_timestamp.local().fromNow(),
       content: this.props.post.content,
-      featured_enabled: this.props.featured,
+      featured_enabled: this.props.post.featured,
       galleryItems
     })
     if (this.props.post.no_of_comments != 0) {
