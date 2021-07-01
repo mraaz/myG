@@ -95,7 +95,7 @@ export default class Group_IndividualPost extends Component {
     })
 
     try {
-      const mylike = await axios.post('/api/likes', {
+      axios.post('/api/likes', {
         post_id: post_id
       })
     } catch (error) {
@@ -122,7 +122,7 @@ export default class Group_IndividualPost extends Component {
     })
 
     try {
-      const unlike = await axios.get(`/api/likes/delete/${post_id}`)
+      axios.get(`/api/likes/delete/${post_id}`)
       //const deletePostLike = axios.get(`/api/notifications/deletePostLike/${post_id}`)
     } catch (error) {
       logToElasticsearch('error', 'IndividualComment', 'Failed click_unlike_btn:' + ' ' + error)
