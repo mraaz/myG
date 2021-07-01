@@ -428,7 +428,7 @@ class PostController {
           groupPosts = await Database.from('posts')
             .innerJoin('users', 'users.id', 'posts.user_id')
             .where({ group_id: request.input('group_id'), visibility: 1 })
-            .select('posts.*', 'posts.id', 'posts.updated_at', 'users.alias', 'users.profile_img')
+            .select('posts.*', 'posts.id', 'posts.created_at', 'posts.updated_at', 'users.alias', 'users.profile_img')
             .orderBy('posts.created_at', 'desc')
             .paginate(request.input('counter'), 10)
 
@@ -437,7 +437,7 @@ class PostController {
           groupPosts = await Database.from('posts')
             .innerJoin('users', 'users.id', 'posts.user_id')
             .where({ group_id: request.input('group_id'), featured: true, visibility: 1 })
-            .select('posts.*', 'posts.id', 'posts.updated_at', 'users.alias', 'users.profile_img')
+            .select('posts.*', 'posts.id', 'posts.created_at', 'posts.updated_at', 'users.alias', 'users.profile_img')
             .orderBy('posts.created_at', 'desc')
             .paginate(request.input('counter'), 10)
 
@@ -446,7 +446,7 @@ class PostController {
           groupPosts = await Database.from('posts')
             .innerJoin('users', 'users.id', 'posts.user_id')
             .where({ group_id: request.input('group_id'), visibility: 1 })
-            .select('posts.*', 'posts.id', 'posts.updated_at', 'users.alias', 'users.profile_img')
+            .select('posts.*', 'posts.id', 'posts.created_at', 'posts.updated_at', 'users.alias', 'users.profile_img')
             .orderBy('posts.created_at', 'desc')
             .paginate(request.input('counter'), 10)
       }
@@ -470,7 +470,7 @@ class PostController {
 
   async get_game_data(groupPosts) {
     try {
-      for (var i = 0; i < groupPosts.length; i++) {
+      for (let i = 0; i < groupPosts.length; i++) {
         if (groupPosts[i].schedule_games_id != null) {
           let getScheduleDetails = await Database.from('schedule_games')
             .innerJoin('users', 'users.id', 'schedule_games.user_id')
@@ -574,7 +574,7 @@ class PostController {
           return
         }
 
-        const updatePost = await Post.query()
+        await Post.query()
           .where({ id: request.params.id })
           .update({ content: request.input('content') })
 
