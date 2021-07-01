@@ -153,7 +153,7 @@ export default class Group_IndividualPost extends Component {
     }
     const galleryItems = []
     if (media_url.length > 0) {
-      for (var i = 0; i < media_url.length; i++) {
+      for (let i = 0; i < media_url.length; i++) {
         if (media_url[i] && media_url[i] != null) {
           galleryItems.push({ src: media_url[i] })
         }
@@ -304,8 +304,6 @@ export default class Group_IndividualPost extends Component {
           aws_key_id: aws_key_id.length > 0 ? aws_key_id : ''
         })
 
-        let { post, user } = this.props
-
         this.setState({
           myComments: [...myComments, ...postComment.data],
           preview_file: '',
@@ -340,7 +338,7 @@ export default class Group_IndividualPost extends Component {
 
     const editPost = async function () {
       try {
-        const myEditPost = await axios.post(`/api/post/update/${post_id}`, {
+        await axios.post(`/api/post/update/${post_id}`, {
           content: self.state.value2
         })
         self.setState({
@@ -512,7 +510,7 @@ export default class Group_IndividualPost extends Component {
     }
   }
   clearPreviewImage = () => {
-    const delete_file = Remove_file(this.state.file_keys, this.state.aws_key_id[0])
+    Remove_file(this.state.file_keys, this.state.aws_key_id[0])
 
     // const deleteKeys = axios.post('/api/deleteFile', {
     //   aws_key_id: this.state.aws_key_id[0],
@@ -557,7 +555,7 @@ export default class Group_IndividualPost extends Component {
     this.clickedGamePostExtraOption()
     let featured_enabled = !this.state.featured_enabled
 
-    const featureToggle = axios.post('/api/post/featureToggle/', {
+    axios.post('/api/post/featureToggle/', {
       post_id,
       featured_enabled
     })
@@ -568,7 +566,7 @@ export default class Group_IndividualPost extends Component {
   handleReportClick = (text, post_id) => {
     this.clickedGamePostExtraOption()
     if (text == 'true') {
-      const reportData = axios.get(`/api/post/report/${post_id}`)
+      axios.get(`/api/post/report/${post_id}`)
       this.setState({ alert: '' })
       toast.success(<Toast_style text={`Thanks for reporting! You're helping to make this is a better place.`} />)
     } else {
