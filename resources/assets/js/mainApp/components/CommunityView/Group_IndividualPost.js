@@ -605,6 +605,8 @@ export default class Group_IndividualPost extends Component {
         show_media = true
       }
 
+      const check = this.state.featured_enabled ? true : false
+
       return (
         <div className='post__container'>
           {alert}
@@ -617,12 +619,12 @@ export default class Group_IndividualPost extends Component {
                   </i>
                   <div className={`post-dropdown ${showPostExtraOption == true ? 'active' : ''}`}>
                     <nav>
-                      {[0, 1, 2].includes(current_user_permission) && !this.state.featured_enabled && (
+                      {[0, 1, 2].includes(current_user_permission) && !check && (
                         <div className='option' onClick={(e) => this.handlefeaturedClick(post.id)}>
                           Featured
                         </div>
                       )}
-                      {[0, 1, 2].includes(current_user_permission) && this.state.featured_enabled && (
+                      {[0, 1, 2].includes(current_user_permission) && check && (
                         <div className='option' onClick={(e) => this.handlefeaturedClick(post.id)}>
                           Unfeatured
                         </div>
