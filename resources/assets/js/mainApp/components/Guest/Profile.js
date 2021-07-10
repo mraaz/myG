@@ -23,16 +23,9 @@ export default class GuestProfile extends React.Component {
   render() {
     if (this.state.loading || !this.state.profile) return null;
     return (
-      <div id='profile' style={{
-        alignItems: 'center',
-        justifyContent: 'center',
-        minHeight: '100vh',
-        padding: '8px 0',
-        overflowY: 'scroll',
-        backgroundImage: `url(${getAssetUrl('background_guest')})`,
-      }}>
+      <div id='profile' className="guest-page" style={{ backgroundImage: `url(${getAssetUrl('background_guest')})`}}>
         <GuestBanner />
-        <div className="guest-container">
+        <div id="guest-content">
           <span className="guest-alias">@{this.props.alias}</span>
           <ProfileInfo alias={this.props.alias} profile={this.state.profile} />
           <GameExperiences alias={this.props.alias} profile={this.state.profile} />

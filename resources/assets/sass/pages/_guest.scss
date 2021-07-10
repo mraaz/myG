@@ -1,3 +1,23 @@
+.guest-page {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 100vh !important;
+  padding: 8px 0 !important;
+  overflow-y: scroll !important;
+}
+
+#guest-content {
+  display: flex !important;
+  flex-direction: column !important;
+  background-color: #1d2326 !important;
+  padding: 4px !important;
+  width: 80% !important;
+  margin: 12px auto !important;
+  border-radius: 12px !important;
+}
+
 #guest-banner {
   display: flex;
   flex-direction: row;
@@ -74,7 +94,7 @@
   #guest-banner {
     width: 95% !important;
   }
-  .guest-container {
+  #guest-content {
     width: 95% !important;
   }
 }

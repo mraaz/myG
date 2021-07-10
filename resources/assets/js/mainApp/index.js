@@ -45,6 +45,9 @@ import {
   GuestLink,
   GuestGame,
   GuestProfile,
+  GuestPost,
+  GuestCommunity,
+  GuestFindGamers,
   Posts,
   AddScheduleGames,
   SinglePost,
@@ -435,6 +438,18 @@ class Layout extends Component {
     return <GuestProfile alias={alias} />;
   }
 
+  renderGuestPost = () => {
+    return <GuestPost />;
+  }
+
+  renderGuestCommunity = () => {
+    return <GuestCommunity />;
+  }
+
+  renderGuestFindGamers = () => {
+    return <GuestFindGamers />;
+  }
+
   render() {
     const guestRoutes = ['/link', '/scheduledGames', '/find-gamers/search', '/profile', '/post', '/community'];
     const isGuest = this.state.initialData && this.state.initialData.userInfo === 1981;
@@ -442,6 +457,9 @@ class Layout extends Component {
     const guestLink = isGuest && window.location.href.includes('/link');
     const guestGame = isGuest && window.location.href.includes('/scheduledGames');
     const guestProfile = isGuest && window.location.href.includes('/profile');
+    const guestPost = isGuest && window.location.href.includes('/post');
+    const guestCommunity = isGuest && window.location.href.includes('/community');
+    const guestFindGamers = isGuest && window.location.href.includes('/find-gamers/search');
     return (
       <ErrorHandler>
         <Provider store={store}>
@@ -462,6 +480,9 @@ class Layout extends Component {
               {guestLink && this.renderGuestLink()}
               {guestGame && this.renderGuestGame()}
               {guestProfile && this.renderGuestProfile()}
+              {guestPost && this.renderGuestPost()}
+              {guestCommunity && this.renderGuestCommunity()}
+              {guestFindGamers && this.renderGuestFindGamers()}
             </LanguageProvider>
           </PersistGate>
         </Provider>
