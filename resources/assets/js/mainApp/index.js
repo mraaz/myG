@@ -441,7 +441,8 @@ class Layout extends Component {
   }
 
   renderGuestPost = () => {
-    return <GuestPost />;
+    const id = location.pathname.split('/post/')[1];
+    return <GuestPost id={id} />;
   }
 
   renderGuestCommunity = () => {

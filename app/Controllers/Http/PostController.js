@@ -37,11 +37,11 @@ class PostController {
         // const validation = await validate(request.input('video'), rules)
         let pattern = new RegExp(
           '^(https?:\\/\\/)?' + // protocol
-            '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
-            '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
-            '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
-            '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
-            '(\\#[-a-z\\d_]*)?$',
+          '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
+          '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+          '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+          '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+          '(\\#[-a-z\\d_]*)?$',
           'i'
         ) // fragment locator
 
@@ -324,6 +324,26 @@ class PostController {
       return {
         myPost
       }
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error
+      })
+    }
+  }
+
+  async fetchGuestPost({ request }) {
+    try {
+      let posts = await Database.from('posts')
+        .innerJoin('users', 'users.id', 'posts.user_id')
+        .where('posts.id', '=', request.params.id)
+        .select('*', 'posts.id', 'posts.created_at', 'posts.updated_at')
+        .limit(1);
+      posts = await this.get_additional_info({ auth: { user: { id: null } } }, posts);
+      return posts[0];
     } catch (error) {
       LoggingRepository.log({
         environment: process.env.NODE_ENV,

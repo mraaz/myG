@@ -95,3 +95,8 @@ export function fetchProfile(alias) {
   logger.log('GUEST', 'HTTP', `Fetching Profile for ${alias}`);
   return axios.get(`/api/guest/profile/${alias}`).then(response => response.data);
 }
+
+export function fetchPost(id) {
+  logger.log('GUEST', 'HTTP', `Fetching Post for ${id}`);
+  return axios.get(`/api/guest/post/${id}`).then(response => response.data);
+}

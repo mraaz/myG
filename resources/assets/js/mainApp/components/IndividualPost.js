@@ -585,6 +585,7 @@ export default class IndividualPost extends Component {
       hideComments,
       showPostExtraOption
     } = this.state
+    const LinkComponent = this.props.guest ? ({ to, children }) => <a href={to}>{children}</a> : <Link />;
     if (post_deleted != true) {
       let { post, current_user_permission = null, user = {} } = this.props //destructing of object
       let profile_img = 'https://myG.gg/default_user/new-user-profile-picture.png',
@@ -629,7 +630,7 @@ export default class IndividualPost extends Component {
                   </nav>
                 </div>
               </div>
-              <Link to={`/profile/${post.alias}`} className='user-img'>
+              <LinkComponent to={`/profile/${post.alias}`} className='user-img'>
                 <div
                   className='profile__image'
                   style={{
@@ -639,17 +640,17 @@ export default class IndividualPost extends Component {
                 >
                   {/* <div className='online__status'></div>*/}
                 </div>
-              </Link>
+              </LinkComponent>
               <div className='user__details'>
                 <div className='author__username'>
                   <div className='username'>
-                    <Link to={`/profile/${post.alias}`}>{`@${post.alias} `}</Link>
+                    <LinkComponent to={`/profile/${post.alias}`}>{`@${post.alias} `}</LinkComponent>
                   </div>
                   {this.state.show_group_name && (
                     <div className='shared__group'>
                       {`shared `}
                       <div className='arrow'></div>
-                      <Link to={`/community/${decodeURI(post.name)}`}>{decodeURI(post.name)}</Link>
+                      <LinkComponent to={`/community/${decodeURI(post.name)}`}>{decodeURI(post.name)}</LinkComponent>
                     </div>
                   )}
                   {post.visibility === 0 && (
@@ -782,7 +783,7 @@ export default class IndividualPost extends Component {
                   backgroundSize: 'cover'
                 }}
               >
-                <Link to={`/profile/${post.alias}`} className='user-img'></Link>
+                <LinkComponent to={`/profile/${post.alias}`} className='user-img'></LinkComponent>
                 <div className='online__status'></div>
               </div>
             </div>

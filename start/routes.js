@@ -436,6 +436,7 @@ Route.delete('/api/guest/privateKey/:guestId/:chatId', 'GuestController.confirmG
 Route.post('/api/guest/lastRead/:guestId/:chatId', 'GuestController.markLastReadGuest')
 Route.get('/api/guest/game/:gameId', 'ScheduleGameController.fetchGuestGame')
 Route.get('/api/guest/profile/:alias', 'ProfileController.fetchGuestProfile')
+Route.get('/api/guest/post/:id', 'PostController.fetchGuestPost')
 
 // Seats Available
 Route.get('/api/seats_available', 'SeatsAvailableController.fetchSeatsAvailable')
