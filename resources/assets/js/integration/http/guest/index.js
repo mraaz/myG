@@ -90,3 +90,8 @@ export function markLastReadGuest(chatId, guestId) {
   logger.log('GUEST', 'HTTP', `Guest ${guestId} marking last read for chat ${chatId}`);
   return axios.post(`/api/guest/lastRead/${guestId}/${chatId}`).then(response => response.data);
 }
+
+export function fetchProfile(alias) {
+  logger.log('GUEST', 'HTTP', `Fetching Profile for ${alias}`);
+  return axios.get(`/api/guest/profile/${alias}`).then(response => response.data);
+}

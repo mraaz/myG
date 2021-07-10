@@ -80,6 +80,12 @@ const GuestGame = Loadable({
     return null
   },
 })
+const GuestProfile = Loadable({
+  loader: () => import('./components/Guest/Profile'),
+  loading: function() {
+    return null
+  },
+})
 const EncryptionParaphraseRegistration = Loadable({
   loader: () => import('./components/Messenger/EncryptionParaphraseRegistration'),
   loading: function() {
@@ -180,6 +186,7 @@ export {
   ChatUnreadMessages,
   GuestLink,
   GuestGame,
+  GuestProfile,
   EncryptionParaphraseRegistration,
   Posts,
   AddScheduleGames,

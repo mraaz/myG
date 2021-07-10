@@ -44,6 +44,7 @@ import {
   EncryptionParaphraseRegistration,
   GuestLink,
   GuestGame,
+  GuestProfile,
   Posts,
   AddScheduleGames,
   SinglePost,
@@ -82,9 +83,9 @@ class Layout extends Component {
         this.setState({ once: true })
 
         const loggedOut = initialData.data.userInfo == 1981;
-        const notOnLink = !window.location.href.includes('/link')
-        const notOnGame = !window.location.href.includes('/scheduledGames')
-        if (loggedOut && notOnLink && notOnGame) {
+        const guestRoutes = ['/link', '/scheduledGames', '/find-gamers/search', '/profile', '/post', '/community'];
+        const isOnGuestRoute = guestRoutes.some((route) => window.location.href.includes(route));
+        if (loggedOut && !isOnGuestRoute) {
           window.location.href = '/logout'
         }
 
@@ -429,17 +430,26 @@ class Layout extends Component {
     return <GuestGame uuid={uuid} />
   }
 
+  renderGuestProfile = () => {
+    const alias = location.pathname.split('/profile/')[1];
+    return <GuestProfile alias={alias} />;
+  }
+
   render() {
-    const guestLink = this.state.initialData && window.location.href.includes('/link') && this.state.initialData.userInfo === 1981
-    const guestGame = this.state.initialData && window.location.href.includes('/scheduledGames') && this.state.initialData.userInfo === 1981
+    const guestRoutes = ['/link', '/scheduledGames', '/find-gamers/search', '/profile', '/post', '/community'];
+    const isGuest = this.state.initialData && this.state.initialData.userInfo === 1981;
+    const isOnGuestRoute = isGuest && guestRoutes.some((route) => window.location.href.includes(route));
+    const guestLink = isGuest && window.location.href.includes('/link');
+    const guestGame = isGuest && window.location.href.includes('/scheduledGames');
+    const guestProfile = isGuest && window.location.href.includes('/profile');
     return (
       <ErrorHandler>
         <Provider store={store}>
           <PersistGate persistor={persistor}>
             <LanguageProvider>
-              {!guestLink && !guestGame && <Onboarding />}
-              {!guestLink && !guestGame && <Bubbles />}
-              {!guestLink && !guestGame && <LevelUp />}
+              {!isOnGuestRoute && <Onboarding />}
+              {!isOnGuestRoute && <Bubbles />}
+              {!isOnGuestRoute && <LevelUp />}
               <PopupAlert />
               <ToastContainer
                 autoClose={8000}
@@ -448,9 +458,10 @@ class Layout extends Component {
                 className='toast-container'
                 toastClassName='dark-toast'
               />
-              {!guestLink && !guestGame && this.renderRouter()}
+              {!isOnGuestRoute && this.renderRouter()}
               {guestLink && this.renderGuestLink()}
               {guestGame && this.renderGuestGame()}
+              {guestProfile && this.renderGuestProfile()}
             </LanguageProvider>
           </PersistGate>
         </Provider>

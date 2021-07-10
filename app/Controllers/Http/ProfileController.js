@@ -170,6 +170,24 @@ class ProfileController {
       return response.send({ friends: [], error })
     }
   }
+
+  async fetchGuestProfile({ params, response }) {
+    try {
+      const alias = params.alias
+      log('PROFILE', `Guest requesting profile info for ${alias}`)
+      const { profile } = await ProfileRepository.fetchGuestProfile({ alias })
+      return response.send({ profile })
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
+      return response.send({ error })
+    }
+  }
 }
 
 module.exports = ProfileController
