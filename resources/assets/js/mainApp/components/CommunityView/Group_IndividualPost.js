@@ -590,6 +590,7 @@ export default class Group_IndividualPost extends Component {
       showPostExtraOption
     } = this.state
     if (post_deleted != true) {
+      const LinkComponent = this.props.guest ? ({ to, children }) => <a href={to}>{children}</a> : Link;
       var show_media = false
 
       let { post, current_user_permission = null, user } = this.props //destructing of object
@@ -648,7 +649,7 @@ export default class Group_IndividualPost extends Component {
                   </div>
                 </div>
               )}
-              <Link to={`/profile/${post.alias}`} className='user-img'>
+              <LinkComponent to={`/profile/${post.alias}`} className='user-img'>
                 <div
                   className='profile__image'
                   style={{
@@ -658,11 +659,11 @@ export default class Group_IndividualPost extends Component {
                 >
                   <div className='online__status'></div>
                 </div>
-              </Link>
+              </LinkComponent>
               <div className='user__details'>
                 <div className='author__username'>
                   <div className='username'>
-                    <Link to={`/profile/${post.alias}`}>{`@${post.alias} `}</Link>
+                    <LinkComponent to={`/profile/${post.alias}`}>{`@${post.alias} `}</LinkComponent>
                   </div>
                   {post.visibility === 0 && (
                     <div className='private__post__lock'>
@@ -786,7 +787,7 @@ export default class Group_IndividualPost extends Component {
                   backgroundSize: 'cover'
                 }}
               >
-                <Link to={`/profile/${post.alias}`} className='user-img'></Link>
+                <LinkComponent to={`/profile/${post.alias}`} className='user-img'></LinkComponent>
                 <div className='online__status'></div>
               </div>
             </div>

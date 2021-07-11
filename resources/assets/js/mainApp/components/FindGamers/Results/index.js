@@ -126,7 +126,7 @@ export default class Results extends React.Component {
     const canUnfollow = !this.props.guest && (profile.followers || []).includes(gamer.alias);
     const canInvite = !this.props.guest;
 
-    const openProfile = () => window.router.push(`/profile/${gamer.alias}`);
+    const openProfile = () => this.props.guest ? window.location.href = `/profile/${gamer.alias}` : window.router.push(`/profile/${gamer.alias}`);
     const sendFriendRequest = () => this.sendFriendRequest(gamer.alias, gamer.profileId);
     const cancelFriendRequest = () => this.cancelFriendRequest(gamer.alias, gamer.profileId);
     const invite = () => this.setState({ inviting: gamer });

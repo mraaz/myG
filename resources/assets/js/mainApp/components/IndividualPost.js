@@ -585,7 +585,7 @@ export default class IndividualPost extends Component {
       hideComments,
       showPostExtraOption
     } = this.state
-    const LinkComponent = this.props.guest ? ({ to, children }) => <a href={to}>{children}</a> : <Link />;
+    const LinkComponent = this.props.guest ? ({ to, children }) => <a href={to}>{children}</a> : Link;
     if (post_deleted != true) {
       let { post, current_user_permission = null, user = {} } = this.props //destructing of object
       let profile_img = 'https://myG.gg/default_user/new-user-profile-picture.png',

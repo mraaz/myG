@@ -17,7 +17,7 @@ export default class GuestBanner extends React.Component {
   render() {
     return (
       <div id='guest-banner'>
-        <div className="logo-container clickable" style={{ backgroundImage: "url(https://myg.gg/platform_images/Login+Screen/Logo_FINAL%402x.png)" }} />
+        <div className="logo-container" style={{ backgroundImage: "url(https://myg.gg/platform_images/Login+Screen/Logo_FINAL%402x.png)" }} />
         {!this.props.hideSearchGamers && (
           <div className="search-container clickable" onClick={this.searchGames} >
             <span className="input">Search Gamers</span>

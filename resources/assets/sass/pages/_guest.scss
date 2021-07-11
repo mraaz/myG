@@ -16,6 +16,34 @@
   width: 80% !important;
   margin: 12px auto !important;
   border-radius: 12px !important;
+
+  .guest-community-image {
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+    width: 100%;
+    height: 320px;
+  }
+
+  .guest-community-name {
+    font-size: 36px;
+    font-weight: bold;
+    color: #FFF;
+    text-transform: uppercase;
+    margin: 16px;
+  }
+
+  .guest-community-description {
+    font-size: 16px;
+    color: #FFF;
+    margin: 0 16px 4px 16px;
+  }
+
+  .guest-community-game {
+    font-size: 16px;
+    color: #FFF;
+    margin: 0 16px 4px 16px;
+  }
 }
 
 #guest-banner {
@@ -46,10 +74,7 @@
     align-items: center;
     flex: 1;
     justify-content: center;
-    background-color: #1d2326;
-    color: #93a4a5;
     padding: 0 8px;
-    border-radius: 4px;
     font-size: 20px;
   }
 
@@ -62,7 +87,9 @@
   }
 
   .input {
-    background-color: #0a0f14;
+    background-color: #757575;
+    color: black;
+    font-weight: bold;
     padding: 8px 24px;
     border-radius: 8px;
     font-size: 16px;

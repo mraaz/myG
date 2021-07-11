@@ -100,3 +100,8 @@ export function fetchPost(id) {
   logger.log('GUEST', 'HTTP', `Fetching Post for ${id}`);
   return axios.get(`/api/guest/post/${id}`).then(response => response.data);
 }
+
+export function fetchCommunity(id) {
+  logger.log('GUEST', 'HTTP', `Fetching Community for ${id}`);
+  return axios.get(`/api/guest/community/${id}`).then(response => response.data);
+}

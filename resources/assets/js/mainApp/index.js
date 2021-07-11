@@ -446,7 +446,8 @@ class Layout extends Component {
   }
 
   renderGuestCommunity = () => {
-    return <GuestCommunity />;
+    const id = location.pathname.split('/community/')[1];
+    return <GuestCommunity id={id} />;
   }
 
   renderGuestFindGamers = () => {
