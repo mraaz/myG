@@ -2,9 +2,9 @@ import React from 'react'
 import { fetchProfile } from '../../../integration/http/guest'
 import { getAssetUrl } from '../../../common/assets'
 import { ignoreFunctions } from '../../../common/render'
-import GuestBanner from './Banner';
-import ProfileInfo from '../Profile/Info';
-import GameExperiences from '../Profile/GameExperiences';
+import GuestBanner from './Banner'
+import ProfileInfo from '../Profile/Info'
+import GameExperiences from '../Profile/GameExperiences'
 
 export default class GuestProfile extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
@@ -13,7 +13,7 @@ export default class GuestProfile extends React.Component {
 
   state = {
     loading: true,
-    profile: null,
+    profile: null
   }
 
   componentDidMount() {
@@ -21,16 +21,16 @@ export default class GuestProfile extends React.Component {
   }
 
   render() {
-    if (this.state.loading || !this.state.profile) return null;
+    if (this.state.loading || !this.state.profile) return null
     return (
-      <div id='profile' className="guest-page" style={{ backgroundImage: `url(${getAssetUrl('background_guest')})`}}>
+      <div id='profile' className='guest-page' style={{ backgroundColor: '#000' }}>
         <GuestBanner />
-        <div id="guest-content">
-          <span className="guest-alias">@{this.props.alias}</span>
+        <div id='guest-content'>
+          <span className='guest-alias'>@{this.props.alias}</span>
           <ProfileInfo alias={this.props.alias} profile={this.state.profile} />
           <GameExperiences alias={this.props.alias} profile={this.state.profile} />
         </div>
-      </div >
+      </div>
     )
   }
 }

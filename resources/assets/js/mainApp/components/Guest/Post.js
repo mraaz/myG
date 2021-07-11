@@ -2,8 +2,8 @@ import React from 'react'
 import { fetchPost } from '../../../integration/http/guest'
 import { getAssetUrl } from '../../../common/assets'
 import { ignoreFunctions } from '../../../common/render'
-import GuestBanner from './Banner';
-import IndividualPost from '../IndividualPost';
+import GuestBanner from './Banner'
+import IndividualPost from '../IndividualPost'
 
 export default class GuestPost extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
@@ -12,7 +12,7 @@ export default class GuestPost extends React.Component {
 
   state = {
     loading: true,
-    post: null,
+    post: null
   }
 
   componentDidMount() {
@@ -20,12 +20,12 @@ export default class GuestPost extends React.Component {
   }
 
   render() {
-    if (this.state.loading || !this.state.post) return null;
+    if (this.state.loading || !this.state.post) return null
     return (
-      <div id='post' className="guest-page active" style={{ backgroundImage: `url(${getAssetUrl('background_guest')})` }}>
+      <div id='post' className='guest-page active' style={{ backgroundColor: '#000' }}>
         <GuestBanner />
-        <div id="guest-content" className="app-container home-page">
-          <section id='posts' className="active">
+        <div id='guest-content' className='app-container home-page'>
+          <section id='posts' className='active'>
             <IndividualPost guest post={this.state.post} user={{}} source={'news_feed'} />
           </section>
         </div>

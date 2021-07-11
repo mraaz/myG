@@ -28,20 +28,20 @@
   .guest-community-name {
     font-size: 36px;
     font-weight: bold;
-    color: #FFF;
+    color: #fff;
     text-transform: uppercase;
     margin: 16px;
   }
 
   .guest-community-description {
     font-size: 16px;
-    color: #FFF;
+    color: #fff;
     margin: 0 16px 4px 16px;
   }
 
   .guest-community-game {
     font-size: 16px;
-    color: #FFF;
+    color: #fff;
     margin: 0 16px 4px 16px;
   }
 }
@@ -67,6 +67,7 @@
     background-size: contain;
     width: 240px;
     height: 140px;
+    cursor: pointer;
   }
 
   .search-container {
@@ -95,12 +96,13 @@
     font-size: 16px;
   }
 
-  .label {
+  .join-label {
     color: white;
     margin-bottom: 4px;
+    cursor: pointer;
   }
 
-  .button { 
+  .button {
     color: #2d363a;
     background-color: #e7bb30;
     height: 40px;
@@ -114,6 +116,10 @@
     font-family: Montserrat;
     border-width: 0;
     cursor: pointer;
+  }
+
+  .green {
+    background-color: #42b72a;
   }
 }
 

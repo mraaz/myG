@@ -7,27 +7,35 @@ export default class GuestBanner extends React.Component {
   }
 
   login = () => {
-    window.location.href = '/';
+    window.location.href = '/'
   }
 
   searchGames = () => {
-    window.location.href = '/find-gamers/search';
+    window.location.href = '/find-gamers/search'
   }
 
   render() {
     return (
       <div id='guest-banner'>
-        <div className="logo-container" style={{ backgroundImage: "url(https://myg.gg/platform_images/Login+Screen/Logo_FINAL%402x.png)" }} />
+        <div
+          className='logo-container'
+          onClick={this.login}
+          style={{ backgroundImage: 'url(https://myg.gg/platform_images/Login+Screen/Logo_FINAL%402x.png)' }}
+        />
         {!this.props.hideSearchGamers && (
-          <div className="search-container clickable" onClick={this.searchGames} >
-            <span className="input">Search Gamers</span>
+          <div className='search-container clickable' onClick={this.searchGames}>
+            <span className='input'>Search Gamers</span>
           </div>
         )}
-        <div className="button-container">
-          <div className="label">Join now</div>
-          <div className="button clickable" onClick={this.login} ><span>Sign in</span></div>
+        <div className='button-container'>
+          <div className='button green join-label' onClick={this.login}>
+            Join now
+          </div>
+          <div className='button clickable' onClick={this.login}>
+            <span>Sign in</span>
+          </div>
         </div>
-      </div >
+      </div>
     )
   }
 }
