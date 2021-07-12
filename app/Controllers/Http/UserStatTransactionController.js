@@ -11,7 +11,7 @@ const RedisRepository = require('../../Repositories/Redis')
 const NatsChatRepository = require('../../Repositories/NatsChat')
 const WebsocketChatRepository = require('../../Repositories/WebsocketChat')
 
-const GREAT_COMMUNITY_SIZE = 100
+//const GREAT_COMMUNITY_SIZE = 100
 const CUT_OFF_FOR_ATTENDEES_FOR_GAME = 1 //2 OR MORE
 const CUT_OFF_FOR_ATTENDEES_FOR_GREAT_GAME = 4 //5 OR MORE
 
@@ -464,7 +464,6 @@ class UserStatTransactionController {
     }
 
     const achievementsResponse = await UserAchievements.query().where('user_id', my_user_id).fetch()
-    console.log(achievementsResponse, '<<<achievementsResponse')
     const achievements = (achievementsResponse && achievementsResponse.toJSON()) || []
     const achievementsXp = achievements.map((achievement) => achievement.experience).reduce((a, b) => a + b, 0)
     xp += achievementsXp
