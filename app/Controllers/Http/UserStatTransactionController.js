@@ -464,6 +464,7 @@ class UserStatTransactionController {
     }
 
     const achievementsResponse = await UserAchievements.query().where('user_id', my_user_id).fetch()
+    console.log(achievementsResponse, '<<<achievementsResponse')
     const achievements = (achievementsResponse && achievementsResponse.toJSON()) || []
     const achievementsXp = achievements.map((achievement) => achievement.experience).reduce((a, b) => a + b, 0)
     xp += achievementsXp

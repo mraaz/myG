@@ -660,7 +660,7 @@ class UsergroupController {
 
         noti.add_approved_group_attendee({ auth }, grp_to_approve[i].grp_id, grp_to_approve[i].user_id)
 
-        //userStatController.update_total_number_of(grp_to_approve[i].user_id, 'total_number_of_communities')
+        userStatController.update_total_number_of(grp_to_approve[i].user_id, 'total_number_of_communities')
 
         const auth2 = { user: { id: grp_to_approve[i].user_id } }
         await noti.delete_group_invites({ auth: auth2 }, grp_to_approve[i].grp_id)
