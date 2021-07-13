@@ -162,7 +162,6 @@ export default class IndividualComment extends Component {
       total: this.state.total - 1
     })
 
-    let { comment } = this.props
     try {
       axios.get(`/api/likes/delete/comment/${comment_id}`)
     } catch (error) {
@@ -487,7 +486,7 @@ export default class IndividualComment extends Component {
   }
 
   clearPreviewImage = () => {
-    const delete_file = Remove_file(this.state.file_keys, this.state.aws_key_id[0])
+    Remove_file(this.state.file_keys, this.state.aws_key_id[0])
     // const deleteKeys = axios.post('/api/deleteFile', {
     //   aws_key_id: this.state.aws_key_id[0],
     //   key: this.state.file_keys,
@@ -509,7 +508,6 @@ export default class IndividualComment extends Component {
     let { profile_img = 'https://myG.gg/default_user/new-user-profile-picture.png', media_url = '' } = comment
     const { myReplies = [], show_more_replies = true, hideReplies = false } = this.state
     const media_urls = media_url && media_url.length > 0 ? JSON.parse(media_url) : ''
-
     if (this.state.comment_deleted != true) {
       return (
         <div className='individual-comment-container'>

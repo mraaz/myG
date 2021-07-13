@@ -137,9 +137,9 @@ export default class IndividualPost extends Component {
   }
 
   componentDidMount() {
-    let { post, source } = this.props
+    let { post } = this.props
     let media_url = ''
-    const self = this
+
     try {
       if (post.media_url != null && post.media_url) {
         media_url = post.media_url.length > 0 ? JSON.parse(post.media_url) : ''
@@ -179,8 +179,6 @@ export default class IndividualPost extends Component {
           comment_total: this.props.post.no_of_comments
         })
       }
-
-      var post_id = this.props.post.id
 
       if (post.group_id != null && post.group_id != '' && post.name != undefined && post.name != '') {
         if ((source = 'news_feed')) {
@@ -528,7 +526,7 @@ export default class IndividualPost extends Component {
     }
   }
   clearPreviewImage = () => {
-    const delete_file = Remove_file(this.state.file_keys, this.state.aws_key_id[0])
+    Remove_file(this.state.file_keys, this.state.aws_key_id[0])
 
     // const deleteKeys = axios.post('/api/deleteFile', {
     //   aws_key_id: this.state.aws_key_id[0],
@@ -576,18 +574,17 @@ export default class IndividualPost extends Component {
   render() {
     const {
       myComments = [],
-      media_urls,
       post_deleted,
       alert,
-      show_comments,
       show_more_comments = false,
       galleryItems = [],
       hideComments,
       showPostExtraOption
     } = this.state
-    const LinkComponent = this.props.guest ? ({ to, children }) => <a href={to}>{children}</a> : Link;
+    const LinkComponent = this.props.guest ? ({ to, children }) => <a href={to}>{children}</a> : Link
+    const isLoggedinUser = this.props.guest ? true : false
     if (post_deleted != true) {
-      let { post, current_user_permission = null, user = {} } = this.props //destructing of object
+      let { post, user = {} } = this.props //destructing of object
       let profile_img = 'https://myG.gg/default_user/new-user-profile-picture.png',
         hash_tags = ''
 
@@ -606,30 +603,32 @@ export default class IndividualPost extends Component {
           {alert}
           <div className='post__body__wrapper'>
             <div className='post__body'>
-              <div className='gamePostExtraOption'>
-                <i className='fas fa-ellipsis-h' onClick={this.clickedGamePostExtraOption}>
-                  ...
-                </i>
-                <div className={`post-dropdown ${showPostExtraOption == true ? 'active' : ''}`}>
-                  <nav>
-                    {user.id != post.user_id && (
-                      <div className='option' onClick={(e) => this.showReportAlert(post.id)}>
-                        Report
-                      </div>
-                    )}
-                    {user.id == post.user_id && (
-                      <div className='option' onClick={() => this.showAlert()}>
-                        Delete
-                      </div>
-                    )}
-                    {user.id == post.user_id && (
-                      <div className='option' onClick={this.clickedEdit}>
-                        Edit &nbsp;
-                      </div>
-                    )}
-                  </nav>
+              {!isLoggedinUser && (
+                <div className='gamePostExtraOption'>
+                  <i className='fas fa-ellipsis-h' onClick={this.clickedGamePostExtraOption}>
+                    ...
+                  </i>
+                  <div className={`post-dropdown ${showPostExtraOption == true ? 'active' : ''}`}>
+                    <nav>
+                      {user.id != post.user_id && (
+                        <div className='option' onClick={(e) => this.showReportAlert(post.id)}>
+                          Report
+                        </div>
+                      )}
+                      {user.id == post.user_id && (
+                        <div className='option' onClick={() => this.showAlert()}>
+                          Delete
+                        </div>
+                      )}
+                      {user.id == post.user_id && (
+                        <div className='option' onClick={this.clickedEdit}>
+                          Edit &nbsp;
+                        </div>
+                      )}
+                    </nav>
+                  </div>
                 </div>
-              </div>
+              )}
               <LinkComponent to={`/profile/${post.alias}`} className='user-img'>
                 <div
                   className='profile__image'
