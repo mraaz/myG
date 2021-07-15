@@ -2,10 +2,14 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 import moment from 'moment'
+import { ContentState, EditorState, convertFromRaw, convertToRaw } from 'draft-js'
 
 import SweetAlert from './common/MyGSweetAlert'
+import { Is_json } from './Utility_Function'
 import { logToElasticsearch } from '../../integration/http/logger'
 import ReportPost from './common/ReportPost'
+import { DraftComposer } from './Draftjs'
+import { COMPOSER_TYPE_ENUM, MAX_HASH_TAGS, getCurrentlyListedMentionsAndHashtags, reduceMentions } from './Draftjs/helpers'
 
 export default class IndividualReply extends Component {
   constructor() {
@@ -20,10 +24,12 @@ export default class IndividualReply extends Component {
       dropdown: false,
       reply_deleted: false,
       show_edit_reply: false,
-      value: '',
-      content: '',
+      value: EditorState.createEmpty(),
+      content: EditorState.createEmpty(),
       reply_time: '',
       alert: null,
+      mentions: [],
+      hashtags: []
     }
     this.textInput = null
 
@@ -42,8 +48,18 @@ export default class IndividualReply extends Component {
       this.setState({ show_profile_img: true })
     }
 
+    let content = null
+    this.props.reply.content
+    if (Is_json(this.props.reply.content)) {
+      // Its a Draft post, convert it to content state
+      content = EditorState.createWithContent(convertFromRaw(JSON.parse(this.props.reply.content)))
+    } else {
+      // Its a old string post, create a state from it
+      content = EditorState.createWithContent(ContentState.createFromText(this.props.reply.content))
+    }
+
     this.setState({
-      content: this.props.reply.content,
+      content
     })
 
     var reply_timestamp = moment(this.props.reply.updated_at, 'YYYY-MM-DD HH:mm:ssZ')
@@ -58,14 +74,14 @@ export default class IndividualReply extends Component {
 
         if (myReplyLikes.data.do_I_like_this_reply[0].myOpinion != 0) {
           self.setState({
-            reply_like: true,
+            reply_like: true
           })
         }
 
         if (myReplyLikes.data.no_of_likes[0].no_of_likes != 0) {
           self.setState({
             show_reply_like: true,
-            reply_like_total: myReplyLikes.data.no_of_likes[0].no_of_likes,
+            reply_like_total: myReplyLikes.data.no_of_likes[0].no_of_likes
           })
         }
       } catch (error) {
@@ -94,12 +110,12 @@ export default class IndividualReply extends Component {
 
   click_reply_like_btn = (reply_id) => {
     this.setState({
-      reply_like_total: this.state.reply_like_total + 1,
+      reply_like_total: this.state.reply_like_total + 1
     })
 
     try {
       const replyLike = axios.post('/api/likes', {
-        reply_id: reply_id,
+        reply_id: reply_id
       })
     } catch (error) {
       logToElasticsearch('error', 'IndividualReply', 'Failed click_reply_like_btn:' + ' ' + error)
@@ -107,13 +123,13 @@ export default class IndividualReply extends Component {
 
     this.setState({
       show_reply_like: true,
-      reply_like: !this.state.reply_like,
+      reply_like: !this.state.reply_like
     })
   }
 
   click_reply_unlike_btn = (reply_id) => {
     this.setState({
-      reply_like_total: this.state.reply_like_total - 1,
+      reply_like_total: this.state.reply_like_total - 1
     })
 
     //let { post_id } = this.props
@@ -125,18 +141,18 @@ export default class IndividualReply extends Component {
 
     if (this.state.reply_like_total == 1) {
       this.setState({
-        show_reply_like: false,
+        show_reply_like: false
       })
     }
 
     this.setState({
-      reply_like: !this.state.reply_like,
+      reply_like: !this.state.reply_like
     })
   }
 
   clickedDropdown = () => {
     this.setState({
-      dropdown: !this.state.dropdown,
+      dropdown: !this.state.dropdown
     })
   }
 
@@ -146,7 +162,7 @@ export default class IndividualReply extends Component {
     try {
       const myReply_delete = axios.delete(`/api/replies/delete/${reply_id}`)
       this.setState({
-        reply_deleted: true,
+        reply_deleted: true
       })
       this.props.onDelete(reply_id)
     } catch (error) {
@@ -163,7 +179,7 @@ export default class IndividualReply extends Component {
       this.setState({
         show_edit_reply: true,
         dropdown: false,
-        value: myReply_content.data.this_reply[0].content,
+        value: myReply_content.data.this_reply[0].content
       })
       this.focusTextInput()
     } catch (error) {
@@ -175,6 +191,8 @@ export default class IndividualReply extends Component {
     this.setState({ value: e.target.value })
   }
 
+  submit = () => {}
+
   detectKey = (e) => {
     if (e.key === 'Enter' && e.shiftKey) {
       return
@@ -184,7 +202,7 @@ export default class IndividualReply extends Component {
       this.setState({
         show_edit_reply: false,
         dropdown: false,
-        value: '',
+        value: ''
       })
     }
 
@@ -201,7 +219,7 @@ export default class IndividualReply extends Component {
     }
     if (this.state.value.trim() == '') {
       this.setState({
-        value: '',
+        value: ''
       })
       return
     }
@@ -211,14 +229,14 @@ export default class IndividualReply extends Component {
     const saveReply = async function () {
       try {
         const mysaveReply = await axios.post(`/api/replies/update/${reply_id}`, {
-          content: self.state.value,
+          content: self.state.value
         })
 
         self.setState({
           show_edit_reply: false,
           dropdown: false,
           content: self.state.value,
-          value: '',
+          value: ''
         })
       } catch (error) {
         logToElasticsearch('error', 'IndividualReply', 'Failed saveReply:' + ' ' + error)
@@ -232,7 +250,7 @@ export default class IndividualReply extends Component {
     const getAlert = () => <ReportPost reply_id={id} hideModal={this.hideAlert} />
 
     this.setState({
-      alert: getAlert(),
+      alert: getAlert()
     })
   }
 
@@ -251,23 +269,24 @@ export default class IndividualReply extends Component {
         style={{
           display: 'flex',
           whiteSpace: 'pre',
-          width: '41%',
+          width: '41%'
         }}
         onConfirm={() => this.hideAlert('true')}
-        onCancel={() => this.hideAlert('false')}>
+        onCancel={() => this.hideAlert('false')}
+      >
         You will not be able to recover this entry!
       </SweetAlert>
     )
 
     this.setState({
-      alert: getAlert(),
+      alert: getAlert()
     })
   }
 
   hideAlert = (text) => {
     this.setState({
       alert: null,
-      dropdown: false,
+      dropdown: false
     })
     if (text == 'true') {
       this.delete_exp()
@@ -289,7 +308,7 @@ export default class IndividualReply extends Component {
               {'  '}
               {!this.state.show_edit_reply && (
                 <div className='comment-content'>
-                  <p>{this.state.content}</p>
+                  <DraftComposer editorType={COMPOSER_TYPE_ENUM.INDIVIDUAL_COMMENT_STATIC} editorState={this.state.content}></DraftComposer>
                   {media_urls.length > 0 && (
                     <div className='show__comment__image'>
                       {media_urls.map((img) => {
@@ -329,17 +348,26 @@ export default class IndividualReply extends Component {
             </div>
             {/* reply option end  */}
             {this.state.show_edit_reply && (
-              <div className='edit__comment__input'>
-                <input
-                  type='text'
-                  id='reply_name_box'
-                  className='reply-name-box'
-                  onKeyDown={this.detectKey}
-                  ref={this.setTextInputRef}
-                  onChange={this.handleChange}
-                  value={this.state.value}
-                />
-              </div>
+              <DraftComposer
+                editorType={COMPOSER_TYPE_ENUM.INDIVIDUAL_COMMENT_REPLY_COMPOSER}
+                editorState={this.state.value}
+                setEditorState={(state) => this.setState({ value: state })}
+                placeholder={'Write a comment...'}
+                handleReturnKey={this.submit}
+                addHashtag={(hashtagMention) => this.setState({ hashtags: [...this.state.hashtags, hashtagMention] })}
+                addMention={(userMention) => this.setState({ mentions: [...this.state.mentions, userMention] })}
+              ></DraftComposer>
+              // <div className='edit__comment__input'>
+              //   <input
+              //     type='text'
+              //     id='reply_name_box'
+              //     className='reply-name-box'
+              //     onKeyDown={this.detectKey}
+              //     ref={this.setTextInputRef}
+              //     onChange={this.handleChange}
+              //     value={this.state.value}
+              //   />
+              // </div>
             )}
             {/* profile section start  */}
             <Link to={`/profile/${reply.alias}`} className='user-img'>
@@ -347,8 +375,9 @@ export default class IndividualReply extends Component {
                 className='profile__image'
                 style={{
                   backgroundImage: `url('${profile_img}'), url('https://myG.gg/default_user/new-user-profile-picture.png')`,
-                  backgroundSize: 'cover',
-                }}>
+                  backgroundSize: 'cover'
+                }}
+              >
                 <div className='online__status'></div>
               </div>
             </Link>

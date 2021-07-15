@@ -18,7 +18,7 @@ import '../../styles/components/DraftsEditor/DraftsCompose.scss'
 export const DraftComposer = ({
   editorType,
   editorState,
-  setEditorState,
+  setEditorState = (e) => e,
   handleFocus_txtArea,
   placeholder,
   handleReturnKey,
@@ -31,12 +31,14 @@ export const DraftComposer = ({
     const hashtagMentionPlugin = createMentionPlugin({
       mentionPrefix: '#',
       mentionTrigger: '#',
+      entityMutability: 'IMMUTABLE',
       mentionComponent: HashtagMentionComponent,
       theme: MENTIONS_THEME
     })
     const userMentionPlugin = createMentionPlugin({
       mentionPrefix: '@',
       mentionTrigger: '@',
+      entityMutability: 'IMMUTABLE',
       mentionComponent: UserMentionComponent,
       theme: MENTIONS_THEME
     })
@@ -174,11 +176,17 @@ export const DraftComposer = ({
     callback(value, suggestions)
   }
 
-  const handleReturn = () => {
+  const handleReturn = (syntheticKeyboardEvent) => {
     if (handleReturnKey && !mentionHashtagMenuIsOpen && !mentionUserMenuIsOpen) {
       // 'handled' is a special string, indicating we have handled the event and draft should do nothing.
       // Given a function was provided to handle return, and a mentions isnt open, prevent default
       // See: https://draftjs.org/docs/api-reference-editor/#cancelable-handlers-optional
+
+      if (editorType !== COMPOSER_TYPE_ENUM.POST_COMPOSER && syntheticKeyboardEvent.shiftKey) {
+        // Holding down shift, meaning we want a newline
+        return null
+      }
+
       handleReturnKey()
       return 'handled'
     }

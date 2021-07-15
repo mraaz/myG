@@ -7,7 +7,8 @@ export const COMPOSER_TYPE_ENUM = {
   POST_COMPOSER: 'post_composer',
   INDIVIDUAL_COMMENT_STATIC: 'individual_comment_static',
   INDIVIDUAL_REPLY_COMPOSER: 'individual_reply_composer',
-  INDIVIDUAL_EDIT_COMPOSER: 'individual_edit_composer'
+  INDIVIDUAL_EDIT_COMPOSER: 'individual_edit_composer',
+  INDIVIDUAL_COMMENT_REPLY_COMPOSER: 'individual_comment_reply_composer'
 }
 
 export const MENTIONS_THEME = {

@@ -821,11 +821,7 @@ export default class IndividualPost extends Component {
                     <FeatureEnabled allOf={[DRAFT_JS]}>
                       {/* {this.state.content && <SimpleStaticComments commentText={this.state.content}></SimpleStaticComments>} */}
                       {editorState && (
-                        <DraftComposer
-                          editorType={COMPOSER_TYPE_ENUM.INDIVIDUAL_COMMENT_STATIC}
-                          editorState={editorState}
-                          setEditorState={(state) => this.setState({ editorState: state })}
-                        ></DraftComposer>
+                        <DraftComposer editorType={COMPOSER_TYPE_ENUM.INDIVIDUAL_COMMENT_STATIC} editorState={editorState}></DraftComposer>
                       )}
                     </FeatureEnabled>
 
@@ -842,12 +838,7 @@ export default class IndividualPost extends Component {
                   <Fragment>
                     <FeatureEnabled allOf={[DRAFT_JS]}>
                       {editorState && (
-                        <DraftComposer
-                          editorType={COMPOSER_TYPE_ENUM.INDIVIDUAL_COMMENT_STATIC}
-                          editorState={editorState}
-                          setEditorState={(state) => this.setState({ editorState: state })}
-                          readOnly={true}
-                        ></DraftComposer>
+                        <DraftComposer editorType={COMPOSER_TYPE_ENUM.INDIVIDUAL_COMMENT_STATIC} editorState={editorState}></DraftComposer>
                       )}
                     </FeatureEnabled>
 

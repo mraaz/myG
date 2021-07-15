@@ -1572,14 +1572,16 @@ section#content-container {
                   width: 100%;
                 }
                 a {
-                  font-size: 16px;
-                  margin-right: 10px;
-                  font-weight: bold;
                   color: #fff;
-                  width: 100%;
-                  display: inline-block;
-                  text-overflow: ellipsis;
-                  overflow: hidden;
+                  &:not(.myG__mention) {
+                    font-size: 16px;
+                    margin-right: 10px;
+                    font-weight: bold;
+                    text-overflow: ellipsis;
+                    overflow: hidden;
+                    width: 100%;
+                    display: inline-block;
+                  }
                   @media screen and (max-width: $mobile) {
                     font-size: 12px;
                   }

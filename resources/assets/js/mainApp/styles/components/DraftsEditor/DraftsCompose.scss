@@ -60,6 +60,22 @@
       white-space: pre;
     }
   }
+
+  &.individual_comment_static {
+  }
+
+  &.individual_edit_composer {
+    // height: 50px;
+    // width: 100%;
+    border: 1px solid #273136;
+    border-radius: 4px;
+    background: #1d2326 0 0 no-repeat padding-box;
+    resize: none;
+    overflow: auto;
+    color: #657172;
+    font-size: 12px;
+    padding: 8px 20px;
+  }
 }
 
 .hashtagsList {
