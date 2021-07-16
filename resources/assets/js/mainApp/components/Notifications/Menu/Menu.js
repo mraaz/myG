@@ -12,7 +12,7 @@ class Menu extends Component {
       alerts: 0,
       chats: 0,
       reports: 0,
-      reportedUser: 0,
+      reportedUser: 0
     }
   }
 
@@ -22,7 +22,7 @@ class Menu extends Component {
 
   changeTab = (tab) => {
     this.setState({
-      active: tab,
+      active: tab
     })
   }
 
@@ -85,9 +85,18 @@ class Menu extends Component {
           {isAdmin && (
             <Button
               title={`Reported Users ${reportedUser ? `(${reportedUser})` : '(0)'}`}
-              active={activeTab == 6}
+              active={activeTab == 5}
               onClick={() => {
                 changeContentTab('', 5)
+              }}
+            />
+          )}
+          {isAdmin && (
+            <Button
+              title={`Analytics`}
+              active={activeTab == 8}
+              onClick={() => {
+                changeContentTab('', 8)
               }}
             />
           )}
@@ -108,7 +117,7 @@ function mapStateToProps(state) {
   return {
     approvals: state.notifications.approvals,
     alerts: state.notifications.alerts,
-    chats: state.notifications.chats,
+    chats: state.notifications.chats
   }
 }
 

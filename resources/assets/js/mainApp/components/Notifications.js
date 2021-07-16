@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import axios from 'axios'
+
 import Menu from './Notifications/Menu/Menu'
 import MobileMenu from './Notifications/Menu/MobileMenu'
 import Upcoming from './Notifications/Upcoming'
@@ -10,6 +11,7 @@ import Settings from './Notifications/Settings'
 import Reports from './Notifications/Reports'
 import Sponsors from './Notifications/Sponsors'
 import ReportedUser from './Notifications/ReportedUser'
+import Analytics from './Notifications/Analytics'
 
 export default class Notifications extends Component {
   constructor() {
@@ -18,7 +20,7 @@ export default class Notifications extends Component {
     this.state = {
       activeTab: 0,
       notificationsCount: 0,
-      isAdmin: false,
+      isAdmin: false
     }
   }
 
@@ -34,7 +36,7 @@ export default class Notifications extends Component {
     this.setState(
       {
         activeTab: activeTab,
-        notificationsCount: 0,
+        notificationsCount: 0
       },
       () => {
         window.history.pushState('myG', 'myG', `/?at=notifications&submenu=${activeTab}`)
@@ -43,7 +45,7 @@ export default class Notifications extends Component {
   }
   setNotificationsCount = (notificationsCount) => {
     this.setState({
-      notificationsCount,
+      notificationsCount
     })
   }
 
@@ -65,7 +67,7 @@ export default class Notifications extends Component {
     }
     this.setState({
       activeTab: activeTab ? activeTab : 0,
-      isAdmin: adminStatus == true ? true : false,
+      isAdmin: adminStatus == true ? true : false
     })
   }
 
@@ -110,6 +112,7 @@ export default class Notifications extends Component {
             {activeTab == 6 && (
               <Settings active={activeTab == 6} isAdmin={isAdmin} setNotificationsCount={this.setNotificationsCount} {...this.props} />
             )}
+            {activeTab == 8 && isAdmin && <Analytics active={activeTab == 8} {...this.props} />}
           </div>
         </div>
       </section>

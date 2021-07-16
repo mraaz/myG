@@ -1517,8 +1517,6 @@ class NotificationController_v2 {
 
   async getCheck({ auth, request, response }) {
     if (auth.user) {
-      let checking = false
-
       const security_check = await Database.from('admins').where({ user_id: auth.user.id, permission_level: 1 }).first()
 
       let isAdmin = false
