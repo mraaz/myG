@@ -492,6 +492,9 @@ Route.post('/api/team', 'TeamController.createTeam')
 Route.get('/api/team', 'TeamController.fetchTeams')
 Route.get('/api/team/tags', 'TeamController.fetchTeamTags')
 
+//Analytics
+Route.get('/api/analytics/show', 'AnalyticsController.show')
+
 // Triggering Jobs
 Route.get('/api/schedule/:job', 'SchedulerController.triggerJob')
 

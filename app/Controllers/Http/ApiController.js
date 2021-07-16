@@ -63,6 +63,11 @@ class ApiController {
   async initialApp({ auth }) {
     if (auth.user) {
       const security_check = await Database.from('admins').where({ user_id: auth.user.id, permission_level: 1 }).first()
+
+      //Update Login_timestamp
+      const today = new Date()
+      await Database.from('users_additional_infos').where({ user_id: auth.user.id }).update({ last_logged_in_date: today })
+
       return {
         userInfo: auth.user,
         isAdmin: security_check != undefined ? true : false,

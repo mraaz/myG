@@ -138,3 +138,6 @@ database/migrations/1622458818211_teams_schema.js
 .scannerwork/css-bundle/package/yarn.lock
 .scannerwork/css-bundle/stylelintconfig.json
 .scannerwork/report-task.txt
+database/fixtures/pubg.json
+database/migrations/1626412301286_users_additional_infos_schema.js
+database/migrations/9580672082475_import_game_names_pubg_mobile.js
