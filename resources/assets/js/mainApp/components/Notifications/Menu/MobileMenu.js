@@ -82,9 +82,9 @@ class MobileMenu extends Component {
         </div>
         <div className='activeTab__label'>{dummyData[activeTab].title}</div>
         <div
-          className={`next ${activeTab < 7 ? '' : 'hideArrow'}`}
+          className={`next ${activeTab < 8 ? '' : 'hideArrow'}`}
           onClick={() => {
-            if (activeTab < 7) {
+            if (activeTab < 8) {
               changeContentTab('next', Number(activeTab) + 1)
             }
           }}

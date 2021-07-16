@@ -549,6 +549,22 @@ $transition-default: 0.25s ease-out 0.1s;
         }
       }
     }
+    .game__Analytics {
+      color: #ffffff;
+
+      table,
+      td,
+      th {
+        border: 1px solid #e7bb30;
+      }
+
+      td {
+        padding: 10px;
+      }
+      th {
+        padding: 10px;
+      }
+    }
 
     .notifications-content {
       width: calc(100% - 180px);
