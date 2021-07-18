@@ -12,6 +12,8 @@ import SweetAlert from './common/MyGSweetAlert'
 const buckectBaseUrl = 'https://myG.gg/platform_images/'
 import { Upload_to_S3, Remove_file } from './AWS_utilities'
 
+import { Toast_style } from './Utility_Function'
+import { toast } from 'react-toastify'
 import { logToElasticsearch } from '../../integration/http/logger'
 import ReportPost from './common/ReportPost'
 
@@ -40,7 +42,8 @@ export default class IndividualComment extends Component {
       file_keys: '',
       aws_key_id: [],
       hideReplies: false,
-      replyShowCount: 1
+      replyShowCount: 1,
+      pinned_status: false
     }
     this.textInput = null
     this.fileInputRef = React.createRef()
@@ -61,7 +64,8 @@ export default class IndividualComment extends Component {
     }
 
     this.setState({
-      content: this.props.comment.content
+      content: this.props.comment.content,
+      pinned_status: this.props.comment.pinned ? true : false
     })
 
     var comment_timestamp = moment(this.props.comment.updated_at, 'YYYY-MM-DD HH:mm:ssZ')
@@ -392,11 +396,29 @@ export default class IndividualComment extends Component {
     }
   }
 
+  clickedPin_status = async (_status) => {
+    //_status = True for Pinned
+    let comment_id = this.props.comment.id
+
+    try {
+      await axios.get(`/api/comments/pin_status/${comment_id}/${_status}`)
+      if (_status) toast.success(<Toast_style text={'Woot!, Comment pinned!'} />)
+      else toast.success(<Toast_style text={'Roger that!, Comment Unpinned!'} />)
+
+      this.setState({
+        dropdown: false,
+        pinned_status: _status
+      })
+    } catch (error) {
+      logToElasticsearch('error', 'IndividualComment', 'Failed clickedPin:' + ' ' + error)
+    }
+  }
+
   delete_exp = () => {
     let comment_id = this.props.comment.id
 
     try {
-      const myComment_delete = axios.delete(`/api/comments/delete/${comment_id}`)
+      axios.delete(`/api/comments/delete/${comment_id}`)
       this.setState({
         comment_deleted: true
       })
@@ -509,6 +531,7 @@ export default class IndividualComment extends Component {
     let { profile_img = 'https://myG.gg/default_user/new-user-profile-picture.png', media_url = '' } = comment
     const { myReplies = [], show_more_replies = true, hideReplies = false } = this.state
     const media_urls = media_url && media_url.length > 0 ? JSON.parse(media_url) : ''
+    const comment_pinned = this.state.pinned_status
 
     if (this.state.comment_deleted != true) {
       return (
@@ -547,6 +570,16 @@ export default class IndividualComment extends Component {
                   {user.id == comment.user_id && (
                     <div className='edit' onClick={this.clickedEdit}>
                       Edit &nbsp;
+                    </div>
+                  )}
+                  {user.id == comment.user_id && !comment_pinned && (
+                    <div className='edit' onClick={(e) => this.clickedPin_status(true)}>
+                      Pin &nbsp;
+                    </div>
+                  )}
+                  {user.id == comment.user_id && comment_pinned && (
+                    <div className='edit' onClick={(e) => this.clickedPin_status(false)}>
+                      Unpin &nbsp;
                     </div>
                   )}
                   {user.id == comment.user_id && (

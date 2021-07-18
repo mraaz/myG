@@ -167,6 +167,7 @@ Route.post('/api/comments/update/:id', 'CommentController.update')
 Route.get('/api/comments/scheduled_games/:id', 'CommentController.show_scheduled_games')
 Route.get('/api/comments/scheduled_gamesCount/:id', 'CommentController.show_scheduled_gamesCount')
 Route.get('/api/comments/get_right_card_comment_info/:id', 'CommentController.get_right_card_comment_info')
+Route.get('/api/comments/pin_status/:id/:status', 'CommentController.pin_status')
 
 Route.get('/api/archive_comments/scheduled_gamesCount/:id', 'Archive_CommentController.show_scheduled_gamesCount')
 Route.get('/api/archive_comments/scheduled_games/:id', 'Archive_CommentController.show_scheduled_games')

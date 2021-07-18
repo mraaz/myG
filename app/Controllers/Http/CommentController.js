@@ -17,7 +17,7 @@ class CommentController {
           post_id: request.input('post_id'),
           schedule_games_id: request.input('schedule_games_id'),
           user_id: auth.user.id,
-          media_url: request.input('media_url'),
+          media_url: request.input('media_url')
         })
 
         let tmpArr = request.input('aws_key_id')
@@ -68,7 +68,7 @@ class CommentController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     }
@@ -83,7 +83,7 @@ class CommentController {
         .orderBy('comments.created_at', 'desc')
 
       return {
-        allComments,
+        allComments
       }
     } catch (error) {
       LoggingRepository.log({
@@ -91,7 +91,7 @@ class CommentController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -103,7 +103,7 @@ class CommentController {
         .count('* as no_of_my_comments')
 
       return {
-        no_of_my_comments,
+        no_of_my_comments
       }
     } catch (error) {
       LoggingRepository.log({
@@ -111,7 +111,7 @@ class CommentController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -121,7 +121,7 @@ class CommentController {
       const this_comment = await Database.from('comments').where('id', '=', request.params.id)
 
       return {
-        this_comment,
+        this_comment
       }
     } catch (error) {
       LoggingRepository.log({
@@ -129,7 +129,7 @@ class CommentController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -143,7 +143,7 @@ class CommentController {
         .orderBy('comments.created_at', 'desc')
 
       return {
-        allComments,
+        allComments
       }
     } catch (error) {
       LoggingRepository.log({
@@ -151,7 +151,7 @@ class CommentController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -170,7 +170,7 @@ class CommentController {
         .count('* as no_of_my_comments')
       return {
         lastComment,
-        no_of_comments,
+        no_of_comments
       }
     } catch (error) {
       LoggingRepository.log({
@@ -178,7 +178,7 @@ class CommentController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -186,9 +186,7 @@ class CommentController {
   async destroy({ auth, request, response }) {
     if (auth.user) {
       try {
-        const security_check = await Database.from('comments')
-          .where({ id: request.params.id })
-          .first()
+        const security_check = await Database.from('comments').where({ id: request.params.id }).first()
 
         if (security_check == undefined || security_check.user_id != auth.user.id) {
           return
@@ -199,7 +197,7 @@ class CommentController {
 
         const delete_comment = await Database.table('comments')
           .where({
-            id: request.params.id,
+            id: request.params.id
           })
           .delete()
 
@@ -211,7 +209,7 @@ class CommentController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -222,9 +220,7 @@ class CommentController {
   async update({ auth, request, response }) {
     if (auth.user) {
       try {
-        const security_check = await Database.from('comments')
-          .where({ id: request.params.id })
-          .first()
+        const security_check = await Database.from('comments').where({ id: request.params.id }).first()
 
         if (security_check == undefined || security_check.user_id != auth.user.id) {
           return
@@ -241,7 +237,7 @@ class CommentController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     }
@@ -249,12 +245,10 @@ class CommentController {
 
   async show_scheduled_gamesCount({ auth, request, response }) {
     try {
-      const no_of_comments = await Database.from('comments')
-        .where({ schedule_games_id: request.params.id })
-        .count('* as no_of_comments')
+      const no_of_comments = await Database.from('comments').where({ schedule_games_id: request.params.id }).count('* as no_of_comments')
 
       return {
-        no_of_comments,
+        no_of_comments
       }
     } catch (error) {
       LoggingRepository.log({
@@ -262,8 +256,34 @@ class CommentController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
+    }
+  }
+
+  async pin_status({ auth, request }) {
+    if (auth.user) {
+      try {
+        const security_check = await Database.from('comments').where({ id: request.params.id }).first()
+
+        if (security_check == undefined || security_check.user_id != auth.user.id) {
+          return
+        }
+
+        await Comment.query()
+          .where({ id: request.params.id })
+          .update({ pinned: request.params.status == 'true' ? true : false, pinned_date: new Date() })
+
+        return 'Saved successfully'
+      } catch (error) {
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error
+        })
+      }
     }
   }
 }
