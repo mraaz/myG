@@ -98,6 +98,35 @@
   height: 60px;
   justify-content: flex-start;
   align-items: center;
+  z-index: 1000;
+  display: none;
+
+  @media screen and (min-width: 575px) {
+    display: block;
+  }
+
+  &:not(.post_composer) {
+    position: absolute;
+    top: 16px;
+    right: 70px;
+
+    .e8k2yoa,
+    .e13wqaj6 {
+      background-color: transparent;
+      border: 6px solid #171a1c;
+      color: #2f3a40;
+      width: 1.5em;
+      height: 1.5em;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding-bottom: 3px;
+
+      &:hover {
+        background-color: transparent;
+      }
+    }
+  }
 
   span.addToBoxLabel {
     font-weight: 700;
@@ -106,6 +135,38 @@
     font-family: Montserrat, sans-serif;
     color: #657172;
     padding: 0 20px 0 0;
+  }
+
+  // Emoji
+
+  // Main box
+  .ejr02pv {
+    background-color: #171a1c;
+    box-shadow: none;
+    border: 1px solid #273137;
+    border-radius: 8px;
+  }
+
+  // List item
+  .e1eigyu0 {
+    background-color: #273137;
+  }
+
+  // emoji menu active
+  .e1q5rpho {
+    color: #e5c746;
+  }
+
+  // emjoy activation button
+  .e8k2yoa,
+  .e13wqaj6 {
+    color: #171a1c;
+    background-color: #e5c746;
+    border: 1px solid #171a1c;
+
+    &:hover {
+      background-color: darken(#e5c746, 10%);
+    }
   }
 }
 

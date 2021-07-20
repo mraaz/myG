@@ -27,3 +27,24 @@ export const MENTIONS_THEME = {
   mentionSuggestionsEntryHashtag: 'myG__mentionSuggestionsEntryHashtag',
   mentionSuggestionsEntryCreateLabel: 'myG__mentionSuggestionsEntryCreateLabel'
 }
+
+export const EMOJI_THEME = {
+  emoji: 'myG__emoji',
+  emojiSuggestions: 'myG__emojiSuggestions',
+  emojiSuggestionsEntry: 'myG__emojiSuggestionsEntry',
+  emojiSuggestionsEntryFocused: 'myG__emojiSuggestionsEntryFocused',
+  emojiSuggestionsEntryText: 'myG__emojiSuggestionsEntryText',
+  emojiSuggestionsEntryIcon: 'myG__emojiSuggestionsEntryIcon',
+  emojiSelect: 'myG__emojiSelect',
+  emojiSelectButton: 'myG__emojiSelectButton',
+  emojiSelectButtonPressed: 'myG__emojiSelectButtonPressed',
+  emojiSelectPopover: 'myG__emojiSelectPopover',
+  emojiSelectPopoverClosed: 'myG__emojiSelectPopoverClosed',
+  emojiSelectPopoverTitle: 'myG__emojiSelectPopoverTitle',
+  emojiSelectPopoverGroups: 'myG__emojiSelectPopoverGroups',
+  emojiSelectPopoverGroup: 'myG__emojiSelectPopoverGroup',
+  emojiSelectPopoverGroupTitle: 'myG__emojiSelectPopoverGroupTitle',
+  emojiSelectPopoverGroupList: 'myG__emojiSelectPopoverGroupList',
+  emojiSelectPopoverGroupItem: 'myG__emojiSelectPopoverGroupItem',
+  emojiSelectPopoverToneSelect: 'myG__emojiSelectPopoverToneSelect'
+}

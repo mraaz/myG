@@ -63,9 +63,12 @@ export const DraftComposer = ({
   const [mentionHashtagSuggestionsList, setMentionHashtagSuggestionsList] = useState([])
 
   const performMentionUserSearch = async ({ value }) =>
-    mentionUserSearchCallback(value, (searchText, suggestions) =>
-      setMentionUserSuggestionsList(defaultSuggestionsFilter(searchText, suggestions))
+    mentionUserSearchCallback(
+      value,
+      (searchText, suggestions) => setMentionUserSuggestionsList(defaultSuggestionsFilter(searchText, suggestions))
+      // setMentionUserSuggestionsList(suggestions)
     )
+  // http://localhost:3000/api/search/gamers?query=Frok%20&online=false&from=0&size=10
 
   const mentionUserSearchCallback = useCallback(
     Debounce_activation(
@@ -74,12 +77,13 @@ export const DraftComposer = ({
           value,
           10,
           (term, size) => {
-            return axios.get(`/api/search/gamers?query=${term}&from=${0}&size=${size}`).then((res) =>
+            return axios.get(`/api/search/gamers?query=${term}&online=${false}&from=${0}&size=${size}`).then((res) =>
+              // return axios.get(`/api/search/gamers?query=${term}&online=false&from=${0}&size=${size}`).then((res) =>
               res.data.gamers.map((player) => ({
                 name: player.alias,
                 link: `/profile/${player.alias}`,
-                // avatar: player.image
-                avatar: 'https://myG.gg/default_user/new-user-profile-picture.png'
+                avatar: player.image
+                // avatar: 'https://myG.gg/default_user/new-user-profile-picture.png'
               }))
             )
           },
@@ -239,9 +243,9 @@ export const DraftComposer = ({
           </Fragment>
         )}
       </div>
-      {editorType === COMPOSER_TYPE_ENUM.POST_COMPOSER && (
-        <div className='emojiBox'>
-          <span className='addToBoxLabel'>Add to your post</span>
+      {editorType !== COMPOSER_TYPE_ENUM.INDIVIDUAL_COMMENT_STATIC && (
+        <div className={`emojiBox ${editorType}`}>
+          {editorType === COMPOSER_TYPE_ENUM.POST_COMPOSER && <span className='addToBoxLabel'>Add Emoji</span>}
           <EmojiSelect />
         </div>
       )}
