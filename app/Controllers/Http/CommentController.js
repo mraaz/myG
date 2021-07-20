@@ -76,15 +76,25 @@ class CommentController {
 
   async show({ auth, request, response }) {
     try {
-      const allComments = await Database.from('comments')
+      const allPinnedComments = await Database.from('comments')
         .innerJoin('users', 'users.id', 'comments.user_id')
         .where({ post_id: request.params.id })
+        .where({ pinned: true })
+        .select('*', 'comments.id', 'comments.updated_at')
+        .orderBy('comments.pinned_date', 'asc')
+        .limit(50)
+
+      const allNonPinnedComments = await Database.from('comments')
+        .innerJoin('users', 'users.id', 'comments.user_id')
+        .where({ post_id: request.params.id, pinned: false })
         .select('*', 'comments.id', 'comments.updated_at')
         .orderBy('comments.created_at', 'desc')
+        .limit(50)
 
-      return {
-        allComments
-      }
+      //const newArr = await allPinnedComments.concat(allComments)
+      const allComments = [...allPinnedComments, ...allNonPinnedComments]
+
+      return { allComments }
     } catch (error) {
       LoggingRepository.log({
         environment: process.env.NODE_ENV,

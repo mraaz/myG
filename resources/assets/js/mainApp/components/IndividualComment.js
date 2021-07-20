@@ -539,6 +539,7 @@ export default class IndividualComment extends Component {
           {this.state.alert}
           <div className='comment__section'>
             <div className='comment-info'>
+              <img src='https://myg.gg/platform_images/Profile/baseline_push_pin_black_24dp.png' />
               <Link to={`/profile/${comment.alias}`}>{`@${comment.alias}`}</Link>
               {'  '}
               {!this.state.show_edit_comment && (
