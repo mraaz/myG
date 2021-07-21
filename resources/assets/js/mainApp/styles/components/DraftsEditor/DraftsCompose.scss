@@ -43,7 +43,7 @@
     position: relative;
     z-index: 2;
     border: none;
-    height: 40px;
+    min-height: 40px;
     width: 100%;
     border: 1px solid #273035;
     border-radius: 4px 0 0 4px;
@@ -67,7 +67,7 @@
   &.individual_edit_composer {
     // height: 50px;
     // width: 100%;
-    border: 1px solid #273136;
+    border: 1px solid #e5c746;
     border-radius: 4px;
     background: #1d2326 0 0 no-repeat padding-box;
     resize: none;
@@ -109,6 +109,16 @@
     position: absolute;
     top: 16px;
     right: 70px;
+
+    &.individual_edit_composer {
+      position: absolute;
+      right: 0;
+      top: 70px;
+
+      .ejr02pv {
+        right: 0;
+      }
+    }
 
     .e8k2yoa,
     .e13wqaj6 {
