@@ -13,6 +13,7 @@ import UserEntryComponent from './Entry/UserEntryComponent'
 import { COMPOSER_TYPE_ENUM, DEBOUNCE_TIME, MENTIONS_THEME } from './helpers/constants'
 import { Debounce_activation } from '../Utility_Function'
 
+// import 'draft-js/dist/Draft.css'
 import '../../styles/components/DraftsEditor/DraftsCompose.scss'
 
 export const DraftComposer = ({

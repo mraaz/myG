@@ -262,3 +262,19 @@
     font-weight: bold;
   }
 }
+
+.DraftEditor-root {
+  position: relative;
+
+  .public-DraftEditorPlaceholder-root {
+    position: absolute;
+  }
+
+  .DraftEditor-editorContainer {
+    position: relative;
+  }
+
+  .public-DraftEditorPlaceholder-inner {
+    // z-index: 0;
+  }
+}
