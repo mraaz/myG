@@ -539,9 +539,15 @@ export default class IndividualComment extends Component {
           {this.state.alert}
           <div className='comment__section'>
             <div className='comment-info'>
-              <img src='https://myg.gg/platform_images/Profile/baseline_push_pin_black_24dp.png' />
-              <Link to={`/profile/${comment.alias}`}>{`@${comment.alias}`}</Link>
-              {'  '}
+              <div className='comment-pin-group'>
+                <Link to={`/profile/${comment.alias}`}>{`@${comment.alias}`}</Link>
+                {comment_pinned && (
+                  <div className='comment-pin'>
+                    <img className='photo' src='https://myg.gg/platform_images/Profile/thumbtack.png' />
+                  </div>
+                )}
+                {'  '}
+              </div>
               {!this.state.show_edit_comment && (
                 <div className='comment-content'>
                   <p style={{ whiteSpace: 'pre-line' }}>{this.state.content}</p>
