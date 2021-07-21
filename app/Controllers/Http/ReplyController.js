@@ -16,7 +16,7 @@ class ReplyController {
           user_id: auth.user.id,
           comment_id: request.input('comment_id'),
           content: request.input('content'),
-          media_url: request.input('media_url'),
+          media_url: request.input('media_url')
         })
 
         let tmpArr = request.input('aws_key_id')
@@ -53,7 +53,7 @@ class ReplyController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     }
@@ -66,10 +66,9 @@ class ReplyController {
         .where('replies.comment_id', '=', request.params.id)
         .select('*', 'replies.id', 'replies.updated_at')
         .orderBy('replies.created_at', 'desc')
+        .limit(50)
 
-      const no_of_replies = await Database.from('replies')
-        .where({ comment_id: request.params.id })
-        .count('* as no_of_replies')
+      const no_of_replies = await Database.from('replies').where({ comment_id: request.params.id }).count('* as no_of_replies')
 
       const return_variable = await this.show_comments_likes({ auth }, request.params.id)
       const do_I_like_this_comment = return_variable.do_I_like_this_comment
@@ -79,7 +78,7 @@ class ReplyController {
         this_comments_replies,
         no_of_replies: no_of_replies,
         do_I_like_this_comment,
-        no_of_likes: no_of_likes,
+        no_of_likes: no_of_likes
       }
     } catch (error) {
       LoggingRepository.log({
@@ -87,7 +86,7 @@ class ReplyController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -98,13 +97,11 @@ class ReplyController {
         .where({ comment_id: comment_id, user_id: auth.user.id })
         .count('* as myOpinion')
 
-      const no_of_likes = await Database.from('likes')
-        .where({ comment_id: comment_id })
-        .count('* as no_of_likes')
+      const no_of_likes = await Database.from('likes').where({ comment_id: comment_id }).count('* as no_of_likes')
 
       return {
         do_I_like_this_comment,
-        no_of_likes: no_of_likes,
+        no_of_likes: no_of_likes
       }
     } catch (error) {
       LoggingRepository.log({
@@ -112,7 +109,7 @@ class ReplyController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -122,7 +119,7 @@ class ReplyController {
       const this_reply = await Database.from('replies').where('id', '=', request.params.id)
 
       return {
-        this_reply,
+        this_reply
       }
     } catch (error) {
       LoggingRepository.log({
@@ -130,7 +127,7 @@ class ReplyController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -142,7 +139,7 @@ class ReplyController {
         .count('* as no_of_my_replies')
 
       return {
-        no_of_my_replies,
+        no_of_my_replies
       }
     } catch (error) {
       LoggingRepository.log({
@@ -150,7 +147,7 @@ class ReplyController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -158,9 +155,7 @@ class ReplyController {
   async destroy({ auth, request, response }) {
     if (auth.user) {
       try {
-        const security_check = await Database.from('replies')
-          .where({ id: request.params.id })
-          .first()
+        const security_check = await Database.from('replies').where({ id: request.params.id }).first()
 
         if (security_check == undefined || security_check.user_id != auth.user.id) {
           return
@@ -171,7 +166,7 @@ class ReplyController {
 
         const delete_reply = await Database.table('replies')
           .where({
-            id: request.params.id,
+            id: request.params.id
           })
           .delete()
 
@@ -183,7 +178,7 @@ class ReplyController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -194,9 +189,7 @@ class ReplyController {
   async update({ auth, request, response }) {
     if (auth.user) {
       try {
-        const security_check = await Database.from('replies')
-          .where({ id: request.params.id })
-          .first()
+        const security_check = await Database.from('replies').where({ id: request.params.id }).first()
 
         if (security_check == undefined || security_check.user_id != auth.user.id) {
           return
@@ -213,7 +206,7 @@ class ReplyController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     }
