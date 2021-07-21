@@ -126,6 +126,10 @@
         background-color: transparent;
       }
     }
+
+    .ejr02pv {
+      right: -168%;
+    }
   }
 
   span.addToBoxLabel {
@@ -173,13 +177,16 @@
 // myG Mentions theme
 
 .myG__mention {
-  color: #575f67;
+  color: #eedb89;
   cursor: pointer;
   display: inline-block;
-  background: #eedb89;
   padding-left: 2px;
   padding-right: 2px;
   text-decoration: none;
+
+  &:hover {
+    color: #fff;
+  }
 }
 
 .myG__mentionSuggestions {

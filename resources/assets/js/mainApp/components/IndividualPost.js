@@ -838,7 +838,11 @@ export default class IndividualPost extends Component {
                   <Fragment>
                     <FeatureEnabled allOf={[DRAFT_JS]}>
                       {editorState && (
-                        <DraftComposer editorType={COMPOSER_TYPE_ENUM.INDIVIDUAL_COMMENT_STATIC} editorState={editorState}></DraftComposer>
+                        <DraftComposer
+                          editorType={COMPOSER_TYPE_ENUM.INDIVIDUAL_COMMENT_STATIC}
+                          editorState={editorState}
+                          setEditorState={(state) => this.setState({ editorState: state })}
+                        ></DraftComposer>
                       )}
                     </FeatureEnabled>
 
