@@ -19,10 +19,7 @@ class ConnectionController {
       if (getRunTime == undefined) {
         var newUserSettings = await Settings.create({
           user_id: auth.user.id,
-          gamer_connection_last_runtime: new Date()
-            .toISOString()
-            .slice(0, 19)
-            .replace('T', ' '),
+          gamer_connection_last_runtime: new Date().toISOString().slice(0, 19).replace('T', ' ')
         })
         this.check_if_same_games_in_profile({ auth })
         this.check_if_in_same_communities({ auth })
@@ -37,13 +34,10 @@ class ConnectionController {
       this.cleanUpTime({ auth })
 
       if (Date.now() > new Date(new Date(getRunTime.gamer_connection_last_runtime).getTime() + 60 * 60 * 24 * 1000)) {
-        let mysql_friendly_date = new Date()
-          .toISOString()
-          .slice(0, 19)
-          .replace('T', ' ')
+        let mysql_friendly_date = new Date().toISOString().slice(0, 19).replace('T', ' ')
         const updateRead_Status = await Settings.query()
           .where({
-            id: getRunTime.id,
+            id: getRunTime.id
           })
           .update({ gamer_connection_last_runtime: mysql_friendly_date })
 
@@ -64,7 +58,7 @@ class ConnectionController {
   async gamers_you_might_know({ auth, request, response }) {
     if (auth.user) {
       try {
-        var getConnections = await Database.from('connections')
+        let getConnections = await Database.from('connections')
           .innerJoin('users', 'users.id', 'connections.other_user_id')
           .select('alias', 'level', 'users.id as id', 'profile_img')
           .where({ user_id: auth.user.id })
@@ -72,13 +66,9 @@ class ConnectionController {
           .paginate(request.input('counter'), 10)
 
         if (getConnections.data.length < 11 && parseInt(request.input('counter')) == 1) {
-          const showallMyFriends = Database.from('friends')
-            .where({ user_id: auth.user.id })
-            .select('friends.friend_id as user_id')
+          const showallMyFriends = Database.from('friends').where({ user_id: auth.user.id }).select('friends.friend_id as user_id')
           //Don't include gamers who have rejected you and gamers who you have rejected
-          const showallMyEnemies = Database.from('exclude_connections')
-            .where({ user_id: auth.user.id })
-            .select('other_user_id as user_id')
+          const showallMyEnemies = Database.from('exclude_connections').where({ user_id: auth.user.id }).select('other_user_id as user_id')
 
           const showPending = Database.from('notifications')
             .where({ user_id: auth.user.id, activity_type: 1 })
@@ -101,7 +91,50 @@ class ConnectionController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
+        })
+      }
+    } else {
+      return 'You are not Logged In!'
+    }
+  }
+
+  async these_you_might_want_to_follow({ auth }) {
+    if (auth.user) {
+      try {
+        const influencers = await Database.from('followers')
+          .leftJoin('users', 'users.id', 'followers.user_id')
+          .leftJoin('groups', 'groups.id', 'followers.group_id')
+          .select(
+            'users.alias',
+            'users.level',
+            'users.id as user_id',
+            'users.profile_img as user_profile_img',
+            'groups.id as group_id',
+            'group_img',
+            'name as group_name'
+          )
+          .groupBy('follower_id')
+          .count('* as no_of_followers')
+          .orderBy('no_of_followers', 'desc')
+          .limit(10)
+
+        console.log(influencers, '<<<influencers')
+
+        //loop thru array
+        //determine if user or group
+        //get relevant info
+        //if user: alias, level id, profile imge
+        //if group: group name, group image, number of members
+
+        // return getConnections
+      } catch (error) {
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -123,7 +156,7 @@ class ConnectionController {
         for (let i = 0; i < getCommunities.length; i++) {
           const myPeeps = await Database.from('usergroups')
             .where({
-              group_id: getCommunities[i].id,
+              group_id: getCommunities[i].id
             })
             .count('* as no_of_peeps')
 
@@ -136,7 +169,7 @@ class ConnectionController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -152,21 +185,13 @@ class ConnectionController {
 
     if (auth.user) {
       try {
-        const subquery = Database.select('id')
-          .from('groups')
-          .where({ user_id: auth.user.id })
+        const subquery = Database.select('id').from('groups').where({ user_id: auth.user.id })
 
-        const subquery_2 = Database.select('group_id')
-          .from('usergroups')
-          .where({ user_id: auth.user.id })
+        const subquery_2 = Database.select('group_id').from('usergroups').where({ user_id: auth.user.id })
 
-        const showallMyFriends = Database.from('friends')
-          .where({ user_id: auth.user.id })
-          .select('friends.friend_id as user_id')
+        const showallMyFriends = Database.from('friends').where({ user_id: auth.user.id }).select('friends.friend_id as user_id')
 
-        const get_my_games = Database.from('game_experiences')
-          .where('user_id', '=', auth.user.id)
-          .select('game_names_id')
+        const get_my_games = Database.from('game_experiences').where('user_id', '=', auth.user.id).select('game_names_id')
 
         let groups_my_friends_are_in = await Database.from('usergroups')
           .innerJoin('groups', 'groups.id', 'usergroups.group_id')
@@ -266,7 +291,7 @@ class ConnectionController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -296,13 +321,13 @@ class ConnectionController {
         const createNewEntry = await Database.table('connections').insert({
           user_id: gamerA_id,
           other_user_id: gamerB_id,
-          total_score: findConnection_criteria.score,
+          total_score: findConnection_criteria.score
         })
 
         const createNewTransaction = await Database.table('connection_transactions').insert({
           connections_id: createNewEntry,
           connection_criterias_id: findConnection_criteria.id,
-          values: attr.value,
+          values: attr.value
         })
 
         return
@@ -311,7 +336,7 @@ class ConnectionController {
         const createNewTransaction = await Database.table('connection_transactions').insert({
           connections_id: attr.connection_id,
           connection_criterias_id: findConnection_criteria.id,
-          values: attr.value,
+          values: attr.value
         })
 
         const update_vacany = await Connection.query()
@@ -334,7 +359,7 @@ class ConnectionController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -344,20 +369,13 @@ class ConnectionController {
 
     if (auth.user) {
       try {
-        const mySearchResults = await Database.table('users')
-          .where({ id: auth.user.id })
-          .select('country')
-          .first()
+        const mySearchResults = await Database.table('users').where({ id: auth.user.id }).select('country').first()
 
         if (mySearchResults != undefined) {
           //Don't include your friends
-          const showallMyFriends = Database.from('friends')
-            .where({ user_id: auth.user.id })
-            .select('friends.friend_id as user_id')
+          const showallMyFriends = Database.from('friends').where({ user_id: auth.user.id }).select('friends.friend_id as user_id')
           //Don't include gamers who have rejected you and gamers who you have rejected
-          const showallMyEnemies = Database.from('exclude_connections')
-            .where({ user_id: auth.user.id })
-            .select('other_user_id as user_id')
+          const showallMyEnemies = Database.from('exclude_connections').where({ user_id: auth.user.id }).select('other_user_id as user_id')
 
           const showPending = Database.from('notifications')
             .where({ user_id: auth.user.id, activity_type: 1 })
@@ -392,13 +410,13 @@ class ConnectionController {
                 criteria: 'check_if_in_same_location',
                 value: true,
                 type: 1,
-                connection_id: getConnection.id,
+                connection_id: getConnection.id
               })
             } else {
               await this.calculate_score(auth.user.id, playerSearchResults[x].user_id, {
                 criteria: 'check_if_in_same_location',
                 value: true,
-                type: 0,
+                type: 0
               })
             }
           }
@@ -409,7 +427,7 @@ class ConnectionController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     }
@@ -440,9 +458,7 @@ class ConnectionController {
         //   .select('friends.friend_id as user_id')
         //const friendsIds = friends.map((friend) => friend.user_id)
 
-        const subquery = Database.from('friends')
-          .where({ user_id: auth.user.id })
-          .select('friend_id')
+        const subquery = Database.from('friends').where({ user_id: auth.user.id }).select('friend_id')
 
         const friendsOfFriends = await Database.from('friends')
           .whereNotIn('friend_id', subquery)
@@ -466,13 +482,13 @@ class ConnectionController {
               criteria: 'myCommon_friends',
               value: true,
               type: 1,
-              connection_id: existingConnection.id,
+              connection_id: existingConnection.id
             })
           } else {
             await this.calculate_score(auth.user.id, friendsOfFriends[i].user_id, {
               criteria: 'myCommon_friends',
               value: true,
-              type: 0,
+              type: 0
             })
           }
         }
@@ -482,7 +498,7 @@ class ConnectionController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     }
@@ -500,19 +516,15 @@ class ConnectionController {
           .union([
             Database.from('groups')
               .where({
-                user_id: auth.user.id,
+                user_id: auth.user.id
               })
-              .select('id'),
+              .select('id')
           ])
 
         //Don't include your friends
-        const showallMyFriends = Database.from('friends')
-          .where({ user_id: auth.user.id })
-          .select('friends.friend_id as user_id')
+        const showallMyFriends = Database.from('friends').where({ user_id: auth.user.id }).select('friends.friend_id as user_id')
         //Don't include gamers who have rejected you and gamers who you have rejected
-        const showallMyEnemies = Database.from('exclude_connections')
-          .where({ user_id: auth.user.id })
-          .select('other_user_id as user_id')
+        const showallMyEnemies = Database.from('exclude_connections').where({ user_id: auth.user.id }).select('other_user_id as user_id')
 
         const showPending = Database.from('notifications')
           .where({ user_id: auth.user.id, activity_type: 1 })
@@ -561,13 +573,13 @@ class ConnectionController {
                 criteria: 'check_if_in_same_communities',
                 value: true,
                 type: 1,
-                connection_id: getConnection.id,
+                connection_id: getConnection.id
               })
             } else {
               await this.calculate_score(auth.user.id, gamerSearchResults[x].user_id, {
                 criteria: 'check_if_in_same_communities',
                 value: true,
-                type: 0,
+                type: 0
               })
             }
           }
@@ -583,13 +595,13 @@ class ConnectionController {
                 criteria: 'check_if_in_same_communities',
                 value: true,
                 type: 1,
-                connection_id: getConnection.id,
+                connection_id: getConnection.id
               })
             } else {
               await this.calculate_score(auth.user.id, gamerSearchResults_groups[x].user_id, {
                 criteria: 'check_if_in_same_communities',
                 value: true,
-                type: 0,
+                type: 0
               })
             }
           }
@@ -600,7 +612,7 @@ class ConnectionController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     }
@@ -620,17 +632,13 @@ class ConnectionController {
             Database.select('game_names_id')
               .from('esports_experiences')
               .leftJoin('game_names', 'game_names.id', 'esports_experiences.game_names_id')
-              .where('esports_experiences.user_id', '=', auth.user.id),
+              .where('esports_experiences.user_id', '=', auth.user.id)
           ])
 
         //Don't include your friends
-        const showallMyFriends = Database.from('friends')
-          .where({ user_id: auth.user.id })
-          .select('friends.friend_id as user_id')
+        const showallMyFriends = Database.from('friends').where({ user_id: auth.user.id }).select('friends.friend_id as user_id')
         //Don't include gamers who have rejected you and gamers who you have rejected
-        const showallMyEnemies = Database.from('exclude_connections')
-          .where({ user_id: auth.user.id })
-          .select('other_user_id as user_id')
+        const showallMyEnemies = Database.from('exclude_connections').where({ user_id: auth.user.id }).select('other_user_id as user_id')
 
         const showPending = Database.from('notifications')
           .where({ user_id: auth.user.id, activity_type: 1 })
@@ -677,13 +685,13 @@ class ConnectionController {
                 criteria: 'check_if_same_games_in_profile',
                 value: true,
                 type: 1,
-                connection_id: getConnection.id,
+                connection_id: getConnection.id
               })
             } else {
               await this.calculate_score(auth.user.id, gamerSearchResults[x].user_id, {
                 criteria: 'check_if_same_games_in_profile',
                 value: true,
-                type: 0,
+                type: 0
               })
             }
           }
@@ -694,7 +702,7 @@ class ConnectionController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -717,7 +725,7 @@ class ConnectionController {
           await this.calculate_score(auth.user.id, request.params.other_user_id, {
             criteria: 'have_I_viewed_this_profile',
             value: true,
-            type: 0,
+            type: 0
           })
         } else {
           const check_all_my_Connections = await Database.from('connection_transactions')
@@ -727,7 +735,7 @@ class ConnectionController {
               user_id: auth.user.id,
               other_user_id: request.params.other_user_id,
               criteria: 'have_I_viewed_this_profile',
-              values: true,
+              values: true
             })
             .select('connection_transactions.id as id', 'connection_transactions.updated_at as updated_at')
             .first()
@@ -737,21 +745,18 @@ class ConnectionController {
               criteria: 'have_I_viewed_this_profile',
               value: true,
               type: 1,
-              connection_id: getConnection.id,
+              connection_id: getConnection.id
             })
             return
           }
 
           let myTime = new Date(new Date(Date.now()).getTime() - 60 * 60 * 4 * 1000)
           if (check_all_my_Connections.updated_at < myTime) {
-            let mysql_friendly_date = new Date()
-              .toISOString()
-              .slice(0, 19)
-              .replace('T', ' ')
+            let mysql_friendly_date = new Date().toISOString().slice(0, 19).replace('T', ' ')
 
             const update_my_Connections = await Database.from('connection_transactions')
               .where({
-                id: check_all_my_Connections.id,
+                id: check_all_my_Connections.id
               })
               .update({ updated_at: mysql_friendly_date })
 
@@ -759,7 +764,7 @@ class ConnectionController {
               criteria: 'have_I_viewed_this_profile',
               value: true,
               type: 2,
-              connection_id: getConnection.id,
+              connection_id: getConnection.id
             })
           }
         }
@@ -769,7 +774,7 @@ class ConnectionController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     }
@@ -795,10 +800,7 @@ class ConnectionController {
         } else {
           myLastrunDate = getLastrunConnection.updated_at
         }
-        let mysql_friendly_date = new Date()
-          .toISOString()
-          .slice(0, 19)
-          .replace('T', ' ')
+        let mysql_friendly_date = new Date().toISOString().slice(0, 19).replace('T', ' ')
 
         const get_all_my_games = Database.from('attendees')
           .innerJoin('schedule_games', 'schedule_games.id', 'attendees.schedule_games_id')
@@ -808,13 +810,9 @@ class ConnectionController {
           .where('schedule_games.end_date_time', '>', myLastrunDate)
 
         //Don't include your friends
-        const showallMyFriends = Database.from('friends')
-          .where({ user_id: auth.user.id })
-          .select('friends.friend_id as user_id')
+        const showallMyFriends = Database.from('friends').where({ user_id: auth.user.id }).select('friends.friend_id as user_id')
         //Don't include gamers who have rejected you and gamers who you have rejected
-        const showallMyEnemies = Database.from('exclude_connections')
-          .where({ user_id: auth.user.id })
-          .select('other_user_id as user_id')
+        const showallMyEnemies = Database.from('exclude_connections').where({ user_id: auth.user.id }).select('other_user_id as user_id')
 
         const showPending = Database.from('notifications')
           .where({ user_id: auth.user.id, activity_type: 1 })
@@ -840,13 +838,13 @@ class ConnectionController {
               criteria: 'have_we_played_together',
               value: true,
               type: 1,
-              connection_id: getConnection.id,
+              connection_id: getConnection.id
             })
           } else {
             await this.calculate_score(auth.user.id, gamers_in_these_games[x].user_id, {
               criteria: 'have_we_played_together',
               value: true,
-              type: 0,
+              type: 0
             })
           }
         }
@@ -856,7 +854,7 @@ class ConnectionController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     }
@@ -865,18 +863,14 @@ class ConnectionController {
   async cleanUpTime({ auth }) {
     try {
       //Don't include your friends
-      const showallMyFriends = Database.from('friends')
-        .where({ user_id: auth.user.id })
-        .select('friends.friend_id as user_id')
+      const showallMyFriends = Database.from('friends').where({ user_id: auth.user.id }).select('friends.friend_id as user_id')
       //Don't include gamers who have rejected you and gamers who you have rejected
-      const showallMyEnemies = Database.from('exclude_connections')
-        .where({ user_id: auth.user.id })
-        .select('other_user_id as user_id')
+      const showallMyEnemies = Database.from('exclude_connections').where({ user_id: auth.user.id }).select('other_user_id as user_id')
 
       //Delete friends and exluded connections
       const delete_noti = await Database.table('connections')
         .where({
-          user_id: auth.user.id,
+          user_id: auth.user.id
         })
         .whereIn('other_user_id', showallMyFriends)
         .orWhereIn('other_user_id', showallMyEnemies)
@@ -890,14 +884,14 @@ class ConnectionController {
       const total_connections = await Database.table('connections')
         .where('updated_at', '<', cutOff_date)
         .where({
-          user_id: auth.user.id,
+          user_id: auth.user.id
         })
         .count('* as total_count')
 
       if (total_connections[0].total_count > 288) {
         const get_connection = await Database.table('connections')
           .where({
-            user_id: auth.user.id,
+            user_id: auth.user.id
           })
           .where('updated_at', '<', cutOff_date)
           .select('updated_at')
@@ -907,7 +901,7 @@ class ConnectionController {
 
         const delete_connections = await Database.table('connections')
           .where({
-            user_id: auth.user.id,
+            user_id: auth.user.id
           })
           .where('updated_at', '<', get_connection[0].updated_at)
           .delete()
@@ -934,7 +928,7 @@ class ConnectionController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }

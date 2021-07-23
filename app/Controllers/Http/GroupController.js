@@ -19,12 +19,7 @@ class GroupController {
   async store({ auth, request, response }) {
     if (auth.user) {
       try {
-        if (
-          request
-            .input('name')
-            .toUpperCase()
-            .includes('MYG OFFICIAL')
-        ) {
+        if (request.input('name').toUpperCase().includes('MYG OFFICIAL')) {
           return false
         }
 
@@ -55,7 +50,7 @@ class GroupController {
           request.input('game_name_box').length > 0
         ) {
           const getGameName = await Database.from('game_names').where({
-            game_name: request.input('game_name_box'),
+            game_name: request.input('game_name_box')
           })
           const gameface = new GameNameController()
 
@@ -82,7 +77,7 @@ class GroupController {
           group_img: request.input('group_img') ? request.input('group_img') : null,
           type: request.input('type'),
           all_accept: request.input('all_accept'),
-          grp_description: request.input('grp_description'),
+          grp_description: request.input('grp_description')
         })
 
         if (request.input('aws_key_id') != undefined && request.input('aws_key_id') != null) {
@@ -135,7 +130,7 @@ class GroupController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     }
@@ -165,9 +160,7 @@ class GroupController {
 
         getOne.groupPosts = grp_posts.groupPosts
 
-        const getFollowing = await Database.table('followers')
-          .where({ group_id: getOne.id, user_id: auth.user.id })
-          .first()
+        const getFollowing = await Database.table('followers').where({ group_id: getOne.id, user_id: auth.user.id }).first()
 
         if (getFollowing != undefined) {
           following = true
@@ -177,7 +170,7 @@ class GroupController {
       }
 
       return {
-        getOne,
+        getOne
       }
     } catch (error) {
       LoggingRepository.log({
@@ -185,7 +178,7 @@ class GroupController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -207,9 +200,7 @@ class GroupController {
 
   async groupSearchResults({ auth, request, response }) {
     try {
-      const all_groups_im_in_but_dont_own = Database.from('usergroups')
-        .where('usergroups.user_id', '=', auth.user.id)
-        .select('group_id')
+      const all_groups_im_in_but_dont_own = Database.from('usergroups').where('usergroups.user_id', '=', auth.user.id).select('group_id')
 
       const groupSearchResults = await Database.from('groups')
         .select('name', 'group_img', 'id')
@@ -220,7 +211,7 @@ class GroupController {
         .limit(24)
 
       return {
-        groupSearchResults,
+        groupSearchResults
       }
     } catch (error) {
       LoggingRepository.log({
@@ -228,7 +219,7 @@ class GroupController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -249,7 +240,7 @@ class GroupController {
         .limit(24)
 
       return {
-        groupSearchResults_im_not_in,
+        groupSearchResults_im_not_in
       }
     } catch (error) {
       LoggingRepository.log({
@@ -257,7 +248,7 @@ class GroupController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -300,7 +291,7 @@ class GroupController {
       //console.log(myGroupSearchResults, '<<<<myGroupSearchResults')
       return {
         myGroupSearchResults,
-        groupSearchResults_im_not_in,
+        groupSearchResults_im_not_in
       }
     } catch (error) {
       LoggingRepository.log({
@@ -308,7 +299,7 @@ class GroupController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -317,7 +308,7 @@ class GroupController {
     try {
       let myGroups = await Database.from('groups')
         .where({
-          user_id: auth.user.id,
+          user_id: auth.user.id
         })
         .paginate(request.params.counter, 20)
 
@@ -328,7 +319,7 @@ class GroupController {
       myGroups = myGroups.data
       return {
         myGroups,
-        total_number_of_my_communities: total_number_of_my_communities,
+        total_number_of_my_communities: total_number_of_my_communities
       }
     } catch (error) {
       LoggingRepository.log({
@@ -336,7 +327,7 @@ class GroupController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -388,7 +379,7 @@ class GroupController {
         for (var i = 0; i < all_my_communities.length; i++) {
           const myPeeps = await Database.from('usergroups')
             .where({
-              group_id: all_my_communities[i].id,
+              group_id: all_my_communities[i].id
             })
             .count('* as no_of_peeps')
 
@@ -396,7 +387,7 @@ class GroupController {
         }
 
         return {
-          all_my_communities,
+          all_my_communities
         }
       } catch (error) {
         LoggingRepository.log({
@@ -404,7 +395,7 @@ class GroupController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     }
@@ -417,7 +408,7 @@ class GroupController {
         .where('groups.id', '=', request.params.id)
 
       return {
-        show_owner,
+        show_owner
       }
     } catch (error) {
       LoggingRepository.log({
@@ -425,7 +416,7 @@ class GroupController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -435,7 +426,7 @@ class GroupController {
       const grpInfo = await Database.from('groups').where('groups.id', '=', request.params.id)
 
       return {
-        grpInfo,
+        grpInfo
       }
     } catch (error) {
       LoggingRepository.log({
@@ -443,7 +434,7 @@ class GroupController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -469,7 +460,7 @@ class GroupController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     }
@@ -490,7 +481,7 @@ class GroupController {
           .update({
             type: request.input('privacy'),
             all_accept: request.input('mApprovals') == 'true' ? 1 : 0,
-            grp_description: request.input('description'),
+            grp_description: request.input('description')
           })
 
         // if (request.input('tags') != null && request.input('tags').length > 0) {
@@ -524,7 +515,7 @@ class GroupController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     }
@@ -557,7 +548,7 @@ class GroupController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     }
@@ -568,7 +559,7 @@ class GroupController {
       try {
         const owner_query = await Database.from('groups').where({
           user_id: auth.user.id,
-          id: request.input('group_id'),
+          id: request.input('group_id')
         })
         if (owner_query.length > 0) {
           if (owner_query[0].verified == 1) {
@@ -579,7 +570,7 @@ class GroupController {
 
           const delete_like = await Database.table('groups')
             .where({
-              id: request.input('group_id'),
+              id: request.input('group_id')
             })
             .delete()
         }
@@ -591,7 +582,7 @@ class GroupController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -617,7 +608,7 @@ class GroupController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
