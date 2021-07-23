@@ -321,13 +321,14 @@ Route.get('/api/usergroup/current_member/:group_id', 'UsergroupController.curren
 
 Route.post('/api/followers/create', 'FollowerController.store')
 Route.delete('/api/followers/:follower_id/delete', 'FollowerController.delete')
-Route.delete('/api/followers/:follower_id/delete_group', 'FollowerController.delete_group')
+Route.delete('/api/followers/delete_group/:group_id', 'FollowerController.delete_follower_from_group')
 
 Route.get('/api/email/welcome_email', 'EmailController.welcome_email')
 
 Route.post('/api/connections/gamers_you_might_know', 'ConnectionController.gamers_you_might_know')
 Route.get('/api/connections/i_am_viewing_this_profile/:other_user_id', 'ConnectionController.have_I_viewed_this_profile')
 Route.post('/api/connections/communities_you_might_know', 'ConnectionController.communities_you_might_know')
+Route.get('/api/connections/show_whom_to_follow', 'ConnectionController.these_you_might_want_to_follow')
 
 Route.post('/api/invited_users_for_schedule_games/create', 'InvitedUsersForScheduleGameController.store')
 Route.post('/api/invited_users_for_schedule_games/invite', 'InvitedUsersForScheduleGameController.invite')
