@@ -31,6 +31,7 @@ export default class IndividualPost extends Component {
       like: false,
       total: 0,
       comment_total: 0,
+      pinned_total: 0,
       show_like: true,
       show_comments: false,
       admirer_first_name: '',
@@ -180,8 +181,6 @@ export default class IndividualPost extends Component {
         })
       }
 
-      var post_id = this.props.post.id
-
       if (post.group_id != null && post.group_id != '' && post.name != undefined && post.name != '') {
         if ((source = 'news_feed')) {
           this.state.show_group_name = true
@@ -205,7 +204,8 @@ export default class IndividualPost extends Component {
         self.setState({
           myComments: myComments.data.allComments,
           value: '',
-          comment_total: myComments.data.allComments.length
+          comment_total: myComments.data.allComments.length,
+          pinned_total: myComments.data.pinned_total
         })
       } catch (error) {
         logToElasticsearch('error', 'IndividualPost', 'Failed pullComments:' + ' ' + error)
@@ -311,8 +311,6 @@ export default class IndividualPost extends Component {
           aws_key_id: aws_key_id.length > 0 ? aws_key_id : ''
         })
 
-        let { post, user } = this.props
-
         this.setState({
           myComments: [...myComments, ...postComment.data],
           preview_file: '',
@@ -347,7 +345,7 @@ export default class IndividualPost extends Component {
 
     const editPost = async function () {
       try {
-        const myEditPost = await axios.post(`/api/post/update/${post_id}`, {
+        await axios.post(`/api/post/update/${post_id}`, {
           content: self.state.value2
         })
         self.setState({
@@ -477,7 +475,7 @@ export default class IndividualPost extends Component {
     var post_id = this.props.post.id
 
     try {
-      const myPost_delete = axios.delete(`/api/post/delete/${post_id}`)
+      axios.delete(`/api/post/delete/${post_id}`)
       this.setState({
         post_deleted: true
       })
@@ -528,12 +526,7 @@ export default class IndividualPost extends Component {
     }
   }
   clearPreviewImage = () => {
-    const delete_file = Remove_file(this.state.file_keys, this.state.aws_key_id[0])
-
-    // const deleteKeys = axios.post('/api/deleteFile', {
-    //   aws_key_id: this.state.aws_key_id[0],
-    //   key: this.state.file_keys,
-    // })
+    Remove_file(this.state.file_keys, this.state.aws_key_id[0])
 
     this.setState({
       preview_file: [],
@@ -576,17 +569,17 @@ export default class IndividualPost extends Component {
   render() {
     const {
       myComments = [],
-      media_urls,
       post_deleted,
       alert,
-      show_comments,
       show_more_comments = false,
       galleryItems = [],
       hideComments,
-      showPostExtraOption
+      showPostExtraOption,
+      pinned_total = 0
     } = this.state
+
     if (post_deleted != true) {
-      let { post, current_user_permission = null, user = {} } = this.props //destructing of object
+      let { post, user = {} } = this.props //destructing of object
       let profile_img = 'https://myG.gg/default_user/new-user-profile-picture.png',
         hash_tags = ''
 
@@ -737,8 +730,14 @@ export default class IndividualPost extends Component {
                 </div>
               )}
             </div>
-            {show_more_comments && myComments.length > 0 && (
+            {show_more_comments && myComments.length > 0 && pinned_total == 0 && (
               <div className='show__comments_count' onClick={this.show_more_comments}>{` View all (${myComments.length}) comments`}</div>
+            )}
+            {show_more_comments && myComments.length > 0 && pinned_total != 0 && (
+              <div
+                className='show__comments_count'
+                onClick={this.show_more_comments}
+              >{` View all (${myComments.length}) comments && (${pinned_total}) pinned`}</div>
             )}
             {!show_more_comments && myComments.length > 0 && (
               <div className='show__comments_count' onClick={this.hide_comments}>

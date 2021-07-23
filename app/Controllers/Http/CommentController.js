@@ -94,7 +94,7 @@ class CommentController {
       //const newArr = await allPinnedComments.concat(allComments)
       const allComments = [...allPinnedComments, ...allNonPinnedComments]
 
-      return { allComments }
+      return { allComments, pinned_total: allPinnedComments.length }
     } catch (error) {
       LoggingRepository.log({
         environment: process.env.NODE_ENV,
