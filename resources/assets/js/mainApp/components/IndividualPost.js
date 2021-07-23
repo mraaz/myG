@@ -201,7 +201,6 @@ export default class IndividualPost extends Component {
     const getComments = async function () {
       try {
         const myComments = await axios.get(`/api/comments/${post_id}`)
-        console.log(myComments, '<<<myComments')
         self.setState({
           myComments: myComments.data.allComments,
           value: '',
