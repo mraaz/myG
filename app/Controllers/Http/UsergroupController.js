@@ -1,7 +1,6 @@
 'use strict'
 
 const Usergroup = use('App/Models/Usergroup')
-const Group = use('App/Models/Group')
 const Database = use('Database')
 
 const NotificationController = use('./NotificationController')
@@ -13,7 +12,6 @@ const GroupConnectionController = use('./GroupConnectionController')
 const ChatRepository = require('../../Repositories/Chat')
 const NotificationsRepository = require('../../Repositories/Notifications')
 const LoggingRepository = require('../../Repositories/Logging')
-const RedisRepository = require('../../Repositories/Redis')
 
 class UsergroupController {
   async store({ auth, request }, onboarding = false) {

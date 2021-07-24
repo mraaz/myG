@@ -167,6 +167,7 @@ Route.post('/api/comments/update/:id', 'CommentController.update')
 Route.get('/api/comments/scheduled_games/:id', 'CommentController.show_scheduled_games')
 Route.get('/api/comments/scheduled_gamesCount/:id', 'CommentController.show_scheduled_gamesCount')
 Route.get('/api/comments/get_right_card_comment_info/:id', 'CommentController.get_right_card_comment_info')
+Route.get('/api/comments/pin_status/:id/:status', 'CommentController.pin_status')
 
 Route.get('/api/archive_comments/scheduled_gamesCount/:id', 'Archive_CommentController.show_scheduled_gamesCount')
 Route.get('/api/archive_comments/scheduled_games/:id', 'Archive_CommentController.show_scheduled_games')
@@ -320,13 +321,14 @@ Route.get('/api/usergroup/current_member/:group_id', 'UsergroupController.curren
 
 Route.post('/api/followers/create', 'FollowerController.store')
 Route.delete('/api/followers/:follower_id/delete', 'FollowerController.delete')
-Route.delete('/api/followers/:follower_id/delete_group', 'FollowerController.delete_group')
+Route.delete('/api/followers/delete_group/:group_id', 'FollowerController.delete_follower_from_group')
 
 Route.get('/api/email/welcome_email', 'EmailController.welcome_email')
 
 Route.post('/api/connections/gamers_you_might_know', 'ConnectionController.gamers_you_might_know')
 Route.get('/api/connections/i_am_viewing_this_profile/:other_user_id', 'ConnectionController.have_I_viewed_this_profile')
 Route.post('/api/connections/communities_you_might_know', 'ConnectionController.communities_you_might_know')
+Route.get('/api/connections/show_whom_to_follow', 'ConnectionController.these_you_might_want_to_follow')
 
 Route.post('/api/invited_users_for_schedule_games/create', 'InvitedUsersForScheduleGameController.store')
 Route.post('/api/invited_users_for_schedule_games/invite', 'InvitedUsersForScheduleGameController.invite')
@@ -494,6 +496,9 @@ Route.post('/api/achievements/monthly', 'AchievementsController.redeemMonthly')
 Route.post('/api/team', 'TeamController.createTeam')
 Route.get('/api/team', 'TeamController.fetchTeams')
 Route.get('/api/team/tags', 'TeamController.fetchTeamTags')
+
+//Analytics
+Route.get('/api/analytics/show', 'AnalyticsController.show')
 
 // Triggering Jobs
 Route.get('/api/schedule/:job', 'SchedulerController.triggerJob')

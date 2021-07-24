@@ -16,7 +16,7 @@ export default class FileOpenModal extends Component {
       store_files: [],
       lock: false,
       uploading: false,
-      submitButtonContent: 'Submit',
+      submitButtonContent: 'Submit'
     }
 
     this.closeModal = this.closeModal.bind(this)
@@ -29,10 +29,10 @@ export default class FileOpenModal extends Component {
       formData.append('key', this.state.file_key)
 
       try {
-        const post = axios.post('/api/deleteFile', formData, {
+        axios.post('/api/deleteFile', formData, {
           headers: {
-            'Content-Type': 'multipart/form-data',
-          },
+            'Content-Type': 'multipart/form-data'
+          }
         })
       } catch (error) {
         toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file. Close this window and try again'} />)
@@ -49,12 +49,12 @@ export default class FileOpenModal extends Component {
       axios
         .post('/api/deleteFile', formData, {
           headers: {
-            'Content-Type': 'multipart/form-data',
-          },
+            'Content-Type': 'multipart/form-data'
+          }
         })
-        .then(function(resp) {
+        .then(function (resp) {
           instance.setState({
-            file_src: resp.data.Location,
+            file_src: resp.data.Location
           })
         })
         .catch((error) => {})
@@ -63,7 +63,7 @@ export default class FileOpenModal extends Component {
     const tmparray = [...this.state.store_files]
     this.state.lock = true
 
-    for (var i = 0; i < tmparray.length; i++) {
+    for (let i = 0; i < tmparray.length; i++) {
       tmparray[i].remove()
     }
     this.state.lock = false
@@ -71,7 +71,7 @@ export default class FileOpenModal extends Component {
     this.setState({
       file_key: '',
       file_src: '',
-      store_files: [],
+      store_files: []
     })
   }
 
@@ -79,7 +79,7 @@ export default class FileOpenModal extends Component {
     var instance = this
     this.state.submitButtonContent = 'Uploading...'
     this.setState({
-      uploading: true,
+      uploading: true
     })
 
     const formData = new FormData()
@@ -89,23 +89,23 @@ export default class FileOpenModal extends Component {
     try {
       const post = await axios.post('/api/uploadFile', formData, {
         headers: {
-          'Content-Type': 'multipart/form-data',
-        },
+          'Content-Type': 'multipart/form-data'
+        }
       })
       instance.setState({
         file_src: post.data.Location,
-        file_key: post.data.Key,
+        file_key: post.data.Key
       })
     } catch (error) {
       toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file. Close this window and try again'} />)
     }
     this.state.submitButtonContent = 'Submit'
     this.setState({
-      uploading: false,
+      uploading: false
     })
   }
 
-  handleChangeStatus = ({ meta }, status, allFiles) => {
+  handleChangeStatus = (status, allFiles) => {
     this.state.store_files = allFiles
     if (status === 'done') {
       const file = allFiles[0].file
@@ -117,7 +117,7 @@ export default class FileOpenModal extends Component {
     }
   }
 
-  handleSubmit = (files, allFiles) => {
+  handleSubmit = (allFiles) => {
     if (this.state.uploading == true) {
       return
     }
@@ -126,7 +126,7 @@ export default class FileOpenModal extends Component {
     this.setState({
       store_files: [],
       file_key: '',
-      file_src: '',
+      file_src: ''
     })
 
     this.state.lock = true
@@ -141,8 +141,6 @@ export default class FileOpenModal extends Component {
       class_modal_status = 'modal--show'
     }
 
-    var filepath = 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/blank-profile-picture-973460_1280.png'
-    var instance = this
     return (
       <div className={'modal-container ' + class_modal_status}>
         <div className='modal-wrap'>
@@ -155,11 +153,11 @@ export default class FileOpenModal extends Component {
               onChangeStatus={this.handleChangeStatus}
               onSubmit={this.handleSubmit}
               accept='image/*'
-              inputContent={(files, extra) => (extra.reject ? 'Image files only' : 'Drag Files or Click to Browse')}
+              inputContent={(extra) => (extra.reject ? 'Image files only' : 'Drag Files or Click to Browse')}
               styles={{
                 dropzone: { minHeight: 200, maxHeight: 250 },
                 dropzoneReject: { borderColor: 'red', backgroundColor: '#DAA' },
-                inputLabel: (files, extra) => (extra.reject ? { color: 'red' } : {}),
+                inputLabel: (extra) => (extra.reject ? { color: 'red' } : {})
               }}
               maxFiles={1}
               maxSizeBytes={26214400}

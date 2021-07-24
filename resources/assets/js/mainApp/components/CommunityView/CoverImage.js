@@ -14,7 +14,7 @@ const labelMap = {
   1: 'Joined',
   2: 'Joined',
   3: 'Joined',
-  42: 'Pending',
+  42: 'Pending'
 }
 
 const CoverImage = (props) => {
@@ -41,25 +41,24 @@ const CoverImage = (props) => {
       }
     }
   }
-  const handleFollowClick = (id) => {
-    const { user_id } = props
+  const handleFollowClick = async (id) => {
     const f = following == '' ? (props.following == true ? 'Unfollow' : 'Follow') : following
     if (f == 'Unfollow') {
-      const data = axios.delete(`/api/followers/${user_id}/delete_group`, {
-        group_id: id,
-      })
+      axios.delete(`/api/followers/delete_group/${id}`)
+
       toast.success(<Toast_style text={`Cheers mate you're no longer following`} />)
       setFollowing('Follow')
     } else {
-      const data = axios.post('/api/followers/create', {
-        group_id: id,
+      axios.post(`/api/followers/create`, {
+        group_id: id
       })
+
       toast.success(<Toast_style text={`Cheers mate you're following`} />)
       setFollowing('Unfollow')
     }
   }
   const handleLeaveClick = (id) => {
-    const leaverep = axios.delete(`/api/usergroup/${id}`)
+    axios.delete(`/api/usergroup/${id}`)
     toast.success(<Toast_style text={`Time to skedaddle! We're out of ${props.name}!`} />)
     props.routeProps.history.push('/?at=communities')
   }
@@ -67,7 +66,7 @@ const CoverImage = (props) => {
     e.preventDefault()
     if (props.current_user_permission == -1 && joinlabel == undefined) {
       const data = await axios.post('/api/usergroup/create', {
-        group_id: id,
+        group_id: id
       })
       toast.success(<Toast_style text={'Join request sent. You need approval, let the waiting game begin'} />)
       setJoinlabel('Pending')
@@ -79,10 +78,10 @@ const CoverImage = (props) => {
   /**
    * Designed to attach to a elements onClick event and toggle the options
    * dropdown, while preventing the click event on parent elements.
-   * 
+   *
    * Built to attach to the options button to prevent the Join/Leave event
    * firing.
-   * 
+   *
    * @param {MouseEvent} clickEvent The click event of the attached element
    */
   const handleToggleOption = (clickEvent) => {

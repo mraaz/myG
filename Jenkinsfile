@@ -6,7 +6,6 @@ pipeline {
         GITHUB_CREDENTIAL = 'git-private-key'
         DB_USER = credentials('db_user')
         DB_PASS = credentials('db_pass')
-        DB_PASS_STAGE = credentials('db_pass_stage')
         APP_KEY = credentials('appkey')
         AWS_KEY = credentials('aws_key')
         AWS_SECRET = credentials('aws_secret')
@@ -37,11 +36,11 @@ pipeline {
         stage('Code Checkout') {
             when {
                 expression {
-                   return env.GIT_BRANCH == "origin/stage"
+                   return env.GIT_BRANCH == "origin/master"
                 }
             }
             steps {
-                  git branch: 'stage',
+                  git branch: 'master',
                       credentialsId: 'git-private-key',
                       url: 'https://github.com/mraaz/myG'
             }
@@ -64,7 +63,7 @@ pipeline {
                     s3Upload(file:'public', bucket:'myg-stage-frontend', path:'stage.myg.gg')
                     cfInvalidate(distribution:"${DISTRIBUTION}", paths:['/*'])
                 }
-              }
+            }
         }
         stage('Publish Frontend Prod') {
           when {
@@ -81,15 +80,15 @@ pipeline {
                     sh "mv frontend.tar.gz ./public/"
                 }
                 withAWS(credentials: "myg-aws-credentials") {
-                    s3Upload(file:'public', bucket:'myg-frontend', path:'myg.gg')
+                    s3Upload( acl: 'PublicRead', file:'public', bucket:'mygame-prod-frontend', path:'')
                     cfInvalidate(distribution:"${DISTRIBUTION}", paths:['/*'])
                 }
-              }
+            }
         }
         stage('Docker Build') {
             when {
                 expression {
-                   return env.GIT_BRANCH == "origin/stage"
+                   return env.GIT_BRANCH == "origin/master"
                 }
             }
             steps {
@@ -102,7 +101,7 @@ pipeline {
         stage('Docker Publish') {
             when {
                 expression {
-                   return env.GIT_BRANCH == "origin/stage"
+                   return env.GIT_BRANCH == "origin/master"
                 }
             }
             steps {
@@ -112,8 +111,6 @@ pipeline {
                         sh "docker push ${REGISTRY}:latest"
                     }
                 }
-              
-             
             }
         }
         stage('Deploy image to stage') {
@@ -127,11 +124,11 @@ pipeline {
                      withCredentials([file(credentialsId: 'kubernetes-stage-credential', variable: 'config')]) {
                        sh """
                        export KUBECONFIG=\${config}
-                       helm upgrade myg ./helm/mygame -f ./helm/mygame-stage.yaml -n mygame --set image.tag=latest --set mygame.dataseUser=$DB_USER --set mygame.databasePassword=$DB_PASS_STAGE --set mygame.appKey=$APP_KEY --set mygame.googleID=$GOOGLE_ID --set mygame.googleSecret=$GOOGLE_SECRET --set mygame.facebookSecret=$FACEBOOK_SECRET --set mygame.mixGoogleMapsKey=$MIX_GOOGLE_MAPS_KEY --set mygame.secretKey=$SECRET_KEY --set mygame.siteKey=$SITE_KEY
+                       helm upgrade myg ./helm/mygame -f ./helm/mygame-stage.yaml -n mygame --set image.tag=latest --set mygame.dataseUser=$DB_USER --set mygame.databasePassword=$DB_PASS --set mygame.appKey=$APP_KEY --set mygame.googleID=$GOOGLE_ID --set mygame.googleSecret=$GOOGLE_SECRET --set mygame.facebookSecret=$FACEBOOK_SECRET --set mygame.mixGoogleMapsKey=$MIX_GOOGLE_MAPS_KEY --set mygame.secretKey=$SECRET_KEY --set mygame.siteKey=$SITE_KEY
                        """
                      }
                 }
-               }
+            }
         }
       stage('Deploy image to prod') {
             when {
@@ -148,7 +145,7 @@ pipeline {
                        """
                      }
                 }
-               }
+            }
         }
     }
 }

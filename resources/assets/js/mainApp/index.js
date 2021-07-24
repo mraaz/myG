@@ -79,10 +79,6 @@ class Layout extends Component {
         const initialData = await axios.get('/api/initialApp')
 
         if (!this.state.once)
-          await axios.post('/api/userStatTransaction/login_sync', {
-            login: 'LOGIN',
-          })
-
         this.setState({ once: true })
 
         const loggedOut = initialData.data.userInfo == 1981;
@@ -91,6 +87,10 @@ class Layout extends Component {
         if (loggedOut && !isOnGuestRoute) {
           window.location.href = '/logout'
         }
+
+        await axios.post('/api/userStatTransaction/login_sync', {
+            login: 'LOGIN',
+          })
 
         if (initialData.data.userInfo.has_additional != '1') {
           Update_ip_settings()

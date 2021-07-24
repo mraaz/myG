@@ -302,7 +302,6 @@ class NotificationController_v2 {
   }
 
   async add_approved_group_attendee({ auth }, grp_id, other_user_id) {
-    console.log(auth, '<<<AUTH')
     if (auth.user) {
       try {
         await Notification.create({
@@ -1518,8 +1517,6 @@ class NotificationController_v2 {
 
   async getCheck({ auth, request, response }) {
     if (auth.user) {
-      let checking = false
-
       const security_check = await Database.from('admins').where({ user_id: auth.user.id, permission_level: 1 }).first()
 
       let isAdmin = false
@@ -1689,12 +1686,12 @@ class NotificationController_v2 {
         user_id: requestingUserId,
         other_user_id: friendId,
         team_id: teamId,
-        activity_type: 29,
-      });
+        activity_type: 29
+      })
       const userId = friendId
-      const notifications = await this.count({ auth: { user: { id: userId } }, request: null });
-      await ChatRepository.publishNotifications({ userId, notifications });
-      return 'Saved item';
+      const notifications = await this.count({ auth: { user: { id: userId } }, request: null })
+      await ChatRepository.publishNotifications({ userId, notifications })
+      return 'Saved item'
     } catch (error) {
       LoggingRepository.log({
         environment: process.env.NODE_ENV,
@@ -1702,7 +1699,7 @@ class NotificationController_v2 {
         source: 'backend',
         context: __filename,
         message: (error && error.message) || error
-      });
+      })
     }
   }
 

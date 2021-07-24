@@ -13,8 +13,6 @@ const ApiController = use('./ApiController')
 const CommonController = use('./CommonController')
 const AchievementsRepository = require('../../Repositories/Achievements')
 
-const RedisRepository = require('../../Repositories/Redis')
-
 //const { validate } = use('Validator')
 
 const MAX_HASH_TAGS = 21
@@ -122,7 +120,7 @@ class PostController {
         await PHController.store({ auth }, post_id, hash_tag_id)
       } else {
         await PHController.store({ auth }, post_id, arrTags[i].hash_tag_id)
-        const update_counter = await HashTags.query().where({ id: arrTags[i].hash_tag_id }).increment('counter', 1)
+        await HashTags.query().where({ id: arrTags[i].hash_tag_id }).increment('counter', 1)
       }
     }
   }
@@ -137,7 +135,7 @@ class PostController {
         .where('followers.user_id', '=', auth.user.id)
         .where('posts.visibility', '=', 1)
         .where('posts.group_id', 'is', null)
-        .select('*', 'posts.id', 'posts.updated_at')
+        .select('*', 'posts.id', 'posts.updated_at', 'posts.created_at')
         .orderBy('posts.created_at', 'desc')
         .paginate(request.params.counter, 10)
 
@@ -188,18 +186,20 @@ class PostController {
         .orWhere('groups.user_id', '=', auth.user.id)
         .select('groups.id')
 
-      var today = new Date()
-      var priorDate = new Date().setDate(today.getDate() - 7)
-      const cutOff_date = new Date(priorDate)
+      // *** UnDO once we have alot more content on the site ***
+
+      //   var today = new Date()
+      //   var priorDate = new Date().setDate(today.getDate() - 7)
+      //   const cutOff_date = new Date(priorDate)
 
       let groups_im_in_Posts = await Database.from('posts')
         .innerJoin('users', 'users.id', 'posts.user_id')
         .innerJoin('groups', 'groups.id', 'posts.group_id')
         .whereIn('posts.group_id', all_groups_im_in_ish)
         .where('posts.visibility', '=', 1)
-        .where('posts.created_at', '>', cutOff_date)
+        //.where('posts.created_at', '>', cutOff_date)
         .whereNot('posts.user_id', '=', auth.user.id)
-        .select('*', 'posts.id', 'posts.updated_at')
+        .select('*', 'posts.id', 'posts.updated_at', 'posts.created_at')
         .orderBy('posts.created_at', 'desc')
         .paginate(request.params.counter, grp_limit)
 
@@ -215,7 +215,7 @@ class PostController {
           .innerJoin('users', 'users.id', 'posts.user_id')
           .whereBetween('posts.id', [1, 3])
           .orderBy('posts.id', 'asc')
-          .select('*', 'posts.id', 'posts.updated_at')
+          .select('*', 'posts.id', 'posts.updated_at', 'posts.created_at')
 
         _1stpass = [..._1stpass, ...welcome_Posts]
       }
@@ -393,7 +393,7 @@ class PostController {
         .innerJoin('users', 'users.id', 'posts.user_id')
         .where({ user_id })
         .whereIn('posts.visibility', visibility)
-        .select('*', 'posts.id', 'posts.updated_at')
+        .select('*', 'posts.id', 'posts.updated_at', 'posts.created_at')
         .orderBy('posts.created_at', 'desc')
         .paginate(paginateNo, 10)
 
@@ -448,7 +448,7 @@ class PostController {
           groupPosts = await Database.from('posts')
             .innerJoin('users', 'users.id', 'posts.user_id')
             .where({ group_id: request.input('group_id'), visibility: 1 })
-            .select('posts.*', 'posts.id', 'posts.updated_at', 'users.alias', 'users.profile_img')
+            .select('posts.*', 'posts.id', 'posts.created_at', 'posts.updated_at', 'users.alias', 'users.profile_img')
             .orderBy('posts.created_at', 'desc')
             .paginate(request.input('counter'), 10)
 
@@ -457,7 +457,7 @@ class PostController {
           groupPosts = await Database.from('posts')
             .innerJoin('users', 'users.id', 'posts.user_id')
             .where({ group_id: request.input('group_id'), featured: true, visibility: 1 })
-            .select('posts.*', 'posts.id', 'posts.updated_at', 'users.alias', 'users.profile_img')
+            .select('posts.*', 'posts.id', 'posts.created_at', 'posts.updated_at', 'users.alias', 'users.profile_img')
             .orderBy('posts.created_at', 'desc')
             .paginate(request.input('counter'), 10)
 
@@ -466,7 +466,7 @@ class PostController {
           groupPosts = await Database.from('posts')
             .innerJoin('users', 'users.id', 'posts.user_id')
             .where({ group_id: request.input('group_id'), visibility: 1 })
-            .select('posts.*', 'posts.id', 'posts.updated_at', 'users.alias', 'users.profile_img')
+            .select('posts.*', 'posts.id', 'posts.created_at', 'posts.updated_at', 'users.alias', 'users.profile_img')
             .orderBy('posts.created_at', 'desc')
             .paginate(request.input('counter'), 10)
       }
@@ -490,7 +490,7 @@ class PostController {
 
   async get_game_data(groupPosts) {
     try {
-      for (var i = 0; i < groupPosts.length; i++) {
+      for (let i = 0; i < groupPosts.length; i++) {
         if (groupPosts[i].schedule_games_id != null) {
           let getScheduleDetails = await Database.from('schedule_games')
             .innerJoin('users', 'users.id', 'schedule_games.user_id')
@@ -594,7 +594,7 @@ class PostController {
           return
         }
 
-        const updatePost = await Post.query()
+        await Post.query()
           .where({ id: request.params.id })
           .update({ content: request.input('content') })
 
@@ -665,7 +665,7 @@ class PostController {
   async featureToggle({ auth, request, response }) {
     if (auth.user) {
       try {
-        const updatePost = await Post.query()
+        await Post.query()
           .where({ id: request.input('post_id') })
           .update({ featured: request.input('featured_enabled') })
 
@@ -737,10 +737,10 @@ class PostController {
 
       const myGroups = this.splitArrayEvenly(arr, 5)
 
-      //Nested for loop OK cause this table will be >~100 records
-      for (var i = 0; i < myGroups.length; i++) {
-        for (var j = 0; j < myGroups[i].length; j++) {
-          const updateSponsoredPost = await SponsoredPost.query()
+      //Nested for loop OK cause this table will be <~100 records
+      for (let i = 0; i < myGroups.length; i++) {
+        for (let j = 0; j < myGroups[i].length; j++) {
+          await SponsoredPost.query()
             .where({ id: myGroups[i][j] })
             .update({ category: i + 1 })
         }

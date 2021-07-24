@@ -24,7 +24,7 @@ export default class Reports extends Component {
       moreplease: true,
       counter: 1,
       tab: 0,
-      alert: null,
+      alert: null
     }
     this.myRef = React.createRef()
   }
@@ -57,22 +57,23 @@ export default class Reports extends Component {
         style={{
           display: 'flex',
           whiteSpace: 'pre',
-          width: '41%',
+          width: '41%'
         }}
         onConfirm={() => this.hideAlert(type, data, 'true')}
-        onCancel={() => this.hideAlert(type, data, 'false')}>
+        onCancel={() => this.hideAlert(type, data, 'false')}
+      >
         You will not be able to recover this entry!
       </SweetAlert>
     )
 
     this.setState({
-      alert: getAlert(type, data),
+      alert: getAlert(type, data)
     })
   }
 
   hideAlert = (type, data, text) => {
     this.setState({
-      alert: null,
+      alert: null
     })
     if (text == 'true') {
       this.handleActionClick(type, data)
@@ -88,7 +89,7 @@ export default class Reports extends Component {
     if (getReports.data && getReports.data.length == 0) {
       this.setState({
         moreplease: false,
-        fetching: false,
+        fetching: false
       })
       return
     }
@@ -193,8 +194,8 @@ export default class Reports extends Component {
                     report.read == undefined ? (report.read_status == 0 ? 'unread' : '') : report.read == false ? 'unread' : ''
                   }`}
                   key={report.id}
-                  onClick={(e) => this.handleClickNotiFication(report.id, index)}>
-                  >
+                  onClick={(e) => this.handleClickNotiFication(report.id, index)}
+                >
                   <div className='notification-user-avatar'>
                     <Link to={`/profile/${report.owner_alias}`}>
                       <img onError={this.addDefaultSrc} src={report.profile_img ? report.profile_img : defaultUserImage} />
@@ -204,7 +205,8 @@ export default class Reports extends Component {
                     <div
                       className={`notification-description ${
                         report.read == undefined ? (report.read_status == 0 ? 'unread' : '') : report.read == false ? 'unread' : ''
-                      }`}>
+                      }`}
+                    >
                       <div className='username__link'>
                         <Link to={`/profile/${report.first_user_alias}`}>
                           <div className='notification-username'>

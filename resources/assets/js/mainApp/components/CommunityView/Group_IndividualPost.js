@@ -95,7 +95,7 @@ export default class Group_IndividualPost extends Component {
     })
 
     try {
-      const mylike = await axios.post('/api/likes', {
+      axios.post('/api/likes', {
         post_id: post_id
       })
     } catch (error) {
@@ -122,7 +122,7 @@ export default class Group_IndividualPost extends Component {
     })
 
     try {
-      const unlike = await axios.get(`/api/likes/delete/${post_id}`)
+      axios.get(`/api/likes/delete/${post_id}`)
       //const deletePostLike = axios.get(`/api/notifications/deletePostLike/${post_id}`)
     } catch (error) {
       logToElasticsearch('error', 'IndividualComment', 'Failed click_unlike_btn:' + ' ' + error)
@@ -153,7 +153,7 @@ export default class Group_IndividualPost extends Component {
     }
     const galleryItems = []
     if (media_url.length > 0) {
-      for (var i = 0; i < media_url.length; i++) {
+      for (let i = 0; i < media_url.length; i++) {
         if (media_url[i] && media_url[i] != null) {
           galleryItems.push({ src: media_url[i] })
         }
@@ -169,13 +169,14 @@ export default class Group_IndividualPost extends Component {
     if (this.props.post.profile_img != null) {
       this.setState({ show_profile_img: true })
     }
+
     this.setState({
       like: this.props.post.do_I_like_it,
       total: this.props.post.total,
       admirer_first_name: this.props.post.admirer_first_name,
       post_time: post_timestamp.local().fromNow(),
       content: this.props.post.content,
-      featured_enabled: this.props.featured,
+      featured_enabled: this.props.post.featured,
       galleryItems
     })
     if (this.props.post.no_of_comments != 0) {
@@ -304,8 +305,6 @@ export default class Group_IndividualPost extends Component {
           aws_key_id: aws_key_id.length > 0 ? aws_key_id : ''
         })
 
-        let { post, user } = this.props
-
         this.setState({
           myComments: [...myComments, ...postComment.data],
           preview_file: '',
@@ -340,7 +339,7 @@ export default class Group_IndividualPost extends Component {
 
     const editPost = async function () {
       try {
-        const myEditPost = await axios.post(`/api/post/update/${post_id}`, {
+        await axios.post(`/api/post/update/${post_id}`, {
           content: self.state.value2
         })
         self.setState({
@@ -512,7 +511,7 @@ export default class Group_IndividualPost extends Component {
     }
   }
   clearPreviewImage = () => {
-    const delete_file = Remove_file(this.state.file_keys, this.state.aws_key_id[0])
+    Remove_file(this.state.file_keys, this.state.aws_key_id[0])
 
     // const deleteKeys = axios.post('/api/deleteFile', {
     //   aws_key_id: this.state.aws_key_id[0],
@@ -557,7 +556,7 @@ export default class Group_IndividualPost extends Component {
     this.clickedGamePostExtraOption()
     let featured_enabled = !this.state.featured_enabled
 
-    const featureToggle = axios.post('/api/post/featureToggle/', {
+    axios.post('/api/post/featureToggle/', {
       post_id,
       featured_enabled
     })
@@ -568,7 +567,7 @@ export default class Group_IndividualPost extends Component {
   handleReportClick = (text, post_id) => {
     this.clickedGamePostExtraOption()
     if (text == 'true') {
-      const reportData = axios.get(`/api/post/report/${post_id}`)
+      axios.get(`/api/post/report/${post_id}`)
       this.setState({ alert: '' })
       toast.success(<Toast_style text={`Thanks for reporting! You're helping to make this is a better place.`} />)
     } else {
@@ -607,6 +606,8 @@ export default class Group_IndividualPost extends Component {
         show_media = true
       }
 
+      const check = this.state.featured_enabled ? true : false
+
       return (
         <div className='post__container'>
           {alert}
@@ -619,12 +620,12 @@ export default class Group_IndividualPost extends Component {
                   </i>
                   <div className={`post-dropdown ${showPostExtraOption == true ? 'active' : ''}`}>
                     <nav>
-                      {[0, 1, 2].includes(current_user_permission) && !this.state.featured_enabled && (
+                      {[0, 1, 2].includes(current_user_permission) && !check && (
                         <div className='option' onClick={(e) => this.handlefeaturedClick(post.id)}>
                           Featured
                         </div>
                       )}
-                      {[0, 1, 2].includes(current_user_permission) && this.state.featured_enabled && (
+                      {[0, 1, 2].includes(current_user_permission) && check && (
                         <div className='option' onClick={(e) => this.handlefeaturedClick(post.id)}>
                           Unfeatured
                         </div>
