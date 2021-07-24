@@ -78,16 +78,18 @@ class CommentController {
     try {
       const allPinnedComments = await Database.from('comments')
         .innerJoin('users', 'users.id', 'comments.user_id')
+        .innerJoin('posts', 'posts.id', 'comments.post_id')
         .where({ post_id: request.params.id })
         .where({ pinned: true })
-        .select('*', 'comments.id', 'comments.updated_at')
+        .select('comments.*', 'users.*', 'posts.user_id as post_user_id', 'comments.id', 'comments.updated_at')
         .orderBy('comments.pinned_date', 'asc')
         .limit(50)
 
       const allNonPinnedComments = await Database.from('comments')
         .innerJoin('users', 'users.id', 'comments.user_id')
+        .innerJoin('posts', 'posts.id', 'comments.post_id')
         .where({ post_id: request.params.id, pinned: false })
-        .select('*', 'comments.id', 'comments.updated_at')
+        .select('comments.*', 'users.*', 'posts.user_id as post_user_id', 'comments.id', 'comments.updated_at')
         .orderBy('comments.created_at', 'desc')
         .limit(50)
 
@@ -227,7 +229,7 @@ class CommentController {
     }
   }
 
-  async update({ auth, request, response }) {
+  async update({ auth, request }) {
     if (auth.user) {
       try {
         const security_check = await Database.from('comments').where({ id: request.params.id }).first()
@@ -236,7 +238,7 @@ class CommentController {
           return
         }
 
-        const updateComment = await Comment.query()
+        await Comment.query()
           .where({ id: request.params.id })
           .update({ content: request.input('content') })
 
@@ -274,7 +276,11 @@ class CommentController {
   async pin_status({ auth, request }) {
     if (auth.user) {
       try {
-        const security_check = await Database.from('comments').where({ id: request.params.id }).first()
+        const security_check = await Database.from('comments')
+          .innerJoin('posts', 'posts.id', 'comments.post_id')
+          .select('posts.user_id')
+          .where('comments.id', '=', request.params.id)
+          .first()
 
         if (security_check == undefined || security_check.user_id != auth.user.id) {
           return
