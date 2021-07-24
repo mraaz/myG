@@ -579,12 +579,12 @@ export default class IndividualComment extends Component {
                       Edit &nbsp;
                     </div>
                   )}
-                  {user.id == comment.user_id && !comment_pinned && (
+                  {user.id == comment.post_user_id && !comment_pinned && (
                     <div className='edit' onClick={(e) => this.clickedPin_status(true)}>
                       Pin &nbsp;
                     </div>
                   )}
-                  {user.id == comment.user_id && comment_pinned && (
+                  {user.id == comment.post_user_id && comment_pinned && (
                     <div className='edit' onClick={(e) => this.clickedPin_status(false)}>
                       Unpin &nbsp;
                     </div>
