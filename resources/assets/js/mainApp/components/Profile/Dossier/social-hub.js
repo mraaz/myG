@@ -3,6 +3,7 @@ import { getAssetUrl } from '../../../../common/assets'
 import { copyToClipboard } from '../../../../common/clipboard'
 import { ignoreFunctions } from '../../../../common/render'
 import notifyToast from '../../../../common/toast'
+import { createShortLink } from '../../../../integration/http/links'
 
 export default class DossierSocialHub extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
@@ -235,8 +236,8 @@ export default class DossierSocialHub extends React.Component {
     return (
       <div
         className='share-button clickable'
-        onClick={() => {
-          copyToClipboard(window.location.href)
+        onClick={async () => {
+          copyToClipboard(await createShortLink(window.location.href))
           notifyToast('Profile link copied. Click Click Boom!')
         }}>
         Share

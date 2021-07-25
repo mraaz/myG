@@ -10,6 +10,7 @@ import { Toast_style } from '../Utility_Function'
 import { toast } from 'react-toastify'
 import { WithTooltip } from '../Tooltip'
 import Select from 'react-select'
+import { createShortLink } from '../../../integration/http/links'
 const defaultUserImage = 'https://myG.gg/default_user/new-user-profile-picture.png'
 
 const defaultThumbnails = 'https://myG.gg/platform_images/Notifications/myG_icon.svg'
@@ -33,13 +34,14 @@ export default class GameList extends Component {
     }
   }
 
-  handleCopyToClipBoard = (e, guid) => {
+  handleCopyToClipBoard = async (e, guid) => {
     e.preventDefault()
     e.stopPropagation()
     let hostname = window.location.hostname
     if (hostname == 'localhost') hostname = 'localhost:3333'
     const link = `${window.location.protocol}//${hostname}/scheduledGames/${guid}`
-    navigator.clipboard.writeText(link)
+    const shortLink = await createShortLink(link);
+    navigator.clipboard.writeText(shortLink)
     toast.error(<Toast_style text={'Link copied mate!'} />)
   }
   handleSingleGameDetails = (e, id, game) => {

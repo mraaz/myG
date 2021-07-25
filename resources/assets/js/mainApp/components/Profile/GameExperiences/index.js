@@ -7,6 +7,7 @@ import { ignoreFunctions } from '../../../../common/render'
 import EditGameExperience from './edit';
 import { showMessengerAlert } from '../../../../common/alert';
 import { WithTooltip } from '../../Tooltip';
+import { createShortLink } from '../../../../integration/http/links';
 
 export default class GameExperiences extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
@@ -48,8 +49,9 @@ export default class GameExperiences extends React.Component {
     window.history.pushState("", "", `/profile/${this.props.alias}`)
   }
 
-  copyLink = (gameId) => {
-    copyToClipboard(`${window.location.host}/profile/${this.props.alias}/game/${gameId}`)
+  copyLink = async (gameId) => {
+    const shortLink = await createShortLink(`${window.location.host}/profile/${this.props.alias}/game/${gameId}`);
+    copyToClipboard(shortLink);
     notifyToast('Roger that. Link copied. Over.')
   }
 

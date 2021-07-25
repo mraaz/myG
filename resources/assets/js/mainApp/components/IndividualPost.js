@@ -23,6 +23,8 @@ const buckectBaseUrl = 'https://myG.gg/platform_images/'
 import ImageGallery from './common/ImageGallery/ImageGallery'
 import ReportPost from './common/ReportPost'
 import { WithTooltip } from './Tooltip'
+import { copyToClipboard } from '../../common/clipboard'
+import { createShortLink } from '../../integration/http/links'
 
 export default class IndividualPost extends Component {
   constructor() {
@@ -186,7 +188,7 @@ export default class IndividualPost extends Component {
           this.state.show_group_name = true
         }
       }
-    } catch (e) {}
+    } catch (e) { }
 
     this.pullComments()
   }
@@ -195,7 +197,7 @@ export default class IndividualPost extends Component {
     let post_id = ''
     try {
       post_id = this.props.post.id
-    } catch (e) {}
+    } catch (e) { }
     const self = this
 
     const getComments = async function () {
@@ -620,6 +622,9 @@ export default class IndividualPost extends Component {
                           Edit &nbsp;
                         </div>
                       )}
+                      <div className='option' onClick={async () => copyToClipboard(await createShortLink(`${window.location.origin}/post/${post.id}`))}>
+                        Share
+                      </div>
                     </nav>
                   </div>
                 </div>

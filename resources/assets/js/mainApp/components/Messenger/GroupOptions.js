@@ -13,6 +13,7 @@ import { getAssetUrl } from '../../../common/assets'
 import { showMessengerAlert } from '../../../common/alert'
 import { ignoreFunctions } from '../../../common/render'
 import logger from '../../../common/logger'
+import { createShortLink } from '../../../integration/http/links'
 
 class GroupOptions extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
@@ -179,7 +180,7 @@ class GroupOptions extends React.Component {
 
             <div
               className={`chat-component-group-button chat-component-group-button-smaller clickable`}
-              onClick={() => copyToClipboard(mainLink)}>
+              onClick={async () => copyToClipboard(await createShortLink(mainLink))}>
               copy
             </div>
           </div>

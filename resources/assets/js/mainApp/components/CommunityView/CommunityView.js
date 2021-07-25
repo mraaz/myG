@@ -9,6 +9,8 @@ import Members from './Members'
 import MangeSponsors from './MangeSponsors'
 
 import { Toast_style } from '../Utility_Function'
+import { copyToClipboard } from '../../../common/clipboard'
+import { createShortLink } from '../../../integration/http/links'
 const defaultSponsorImage = 'https://myG.gg/platform_images/Communities/myG_logo.jpg'
 
 const CommunityView = (props) => {
@@ -146,6 +148,7 @@ const CommunityView = (props) => {
           </div>
         </div>
       )}
+      <div className="share-community-button clickable" onClick={async () => copyToClipboard(await createShortLink(window.location.href))}>Share</div>
       {renderSponsors(communityDetails.sponsors)}
       {showSponsorModal && <MangeSponsors sponsors={singleSponsor} handleModalStatus={hideSponsorModal} group_id={communityDetails.id} />}
       {communityDetails.id && (

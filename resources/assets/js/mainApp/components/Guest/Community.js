@@ -4,6 +4,8 @@ import { getAssetUrl } from '../../../common/assets'
 import { ignoreFunctions } from '../../../common/render'
 import GuestBanner from './Banner'
 import Group_IndividualPost from '../CommunityView/Group_IndividualPost'
+import { copyToClipboard } from '../../../common/clipboard'
+import { createShortLink } from '../../../integration/http/links'
 
 export default class GuestCommunity extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
@@ -29,6 +31,7 @@ export default class GuestCommunity extends React.Component {
           <div className='guest-community-name'>{this.state.community.name}</div>
           <div className='guest-community-description'>{this.state.community.grp_description}</div>
           <div className='guest-community-game'>Game - {this.state.community.game_name}</div>
+          <div className="share-community-button clickable" style={{ margin: 16 }} onClick={async () => copyToClipboard(await createShortLink(window.location.href))}>Share</div>
           <div className='app-container home-page' style={{ background: 'unset', minHeight: 'unset' }}>
             <section id='posts' className='active'>
               {this.state.community.groupPosts.map((post, index) => {

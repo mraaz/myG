@@ -11,6 +11,7 @@ window.console = console
 import '@babel/polyfill'
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
+import { Redirect } from 'react-router'
 import { Router, Route, Switch } from 'react-router-dom'
 import { createBrowserHistory } from 'history'
 import axios from 'axios'
@@ -61,13 +62,16 @@ import {
   HashTagList,
   CreateTeam,
 } from './AsyncComponent'
+import { fetchShortLink } from '../integration/http/links'
 
 class Layout extends Component {
   constructor() {
     super()
     this.state = {
       name: 'Raaz',
-      once: false
+      once: false,
+      hasLink: false,
+      link: null,
     }
   }
   componentDidMount() {
@@ -82,10 +86,19 @@ class Layout extends Component {
           this.setState({ once: true })
 
         const loggedOut = initialData.data.userInfo == 1981;
-        const guestRoutes = ['/link', '/scheduledGames', '/find-gamers/search', '/profile', '/post', '/community'];
+        const guestRoutes = ['/link', '/scheduledGames', '/find-gamers/search', '/profile', '/post', '/community', '/s/'];
         const isOnGuestRoute = guestRoutes.some((route) => window.location.href.includes(route));
         if (loggedOut && !isOnGuestRoute) {
           window.location.href = '/logout'
+        }
+
+        const shortLinkCode = window.location.href.split('/s/')[1];
+        if (shortLinkCode && shortLinkCode.length === 6) {
+          this.setState({ hasLink: true });
+          const link = await fetchShortLink(shortLinkCode);
+          this.setState({ link }, () => {
+            window.location.href = (this.state.link.includes('http') ? this.state.link : `${window.location.protocol}//${this.state.link}`);
+          });
         }
 
         await axios.post('/api/userStatTransaction/login_sync', {
@@ -143,6 +156,7 @@ class Layout extends Component {
 
   renderRouter = () => {
     if (!window.router) window.router = createBrowserHistory();
+    if (this.state.hasLink && !this.state.link) return null;
     return (
       <Router history={window.router}>
         <div className='app-container home-page'>
@@ -384,7 +398,7 @@ class Layout extends Component {
                   )}
                 />
 
-                <Route render={() => <h3> Oops! I couldn't find that </h3>} />
+                <Route render={() => {this.state.hasLink ? null : <h3> Oops! I couldn't find that </h3>}} />
               </Switch>
             </section>
             <MessengerLoader
@@ -461,6 +475,7 @@ class Layout extends Component {
     const guestPost = window.location.href.includes('/post');
     const guestCommunity = window.location.href.includes('/community');
     const guestFindGamers = window.location.href.includes('/find-gamers/search');
+    if (this.state.hasLink && !this.state.link) return null;
     return (
       <Router history={window.router}>
         {guestLink && this.renderGuestLink()}
