@@ -7,6 +7,7 @@ import GamePosts from './GamePosts'
 import CoverImage from './CoverImage'
 import Members from './Members'
 import MangeSponsors from './MangeSponsors'
+import Channel from '../Channel'
 
 import { Toast_style } from '../Utility_Function'
 import { copyToClipboard } from '../../../common/clipboard'
@@ -152,7 +153,10 @@ const CommunityView = (props) => {
       {renderSponsors(communityDetails.sponsors)}
       {showSponsorModal && <MangeSponsors sponsors={singleSponsor} handleModalStatus={hideSponsorModal} group_id={communityDetails.id} />}
       {communityDetails.id && (
-        <GamePosts {...props} group_id={communityDetails.id} current_user_permission={communityDetails.current_user_permission} />
+        <React.Fragment>
+          <GamePosts {...props} group_id={communityDetails.id} current_user_permission={communityDetails.current_user_permission} />
+          <Channel community title={communityDetails.name} channelId={`community-${communityDetails.id}`} />
+        </React.Fragment>
       )}
       {modalStatus == true ? (
         <Members
