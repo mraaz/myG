@@ -27,11 +27,11 @@ export default class GuestBanner extends React.Component {
             <span className='input'>Search Gamers</span>
           </div>
         )}
-        <div className='button-container'>
-          <div className='button green join-label' onClick={this.login}>
+        <div className='guest-button-container'>
+          <div className='guest-button guest-green guest-join-label' onClick={this.login}>
             Join now
           </div>
-          <div className='button clickable' onClick={this.login}>
+          <div className='guest-button clickable' onClick={this.login}>
             <span>Sign in</span>
           </div>
         </div>

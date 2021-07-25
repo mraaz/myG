@@ -577,7 +577,6 @@ export default class IndividualPost extends Component {
       showPostExtraOption,
       pinned_total = 0
     } = this.state
-    const LinkComponent = this.props.guest ? ({ to, children }) => <a href={to}>{children}</a> : Link
     const isLoggedinUser = this.props.guest ? true : false
     if (post_deleted != true) {
       let { post, user = {} } = this.props //destructing of object
@@ -625,7 +624,7 @@ export default class IndividualPost extends Component {
                   </div>
                 </div>
               )}
-              <LinkComponent to={`/profile/${post.alias}`} className='user-img'>
+              <Link to={`/profile/${post.alias}`} className='user-img'>
                 <div
                   className='profile__image'
                   style={{
@@ -635,17 +634,17 @@ export default class IndividualPost extends Component {
                 >
                   {/* <div className='online__status'></div>*/}
                 </div>
-              </LinkComponent>
+              </Link>
               <div className='user__details'>
                 <div className='author__username'>
                   <div className='username'>
-                    <LinkComponent to={`/profile/${post.alias}`}>{`@${post.alias} `}</LinkComponent>
+                    <Link to={`/profile/${post.alias}`}>{`@${post.alias} `}</Link>
                   </div>
                   {this.state.show_group_name && (
                     <div className='shared__group'>
                       {`shared `}
                       <div className='arrow'></div>
-                      <LinkComponent to={`/community/${decodeURI(post.name)}`}>{decodeURI(post.name)}</LinkComponent>
+                      <Link to={`/community/${decodeURI(post.name)}`}>{decodeURI(post.name)}</Link>
                     </div>
                   )}
                   {post.visibility === 0 && (
@@ -720,7 +719,7 @@ export default class IndividualPost extends Component {
                   &nbsp;Like
                 </div>
               )}
-              {this.state.show_like && (
+              {this.state.show_like && (!!post.admirer_first_name || !!this.state.admirer_first_name) && (
                 <div className='other-users'>
                   {this.state.total > 1
                     ? `${post.admirer_first_name} and ${this.state.total} others liked this update`
@@ -784,7 +783,7 @@ export default class IndividualPost extends Component {
                   backgroundSize: 'cover'
                 }}
               >
-                <LinkComponent to={`/profile/${post.alias}`} className='user-img'></LinkComponent>
+                <Link to={`/profile/${post.alias}`} className='user-img'></Link>
                 <div className='online__status'></div>
               </div>
             </div>

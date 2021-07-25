@@ -8,6 +8,69 @@
   overflow-y: scroll !important;
 }
 
+.guest-button-container {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  flex-direction: column;
+  padding: 0 8px;
+}
+
+.guest-join-label {
+  color: white;
+  margin-bottom: 4px;
+  cursor: pointer;
+}
+
+.guest-button {
+  color: #2d363a;
+  background-color: #e7bb30;
+  height: 40px;
+  padding: 0 8px;
+  font-size: 16px;
+  font-weight: 900;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: Montserrat;
+  border-width: 0;
+  cursor: pointer;
+}
+
+.guest-green {
+  background-color: #42b72a;
+}
+
+#guest-modal {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.7);
+  z-index: 1000;
+
+  .guest-modal-title {
+    font-size: 20px;
+    margin-bottom: 24px;
+  }
+
+  .guest-modal-content {
+    display: flex;
+    flex-direction: column;
+    background-color: #0A0F14;
+    color: #fafafa;
+    align-items: center;
+    padding: 16px;
+    border-radius: 8px;
+  }
+}
+
 #guest-content {
   display: flex !important;
   flex-direction: column !important;
@@ -79,14 +142,6 @@
     font-size: 20px;
   }
 
-  .button-container {
-    display: flex;
-    align-items: center;
-    flex: 1;
-    flex-direction: column;
-    padding: 0 8px;
-  }
-
   .input {
     background-color: #757575;
     color: black;
@@ -94,32 +149,6 @@
     padding: 8px 24px;
     border-radius: 8px;
     font-size: 16px;
-  }
-
-  .join-label {
-    color: white;
-    margin-bottom: 4px;
-    cursor: pointer;
-  }
-
-  .button {
-    color: #2d363a;
-    background-color: #e7bb30;
-    height: 40px;
-    padding: 0 8px;
-    font-size: 16px;
-    font-weight: 900;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: Montserrat;
-    border-width: 0;
-    cursor: pointer;
-  }
-
-  .green {
-    background-color: #42b72a;
   }
 }
 

@@ -439,6 +439,7 @@ Route.post('/api/guest/lastRead/:guestId/:chatId', 'GuestController.markLastRead
 Route.get('/api/guest/game/:gameId', 'ScheduleGameController.fetchGuestGame')
 Route.get('/api/guest/profile/:alias', 'ProfileController.fetchGuestProfile')
 Route.get('/api/guest/post/:id', 'PostController.fetchGuestPost')
+Route.get('/api/guest/user_posts/:profileId/:paginateNo', 'PostController.fetchGuestPostsForUser')
 Route.get('/api/guest/community/:id', 'GroupController.fetchGuestCommunity')
 
 // Seats Available

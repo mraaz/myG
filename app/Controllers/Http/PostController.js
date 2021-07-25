@@ -366,6 +366,29 @@ class PostController {
     return await this.showPosts(auth, auth.user.id, request.params.paginateNo, [0, 1])
   }
 
+  async fetchGuestPostsForUser({ request }) {
+    try {
+      let myPosts = await Database.from('posts')
+        .innerJoin('users', 'users.id', 'posts.user_id')
+        .where({ user_id: request.params.profileId })
+        .whereIn('posts.visibility', [1])
+        .select('*', 'posts.id', 'posts.updated_at', 'posts.created_at')
+        .orderBy('posts.created_at', 'desc')
+        .paginate(request.params.paginateNo, 10)
+      myPosts = await this.get_additional_info({ auth: { user: -1 } }, myPosts.data);
+      return { myPosts };
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error
+      });
+      return { myPosts: [] };
+    }
+  }
+
   /**
    * For showing all the posts of a specific user. Designed to be triggered when looking at another users profile.
    *
