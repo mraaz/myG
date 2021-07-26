@@ -188,7 +188,7 @@ export default class IndividualPost extends Component {
           this.state.show_group_name = true
         }
       }
-    } catch (e) { }
+    } catch (e) {}
 
     this.pullComments()
   }
@@ -197,7 +197,7 @@ export default class IndividualPost extends Component {
     let post_id = ''
     try {
       post_id = this.props.post.id
-    } catch (e) { }
+    } catch (e) {}
     const self = this
 
     const getComments = async function () {
@@ -486,6 +486,20 @@ export default class IndividualPost extends Component {
     }
   }
 
+  clickedShare = async () => {
+    var post_id = this.props.post.id
+
+    try {
+      const value = await createShortLink(`${window.location.origin}/post/${post_id}`)
+      copyToClipboard(value)
+      this.setState({
+        showPostExtraOption: false
+      })
+    } catch (error) {
+      logToElasticsearch('error', 'IndividualPost', 'Failed clickedShare:' + ' ' + error)
+    }
+  }
+
   showAlert() {
     this.clickedGamePostExtraOption()
     const getAlert = () => (
@@ -622,7 +636,7 @@ export default class IndividualPost extends Component {
                           Edit &nbsp;
                         </div>
                       )}
-                      <div className='option' onClick={async () => copyToClipboard(await createShortLink(`${window.location.origin}/post/${post.id}`))}>
+                      <div className='option' onClick={() => this.clickedShare()}>
                         Share
                       </div>
                     </nav>
