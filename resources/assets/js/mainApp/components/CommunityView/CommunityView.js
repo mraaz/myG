@@ -19,8 +19,6 @@ const CommunityView = (props) => {
   const [singleSponsor, setSingleSponsor] = useState({})
   const contentAreaRef = useRef()
 
-  //const [feature_on, setFeature_on] = useState(false)
-
   useEffect(() => {
     getcommunityDetails()
     return () => {
@@ -34,8 +32,6 @@ const CommunityView = (props) => {
     const {
       data: { getOne = {} }
     } = await axios.get(`/api/groups/getGroupDetails/${groupName}`)
-
-    console.log(getOne, '<<<getOne')
 
     if (Object.keys(getOne).length == 0) {
       toast.error(<Toast_style text={`Sorry mate, can't find that`} />)
@@ -68,7 +64,6 @@ const CommunityView = (props) => {
         data: { getOne = {} }
       } = await axios.get(`/api/groups/getGroupDetails/${groupName}`)
 
-      console.log(getOne, '<<<getOne')
       if (Object.keys(getOne).length == 0) {
         toast.error(<Toast_style text={`Sorry mate, can't find that`} />)
         props.routeProps.history.push('/?at=communities')
