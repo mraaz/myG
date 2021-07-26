@@ -3,6 +3,9 @@
  * github  : https://github.com/realinit
  * Email : nitin.1992tyagi@gmail.com
  */
+
+//Group_IndividualPost IS THE SAME AS THIS FILE. ANY CHANGES TO THAT FILE MOST LIKELY WILL NEED TO BE DONE HERE!!!
+
 import React, { Component, Fragment } from 'react'
 import ReactPlayer from 'react-player'
 import { FormattedMessage } from 'react-intl'

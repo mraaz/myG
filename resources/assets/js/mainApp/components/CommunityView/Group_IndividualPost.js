@@ -3,6 +3,9 @@
  * github  : https://github.com/realinit
  * Email : nitin.1992tyagi@gmail.com
  */
+
+//IndividualPost IS THE SAME AS THIS FILE. ANY CHANGES TO THAT FILE MOST LIKELY WILL NEED TO BE DONE HERE!!!
+
 import React, { Component, Fragment } from 'react'
 import { Link } from 'react-router-dom'
 import ReactPlayer from 'react-player'
@@ -90,6 +93,11 @@ export default class Group_IndividualPost extends Component {
   }
 
   click_like_btn = async (post_id) => {
+    const isLoggedinUser = this.props.guest ? true : false
+    if (isLoggedinUser) {
+      return
+    }
+
     this.setState({
       total: this.state.total + 1
     })
@@ -117,6 +125,11 @@ export default class Group_IndividualPost extends Component {
   }
 
   click_unlike_btn = async (post_id) => {
+    const isLoggedinUser = this.props.guest ? true : false
+    if (isLoggedinUser) {
+      return
+    }
+
     this.setState({
       total: this.state.total - 1
     })
@@ -143,7 +156,7 @@ export default class Group_IndividualPost extends Component {
     let { post } = this.props
     let media_url = '',
       post_timestamp = ''
-    const self = this
+
     if (post.media_url) {
       try {
         media_url = post.media_url.length > 0 ? JSON.parse(post.media_url) : ''
