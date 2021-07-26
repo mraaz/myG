@@ -19,7 +19,6 @@ class AchievementsRepository {
     const redeemed = await this.fetchRedeemedBadges({ userId: stats.userId });
     const badges = this.getBadges(stats, redeemed);
     const joinedBadges = [...badges, ...redeemed];
-    console.log()
     return { badges: joinedBadges, stats, controller, redeemedTotal: redeemed.length, badgesTotal: BADGES.map(({ values }) => values.length).reduce((a, b) => a + b, 0) };
   }
 

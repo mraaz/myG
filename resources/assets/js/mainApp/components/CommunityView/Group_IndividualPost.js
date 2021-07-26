@@ -581,8 +581,6 @@ export default class Group_IndividualPost extends Component {
       media_urls,
       post_deleted,
       alert,
-      show_profile_img,
-      show_comments,
       show_more_comments = false,
       galleryItems = [],
       hideComments,
@@ -606,6 +604,8 @@ export default class Group_IndividualPost extends Component {
       }
 
       const check = this.state.featured_enabled ? true : false
+
+      const isGuestUser = this.props.guest ? true : false
 
       return (
         <div className='post__container'>
@@ -765,6 +765,7 @@ export default class Group_IndividualPost extends Component {
                 maxLength='254'
                 onKeyDown={(e) => this.detectKey(e, true)}
                 ref={this.setTextInputRef}
+                disabled={isGuestUser}
               />
               <div className='insert__images' onClick={this.insert_image_comment}>
                 <input
@@ -773,6 +774,7 @@ export default class Group_IndividualPost extends Component {
                   ref={this.fileInputRef}
                   onChange={this.handleSelectFile}
                   name='insert__images'
+                  disabled={isGuestUser}
                 />
                 <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Image.svg`} className='img-fluid' />
               </div>

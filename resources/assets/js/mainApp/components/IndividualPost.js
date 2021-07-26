@@ -91,12 +91,16 @@ export default class IndividualPost extends Component {
   }
 
   click_like_btn = async (post_id) => {
+    const isLoggedinUser = this.props.guest ? true : false
+    if (isLoggedinUser) {
+      return
+    }
     this.setState({
       total: this.state.total + 1
     })
 
     try {
-      const mylike = await axios.post('/api/likes', {
+      await axios.post('/api/likes', {
         post_id: post_id
       })
     } catch (error) {
@@ -118,12 +122,16 @@ export default class IndividualPost extends Component {
   }
 
   click_unlike_btn = async (post_id) => {
+    const isLoggedinUser = this.props.guest ? true : false
+    if (isLoggedinUser) {
+      return
+    }
     this.setState({
       total: this.state.total - 1
     })
 
     try {
-      const unlike = await axios.get(`/api/likes/delete/${post_id}`)
+      await axios.get(`/api/likes/delete/${post_id}`)
     } catch (error) {
       logToElasticsearch('error', 'IndividualPost', 'Failed click_unlike_btn:' + ' ' + error)
     }
@@ -780,6 +788,7 @@ export default class IndividualPost extends Component {
                 maxLength='254'
                 onKeyDown={(e) => this.detectKey(e, true)}
                 ref={this.setTextInputRef}
+                disabled={isLoggedinUser}
               />
               <div className='insert__images' onClick={this.insert_image_comment}>
                 <input

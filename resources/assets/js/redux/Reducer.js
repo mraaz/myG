@@ -33,16 +33,14 @@ const appReducer = combineReducers({
   achievements,
   mobileMenu,
   notifications,
-  quests,
+  quests
 })
 
 const rootReducer = (state, action) => {
   if (action.type === 'USER_LOGOUT') {
-    console.log('logout', state.encryption);
     if (state.encryption.persist) {
       state = { encryption: state.encryption }
-    }
-    else state = undefined
+    } else state = undefined
   }
   return appReducer(state, action)
 }
@@ -51,7 +49,7 @@ export default persistReducer(
   {
     key: 'root',
     storage: storage,
-    whitelist: ['user', 'guest', 'chat', 'encryption'],
+    whitelist: ['user', 'guest', 'chat', 'encryption']
   },
   rootReducer
 )

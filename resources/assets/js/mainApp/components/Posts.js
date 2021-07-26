@@ -8,7 +8,6 @@ import ComposeSection from './ComposeSection_v2'
 import GamerSuggestions from './Profile/GamerSuggestions'
 import Channel from './Channel'
 
-import { FeatureEnabled, CHANNEL } from '../../common/flags'
 import { logToElasticsearch } from '../../integration/http/logger'
 
 class Posts extends Component {
@@ -18,7 +17,7 @@ class Posts extends Component {
       counter: 0,
       myPosts: [],
       moreplease: true,
-      post_submit_loading: false,
+      post_submit_loading: false
     }
   }
 
@@ -27,7 +26,7 @@ class Posts extends Component {
 
     window.scrollTo({
       top: 500,
-      behavior: 'smooth',
+      behavior: 'smooth'
     })
     //window.history.pushState('myG', 'myG', '/')
     this.fetchMoreData()
@@ -58,19 +57,19 @@ class Posts extends Component {
       try {
         const myPosts = await axios({
           method: 'GET',
-          url: `/api/post/${self.state.counter}`,
+          url: `/api/post/${self.state.counter}`
         })
 
         if (myPosts.data == '' || myPosts.data == {} || (myPosts.data.myPosts && myPosts.data.myPosts.length == 0)) {
           self.setState({
-            moreplease: false,
+            moreplease: false
           })
           return
         } else if (myPosts.data.myPosts.length < 5) {
           if (myPosts.data.myPosts[0].id == 1) {
             self.setState({
               myPosts: self.state.myPosts.concat(myPosts.data.myPosts),
-              moreplease: false,
+              moreplease: false
             })
             return
           }
@@ -78,11 +77,11 @@ class Posts extends Component {
 
         if (myPosts.data.myPosts) {
           self.setState({
-            myPosts: self.state.myPosts.concat(myPosts.data.myPosts),
+            myPosts: self.state.myPosts.concat(myPosts.data.myPosts)
           })
         } else {
           self.setState({
-            moreplease: false,
+            moreplease: false
           })
           return
         }
@@ -91,10 +90,9 @@ class Posts extends Component {
       }
     }
 
-    var myCounter = this.state.counter
     this.setState(
       {
-        counter: this.state.counter + 1,
+        counter: this.state.counter + 1
       },
       () => {
         getPosts()
@@ -105,14 +103,14 @@ class Posts extends Component {
   composeSuccess = async (data) => {
     this.setState(
       {
-        post_submit_loading: true,
+        post_submit_loading: true
       },
       () => {
         const { myPosts = [] } = this.state
         this.setState({
           myPosts: [...data.data.myPosts, ...myPosts],
           moreplease: data.data.myPosts.lastPage == 1 ? false : true,
-          post_submit_loading: false,
+          post_submit_loading: false
         })
       }
     )
@@ -146,9 +144,7 @@ class Posts extends Component {
           </div>
         )}
         <GamerSuggestions />
-        {!!this.props.mainChannelEnabled && (
-          <Channel channelId='main' />
-        )}
+        {!!this.props.mainChannelEnabled && <Channel channelId='main' />}
         {myPosts.length > 0 && !post_submit_loading && (
           <section id='posts' className={isFetching ? '' : `active`}>
             <InfiniteScroll dataLength={myPosts.length} next={this.fetchMoreData} hasMore={moreplease}>
@@ -163,7 +159,7 @@ class Posts extends Component {
 
 function mapStateToProps(state) {
   return {
-    mainChannelEnabled: state.user.mainChannelEnabled,
+    mainChannelEnabled: state.user.mainChannelEnabled
   }
 }
 

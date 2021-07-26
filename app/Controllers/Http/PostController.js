@@ -35,11 +35,11 @@ class PostController {
         // const validation = await validate(request.input('video'), rules)
         let pattern = new RegExp(
           '^(https?:\\/\\/)?' + // protocol
-          '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
-          '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
-          '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
-          '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
-          '(\\#[-a-z\\d_]*)?$',
+            '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
+            '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+            '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+            '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+            '(\\#[-a-z\\d_]*)?$',
           'i'
         ) // fragment locator
 
@@ -341,9 +341,9 @@ class PostController {
         .innerJoin('users', 'users.id', 'posts.user_id')
         .where('posts.id', '=', request.params.id)
         .select('*', 'posts.id', 'posts.created_at', 'posts.updated_at')
-        .limit(1);
-      posts = await this.get_additional_info({ auth: { user: { id: null } } }, posts);
-      return posts[0];
+        .limit(1)
+      posts = await this.get_additional_info({ auth: { user: { id: null } } }, posts)
+      return posts[0]
     } catch (error) {
       LoggingRepository.log({
         environment: process.env.NODE_ENV,
@@ -375,8 +375,8 @@ class PostController {
         .select('*', 'posts.id', 'posts.updated_at', 'posts.created_at')
         .orderBy('posts.created_at', 'desc')
         .paginate(request.params.paginateNo, 10)
-      myPosts = await this.get_additional_info({ auth: { user: -1 } }, myPosts.data);
-      return { myPosts };
+      myPosts = await this.get_additional_info({ auth: { user: -1 } }, myPosts.data)
+      return { myPosts }
     } catch (error) {
       LoggingRepository.log({
         environment: process.env.NODE_ENV,
@@ -384,8 +384,8 @@ class PostController {
         source: 'backend',
         context: __filename,
         message: (error && error.message) || error
-      });
-      return { myPosts: [] };
+      })
+      return { myPosts: [] }
     }
   }
 
@@ -649,15 +649,16 @@ class PostController {
         }
 
         let myLikes = await likeController.show({ auth }, post[i].id)
+
         if (myLikes) {
-          post[i].total = myLikes.number_of_likes[0].total
-          post[i].no_of_comments = myLikes.no_of_comments[0].no_of_comments
-          if (myLikes.number_of_likes[0].total != 0) {
+          post[i].total = myLikes.number_of_likes && myLikes.number_of_likes[0].total
+          post[i].no_of_comments = myLikes.no_of_comments && myLikes.no_of_comments[0].no_of_comments
+          if (myLikes.number_of_likes && myLikes.number_of_likes[0].total != 0) {
             post[i].admirer_first_name = myLikes.admirer_UserInfo.alias
           } else {
             post[i].admirer_first_name = ''
           }
-          if (myLikes.do_I_like_it[0].myOpinion != 0) {
+          if (myLikes.do_I_like_it && myLikes.do_I_like_it[0].myOpinion != 0) {
             post[i].do_I_like_it = true
           } else {
             post[i].do_I_like_it = false
