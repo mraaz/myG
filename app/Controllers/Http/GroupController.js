@@ -141,15 +141,20 @@ class GroupController {
       .leftJoin('game_names', 'game_names.id', 'groups.game_names_id')
       .where({ name: decodeURIComponent(request.params.id) })
       .select('groups.*', 'game_names.game_name')
-      .first();
-    const postsResponse = await new PostController().get_group_posts_internal({ auth: { user: { id: null } } }, community.id, 1);
-    community.groupPosts = postsResponse.groupPosts.groupPosts;
-    return community;
+      .first()
+    const postsResponse = await new PostController().get_group_posts_internal({ auth: { user: { id: null } } }, community.id, 1)
+    community.groupPosts = postsResponse.groupPosts.groupPosts
+    return community
   }
 
-  async getGroupDetails({ auth, request, response }) {
+  async getGroupDetails({ auth, request }) {
     try {
       let following = false
+      let grp_posts
+      let current_user_permission = -1
+
+      const postController = new PostController()
+
       const getOne = await Database.from('groups')
         .leftJoin('game_names', 'game_names.id', 'groups.game_names_id')
         .where({ name: decodeURIComponent(request.params.name) })
@@ -157,27 +162,28 @@ class GroupController {
         .first()
 
       if (getOne != undefined) {
-        const sponsorController = new SponsorController()
-        getOne.sponsors = await sponsorController.show({ auth }, getOne.id, null)
+        if (auth && auth.user) {
+          const sponsorController = new SponsorController()
+          getOne.sponsors = await sponsorController.show({ auth }, getOne.id, null)
 
-        const commonController = new CommonController()
+          const commonController = new CommonController()
 
-        let current_user_permission = await commonController.get_permission({ auth }, getOne.id)
+          current_user_permission = await commonController.get_permission({ auth }, getOne.id)
 
-        getOne.current_user_permission = current_user_permission
+          const getFollowing = await Database.table('followers').where({ group_id: getOne.id, user_id: auth.user.id }).first()
 
-        const postController = new PostController()
-        const grp_posts = await postController.get_group_posts_internal({ auth }, getOne.id, 1)
+          if (getFollowing != undefined) {
+            following = true
+          }
 
-        getOne.groupPosts = grp_posts.groupPosts
-
-        const getFollowing = await Database.table('followers').where({ group_id: getOne.id, user_id: auth.user.id }).first()
-
-        if (getFollowing != undefined) {
-          following = true
+          grp_posts = await postController.get_group_posts_internal({ auth }, getOne.id, 1)
+        } else {
+          grp_posts = await postController.get_group_posts_internal({ auth: { user: -1 } }, getOne.id, 1)
         }
 
+        getOne.current_user_permission = current_user_permission
         getOne.following = following
+        getOne.groupPosts = grp_posts.groupPosts
       }
 
       return {
@@ -194,7 +200,7 @@ class GroupController {
     }
   }
 
-  async groupInvites({ auth, request, response }) {
+  async groupInvites({ auth, request }) {
     if (auth.user) {
       if (request.input('invitees') != undefined && request.input('invitees') != null) {
         let arrCo_hosts = request.input('invitees').split(',')
@@ -209,7 +215,7 @@ class GroupController {
     }
   }
 
-  async groupSearchResults({ auth, request, response }) {
+  async groupSearchResults({ auth, request }) {
     try {
       const all_groups_im_in_but_dont_own = Database.from('usergroups').where('usergroups.user_id', '=', auth.user.id).select('group_id')
 
