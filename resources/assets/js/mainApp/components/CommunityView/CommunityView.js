@@ -149,13 +149,13 @@ const CommunityView = (props) => {
           </div>
         </div>
       )}
-      <div className="share-community-button clickable" onClick={async () => copyToClipboard(await createShortLink(window.location.href))}>Share</div>
       {renderSponsors(communityDetails.sponsors)}
       {showSponsorModal && <MangeSponsors sponsors={singleSponsor} handleModalStatus={hideSponsorModal} group_id={communityDetails.id} />}
       {communityDetails.id && (
         <React.Fragment>
-          <GamePosts {...props} group_id={communityDetails.id} current_user_permission={communityDetails.current_user_permission} />
           <Channel community title={communityDetails.name} channelId={`community-${communityDetails.id}`} />
+          <div style={{ margin: 32 }} />
+          <GamePosts {...props} group_id={communityDetails.id} current_user_permission={communityDetails.current_user_permission} />
         </React.Fragment>
       )}
       {modalStatus == true ? (

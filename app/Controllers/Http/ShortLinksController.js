@@ -1,13 +1,6 @@
 const Database = use('Database')
 const { nanoid } = require('nanoid')
-
-//const CODE_CHARACTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-
 class ShortLinksController {
-  //   generateCharacter() {
-  //     return CODE_CHARACTERS.charAt(Math.floor(Math.random() * CODE_CHARACTERS.length))
-  //   }
-
   generateCode() {
     return nanoid(6)
   }

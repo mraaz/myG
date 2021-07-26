@@ -1,8 +1,10 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef } from 'react'
 import { Upload_to_S3 } from '../AWS_utilities'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import { Toast_style } from '../Utility_Function'
+import { copyToClipboard } from '../../../common/clipboard'
+import { createShortLink } from '../../../integration/http/links'
 
 const addDefaultSrc = (ev) => {
   ev.target.src = 'https://myG.gg/default_user/universe.jpg'
@@ -138,6 +140,9 @@ const CoverImage = (props) => {
           )}
           <button type='button' className='btnWarning' onClick={(e) => props.handleModalStatus('members')}>
             View Members
+          </button>
+          <button type='button' className='btnWarning' onClick={async () => copyToClipboard(await createShortLink(window.location.href))}>
+            Share
           </button>
         </div>
       </div>
