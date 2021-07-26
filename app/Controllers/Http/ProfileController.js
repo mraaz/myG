@@ -7,8 +7,8 @@ const LoggingRepository = require('../../Repositories/Logging')
 class ProfileController {
   async fetchProfileInfo({ auth, params, response }) {
     try {
-      const requestingUserId = auth.user.id
-      if (!requestingUserId) throw new Error('Auth Error')
+      const requestingUserId = auth && auth.user && auth.user.id
+      if (!requestingUserId) return
       const alias = params.alias
       log('PROFILE', `User ${requestingUserId} requesting profile info for ${alias}`)
       const { profile } = await ProfileRepository.fetchProfileInfo({ requestingUserId, alias })
@@ -19,7 +19,7 @@ class ProfileController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
       return response.send({ error })
     }
@@ -27,8 +27,8 @@ class ProfileController {
 
   async updateProfile({ auth, request, response }) {
     try {
-      const requestingUserId = auth.user.id
-      if (!requestingUserId) throw new Error('Auth Error')
+      const requestingUserId = auth && auth.user && auth.user.id
+      if (!requestingUserId) return
       const updates = request.all()
       log('PROFILE', `User ${requestingUserId} requesting to update profile info with ${JSON.stringify(updates)}`)
       const { profile } = await ProfileRepository.updateProfile({ requestingUserId, ...updates })
@@ -41,7 +41,7 @@ class ProfileController {
         source: 'backend',
         context: __filename,
         message: (error && error.message) || error,
-        error,
+        error
       })
       return response.send({ error })
     }
@@ -49,8 +49,8 @@ class ProfileController {
 
   async updateGame({ auth, request, response }) {
     try {
-      const requestingUserId = auth.user.id
-      if (!requestingUserId) throw new Error('Auth Error')
+      const requestingUserId = auth && auth.user && auth.user.id
+      if (!requestingUserId) return
       const updates = request.all()
       log('PROFILE', `User ${requestingUserId} requesting to update game info with ${JSON.stringify(updates)}`)
       const { gameExperiences } = await ProfileRepository.updateGame({ requestingUserId, ...updates })
@@ -61,7 +61,7 @@ class ProfileController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
       return response.send({ error })
     }
@@ -69,8 +69,8 @@ class ProfileController {
 
   async fetchGamerSuggestions({ auth, response }) {
     try {
-      const requestingUserId = auth.user.id
-      if (!requestingUserId) throw new Error('Auth Error')
+      const requestingUserId = auth && auth.user && auth.user.id
+      if (!requestingUserId) return
       log('PROFILE', `User ${requestingUserId} requesting gamer suggestions`)
       const { gamerSuggestions } = await ProfileRepository.fetchGamerSuggestions({ requestingUserId })
       return response.send({ gamerSuggestions })
@@ -80,7 +80,7 @@ class ProfileController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
       return response.send({ error })
     }
@@ -88,8 +88,8 @@ class ProfileController {
 
   async fetchDynamicFields({ auth, params, response }) {
     try {
-      const requestingUserId = auth.user.id
-      if (!requestingUserId) throw new Error('Auth Error')
+      const requestingUserId = auth && auth.user && auth.user.id
+      if (!requestingUserId) return
       const gameId = params.gameId
       log('PROFILE', `User ${requestingUserId} requesting dynamic fields for game ${gameId}`)
       const fields = await ProfileRepository.fetchDynamicFields({ gameId })
@@ -100,7 +100,7 @@ class ProfileController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
       return response.send({ error })
     }
@@ -108,8 +108,8 @@ class ProfileController {
 
   async commendUser({ auth, params, response }) {
     try {
-      const requestingUserId = auth.user.id
-      if (!requestingUserId) throw new Error('Auth Error')
+      const requestingUserId = auth && auth.user && auth.user.id
+      if (!requestingUserId) return
       const alias = params.alias
       const gameExperienceId = params.gameExperienceId
       log('PROFILE', `User ${requestingUserId} commending user ${alias} for game ${gameExperienceId}`)
@@ -122,7 +122,7 @@ class ProfileController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
       return response.send({ error })
     }
@@ -130,8 +130,8 @@ class ProfileController {
 
   async deleteGameExperience({ auth, params, response }) {
     try {
-      const requestingUserId = auth.user.id
-      if (!requestingUserId) throw new Error('Auth Error')
+      const requestingUserId = auth && auth.user && auth.user.id
+      if (!requestingUserId) return
       const gameExperienceId = params.gameExperienceId
       log('PROFILE', `User ${requestingUserId} deleting game experience ${gameExperienceId}`)
       const { profile } = await ProfileRepository.deleteGameExperience({ requestingUserId, gameExperienceId })
@@ -142,7 +142,7 @@ class ProfileController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
       return response.send({ error })
     }
@@ -150,13 +150,16 @@ class ProfileController {
 
   async fetchFriends({ auth, params, request, response }) {
     try {
-      const requestingUserId = auth.user.id
-      if (!requestingUserId) throw new Error('Auth Error')
+      const requestingUserId = auth && auth.user && auth.user.id
+      if (!requestingUserId) return
       const alias = params.alias
       const experience = request.only(['experience']).experience || ''
       const level = request.only(['level']).level || ''
       const requestedPage = parseInt(request.only(['page']).page, 10) || 'ALL'
-      log('PROFILE', `User ${requestingUserId} fetching Friends page ${requestedPage} for profile ${alias}, with experience ${experience} and level ${level}`)
+      log(
+        'PROFILE',
+        `User ${requestingUserId} fetching Friends page ${requestedPage} for profile ${alias}, with experience ${experience} and level ${level}`
+      )
       const { friends } = await ProfileRepository.fetchFriendsForGamer({ requestingUserId, alias, experience, level, requestedPage })
       return response.send({ friends })
     } catch (error) {
@@ -165,9 +168,27 @@ class ProfileController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
       return response.send({ friends: [], error })
+    }
+  }
+
+  async fetchGuestProfile({ params, response }) {
+    try {
+      const alias = params.alias
+      log('PROFILE', `Guest requesting profile info for ${alias}`)
+      const { profile } = await ProfileRepository.fetchGuestProfile({ alias })
+      return response.send({ profile })
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error
+      })
+      return response.send({ error })
     }
   }
 }

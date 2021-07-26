@@ -11,7 +11,7 @@ export default class PostsFromUser extends Component {
       counter: 0,
       myPosts: [],
       loadMore: true,
-      isFetching: false,
+      isFetching: false
     }
   }
 
@@ -26,6 +26,13 @@ export default class PostsFromUser extends Component {
     } catch (e) {
       item.media_url = ''
     }
+    if (this.props.guest) {
+      return (
+        <div onClick={this.props.onPostClick}>
+          <IndividualPost guest post={item} key={item.id} user={this.props.profile} />
+        </div>
+      )
+    }
     return <IndividualPost post={item} key={item.id} user={this.props.profile} />
   }
 
@@ -39,8 +46,10 @@ export default class PostsFromUser extends Component {
     const getPosts = async () => {
       const { counter = '' } = this.state
       try {
-        console.log('fetchMoreData', this.props, this.state)
-        const data = await axios({ method: 'GET', url: `/api/getuserposts/${this.props.profile.profileId}/${counter}` })
+        const url = this.props.guest
+          ? `/api/guest/user_posts/${this.props.profile.profileId}/${counter}`
+          : `/api/getuserposts/${this.props.profile.profileId}/${counter}`
+        const data = await axios({ method: 'GET', url })
         if (data.data.myPosts.length == 0) return this.setState({ myPosts: [...myPosts], loadMore: false, isFetching: false })
         const loadMore = data.data.myPosts.lastPage == counter ? false : true
         this.setState({ loadMore, isFetching: false, myPosts: [...myPosts, ...data.data.myPosts] })

@@ -136,6 +136,17 @@ class GroupController {
     }
   }
 
+  async fetchGuestCommunity({ request }) {
+    const community = await Database.from('groups')
+      .leftJoin('game_names', 'game_names.id', 'groups.game_names_id')
+      .where({ name: decodeURIComponent(request.params.id) })
+      .select('groups.*', 'game_names.game_name')
+      .first();
+    const postsResponse = await new PostController().get_group_posts_internal({ auth: { user: { id: null } } }, community.id, 1);
+    community.groupPosts = postsResponse.groupPosts.groupPosts;
+    return community;
+  }
+
   async getGroupDetails({ auth, request, response }) {
     try {
       let following = false

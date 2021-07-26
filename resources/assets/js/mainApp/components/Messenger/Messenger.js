@@ -16,7 +16,7 @@ import WindowFocusHandler from '../WindowFocusHandler'
 import ChatNotifications from './ChatNotifications';
 
 import { handleLink } from '../../../common/link'
-import { monitorChats, closeSubscriptions, monitorSocketConnection } from '../../../integration/ws/chat'
+import { monitorChats, monitorSocketConnection } from '../../../integration/ws/chat'
 import {
   createChatAction,
   openChatAction,

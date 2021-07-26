@@ -61,6 +61,9 @@ class ReplyController {
 
   async show({ auth, request, response }) {
     try {
+      let do_I_like_this_comment = undefined
+      let no_of_likes = undefined
+
       const this_comments_replies = await Database.from('replies')
         .innerJoin('users', 'users.id', 'replies.user_id')
         .where('replies.comment_id', '=', request.params.id)
@@ -70,9 +73,11 @@ class ReplyController {
 
       const no_of_replies = await Database.from('replies').where({ comment_id: request.params.id }).count('* as no_of_replies')
 
-      const return_variable = await this.show_comments_likes({ auth }, request.params.id)
-      const do_I_like_this_comment = return_variable.do_I_like_this_comment
-      const no_of_likes = return_variable.no_of_likes
+      if (auth.user) {
+        const return_variable = await this.show_comments_likes({ auth }, request.params.id)
+        do_I_like_this_comment = return_variable.do_I_like_this_comment
+        no_of_likes = return_variable.no_of_likes
+      }
 
       return {
         this_comments_replies,

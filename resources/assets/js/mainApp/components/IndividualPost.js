@@ -3,6 +3,9 @@
  * github  : https://github.com/realinit
  * Email : nitin.1992tyagi@gmail.com
  */
+
+//Group_IndividualPost IS THE SAME AS THIS FILE. ANY CHANGES TO THAT FILE MOST LIKELY WILL NEED TO BE DONE HERE!!!
+
 import React, { Component, Fragment } from 'react'
 import ReactPlayer from 'react-player'
 import { FormattedMessage } from 'react-intl'
@@ -23,6 +26,8 @@ const buckectBaseUrl = 'https://myG.gg/platform_images/'
 import ImageGallery from './common/ImageGallery/ImageGallery'
 import ReportPost from './common/ReportPost'
 import { WithTooltip } from './Tooltip'
+import { copyToClipboard } from '../../common/clipboard'
+import { createShortLink } from '../../integration/http/links'
 
 export default class IndividualPost extends Component {
   constructor() {
@@ -89,12 +94,16 @@ export default class IndividualPost extends Component {
   }
 
   click_like_btn = async (post_id) => {
+    const isLoggedinUser = this.props.guest ? true : false
+    if (isLoggedinUser) {
+      return
+    }
     this.setState({
       total: this.state.total + 1
     })
 
     try {
-      const mylike = await axios.post('/api/likes', {
+      await axios.post('/api/likes', {
         post_id: post_id
       })
     } catch (error) {
@@ -116,12 +125,16 @@ export default class IndividualPost extends Component {
   }
 
   click_unlike_btn = async (post_id) => {
+    const isLoggedinUser = this.props.guest ? true : false
+    if (isLoggedinUser) {
+      return
+    }
     this.setState({
       total: this.state.total - 1
     })
 
     try {
-      const unlike = await axios.get(`/api/likes/delete/${post_id}`)
+      await axios.get(`/api/likes/delete/${post_id}`)
     } catch (error) {
       logToElasticsearch('error', 'IndividualPost', 'Failed click_unlike_btn:' + ' ' + error)
     }
@@ -138,9 +151,9 @@ export default class IndividualPost extends Component {
   }
 
   componentDidMount() {
-    let { post, source } = this.props
+    let { post } = this.props
     let media_url = ''
-    const self = this
+
     try {
       if (post.media_url != null && post.media_url) {
         media_url = post.media_url.length > 0 ? JSON.parse(post.media_url) : ''
@@ -484,6 +497,20 @@ export default class IndividualPost extends Component {
     }
   }
 
+  clickedShare = async () => {
+    var post_id = this.props.post.id
+
+    try {
+      const value = await createShortLink(`${window.location.origin}/post/${post_id}`)
+      copyToClipboard(value)
+      this.setState({
+        showPostExtraOption: false
+      })
+    } catch (error) {
+      logToElasticsearch('error', 'IndividualPost', 'Failed clickedShare:' + ' ' + error)
+    }
+  }
+
   showAlert() {
     this.clickedGamePostExtraOption()
     const getAlert = () => (
@@ -577,7 +604,7 @@ export default class IndividualPost extends Component {
       showPostExtraOption,
       pinned_total = 0
     } = this.state
-
+    const isLoggedinUser = this.props.guest ? true : false
     if (post_deleted != true) {
       let { post, user = {} } = this.props //destructing of object
       let profile_img = 'https://myG.gg/default_user/new-user-profile-picture.png',
@@ -598,30 +625,35 @@ export default class IndividualPost extends Component {
           {alert}
           <div className='post__body__wrapper'>
             <div className='post__body'>
-              <div className='gamePostExtraOption'>
-                <i className='fas fa-ellipsis-h' onClick={this.clickedGamePostExtraOption}>
-                  ...
-                </i>
-                <div className={`post-dropdown ${showPostExtraOption == true ? 'active' : ''}`}>
-                  <nav>
-                    {user.id != post.user_id && (
-                      <div className='option' onClick={(e) => this.showReportAlert(post.id)}>
-                        Report
+              {!isLoggedinUser && (
+                <div className='gamePostExtraOption'>
+                  <i className='fas fa-ellipsis-h' onClick={this.clickedGamePostExtraOption}>
+                    ...
+                  </i>
+                  <div className={`post-dropdown ${showPostExtraOption == true ? 'active' : ''}`}>
+                    <nav>
+                      {user.id != post.user_id && (
+                        <div className='option' onClick={(e) => this.showReportAlert(post.id)}>
+                          Report
+                        </div>
+                      )}
+                      {user.id == post.user_id && (
+                        <div className='option' onClick={() => this.showAlert()}>
+                          Delete
+                        </div>
+                      )}
+                      {user.id == post.user_id && (
+                        <div className='option' onClick={this.clickedEdit}>
+                          Edit &nbsp;
+                        </div>
+                      )}
+                      <div className='option' onClick={() => this.clickedShare()}>
+                        Share
                       </div>
-                    )}
-                    {user.id == post.user_id && (
-                      <div className='option' onClick={() => this.showAlert()}>
-                        Delete
-                      </div>
-                    )}
-                    {user.id == post.user_id && (
-                      <div className='option' onClick={this.clickedEdit}>
-                        Edit &nbsp;
-                      </div>
-                    )}
-                  </nav>
+                    </nav>
+                  </div>
                 </div>
-              </div>
+              )}
               <Link to={`/profile/${post.alias}`} className='user-img'>
                 <div
                   className='profile__image'
@@ -717,7 +749,7 @@ export default class IndividualPost extends Component {
                   &nbsp;Like
                 </div>
               )}
-              {this.state.show_like && (
+              {this.state.show_like && (!!post.admirer_first_name || !!this.state.admirer_first_name) && (
                 <div className='other-users'>
                   {this.state.total > 1
                     ? `${post.admirer_first_name} and ${this.state.total} others liked this update`
@@ -759,6 +791,7 @@ export default class IndividualPost extends Component {
                 maxLength='254'
                 onKeyDown={(e) => this.detectKey(e, true)}
                 ref={this.setTextInputRef}
+                disabled={isLoggedinUser}
               />
               <div className='insert__images' onClick={this.insert_image_comment}>
                 <input

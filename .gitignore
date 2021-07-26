@@ -142,3 +142,4 @@ database/fixtures/pubg.json
 database/migrations/1626412301286_users_additional_infos_schema.js
 database/migrations/9580672082475_import_game_names_pubg_mobile.js
 database/migrations/1626587057941_comments_schema.js
+database/migrations/1627175586565_short_links_schema.js.js

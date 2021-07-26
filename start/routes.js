@@ -437,6 +437,10 @@ Route.post('/api/guest/privateKey/:guestId/:chatId', 'GuestController.requestGro
 Route.delete('/api/guest/privateKey/:guestId/:chatId', 'GuestController.confirmGroupPrivateKey')
 Route.post('/api/guest/lastRead/:guestId/:chatId', 'GuestController.markLastReadGuest')
 Route.get('/api/guest/game/:gameId', 'ScheduleGameController.fetchGuestGame')
+Route.get('/api/guest/profile/:alias', 'ProfileController.fetchGuestProfile')
+Route.get('/api/guest/post/:id', 'PostController.fetchGuestPost')
+Route.get('/api/guest/user_posts/:profileId/:paginateNo', 'PostController.fetchGuestPostsForUser')
+Route.get('/api/guest/community/:id', 'GroupController.fetchGuestCommunity')
 
 // Seats Available
 Route.get('/api/seats_available', 'SeatsAvailableController.fetchSeatsAvailable')
@@ -494,8 +498,12 @@ Route.post('/api/team', 'TeamController.createTeam')
 Route.get('/api/team', 'TeamController.fetchTeams')
 Route.get('/api/team/tags', 'TeamController.fetchTeamTags')
 
-//Analytics
+// Analytics
 Route.get('/api/analytics/show', 'AnalyticsController.show')
+
+// Short Links
+Route.get('/api/short_link', 'ShortLinksController.fetchLink')
+Route.post('/api/short_link', 'ShortLinksController.createShortLink')
 
 // Triggering Jobs
 Route.get('/api/schedule/:job', 'SchedulerController.triggerJob')

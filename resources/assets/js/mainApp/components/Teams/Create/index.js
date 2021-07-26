@@ -44,7 +44,6 @@ const CreateTeam = ({ loading, intl }) => {
   const [creating, setCreating] = useState(false);
   const [created, setCreated] = useState(false);
   useEffect(() => {
-    console.log(team);
     if (!creating) return;
     createTeam(team).then(() => setCreated(true)).catch((error) => {
       setCreating(false);

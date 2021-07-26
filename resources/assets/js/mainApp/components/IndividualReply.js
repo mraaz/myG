@@ -23,7 +23,7 @@ export default class IndividualReply extends Component {
       value: '',
       content: '',
       reply_time: '',
-      alert: null,
+      alert: null
     }
     this.textInput = null
 
@@ -43,7 +43,7 @@ export default class IndividualReply extends Component {
     }
 
     this.setState({
-      content: this.props.reply.content,
+      content: this.props.reply.content
     })
 
     var reply_timestamp = moment(this.props.reply.updated_at, 'YYYY-MM-DD HH:mm:ssZ')
@@ -56,17 +56,19 @@ export default class IndividualReply extends Component {
       try {
         const myReplyLikes = await axios.get(`/api/likes/reply/${reply.reply.id}`)
 
-        if (myReplyLikes.data.do_I_like_this_reply[0].myOpinion != 0) {
-          self.setState({
-            reply_like: true,
-          })
-        }
+        if (myReplyLikes.data != '') {
+          if (myReplyLikes.data.do_I_like_this_reply && myReplyLikes.data.do_I_like_this_reply[0].myOpinion != 0) {
+            self.setState({
+              reply_like: true
+            })
+          }
 
-        if (myReplyLikes.data.no_of_likes[0].no_of_likes != 0) {
-          self.setState({
-            show_reply_like: true,
-            reply_like_total: myReplyLikes.data.no_of_likes[0].no_of_likes,
-          })
+          if (myReplyLikes.data.no_of_likes && myReplyLikes.data.no_of_likes[0].no_of_likes != 0) {
+            self.setState({
+              show_reply_like: true,
+              reply_like_total: myReplyLikes.data.no_of_likes[0].no_of_likes
+            })
+          }
         }
       } catch (error) {
         logToElasticsearch('error', 'IndividualReply', 'Failed getCommentReplies:' + ' ' + error)
@@ -94,12 +96,12 @@ export default class IndividualReply extends Component {
 
   click_reply_like_btn = (reply_id) => {
     this.setState({
-      reply_like_total: this.state.reply_like_total + 1,
+      reply_like_total: this.state.reply_like_total + 1
     })
 
     try {
       const replyLike = axios.post('/api/likes', {
-        reply_id: reply_id,
+        reply_id: reply_id
       })
     } catch (error) {
       logToElasticsearch('error', 'IndividualReply', 'Failed click_reply_like_btn:' + ' ' + error)
@@ -107,13 +109,13 @@ export default class IndividualReply extends Component {
 
     this.setState({
       show_reply_like: true,
-      reply_like: !this.state.reply_like,
+      reply_like: !this.state.reply_like
     })
   }
 
   click_reply_unlike_btn = (reply_id) => {
     this.setState({
-      reply_like_total: this.state.reply_like_total - 1,
+      reply_like_total: this.state.reply_like_total - 1
     })
 
     //let { post_id } = this.props
@@ -125,18 +127,18 @@ export default class IndividualReply extends Component {
 
     if (this.state.reply_like_total == 1) {
       this.setState({
-        show_reply_like: false,
+        show_reply_like: false
       })
     }
 
     this.setState({
-      reply_like: !this.state.reply_like,
+      reply_like: !this.state.reply_like
     })
   }
 
   clickedDropdown = () => {
     this.setState({
-      dropdown: !this.state.dropdown,
+      dropdown: !this.state.dropdown
     })
   }
 
@@ -146,7 +148,7 @@ export default class IndividualReply extends Component {
     try {
       const myReply_delete = axios.delete(`/api/replies/delete/${reply_id}`)
       this.setState({
-        reply_deleted: true,
+        reply_deleted: true
       })
       this.props.onDelete(reply_id)
     } catch (error) {
@@ -163,7 +165,7 @@ export default class IndividualReply extends Component {
       this.setState({
         show_edit_reply: true,
         dropdown: false,
-        value: myReply_content.data.this_reply[0].content,
+        value: myReply_content.data.this_reply[0].content
       })
       this.focusTextInput()
     } catch (error) {
@@ -184,7 +186,7 @@ export default class IndividualReply extends Component {
       this.setState({
         show_edit_reply: false,
         dropdown: false,
-        value: '',
+        value: ''
       })
     }
 
@@ -201,7 +203,7 @@ export default class IndividualReply extends Component {
     }
     if (this.state.value.trim() == '') {
       this.setState({
-        value: '',
+        value: ''
       })
       return
     }
@@ -211,14 +213,14 @@ export default class IndividualReply extends Component {
     const saveReply = async function () {
       try {
         const mysaveReply = await axios.post(`/api/replies/update/${reply_id}`, {
-          content: self.state.value,
+          content: self.state.value
         })
 
         self.setState({
           show_edit_reply: false,
           dropdown: false,
           content: self.state.value,
-          value: '',
+          value: ''
         })
       } catch (error) {
         logToElasticsearch('error', 'IndividualReply', 'Failed saveReply:' + ' ' + error)
@@ -232,7 +234,7 @@ export default class IndividualReply extends Component {
     const getAlert = () => <ReportPost reply_id={id} hideModal={this.hideAlert} />
 
     this.setState({
-      alert: getAlert(),
+      alert: getAlert()
     })
   }
 
@@ -251,23 +253,24 @@ export default class IndividualReply extends Component {
         style={{
           display: 'flex',
           whiteSpace: 'pre',
-          width: '41%',
+          width: '41%'
         }}
         onConfirm={() => this.hideAlert('true')}
-        onCancel={() => this.hideAlert('false')}>
+        onCancel={() => this.hideAlert('false')}
+      >
         You will not be able to recover this entry!
       </SweetAlert>
     )
 
     this.setState({
-      alert: getAlert(),
+      alert: getAlert()
     })
   }
 
   hideAlert = (text) => {
     this.setState({
       alert: null,
-      dropdown: false,
+      dropdown: false
     })
     if (text == 'true') {
       this.delete_exp()
@@ -347,8 +350,9 @@ export default class IndividualReply extends Component {
                 className='profile__image'
                 style={{
                   backgroundImage: `url('${profile_img}'), url('https://myG.gg/default_user/new-user-profile-picture.png')`,
-                  backgroundSize: 'cover',
-                }}>
+                  backgroundSize: 'cover'
+                }}
+              >
                 <div className='online__status'></div>
               </div>
             </Link>

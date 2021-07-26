@@ -7,8 +7,11 @@ import GamePosts from './GamePosts'
 import CoverImage from './CoverImage'
 import Members from './Members'
 import MangeSponsors from './MangeSponsors'
+import Channel from '../Channel'
 
 import { Toast_style } from '../Utility_Function'
+import { copyToClipboard } from '../../../common/clipboard'
+import { createShortLink } from '../../../integration/http/links'
 const defaultSponsorImage = 'https://myG.gg/platform_images/Communities/myG_logo.jpg'
 
 const CommunityView = (props) => {
@@ -149,7 +152,11 @@ const CommunityView = (props) => {
       {renderSponsors(communityDetails.sponsors)}
       {showSponsorModal && <MangeSponsors sponsors={singleSponsor} handleModalStatus={hideSponsorModal} group_id={communityDetails.id} />}
       {communityDetails.id && (
-        <GamePosts {...props} group_id={communityDetails.id} current_user_permission={communityDetails.current_user_permission} />
+        <React.Fragment>
+          <Channel community title={communityDetails.name} channelId={`community-${communityDetails.id}`} />
+          <div style={{ margin: 32 }} />
+          <GamePosts {...props} group_id={communityDetails.id} current_user_permission={communityDetails.current_user_permission} />
+        </React.Fragment>
       )}
       {modalStatus == true ? (
         <Members

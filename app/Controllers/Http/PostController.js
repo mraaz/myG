@@ -335,6 +335,26 @@ class PostController {
     }
   }
 
+  async fetchGuestPost({ request }) {
+    try {
+      let posts = await Database.from('posts')
+        .innerJoin('users', 'users.id', 'posts.user_id')
+        .where('posts.id', '=', request.params.id)
+        .select('*', 'posts.id', 'posts.created_at', 'posts.updated_at')
+        .limit(1)
+      posts = await this.get_additional_info({ auth: { user: { id: null } } }, posts)
+      return posts[0]
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error
+      })
+    }
+  }
+
   /**
    * For showing a users own posts, including private posts. Designed to be triggered when looking at your own profile.
    *
@@ -344,6 +364,29 @@ class PostController {
   async showMyPosts({ auth, request, response }) {
     if (!auth.user.id) return 'You are not Logged In!'
     return await this.showPosts(auth, auth.user.id, request.params.paginateNo, [0, 1])
+  }
+
+  async fetchGuestPostsForUser({ request }) {
+    try {
+      let myPosts = await Database.from('posts')
+        .innerJoin('users', 'users.id', 'posts.user_id')
+        .where({ user_id: request.params.profileId })
+        .whereIn('posts.visibility', [1])
+        .select('*', 'posts.id', 'posts.updated_at', 'posts.created_at')
+        .orderBy('posts.created_at', 'desc')
+        .paginate(request.params.paginateNo, 10)
+      myPosts = await this.get_additional_info({ auth: { user: -1 } }, myPosts.data)
+      return { myPosts }
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error
+      })
+      return { myPosts: [] }
+    }
   }
 
   /**
@@ -606,15 +649,16 @@ class PostController {
         }
 
         let myLikes = await likeController.show({ auth }, post[i].id)
+
         if (myLikes) {
-          post[i].total = myLikes.number_of_likes[0].total
-          post[i].no_of_comments = myLikes.no_of_comments[0].no_of_comments
-          if (myLikes.number_of_likes[0].total != 0) {
+          post[i].total = myLikes.number_of_likes && myLikes.number_of_likes[0].total
+          post[i].no_of_comments = myLikes.no_of_comments && myLikes.no_of_comments[0].no_of_comments
+          if (myLikes.number_of_likes && myLikes.number_of_likes[0].total != 0) {
             post[i].admirer_first_name = myLikes.admirer_UserInfo.alias
           } else {
             post[i].admirer_first_name = ''
           }
-          if (myLikes.do_I_like_it[0].myOpinion != 0) {
+          if (myLikes.do_I_like_it && myLikes.do_I_like_it[0].myOpinion != 0) {
             post[i].do_I_like_it = true
           } else {
             post[i].do_I_like_it = false

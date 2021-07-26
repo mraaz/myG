@@ -3,6 +3,9 @@
  * github  : https://github.com/realinit
  * Email : nitin.1992tyagi@gmail.com
  */
+
+//IndividualPost IS THE SAME AS THIS FILE. ANY CHANGES TO THAT FILE MOST LIKELY WILL NEED TO BE DONE HERE!!!
+
 import React, { Component, Fragment } from 'react'
 import { Link } from 'react-router-dom'
 import ReactPlayer from 'react-player'
@@ -90,6 +93,11 @@ export default class Group_IndividualPost extends Component {
   }
 
   click_like_btn = async (post_id) => {
+    const isLoggedinUser = this.props.guest ? true : false
+    if (isLoggedinUser) {
+      return
+    }
+
     this.setState({
       total: this.state.total + 1
     })
@@ -117,6 +125,11 @@ export default class Group_IndividualPost extends Component {
   }
 
   click_unlike_btn = async (post_id) => {
+    const isLoggedinUser = this.props.guest ? true : false
+    if (isLoggedinUser) {
+      return
+    }
+
     this.setState({
       total: this.state.total - 1
     })
@@ -143,7 +156,7 @@ export default class Group_IndividualPost extends Component {
     let { post } = this.props
     let media_url = '',
       post_timestamp = ''
-    const self = this
+
     if (post.media_url) {
       try {
         media_url = post.media_url.length > 0 ? JSON.parse(post.media_url) : ''
@@ -581,8 +594,6 @@ export default class Group_IndividualPost extends Component {
       media_urls,
       post_deleted,
       alert,
-      show_profile_img,
-      show_comments,
       show_more_comments = false,
       galleryItems = [],
       hideComments,
@@ -606,6 +617,8 @@ export default class Group_IndividualPost extends Component {
       }
 
       const check = this.state.featured_enabled ? true : false
+
+      const isGuestUser = this.props.guest ? true : false
 
       return (
         <div className='post__container'>
@@ -765,6 +778,7 @@ export default class Group_IndividualPost extends Component {
                 maxLength='254'
                 onKeyDown={(e) => this.detectKey(e, true)}
                 ref={this.setTextInputRef}
+                disabled={isGuestUser}
               />
               <div className='insert__images' onClick={this.insert_image_comment}>
                 <input
@@ -773,6 +787,7 @@ export default class Group_IndividualPost extends Component {
                   ref={this.fileInputRef}
                   onChange={this.handleSelectFile}
                   name='insert__images'
+                  disabled={isGuestUser}
                 />
                 <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Image.svg`} className='img-fluid' />
               </div>

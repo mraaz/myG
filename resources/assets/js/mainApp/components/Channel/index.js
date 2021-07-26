@@ -251,11 +251,11 @@ export class Channel extends React.Component {
     return !!this.props.page ?
       (
         <div className='viewGame__header'>
-          <div className='title'>myG Chat</div>
+          <div className='title'>{this.props.title + " Channel" || "myG Chat"}</div>
         </div>
       ) :
       (
-        <div className='channel-header'>myG Chat</div>
+        <div className='channel-header'>{this.props.title + " Channel" || "myG Chat"}</div>
       );
   }
 
@@ -275,15 +275,15 @@ export class Channel extends React.Component {
         {this.renderHeader()}
         <div className={`messenger ${!!this.props.page ? 'channel-page' : 'channel'}`}>
           <div className={`chat-component-base ${!!this.props.page ? 'channel-chat-page' : 'channel-chat'}`}>
-            <MostImprovedGamer />
+            {!this.props.community && <MostImprovedGamer />}
             {this.state.attachment && this.renderAttachment()}
             {this.renderBody()}
             {this.renderAttachWindow()}
             {this.renderFooter()}
-            {!this.props.page && this.renderOpenInNewPageButton()}
-            {this.renderOnlineUsersButton()}
+            {!this.props.community && !this.props.page && this.renderOpenInNewPageButton()}
+            {!this.props.community && this.renderOnlineUsersButton()}
           </div>
-          <OnlineUsers page={this.props.page} />
+          {!this.props.community && (<OnlineUsers page={this.props.page} />)}
         </div>
       </React.Fragment>
     );

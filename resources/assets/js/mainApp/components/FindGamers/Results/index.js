@@ -42,7 +42,7 @@ export default class Results extends React.Component {
     const elementMarginTop = elementStyles && elementStyles.getPropertyValue('margin-top') || '';
     const elementMarginBottom = elementStyles && elementStyles.getPropertyValue('margin-bottom') || '';
     const elementMargins = parseInt(
-      parseInt(elementMarginTop.replace('px', '')) + 
+      parseInt(elementMarginTop.replace('px', '')) +
       parseInt(elementMarginBottom.replace('px', ''))
     ) || 24
     const filtersHeight = filters.offsetHeight;
@@ -61,7 +61,7 @@ export default class Results extends React.Component {
 
   renderLoading = () => {
     if (!this.props.loading) return null;
-    return(
+    return (
       <div className='loading'>
         <p className='loading-hint'>Searching for Gamers...</p>
         <LoadingIndicator color={'#F0F0F0'} />
@@ -77,7 +77,7 @@ export default class Results extends React.Component {
   renderGamer = (gamer) => {
     const isHovering = this.state.hovering === gamer.profileId;
     const aliasTooLong = gamer.alias && gamer.alias.length > 11;
-    return(
+    return (
       <div className="find-gamer-result" key={gamer.profileId}>
         <div className={`gamer ${isHovering ? 'hover' : ''}`}
           onMouseEnter={() => this.setState({ hovering: gamer.profileId })}
@@ -94,7 +94,7 @@ export default class Results extends React.Component {
                   bottom: '-12px',
                   left: '-12px',
                   fontSize: '12px',
-                 }} text={`@${gamer.alias}`}>
+                }} text={`@${gamer.alias}`}>
                   <span className="alias">{`@${gamer.alias}`.slice(0, 10) + '...'}</span>
                 </WithTooltip>
               ) : (
@@ -119,24 +119,26 @@ export default class Results extends React.Component {
   renderHoverBar = (gamer, isHovering) => {
     if (!isHovering) return null;
 
-    const canSendFriendRequest = !(this.props.profile.friends || []).includes(gamer.alias) && !(this.props.profile.friendRequests || []).includes(gamer.alias);
-    const canCancelFriendRequest = !(this.props.profile.friends || []).includes(gamer.alias) && (this.props.profile.friendRequests || []).includes(gamer.alias);
-    const canFollow = !(this.props.profile.followers || []).includes(gamer.alias);
-    const canUnfollow = (this.props.profile.followers || []).includes(gamer.alias);
+    const profile = this.props.profile || {};
+    const canSendFriendRequest = !this.props.guest && !(profile.friends || []).includes(gamer.alias) && !(profile.friendRequests || []).includes(gamer.alias);
+    const canCancelFriendRequest = !this.props.guest && !(profile.friends || []).includes(gamer.alias) && (profile.friendRequests || []).includes(gamer.alias);
+    const canFollow = !this.props.guest && !(profile.followers || []).includes(gamer.alias);
+    const canUnfollow = !this.props.guest && (profile.followers || []).includes(gamer.alias);
+    const canInvite = !this.props.guest;
 
-    const openProfile = () => window.router.push(`/profile/${gamer.alias}`);
+    const openProfile = () => this.props.guest ? window.location.href = `/profile/${gamer.alias}` : window.router.push(`/profile/${gamer.alias}`);
     const sendFriendRequest = () => this.sendFriendRequest(gamer.alias, gamer.profileId);
     const cancelFriendRequest = () => this.cancelFriendRequest(gamer.alias, gamer.profileId);
     const invite = () => this.setState({ inviting: gamer });
     const follow = () => this.follow(gamer.alias, gamer.profileId);
     const unfollow = () => this.unfollow(gamer.alias, gamer.profileId);
 
-    return(
+    return (
       <div className="hover-bar">
         {this.renderButton(openProfile, 'Profile')}
         {canSendFriendRequest && this.renderButton(sendFriendRequest, 'Connect')}
         {canCancelFriendRequest && this.renderButton(cancelFriendRequest, 'Request Sent')}
-        {this.renderButton(invite, 'Invite')}
+        {canInvite && this.renderButton(invite, 'Invite')}
         {canFollow && this.renderButton(follow, 'Follow')}
         {canUnfollow && this.renderButton(unfollow, 'Unfollow')}
       </div>
@@ -145,7 +147,7 @@ export default class Results extends React.Component {
 
   renderInviteModal = () => {
     if (!this.state.inviting) return null;
-    return(
+    return (
       <InviteModal
         gamer={this.state.inviting}
         onClose={() => this.setState({ inviting: null })}
@@ -174,7 +176,7 @@ export default class Results extends React.Component {
   }
 
   render() {
-    return(
+    return (
       <div className="find-gamers-results">
         {this.renderGamers()}
         {this.renderInviteModal()}
