@@ -509,17 +509,14 @@ export default class IndividualPost extends Component {
     try {
       const value = await createShortLink(`${window.location.origin}/post/${post_id}`)
       copyToClipboard(value)
-      console.log('Going here')
       if (this.detectMob()) {
-        console.log('Inside here')
         navigator
           .share({
-            title: 'myG',
-            text: 'Share link',
+            title: "myG - Gamer's platform",
+            text: 'myG share link',
             url: value
           })
           .catch((error) => {
-            console.log(error, '<<<Errored out!')
             logToElasticsearch('error', 'IndividualPost', 'Failed clickedShare(SHARE)' + ' ' + error)
           })
       }
