@@ -497,12 +497,28 @@ export default class IndividualPost extends Component {
     }
   }
 
+  //returns True if mobile
+  detectMob = () => {
+    return window.innerWidth <= 480
+  }
+
   clickedShare = async () => {
     var post_id = this.props.post.id
 
     try {
       const value = await createShortLink(`${window.location.origin}/post/${post_id}`)
       copyToClipboard(value)
+      if (this.detectMob()) {
+        navigator
+          .share({
+            title: 'myG',
+            text: 'Share link',
+            url: value
+          })
+          .catch((error) => {
+            logToElasticsearch('error', 'IndividualPost', 'Failed clickedShare(SHARE)' + ' ' + error)
+          })
+      }
       this.setState({
         showPostExtraOption: false
       })
