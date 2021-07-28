@@ -499,6 +499,7 @@ export default class IndividualPost extends Component {
 
   //returns True if mobile
   detectMob = () => {
+    console.log(window.innerWidth, '<<<window.innerWidth')
     return window.innerWidth <= 480
   }
 
@@ -508,7 +509,9 @@ export default class IndividualPost extends Component {
     try {
       const value = await createShortLink(`${window.location.origin}/post/${post_id}`)
       copyToClipboard(value)
+      console.log('Going here')
       if (this.detectMob()) {
+        console.log('Inside here')
         navigator
           .share({
             title: 'myG',
@@ -516,6 +519,7 @@ export default class IndividualPost extends Component {
             url: value
           })
           .catch((error) => {
+            console.log(error, '<<<Errored out!')
             logToElasticsearch('error', 'IndividualPost', 'Failed clickedShare(SHARE)' + ' ' + error)
           })
       }
