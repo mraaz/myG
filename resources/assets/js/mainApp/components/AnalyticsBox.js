@@ -6,7 +6,7 @@ import { fetchStatsAction } from '../../redux/actions/userAction'
 class AnalyticsBox extends React.Component {
   state = {
     counter: 1,
-    loading: true,
+    loading: true
   }
 
   async componentDidMount() {
@@ -20,7 +20,7 @@ class AnalyticsBox extends React.Component {
       user_experience = 0,
       start_of_level_xp = 0,
       user_xp_negative_balance = 0,
-      level_max_points = 0,
+      level_max_points = 0
     } = this.props.userTransactionStates
 
     const progress = Math.floor(((user_experience - start_of_level_xp) / level_max_points) * 100)
@@ -40,7 +40,9 @@ class AnalyticsBox extends React.Component {
           />
           <div className='ratings'>
             <p className='social-box-text'>Experience Pts.</p>
-            <p className='social-box-count'>{user_experience}</p>
+            <p className='social-box-count'>
+              {user_experience}/{level_max_points}
+            </p>
           </div>
         </section>
       </div>
@@ -119,7 +121,8 @@ class AnalyticsBox extends React.Component {
     return (
       <section
         className={`social-main ${this.props.containerStyle ? this.props.containerStyle : ''}`}
-        onClick={(event) => event.stopPropagation()}>
+        onClick={(event) => event.stopPropagation()}
+      >
         <div className='social-content'>
           {this.renderLevel()}
           {this.renderConnections()}
@@ -143,7 +146,7 @@ function mapStateToProps(state, props) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    fetchStats: (alias) => dispatch(fetchStatsAction(alias)),
+    fetchStats: (alias) => dispatch(fetchStatsAction(alias))
   }
 }
 
