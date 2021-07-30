@@ -93,7 +93,7 @@ class Layout extends Component {
         }
 
         const shortLinkCode = window.location.href.split('/s/')[1];
-        if (shortLinkCode && shortLinkCode.length === 6) {
+        if (shortLinkCode) {
           this.setState({ hasLink: true });
           const link = await fetchShortLink(shortLinkCode);
           this.setState({ link }, () => {

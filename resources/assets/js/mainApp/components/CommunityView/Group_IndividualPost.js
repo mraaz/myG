@@ -14,11 +14,14 @@ import moment from 'moment'
 
 import IndividualComment from '../IndividualComment'
 import SweetAlert from '../common/MyGSweetAlert'
-import { Toast_style } from '../Utility_Function'
+import { Toast_style, mobile_Share } from '../Utility_Function'
 import { Upload_to_S3, Remove_file } from '../AWS_utilities'
 
 import { toast } from 'react-toastify'
 import { logToElasticsearch } from '../../../integration/http/logger'
+import { createShortLink } from '../../../integration/http/links'
+
+import { copyToClipboard } from '../../../common/clipboard'
 
 const buckectBaseUrl = 'https://myG.gg/platform_images/'
 
@@ -107,7 +110,7 @@ export default class Group_IndividualPost extends Component {
         post_id: post_id
       })
     } catch (error) {
-      logToElasticsearch('error', 'IndividualComment', 'Failed click_like_btn:' + ' ' + error)
+      logToElasticsearch('error', 'Group_IndividualPost', 'Failed click_like_btn:' + ' ' + error)
     }
     if (this.state.total == 0) {
       this.setState({
@@ -138,7 +141,7 @@ export default class Group_IndividualPost extends Component {
       axios.get(`/api/likes/delete/${post_id}`)
       //const deletePostLike = axios.get(`/api/notifications/deletePostLike/${post_id}`)
     } catch (error) {
-      logToElasticsearch('error', 'IndividualComment', 'Failed click_unlike_btn:' + ' ' + error)
+      logToElasticsearch('error', 'Group_IndividualPost', 'Failed click_unlike_btn:' + ' ' + error)
     }
 
     if (this.state.total == 0) {
@@ -215,7 +218,7 @@ export default class Group_IndividualPost extends Component {
           comment_total: myComments.data.allComments.length
         })
       } catch (error) {
-        logToElasticsearch('error', 'IndividualComment', 'Failed pullComments:' + ' ' + error)
+        logToElasticsearch('error', 'Group_IndividualPost', 'Failed pullComments:' + ' ' + error)
       }
     }
     getComments()
@@ -331,7 +334,7 @@ export default class Group_IndividualPost extends Component {
           zero_comments: true
         })
       } catch (error) {
-        logToElasticsearch('error', 'IndividualComment', 'Failed saveComment:' + ' ' + error)
+        logToElasticsearch('error', 'Group_IndividualPost', 'Failed saveComment:' + ' ' + error)
       }
     }
     saveComment()
@@ -361,7 +364,7 @@ export default class Group_IndividualPost extends Component {
           value2: ''
         })
       } catch (error) {
-        logToElasticsearch('error', 'IndividualComment', 'Failed editPost:' + ' ' + error)
+        logToElasticsearch('error', 'Group_IndividualPost', 'Failed editPost:' + ' ' + error)
       }
     }
     editPost()
@@ -456,16 +459,31 @@ export default class Group_IndividualPost extends Component {
     )
   }
 
+  clickedShare = async () => {
+    let post_id = this.props.post.id
+
+    try {
+      const value = await createShortLink(`${window.location.origin}/post/${post_id}`)
+      mobile_Share(value)
+
+      this.setState({
+        showPostExtraOption: false
+      })
+    } catch (error) {
+      logToElasticsearch('error', 'Group_IndividualPost', 'Failed clickedShare:' + ' ' + error)
+    }
+  }
+
   delete_exp = () => {
     var post_id = this.props.post.id
 
     try {
-      const myPost_delete = axios.delete(`/api/post/delete/${post_id}`)
+      axios.delete(`/api/post/delete/${post_id}`)
       this.setState({
         post_deleted: true
       })
     } catch (error) {
-      logToElasticsearch('error', 'IndividualComment', 'Failed delete_exp:' + ' ' + error)
+      logToElasticsearch('error', 'Group_IndividualPost', 'Failed delete_exp:' + ' ' + error)
     }
   }
 
@@ -601,6 +619,8 @@ export default class Group_IndividualPost extends Component {
     } = this.state
     if (post_deleted != true) {
       var show_media = false
+      //current_user_permission:
+      //-1: Not a member of this group, 0: Owner, 1: Admin of group, 2: Moderator, 3: User, 42:Pending approval
 
       let { post, current_user_permission = null, user } = this.props //destructing of object
       let { profile_img = 'https://myG.gg/default_user/new-user-profile-picture.png', hash_tags = [] } = post //destructing of object
@@ -653,11 +673,14 @@ export default class Group_IndividualPost extends Component {
                         </div>
                       )}
 
-                      {([0, 1].includes(current_user_permission) || userInfo.id == post.user_id) && (
+                      {userInfo.id == post.user_id && (
                         <div className='option' onClick={this.clickedEdit}>
                           Edit &nbsp;
                         </div>
                       )}
+                      <div className='option' onClick={() => this.clickedShare()}>
+                        Share
+                      </div>
                     </nav>
                   </div>
                 </div>

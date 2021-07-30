@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react'
 import { Upload_to_S3 } from '../AWS_utilities'
 import axios from 'axios'
 import { toast } from 'react-toastify'
-import { Toast_style } from '../Utility_Function'
+import { Toast_style, mobile_Share } from '../Utility_Function'
 import { copyToClipboard } from '../../../common/clipboard'
 import { createShortLink } from '../../../integration/http/links'
 
@@ -67,13 +67,23 @@ const CoverImage = (props) => {
   const handleJoinButton = async (e, id) => {
     e.preventDefault()
     if (props.current_user_permission == -1 && joinlabel == undefined) {
-      const data = await axios.post('/api/usergroup/create', {
+      await axios.post('/api/usergroup/create', {
         group_id: id
       })
       toast.success(<Toast_style text={'Join request sent. You need approval, let the waiting game begin'} />)
       setJoinlabel('Pending')
     } else {
       setToggleOption(!toggle)
+    }
+  }
+
+  const clickedShare = async () => {
+    try {
+      const value = await createShortLink(window.location.href)
+      mobile_Share(value)
+      copyToClipboard(value)
+    } catch (error) {
+      logToElasticsearch('error', 'CoverImage', 'Failed clickedShare:' + ' ' + error)
     }
   }
 
@@ -141,7 +151,7 @@ const CoverImage = (props) => {
           <button type='button' className='btnWarning' onClick={(e) => props.handleModalStatus('members')}>
             View Members
           </button>
-          <button type='button' className='btnWarning' onClick={async () => copyToClipboard(await createShortLink(window.location.href))}>
+          <button type='button' className='btnWarning' onClick={() => clickedShare()}>
             Share
           </button>
         </div>
