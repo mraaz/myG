@@ -12,11 +12,9 @@ export default class IndividualReply extends Component {
     super()
     this.state = {
       show_reply_like: false,
-      show_reply_reply: false,
       reply_like: false,
       show_profile_img: false,
       reply_like_total: 0,
-      show_add_reply: false,
       dropdown: false,
       reply_deleted: false,
       show_edit_reply: false,

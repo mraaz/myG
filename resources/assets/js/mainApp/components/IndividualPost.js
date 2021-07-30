@@ -94,8 +94,8 @@ export default class IndividualPost extends Component {
   }
 
   click_like_btn = async (post_id) => {
-    const isLoggedinUser = this.props.guest ? true : false
-    if (isLoggedinUser) {
+    const isGuestUser = this.props.guest ? true : false
+    if (isGuestUser) {
       return
     }
     this.setState({
@@ -125,8 +125,8 @@ export default class IndividualPost extends Component {
   }
 
   click_unlike_btn = async (post_id) => {
-    const isLoggedinUser = this.props.guest ? true : false
-    if (isLoggedinUser) {
+    const isGuestUser = this.props.guest ? true : false
+    if (isGuestUser) {
       return
     }
     this.setState({
@@ -426,6 +426,7 @@ export default class IndividualPost extends Component {
         return (
           <IndividualComment
             comment={item}
+            post={this.props.post}
             key={index}
             user={this.props.user}
             onDelete={(deleted) => {
@@ -449,6 +450,7 @@ export default class IndividualPost extends Component {
         return (
           <IndividualComment
             comment={item}
+            post={this.props.post}
             key={item.id}
             user={this.props.user}
             onDelete={(deleted) => {
@@ -606,7 +608,7 @@ export default class IndividualPost extends Component {
       showPostExtraOption,
       pinned_total = 0
     } = this.state
-    const isLoggedinUser = this.props.guest ? true : false
+
     if (post_deleted != true) {
       let { post, user = {} } = this.props //destructing of object
       let profile_img = 'https://myG.gg/default_user/new-user-profile-picture.png',
@@ -622,12 +624,17 @@ export default class IndividualPost extends Component {
         return <div className='update-container'></div>
       }
 
+      let isGuestUser = this.props.guest ? true : false
+      if (!isGuestUser) {
+        if (!post.allow_comments) isGuestUser = true
+      }
+
       return (
         <div className='post__container'>
           {alert}
           <div className='post__body__wrapper'>
             <div className='post__body'>
-              {!isLoggedinUser && (
+              {!isGuestUser && (
                 <div className='gamePostExtraOption'>
                   <i className='fas fa-ellipsis-h' onClick={this.clickedGamePostExtraOption}>
                     ...
@@ -787,13 +794,13 @@ export default class IndividualPost extends Component {
             <div className='compose-comment'>
               <textarea
                 name='name'
-                placeholder='Write a comment...'
+                placeholder={post.allow_comments ? 'Write a comment...' : 'Comments disabled'}
                 value={this.state.value}
                 onChange={this.handleChange}
                 maxLength='254'
                 onKeyDown={(e) => this.detectKey(e, true)}
                 ref={this.setTextInputRef}
-                disabled={isLoggedinUser}
+                disabled={isGuestUser}
               />
               <div className='insert__images' onClick={this.insert_image_comment}>
                 <input
@@ -802,6 +809,7 @@ export default class IndividualPost extends Component {
                   ref={this.fileInputRef}
                   onChange={this.handleSelectFile}
                   name='insert__images'
+                  disabled={isGuestUser}
                 />
                 <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Image.svg`} className='img-fluid' />
               </div>
