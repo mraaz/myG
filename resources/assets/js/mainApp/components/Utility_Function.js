@@ -283,8 +283,8 @@ export function Disable_keys(e) {
 export const Toast_style = ({ title, text, onClick }) => (
   <div className='individual-toasts clickable' onClick={onClick}>
     <img width={48} style={{ marginRight: 4 }} src={'https://myG.gg/logos/Logo.png'}></img>
-    <div className="toast-content">
-      {title && <div className="toast-title">{title}</div>}
+    <div className='toast-content'>
+      {title && <div className='toast-title'>{title}</div>}
       <div>{text}</div>
     </div>
   </div>
@@ -300,4 +300,23 @@ export function Convert_to_comma_delimited_value(array_to_convert) {
 
 export async function Update_ip_settings() {
   axios.get('/api/users_additional_infos/')
+}
+
+//returns True if mobile
+const detectMob = () => {
+  return window.innerWidth <= 480
+}
+
+export async function mobile_Share(value) {
+  if (detectMob()) {
+    navigator
+      .share({
+        title: "myG - Gamer's platform",
+        text: 'myG share link',
+        url: value
+      })
+      .catch((error) => {
+        logToElasticsearch('error', 'Utility_Function', 'Failed mobile_Share:' + ' ' + error)
+      })
+  }
 }

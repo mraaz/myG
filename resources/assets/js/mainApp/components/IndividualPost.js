@@ -15,7 +15,7 @@ import moment from 'moment'
 
 import IndividualComment from './IndividualComment'
 import SweetAlert from './common/MyGSweetAlert'
-import { Toast_style } from './Utility_Function'
+import { Toast_style, mobile_Share } from './Utility_Function'
 import { Upload_to_S3, Remove_file } from './AWS_utilities'
 
 import { toast } from 'react-toastify'
@@ -497,29 +497,14 @@ export default class IndividualPost extends Component {
     }
   }
 
-  //returns True if mobile
-  detectMob = () => {
-    console.log(window.innerWidth, '<<<window.innerWidth')
-    return window.innerWidth <= 480
-  }
-
   clickedShare = async () => {
     var post_id = this.props.post.id
 
     try {
       const value = await createShortLink(`${window.location.origin}/post/${post_id}`)
+      mobile_Share(value)
       copyToClipboard(value)
-      if (this.detectMob()) {
-        navigator
-          .share({
-            title: "myG - Gamer's platform",
-            text: 'myG share link',
-            url: value
-          })
-          .catch((error) => {
-            logToElasticsearch('error', 'IndividualPost', 'Failed clickedShare(SHARE)' + ' ' + error)
-          })
-      }
+
       this.setState({
         showPostExtraOption: false
       })

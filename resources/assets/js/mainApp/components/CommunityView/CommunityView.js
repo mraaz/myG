@@ -82,9 +82,11 @@ const CommunityView = (props) => {
   }
 
   const renderSponsors = (Sponsors = []) => {
-    if (props.level < 15) return <p className='locked-sponsors'>Community Sponsors are unlocked at Lvl. 15</p>
-    if (props.level < 25) Sponsors = Sponsors.slice ? Sponsors.slice(0, 1) : []
     const { current_user_permission } = communityDetails
+
+    if ([0, 1].includes(current_user_permission) && props.level < 15)
+      return <p className='locked-sponsors'>Community Sponsors are unlocked at Lvl. 15</p>
+    if (props.level < 25) Sponsors = Sponsors.slice ? Sponsors.slice(0, 1) : []
     return (
       <div className='Sponsors__container'>
         {[0, 1].includes(current_user_permission) && (

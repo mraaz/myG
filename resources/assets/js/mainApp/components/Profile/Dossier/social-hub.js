@@ -1,9 +1,12 @@
 import React from 'react'
+
 import { getAssetUrl } from '../../../../common/assets'
 import { copyToClipboard } from '../../../../common/clipboard'
 import { ignoreFunctions } from '../../../../common/render'
 import notifyToast from '../../../../common/toast'
 import { createShortLink } from '../../../../integration/http/links'
+
+import { mobile_Share } from '../../Utility_Function'
 
 export default class DossierSocialHub extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
@@ -15,7 +18,7 @@ export default class DossierSocialHub extends React.Component {
     discord: '',
     steam: '',
     youtube: '',
-    facebook: '',
+    facebook: ''
   }
 
   componentDidMount() {
@@ -24,7 +27,7 @@ export default class DossierSocialHub extends React.Component {
       discord: this.props.profile.discord || '',
       steam: this.props.profile.steam || '',
       youtube: this.props.profile.youtube || '',
-      facebook: this.props.profile.facebook || '',
+      facebook: this.props.profile.facebook || ''
     })
   }
 
@@ -35,7 +38,7 @@ export default class DossierSocialHub extends React.Component {
       discord: /^[A-z]+#\d+$/.test(this.state.discord) ? this.state.discord : '',
       steam: /^((https:\/\/)?)?steamcommunity.com\/profiles\//.test(this.state.steam) ? this.state.steam : '',
       youtube: /^((https:\/\/)?www.)?youtube.com\/channel\//.test(this.state.youtube) ? this.state.youtube : '',
-      facebook: /^(((https:\/\/)?www.)?facebook.com\/)|(((https:\/\/)?www.)?fb.me\/)/.test(this.state.facebook) ? this.state.facebook : '',
+      facebook: /^(((https:\/\/)?www.)?facebook.com\/)|(((https:\/\/)?www.)?fb.me\/)/.test(this.state.facebook) ? this.state.facebook : ''
     })
     this.props.onClose()
   }
@@ -70,13 +73,15 @@ export default class DossierSocialHub extends React.Component {
             value={this.state.twitch}
             disabled={!this.props.isSelf}
             placeholder='Enter link in this format: https://www.twitch.tv/username'
-            onChange={(event) => this.setState({ twitch: event.target.value })}></input>
+            onChange={(event) => this.setState({ twitch: event.target.value })}
+          ></input>
         </div>
         <a
           className={style + ' aligned-button'}
           href={isEmpty ? 'https://www.twitch.tv/profile' : isValid && this.forceHttps(this.state.twitch)}
           target='_blank'
-          rel='noopener noreferrer'>
+          rel='noopener noreferrer'
+        >
           {isEmpty ? 'Find link' : isValid ? 'Go to page' : 'Invalid'}
         </a>
       </div>
@@ -98,7 +103,8 @@ export default class DossierSocialHub extends React.Component {
             value={this.state.discord}
             disabled={!this.props.isSelf}
             placeholder='Enter link in this format: username#tag'
-            onChange={(event) => this.setState({ discord: event.target.value })}></input>
+            onChange={(event) => this.setState({ discord: event.target.value })}
+          ></input>
         </div>
         <a
           className={style + ' aligned-button ' + (isValid ? 'clickable' : '')}
@@ -110,7 +116,8 @@ export default class DossierSocialHub extends React.Component {
             event.preventDefault()
           }}
           target='_blank'
-          rel='noopener noreferrer'>
+          rel='noopener noreferrer'
+        >
           {isEmpty ? 'Find link' : isValid ? 'Copy Link' : 'Invalid'}
         </a>
       </div>
@@ -132,13 +139,15 @@ export default class DossierSocialHub extends React.Component {
             value={this.state.steam}
             disabled={!this.props.isSelf}
             placeholder='Enter link in this format: https://steamcommunity.com/profiles/profile-id'
-            onChange={(event) => this.setState({ steam: event.target.value })}></input>
+            onChange={(event) => this.setState({ steam: event.target.value })}
+          ></input>
         </div>
         <a
           className={style + ' aligned-button'}
           href={isEmpty ? 'https://steamcommunity.com/my' : isValid && this.forceHttps(this.state.steam)}
           target='_blank'
-          rel='noopener noreferrer'>
+          rel='noopener noreferrer'
+        >
           {isEmpty ? 'Find link' : isValid ? 'Go to page' : 'Invalid'}
         </a>
       </div>
@@ -160,13 +169,15 @@ export default class DossierSocialHub extends React.Component {
             value={this.state.youtube}
             disabled={!this.props.isSelf}
             placeholder='Enter link in this format: https://www.youtube.com/channel/channel-id'
-            onChange={(event) => this.setState({ youtube: event.target.value })}></input>
+            onChange={(event) => this.setState({ youtube: event.target.value })}
+          ></input>
         </div>
         <a
           className={style + ' aligned-button'}
           href={isEmpty ? 'https://www.youtube.com/my_profile' : isValid && this.forceHttps(this.state.youtube)}
           target='_blank'
-          rel='noopener noreferrer'>
+          rel='noopener noreferrer'
+        >
           {isEmpty ? 'Find link' : isValid ? 'Go to page' : 'Invalid'}
         </a>
       </div>
@@ -188,13 +199,15 @@ export default class DossierSocialHub extends React.Component {
             value={this.state.facebook}
             disabled={!this.props.isSelf}
             placeholder='Enter link in this format: https://www.facebook.com/profile-id'
-            onChange={(event) => this.setState({ facebook: event.target.value })}></input>
+            onChange={(event) => this.setState({ facebook: event.target.value })}
+          ></input>
         </div>
         <a
           className={style + ' aligned-button'}
           href={isEmpty ? 'https://www.facebook.com/me' : isValid && this.forceHttps(this.state.facebook)}
           target='_blank'
-          rel='noopener noreferrer'>
+          rel='noopener noreferrer'
+        >
           {isEmpty ? 'Find link' : isValid ? 'Go to page' : 'Invalid'}
         </a>
       </div>
@@ -237,9 +250,12 @@ export default class DossierSocialHub extends React.Component {
       <div
         className='share-button clickable'
         onClick={async () => {
-          copyToClipboard(await createShortLink(window.location.href))
-          notifyToast('Profile link copied. Click Click Boom!')
-        }}>
+          const value = await createShortLink(window.location.href)
+          mobile_Share(value)
+          copyToClipboard(value)
+          //notifyToast('Profile link copied. Click Click Boom!')
+        }}
+      >
         Share
       </div>
     )
