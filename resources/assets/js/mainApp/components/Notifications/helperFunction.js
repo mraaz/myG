@@ -13,12 +13,12 @@ import { GoogleAnalytics } from '../../../common/analytics'
 
 export const clickedAccept_myInvitations = (invitation) => {
   try {
-    const deleteNoti = axios.get(`/api/notifications_v2/delete/${invitation.id}`)
+    axios.delete(`/api/notifications_v2/delete/${invitation.id}`)
 
     setAsFriendRedux(invitation.user_id)
     GoogleAnalytics.userFriendMade(invitation.user_id)
-    const createFriend = axios.post('/api/friends/create', {
-      friend_id: invitation.user_id,
+    axios.post('/api/friends/create', {
+      friend_id: invitation.user_id
     })
   } catch (error) {
     logToElasticsearch('error', 'Notification HelperFunction', 'Failed clickedAccept_createFriend:' + ' ' + error)
@@ -27,7 +27,7 @@ export const clickedAccept_myInvitations = (invitation) => {
 
 export const clickedDenied_myInvitations = (invitation) => {
   try {
-    const deleteNoti = axios.delete(`/api/notifications_v2/delete/${invitation.id}`)
+    axios.delete(`/api/notifications_v2/delete/${invitation.id}`)
   } catch (error) {
     logToElasticsearch('error', 'Notification HelperFunction', 'Failed clickedDenied_myInvitations:' + ' ' + error)
   }
@@ -35,33 +35,31 @@ export const clickedDenied_myInvitations = (invitation) => {
 
 export const clickedDenied_community = (invitation) => {
   try {
-    const deleteRegistration = axios.delete(
-      `/api/notifications_v2/delete_community/${invitation.id}/${invitation.group_id}/${invitation.user_id}`
-    )
+    axios.delete(`/api/notifications_v2/delete_community/${invitation.id}/${invitation.group_id}/${invitation.user_id}`)
   } catch (error) {
     logToElasticsearch('error', 'Notification HelperFunction', 'Failed clickedDenied_community:' + ' ' + error)
   }
 }
 export const clickedAccept_community = (invitation) => {
   try {
-    const set_group_approval = axios.get(`/api/usergroup/set_group_approval/${invitation.group_id}/${invitation.user_id}`)
+    axios.get(`/api/usergroup/set_group_approval/${invitation.group_id}/${invitation.user_id}`)
   } catch (error) {
     logToElasticsearch('error', 'Notification HelperFunction', 'Failed clickedAccept_community:' + ' ' + error)
   }
 }
 export const clickedAccept_game = (invitation) => {
   try {
-    const accepted_invite = axios.post('/api/attendees/update_invite/', {
+    axios.post('/api/attendees/update_invite/', {
       schedule_game_id: invitation.schedule_games_id,
-      user_id: invitation.user_id,
+      user_id: invitation.user_id
     })
 
     joinGameGroup(invitation.schedule_games_id, invitation.user_id)
     const str = invitation.alias + ' was approved'
 
-    const post = axios.post('/api/comments/', {
+    axios.post('/api/comments/', {
       content: str,
-      schedule_games_id: invitation.schedule_games_id,
+      schedule_games_id: invitation.schedule_games_id
     })
     GoogleAnalytics.gameAccepted()
   } catch (error) {
@@ -70,7 +68,7 @@ export const clickedAccept_game = (invitation) => {
 }
 export const clickedDenied_game = (invitation) => {
   try {
-    const deleteInvite = axios.get(`/api/attendees/delete_myInvite/${invitation.schedule_games_id}/${invitation.user_id}`)
+    axios.get(`/api/attendees/delete_myInvite/${invitation.schedule_games_id}/${invitation.user_id}`)
   } catch (error) {
     logToElasticsearch('error', 'Notification HelperFunction', 'Failed clickedDenied_game:' + ' ' + error)
   }
@@ -78,7 +76,7 @@ export const clickedDenied_game = (invitation) => {
 
 export const mark_all = () => {
   try {
-    const mark_all = axios.get('/api/notifications_v2/markAllNoti')
+    axios.get('/api/notifications_v2/markAllNoti')
   } catch (error) {
     logToElasticsearch('error', 'Notification HelperFunction', 'Failed mark_all:' + ' ' + error)
   }
@@ -87,7 +85,7 @@ export const mark_read_status = (id) => {
   try {
     axios.post('/api/notifications_v2/mark_read_status', {
       id,
-      read_status: 1,
+      read_status: 1
     })
   } catch (error) {
     logToElasticsearch('error', 'Notification HelperFunction', 'Failed mark_read_status' + ' ' + error)
@@ -105,7 +103,7 @@ export const handleSingleNotificationReadStatus = (id, status, activity_type) =>
   axios.post('/api/notifications_v2/mark_read_status', {
     id,
     read_status: status == true ? 1 : 0,
-    activity_type,
+    activity_type
   })
 }
 
@@ -126,13 +124,13 @@ export const handleTime = (time) => {
   }
   return {
     countdown,
-    countdown_label,
+    countdown_label
   }
 }
 
 export const delete_chatNotification_all = () => {
   try {
-    const delete_all = axios.delete('/api/chat_notifications')
+    axios.delete('/api/chat_notifications')
   } catch (error) {
     logToElasticsearch('error', 'Notification HelperFunction', 'Failed delete_chatNotification_all:' + ' ' + error)
   }
@@ -162,7 +160,6 @@ export const deleteReportNotification = (data) => {
 export const deleteGamer = (data) => {
   try {
     axios.delete(`/api/user/delete/${data.user_id}`)
-    //axios.delete(`/api/report/delete/${data.report_id}`)
   } catch (error) {
     logToElasticsearch('error', 'Notification HelperFunction', 'Failed clickedDeleteGamer:' + ' ' + error)
   }
@@ -177,6 +174,6 @@ export const banGamer = (data) => {
 export const clicked_sonsors = (approval, id) => {
   axios.post('/api/sponsor/approval_for_sponsor', {
     id,
-    approval,
+    approval
   })
 }
