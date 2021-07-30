@@ -289,17 +289,18 @@ export default class DossierSocialHub extends React.Component {
             {this.renderTwitchRow()}
             {this.renderLinkToFindYourLink('https://www.twitch.tv/profile')}
             {this.renderDivider()}
-            {this.renderDiscordRow()}
-            {this.renderLinkToFindYourLink('https://discord.com/channels/@me')}
-            {this.renderDivider()}
-            {this.renderSteamRow()}
-            {this.renderLinkToFindYourLink('https://steamcommunity.com/my')}
-            {this.renderDivider()}
             {this.renderYoutubeRow()}
             {this.renderLinkToFindYourLink('https://www.youtube.com/my_profile')}
             {this.renderDivider()}
             {this.renderFacebookRow()}
             {this.renderLinkToFindYourLink('https://www.facebook.com/me')}
+            {this.renderDivider()}
+            {this.renderSteamRow()}
+            {this.renderLinkToFindYourLink('https://steamcommunity.com/my')}
+            {this.renderDivider()}
+            {this.renderDiscordRow()}
+            {this.renderLinkToFindYourLink('https://discord.com/channels/@me')}
+            {this.renderDivider()}
             {this.renderEmpty()}
           </div>
           {this.renderSpacer()}
