@@ -465,6 +465,7 @@ export default class Group_IndividualPost extends Component {
     try {
       const value = await createShortLink(`${window.location.origin}/post/${post_id}`)
       mobile_Share(value)
+      copyToClipboard(value)
 
       this.setState({
         showPostExtraOption: false
