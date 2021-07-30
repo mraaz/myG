@@ -32,7 +32,7 @@ export default class Posts extends Component {
     if (myPosts.length > 0) {
       return myPosts.map((item, index) => {
         try {
-          let media_url = item.media_url.length > 0 ? JSON.parse(item.media_url) : ''
+          item.media_url.length > 0 ? JSON.parse(item.media_url) : ''
         } catch (e) {
           item.media_url = ''
         }
@@ -50,9 +50,9 @@ export default class Posts extends Component {
   }
 
   fetchMoreData = () => {
-    if (this.state.myPosts.length > 0) {
-      window.scrollTo(0, document.documentElement.offsetHeight - 4000)
-    }
+    // if (this.state.myPosts.length > 0) {
+    //   window.scrollTo(0, document.documentElement.offsetHeight - 4000)
+    // }
 
     const getPosts = async () => {
       try {

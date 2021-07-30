@@ -43,7 +43,8 @@ export default class IndividualComment extends Component {
       aws_key_id: [],
       hideReplies: false,
       replyShowCount: 1,
-      pinned_status: false
+      pinned_status: false,
+      show_reply_button: true
     }
     this.textInput = null
     this.fileInputRef = React.createRef()
@@ -68,11 +69,17 @@ export default class IndividualComment extends Component {
       pinned_status: this.props.comment.pinned ? true : false
     })
 
-    var comment_timestamp = moment(this.props.comment.updated_at, 'YYYY-MM-DD HH:mm:ssZ')
+    let comment_timestamp = moment(this.props.comment.updated_at, 'YYYY-MM-DD HH:mm:ssZ')
     this.setState({ comment_time: comment_timestamp.local().fromNow() })
 
     const self = this
     let comment = this.props
+
+    if (this.props.post) {
+      this.setState({
+        show_reply_button: this.props.post.allow_comments
+      })
+    }
 
     const getCommentReplies = async function () {
       try {
@@ -528,13 +535,16 @@ export default class IndividualComment extends Component {
   }
 
   render() {
-    let { comment, user } = this.props
+    let { comment, user, post } = this.props
     let { profile_img = 'https://myG.gg/default_user/new-user-profile-picture.png', media_url = '' } = comment
     const { myReplies = [], show_more_replies = true, hideReplies = false } = this.state
     const media_urls = media_url && media_url.length > 0 ? JSON.parse(media_url) : ''
     const comment_pinned = this.state.pinned_status
 
-    const isDisabled = user && user.id ? false : true
+    let isDisabled = user && user.id ? false : true
+    if (!isDisabled) {
+      if (!post.allow_comments) isDisabled = true
+    }
 
     if (this.state.comment_deleted != true) {
       return (
@@ -632,9 +642,11 @@ export default class IndividualComment extends Component {
           </div>
           {/* profile section end  */}
           <div className='reply__comment_section'>
-            <div className='comment-panel-reply' onClick={this.toggleReply}>
-              Reply
-            </div>
+            {this.state.show_reply_button && (
+              <div className='comment-panel-reply' onClick={this.toggleReply}>
+                Reply
+              </div>
+            )}
             {this.state.like && (
               <div className='comment-panel-liked' onClick={() => this.click_unlike_btn(comment.id)}>
                 Unlike

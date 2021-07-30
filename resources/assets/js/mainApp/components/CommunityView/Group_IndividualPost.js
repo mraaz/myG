@@ -420,7 +420,7 @@ export default class Group_IndividualPost extends Component {
     return (
       comments.length > 0 &&
       comments.map((item, index) => {
-        return <IndividualComment comment={item} key={index} user={this.props.user.userInfo} />
+        return <IndividualComment comment={item} key={index} user={this.props.user.userInfo} post={this.props.post} />
       })
     )
   }
@@ -432,7 +432,7 @@ export default class Group_IndividualPost extends Component {
     return (
       commentArr.length > 0 &&
       commentArr.map((item, index) => {
-        return <IndividualComment comment={item} key={item.id} user={this.props.user.userInfo} />
+        return <IndividualComment comment={item} key={item.id} user={this.props.user.userInfo} post={this.props.post} />
       })
     )
   }
@@ -639,7 +639,10 @@ export default class Group_IndividualPost extends Component {
 
       const check = this.state.featured_enabled ? true : false
 
-      const isGuestUser = this.props.guest ? true : false
+      let isGuestUser = this.props.guest ? true : false
+      if (!isGuestUser) {
+        if (!post.allow_comments) isGuestUser = true
+      }
 
       return (
         <div className='post__container'>
@@ -796,7 +799,7 @@ export default class Group_IndividualPost extends Component {
             <div className='compose-comment'>
               <textarea
                 name='name'
-                placeholder='Write a comment...'
+                placeholder={post.allow_comments ? 'Write a comment...' : 'Comments disabled'}
                 value={this.state.value}
                 onChange={this.handleChange}
                 maxLength='254'
