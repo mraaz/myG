@@ -65,7 +65,8 @@ export default class Group_IndividualPost extends Component {
       hideComments: false,
       commentShowCount: 2,
       showPostExtraOption: false,
-      featured_enabled: false
+      featured_enabled: false,
+      allow_Comments: true
     }
     this.imageFileType = ['jpeg', 'jpg', 'png', 'gif']
     this.videoFileType = ['mov', 'webm', 'mpg', 'mp4', 'avi', 'ogg']
@@ -167,6 +168,7 @@ export default class Group_IndividualPost extends Component {
         media_url = post.media_url ? post.media_url : ''
       }
     }
+
     const galleryItems = []
     if (media_url.length > 0) {
       for (let i = 0; i < media_url.length; i++) {
@@ -175,6 +177,7 @@ export default class Group_IndividualPost extends Component {
         }
       }
     }
+
     if (this.props.post.created_at) {
       post_timestamp = moment(this.props.post.created_at, 'YYYY-MM-DD HH:mm:ssZ')
     }
@@ -182,6 +185,7 @@ export default class Group_IndividualPost extends Component {
     if (this.props.post.total == 0) {
       this.setState({ show_like: false })
     }
+
     if (this.props.post.profile_img != null) {
       this.setState({ show_profile_img: true })
     }
@@ -193,7 +197,8 @@ export default class Group_IndividualPost extends Component {
       post_time: post_timestamp.local().fromNow(),
       content: this.props.post.content,
       featured_enabled: this.props.post.featured,
-      galleryItems
+      galleryItems,
+      allow_Comments: post.allow_comments
     })
     if (this.props.post.no_of_comments != 0) {
       this.setState({
@@ -475,6 +480,25 @@ export default class Group_IndividualPost extends Component {
     }
   }
 
+  clicked_allowComments = () => {
+    let post_id = this.props.post.id
+    const curr_State = this.state.allow_Comments
+
+    try {
+      axios.post(`/api/post/update_allow_comments`, {
+        post_id: post_id,
+        allow_comments: !curr_State
+      })
+
+      this.setState({
+        allow_Comments: !curr_State,
+        showPostExtraOption: false
+      })
+    } catch (error) {
+      logToElasticsearch('error', 'Group_IndividualPost', 'Failed clicked_allowComments:' + ' ' + error)
+    }
+  }
+
   delete_exp = () => {
     var post_id = this.props.post.id
 
@@ -619,7 +643,7 @@ export default class Group_IndividualPost extends Component {
       showPostExtraOption
     } = this.state
     if (post_deleted != true) {
-      var show_media = false
+      let show_media = false
       //current_user_permission:
       //-1: Not a member of this group, 0: Owner, 1: Admin of group, 2: Moderator, 3: User, 42:Pending approval
 
@@ -641,7 +665,11 @@ export default class Group_IndividualPost extends Component {
 
       let isGuestUser = this.props.guest ? true : false
       if (!isGuestUser) {
-        if (!post.allow_comments) isGuestUser = true
+        if (!this.state.allow_Comments) {
+          isGuestUser = true
+        } else {
+          isGuestUser = false
+        }
       }
 
       return (
@@ -685,6 +713,16 @@ export default class Group_IndividualPost extends Component {
                       <div className='option' onClick={() => this.clickedShare()}>
                         Share
                       </div>
+                      {[0, 1, 2].includes(current_user_permission) && !this.state.allow_Comments && (
+                        <div className='option' onClick={() => this.clicked_allowComments()}>
+                          Enable comments
+                        </div>
+                      )}
+                      {[0, 1, 2].includes(current_user_permission) && this.state.allow_Comments && (
+                        <div className='option' onClick={() => this.clicked_allowComments()}>
+                          Disable comments
+                        </div>
+                      )}
                     </nav>
                   </div>
                 </div>
@@ -799,7 +837,7 @@ export default class Group_IndividualPost extends Component {
             <div className='compose-comment'>
               <textarea
                 name='name'
-                placeholder={post.allow_comments ? 'Write a comment...' : 'Comments disabled'}
+                placeholder={this.state.allow_Comments ? 'Write a comment...' : 'Comments disabled'}
                 value={this.state.value}
                 onChange={this.handleChange}
                 maxLength='254'

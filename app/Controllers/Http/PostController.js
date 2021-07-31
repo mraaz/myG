@@ -634,6 +634,38 @@ class PostController {
     }
   }
 
+  async update_allow_comments({ auth, request }) {
+    if (auth.user) {
+      try {
+        let current_user_permission = -1
+
+        const post_owner = await Database.from('posts')
+          .where({ id: request.input('post_id') })
+          .first()
+        if (post_owner == undefined) return
+
+        const commonController = new CommonController()
+        current_user_permission = await commonController.get_permission({ auth }, post_owner.group_id)
+
+        if (current_user_permission == 0 || current_user_permission == 1 || current_user_permission == 2) {
+          await Post.query()
+            .where({ id: request.input('post_id') })
+            .update({ allow_comments: request.input('allow_comments') })
+        }
+
+        return
+      } catch (error) {
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error
+        })
+      }
+    }
+  }
+
   async get_additional_info({ auth }, post) {
     if (post == undefined) {
       return post
