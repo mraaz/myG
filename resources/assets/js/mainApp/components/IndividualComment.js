@@ -77,7 +77,7 @@ export default class IndividualComment extends Component {
 
     if (this.props.post) {
       this.setState({
-        show_reply_button: this.props.post.allow_comments
+        show_reply_button: this.props.post.allow_comments == 1 ? true : false
       })
     }
 

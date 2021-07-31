@@ -53,7 +53,6 @@ export default class IndividualPost extends Component {
       alert: null,
       media_urls: [],
       images: [],
-      showBullets: true,
       show_more_comments: true,
       preview_file: '',
       aws_key_id: [],
@@ -65,9 +64,9 @@ export default class IndividualPost extends Component {
       showPostExtraOption: false,
       show_group_name: false
     }
-    this.imageFileType = ['jpeg', 'jpg', 'png', 'gif']
-    this.videoFileType = ['mov', 'webm', 'mpg', 'mp4', 'avi', 'ogg']
-    this.textInput = null
+    // this.imageFileType = ['jpeg', 'jpg', 'png', 'gif']
+    // this.videoFileType = ['mov', 'webm', 'mpg', 'mp4', 'avi', 'ogg']
+    // this.textInput = null
 
     this.setTextInputRef = (element) => {
       this.textInput = element
