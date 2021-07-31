@@ -44,7 +44,6 @@ export default class Group_IndividualPost extends Component {
       value2: '',
       zero_comments: false,
       dropdown: false,
-      show_post_options: false,
       post_deleted: false,
       edit_post: false,
       content: '',
@@ -52,10 +51,6 @@ export default class Group_IndividualPost extends Component {
       alert: null,
       media_urls: [],
       images: [],
-      showBullets: true,
-      autoPlay: false,
-      isRTL: false,
-      disableSwipe: false,
       show_more_comments: true,
       preview_file: '',
       aws_key_id: [],
@@ -68,9 +63,9 @@ export default class Group_IndividualPost extends Component {
       featured_enabled: false,
       allow_Comments: true
     }
-    this.imageFileType = ['jpeg', 'jpg', 'png', 'gif']
-    this.videoFileType = ['mov', 'webm', 'mpg', 'mp4', 'avi', 'ogg']
-    this.textInput = null
+    // this.imageFileType = ['jpeg', 'jpg', 'png', 'gif']
+    // this.videoFileType = ['mov', 'webm', 'mpg', 'mp4', 'avi', 'ogg']
+    // this.textInput = null
 
     this.setTextInputRef = (element) => {
       this.textInput = element
@@ -198,7 +193,7 @@ export default class Group_IndividualPost extends Component {
       content: this.props.post.content,
       featured_enabled: this.props.post.featured,
       galleryItems,
-      allow_Comments: post.allow_comments
+      allow_Comments: post.allow_comments == 1 ? true : false
     })
     if (this.props.post.no_of_comments != 0) {
       this.setState({
@@ -795,7 +790,12 @@ export default class Group_IndividualPost extends Component {
             <div className='media'>
               {!!this.props.post.video && <ReactPlayer width={'100%'} height={360} url={this.props.post.video} controls={true} />}
               {galleryItems.length > 0 && (
-                <ImageGallery items={[...galleryItems]} showFullscreenButton={true} showGalleryFullscreenButton={true} />
+                <ImageGallery
+                  items={[...galleryItems]}
+                  showFullscreenButton={true}
+                  showGalleryFullscreenButton={true}
+                  showBullets={galleryItems.length > 1 ? true : false}
+                />
               )}
             </div>
             <div className='update-stats'>
