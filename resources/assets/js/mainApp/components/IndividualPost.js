@@ -92,51 +92,41 @@ export default class IndividualPost extends Component {
     this.doUploadS3 = this.doUploadS3.bind(this)
   }
 
-  click_like_btn = async (post_id) => {
+  click_like_btn = (post_id) => {
     const isGuestUser = this.props.guest ? true : false
     if (isGuestUser) {
       return
     }
     this.setState({
-      total: this.state.total + 1
+      total: this.state.total + 1,
+      show_like: true,
+      like: !this.state.like
     })
 
+    if (this.state.total == 0) {
+      this.setState({
+        admirer_first_name: this.props.user.alias
+      })
+    }
+
     try {
-      await axios.post('/api/likes', {
+      axios.post('/api/likes', {
         post_id: post_id
       })
     } catch (error) {
       logToElasticsearch('error', 'IndividualPost', 'Failed click_like_btn:' + ' ' + error)
     }
-    if (this.state.total == 0) {
-      this.setState({
-        admirer_first_name: this.props.user.userInfo.alias
-      })
-    }
-
-    this.setState({
-      show_like: true
-    })
-
-    this.setState({
-      like: !this.state.like
-    })
   }
 
-  click_unlike_btn = async (post_id) => {
+  click_unlike_btn = (post_id) => {
     const isGuestUser = this.props.guest ? true : false
     if (isGuestUser) {
       return
     }
     this.setState({
-      total: this.state.total - 1
+      total: this.state.total - 1,
+      like: !this.state.like
     })
-
-    try {
-      await axios.get(`/api/likes/delete/${post_id}`)
-    } catch (error) {
-      logToElasticsearch('error', 'IndividualPost', 'Failed click_unlike_btn:' + ' ' + error)
-    }
 
     if (this.state.total == 0) {
       this.setState({
@@ -144,9 +134,11 @@ export default class IndividualPost extends Component {
       })
     }
 
-    this.setState({
-      like: !this.state.like
-    })
+    try {
+      axios.get(`/api/likes/delete/${post_id}`)
+    } catch (error) {
+      logToElasticsearch('error', 'IndividualPost', 'Failed click_unlike_btn:' + ' ' + error)
+    }
   }
 
   componentDidMount() {
