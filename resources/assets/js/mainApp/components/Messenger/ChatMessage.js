@@ -420,8 +420,8 @@ export default class ChatMessage extends React.Component {
         onMouseLeave={() => this.setState({ showOptionsButton: false, showOptionsMenu: false })}>
         <div className='chat-component-message-container'>
           <div className='chat-component-message-content-body'>
-            {message.senderId !== this.props.userId && this.props.isGroup && (
-              <p style={{ color: this.colorMessage(parseInt(message.senderId), message.senderName) }} className={`chat-component-message-sender-name`}>
+            {(message.senderId !== this.props.userId || !!this.props.channel) && !!this.props.isGroup && (
+              <p onClick={() => window.router.push(`/profile/${message.senderName}`)} style={{ color: this.colorMessage(parseInt(message.senderId), message.senderName) }} className={`clickable chat-component-message-sender-name`}>
                 {message.senderName}
               </p>
             )}

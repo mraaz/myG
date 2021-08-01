@@ -17,6 +17,7 @@ export default class ChatMessageList extends React.Component {
         alias={this.props.alias}
         isGroup={this.props.isGroup}
         isGuest={this.props.isGuest}
+        channel={this.props.channel}
         canDelete={this.props.canDelete}
         messageId={message.messageId}
         messageListRef={this.props.messageListRef}

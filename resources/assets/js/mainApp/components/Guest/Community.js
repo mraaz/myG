@@ -1,8 +1,8 @@
 import React from 'react'
 import { fetchCommunity } from '../../../integration/http/guest'
-import { getAssetUrl } from '../../../common/assets'
 import { ignoreFunctions } from '../../../common/render'
 import GuestBanner from './Banner'
+import SignUpModal from './SignUpModal'
 import Group_IndividualPost from '../CommunityView/Group_IndividualPost'
 import { copyToClipboard } from '../../../common/clipboard'
 import { createShortLink } from '../../../integration/http/links'
@@ -22,30 +22,11 @@ export default class GuestCommunity extends React.Component {
     fetchCommunity(this.props.id).then((community) => this.setState({ community, loading: false }))
   }
 
-  renderModal = () => {
-    return (
-      <div id="guest-modal" onClick={() => this.setState({ showModal: false })}>
-        <div className="guest-modal-content">
-          <span className="guest-modal-title">Create an account or login to continue</span>
-          <div className='guest-button-container'>
-            <div className='guest-button guest-green guest-join-label' onClick={(event) => { event.stopPropagation(); this.login(); }}>
-              Join now
-            </div>
-            <div className='guest-button clickable' onClick={(event) => { event.stopPropagation(); this.login(); }}>
-              <span>Sign in</span>
-            </div>
-          </div>
-        </div>
-      </div >
-    );
-  }
-
-
   render() {
     if (this.state.loading || !this.state.community) return null
     return (
       <div id='community' className='guest-page' style={{ backgroundColor: '#000' }}>
-        {this.state.showModal && this.renderModal()}
+        {this.state.showModal && <SignUpModal onClick={() => this.setState({ showModal: false })} />}
         <GuestBanner />
         <div id='guest-content' className='communityName__container'>
           <div className='guest-community-image' style={{ backgroundImage: `url(${this.state.community.group_img})` }} />

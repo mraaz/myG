@@ -128,6 +128,10 @@ class ConnectionController {
         //if group: group name, group image, number of members
 
         // return getConnections
+
+        // presumably you wanted to return the influencers?
+        return influencers;
+
       } catch (error) {
         LoggingRepository.log({
           environment: process.env.NODE_ENV,

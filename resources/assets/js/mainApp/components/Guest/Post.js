@@ -1,8 +1,8 @@
 import React from 'react'
 import { fetchPost } from '../../../integration/http/guest'
-import { getAssetUrl } from '../../../common/assets'
 import { ignoreFunctions } from '../../../common/render'
 import GuestBanner from './Banner'
+import SignUpModal from './SignUpModal'
 import IndividualPost from '../IndividualPost'
 
 export default class GuestPost extends React.Component {
@@ -12,7 +12,8 @@ export default class GuestPost extends React.Component {
 
   state = {
     loading: true,
-    post: null
+    post: null,
+    showModal: false,
   }
 
   componentDidMount() {
@@ -24,8 +25,9 @@ export default class GuestPost extends React.Component {
     return (
       <div id='post' className='guest-page active' style={{ backgroundColor: '#000' }}>
         <GuestBanner />
+        {this.state.showModal && <SignUpModal onClick={() => this.setState({ showModal: false })} />}
         <div id='guest-content' className='app-container home-page'>
-          <section id='posts' className='active'>
+          <section id='posts' className='active' onClick={() => this.setState({ showModal: true })}>
             <IndividualPost guest post={this.state.post} user={{}} source={'news_feed'} />
           </section>
         </div>
