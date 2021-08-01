@@ -134,12 +134,13 @@ export class Channel extends React.Component {
         <ChatMessageList
           userId={this.props.userId}
           chatId={this.props.chatId}
+          channel={true}
           alias={this.props.alias}
           messages={this.props.messages}
           messageListRef={this.messageListRef}
           editing={this.state.editing}
           isGroup={true}
-          canDelete={this.props.isAdmin}
+          canDelete={true}
           onEdit={this.onEdit}
           addReaction={this.props.addReaction}
           removeReaction={this.props.removeReaction}
