@@ -251,11 +251,11 @@ export class Channel extends React.Component {
     return !!this.props.page ?
       (
         <div className='viewGame__header'>
-          <div className='title'>{this.props.title + " Channel" || "myG Chat"}</div>
+          <div className='title'>{this.props.title ? `${this.props.title} Channel` : "myG Chat"}</div>
         </div>
       ) :
       (
-        <div className='channel-header'>{this.props.title + " Channel" || "myG Chat"}</div>
+        <div className='channel-header'>{this.props.title ? `${this.props.title} Channel` : "myG Chat"}</div>
       );
   }
 
