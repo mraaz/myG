@@ -97,17 +97,21 @@ export default class IndividualPost extends Component {
     if (isGuestUser) {
       return
     }
-    this.setState({
-      total: this.state.total + 1,
-      show_like: true,
-      like: !this.state.like
-    })
 
-    if (this.state.total == 0) {
-      this.setState({
-        admirer_first_name: this.props.user.alias
-      })
-    }
+    this.setState(
+      {
+        total: this.state.total + 1,
+        show_like: true,
+        like: !this.state.like
+      },
+      () => {
+        if (this.state.total == 1) {
+          this.setState({
+            admirer_first_name: this.props.user.alias
+          })
+        }
+      }
+    )
 
     try {
       axios.post('/api/likes', {
@@ -123,16 +127,21 @@ export default class IndividualPost extends Component {
     if (isGuestUser) {
       return
     }
-    this.setState({
-      total: this.state.total - 1,
-      like: !this.state.like
-    })
 
-    if (this.state.total == 0) {
-      this.setState({
-        show_like: false
-      })
-    }
+    this.setState(
+      {
+        total: this.state.total - 1,
+        like: !this.state.like
+      },
+      () => {
+        if (this.state.total == 0) {
+          this.setState({
+            show_like: false,
+            admirer_first_name: undefined
+          })
+        }
+      }
+    )
 
     try {
       axios.get(`/api/likes/delete/${post_id}`)

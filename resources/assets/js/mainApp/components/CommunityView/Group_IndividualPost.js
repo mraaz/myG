@@ -91,15 +91,26 @@ export default class Group_IndividualPost extends Component {
     this.doUploadS3 = this.doUploadS3.bind(this)
   }
 
-  click_like_btn = async (post_id) => {
+  click_like_btn = (post_id) => {
     const isLoggedinUser = this.props.guest ? true : false
     if (isLoggedinUser) {
       return
     }
 
-    this.setState({
-      total: this.state.total + 1
-    })
+    this.setState(
+      {
+        total: this.state.total + 1,
+        show_like: true,
+        like: !this.state.like
+      },
+      () => {
+        if (this.state.total == 1) {
+          this.setState({
+            admirer_first_name: this.props.user.userInfo.alias
+          })
+        }
+      }
+    )
 
     try {
       axios.post('/api/likes', {
@@ -108,47 +119,34 @@ export default class Group_IndividualPost extends Component {
     } catch (error) {
       logToElasticsearch('error', 'Group_IndividualPost', 'Failed click_like_btn:' + ' ' + error)
     }
-    if (this.state.total == 0) {
-      this.setState({
-        admirer_first_name: this.props.user.userInfo.alias
-      })
-    }
-
-    this.setState({
-      show_like: true
-    })
-
-    this.setState({
-      like: !this.state.like
-    })
   }
 
-  click_unlike_btn = async (post_id) => {
+  click_unlike_btn = (post_id) => {
     const isLoggedinUser = this.props.guest ? true : false
     if (isLoggedinUser) {
       return
     }
 
-    this.setState({
-      total: this.state.total - 1
-    })
+    this.setState(
+      {
+        total: this.state.total - 1,
+        like: !this.state.like
+      },
+      () => {
+        if (this.state.total == 0) {
+          this.setState({
+            show_like: false,
+            admirer_first_name: undefined
+          })
+        }
+      }
+    )
 
     try {
       axios.get(`/api/likes/delete/${post_id}`)
-      //const deletePostLike = axios.get(`/api/notifications/deletePostLike/${post_id}`)
     } catch (error) {
       logToElasticsearch('error', 'Group_IndividualPost', 'Failed click_unlike_btn:' + ' ' + error)
     }
-
-    if (this.state.total == 0) {
-      this.setState({
-        show_like: false
-      })
-    }
-
-    this.setState({
-      like: !this.state.like
-    })
   }
 
   componentDidMount() {
