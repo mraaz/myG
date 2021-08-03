@@ -2,6 +2,8 @@ import React, { Component, Fragment } from 'react'
 import axios from 'axios'
 import PostFileModal from './PostFileModal'
 import Dropzone from 'react-dropzone'
+import TextareaAutosize from 'react-textarea-autosize'
+
 const buckectBaseUrl = 'https://myG.gg/platform_images/'
 import { MyGCreateableSelect } from './common'
 import { Disable_keys, Hash_Tags } from './Utility_Function'
@@ -411,7 +413,7 @@ export default class ComposeSection extends Component {
                   <ImageGallery items={preview_filesData} showFullscreenButton={false} showGalleryFullscreenButton={false} />
                 )}
               </div>
-              <textarea
+              <TextareaAutosize
                 onChange={this.handleChange_txtArea}
                 onFocus={this.handleFocus_txtArea}
                 onKeyDown={this.detectKey}
@@ -419,6 +421,8 @@ export default class ComposeSection extends Component {
                 value={post_content}
                 placeholder="What's up... "
                 id={`composeTextarea`}
+                minRows={3}
+                maxRows={38}
               />
             </div>
           )}

@@ -107,6 +107,7 @@
     "react-router-dom": "^5.1.2",
     "react-select": "^4.1.0",
     "react-swipeable": "^6.0.1",
+    "react-textarea-autosize": "^8.3.3",
     "react-toastify": "^7.0.3",
     "react-toggle-button": "^2.2.0",
     "redis": "^3.0.2",
