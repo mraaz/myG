@@ -48,3 +48,7 @@ export const EMOJI_THEME = {
   emojiSelectPopoverGroupItem: 'myG__emojiSelectPopoverGroupItem',
   emojiSelectPopoverToneSelect: 'myG__emojiSelectPopoverToneSelect'
 }
+
+export const KEYS_ENUM = {
+  ESCAPE: 'escape,'
+}

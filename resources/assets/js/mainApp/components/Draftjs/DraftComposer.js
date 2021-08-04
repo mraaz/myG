@@ -10,8 +10,9 @@ import HashtagMentionComponent from './Mention/HashtagMentionComponent'
 import UserMentionComponent from './Mention/UserMentionComponent'
 import HashtagEntryComponent from './Entry/HashtagEntryComponent'
 import UserEntryComponent from './Entry/UserEntryComponent'
-import { COMPOSER_TYPE_ENUM, DEBOUNCE_TIME, MENTIONS_THEME } from './helpers/constants'
+import { COMPOSER_TYPE_ENUM, DEBOUNCE_TIME, MENTIONS_THEME, KEYS_ENUM } from './helpers/constants'
 import { Debounce_activation } from '../Utility_Function'
+import {getDefaultKeyBinding, KeyBindingUtil} from 'draft-js'
 
 // import 'draft-js/dist/Draft.css'
 import '../../styles/components/DraftsEditor/DraftsCompose.scss'
@@ -24,7 +25,8 @@ export const DraftComposer = ({
   placeholder,
   handleReturnKey,
   addHashtag,
-  addMention
+  addMention,
+  handleSpecialKeys,
 }) => {
   // Setup plugins
   const { plugins, UserMentionSuggestions, HashtagMentionSuggestions, EmojiSuggestions, EmojiSelect } = useMemo(() => {
@@ -182,6 +184,7 @@ export const DraftComposer = ({
   }
 
   const handleReturn = (syntheticKeyboardEvent) => {
+    console.log('handleReturn', syntheticKeyboardEvent)
     if (handleReturnKey && !mentionHashtagMenuIsOpen && !mentionUserMenuIsOpen) {
       // 'handled' is a special string, indicating we have handled the event and draft should do nothing.
       // Given a function was provided to handle return, and a mentions isnt open, prevent default
@@ -196,6 +199,27 @@ export const DraftComposer = ({
       return 'handled'
     }
     return null
+  }
+
+  const myKeyBindingFn = (e) => {
+    console.log('keycode', e.keyCode);
+    if (e.keyCode === 27 /* `esc` key */) {
+      console.log('memrop',KEYS_ENUM.ESCAPE )
+      return KEYS_ENUM.ESCAPE;
+    }
+    return getDefaultKeyBinding(e);
+  }
+
+  const handleKeyCommand = (command) => {
+    console.log('handleKeyCommand', command)
+    if (command === KEYS_ENUM.ESCAPE) {
+      // Perform a request to save your contents, set
+      // a new `editorState`, etc.
+      console.log('escaped')
+      if (handleSpecialKeys) handleSpecialKeys(KEYS_ENUM.ESCAPE);
+      return 'handled';
+    }
+    return 'not-handled';
   }
 
   return (
@@ -219,10 +243,13 @@ export const DraftComposer = ({
           placeholder={placeholder}
           readOnly={editorType === COMPOSER_TYPE_ENUM.INDIVIDUAL_COMMENT_STATIC ? true : false}
           handleReturn={handleReturn}
+          handleKeyCommand={handleKeyCommand}
+          keyBindingFn={myKeyBindingFn}
         />
         {(editorType === COMPOSER_TYPE_ENUM.POST_COMPOSER ||
           editorType === COMPOSER_TYPE_ENUM.INDIVIDUAL_REPLY_COMPOSER ||
-          editorType === COMPOSER_TYPE_ENUM.INDIVIDUAL_EDIT_COMPOSER) && (
+          editorType === COMPOSER_TYPE_ENUM.INDIVIDUAL_EDIT_COMPOSER ||
+          editorType === COMPOSER_TYPE_ENUM.INDIVIDUAL_COMMENT_REPLY_COMPOSER) && (
           <Fragment>
             <EmojiSuggestions />
             <UserMentionSuggestions

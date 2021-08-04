@@ -2,6 +2,7 @@
 @import '../../../../../../../node_modules/@draft-js-plugins/emoji/lib/plugin.css';
 
 .editorWrapper {
+  &.individual_comment_reply_composer,
   &.post_composer,
   &.individual_reply_composer {
     width: 100%;
@@ -37,6 +38,20 @@
     &:global(.public-DraftEditor-content) {
       min-height: 140px;
     }
+  }
+
+  &.individual_comment_reply_composer {
+    position: relative;
+    height: 40px;
+    width: 100%;
+    border: 1px solid #e5c746;
+    border-radius: 4px;
+    background: #1d2326 0% 0% no-repeat padding-box;
+    resize: none;
+    overflow: auto;
+    color: #657172;
+    font-size: 12px;
+    padding: 8px 20px;
   }
 
   &.individual_reply_composer {
@@ -110,8 +125,16 @@
     top: 16px;
     right: 70px;
 
+    &.individual_comment_reply_composer {
+      right: 60px;
+      top: -4px;
+      
+      .ejr02pv {
+        right: 0;
+      } 
+    }
+    
     &.individual_edit_composer {
-      position: absolute;
       right: 0;
       top: 70px;
 

@@ -821,7 +821,7 @@ export default class IndividualPost extends Component {
                     <FeatureEnabled allOf={[DRAFT_JS]}>
                       {/* {this.state.content && <SimpleStaticComments commentText={this.state.content}></SimpleStaticComments>} */}
                       {editorState && (
-                        <DraftComposer editorType={COMPOSER_TYPE_ENUM.INDIVIDUAL_COMMENT_STATIC} editorState={editorState}></DraftComposer>
+                        <DraftComposer editorType={COMPOSER_TYPE_ENUM.INDIVIDUAL_COMMENT_STATIC} editorState={editorState} setEditorState={(state) => this.setState({ editorState: state })}></DraftComposer>
                       )}
                     </FeatureEnabled>
 
@@ -863,6 +863,7 @@ export default class IndividualPost extends Component {
                       handleReturnKey={this.submitEditPost}
                       addHashtag={(hashtagMention) => this.setState({ hashtagsEditPost: [...this.state.hashtagsEditPost, hashtagMention] })}
                       addMention={(userMention) => this.setState({ mentionsEditPost: [...this.state.mentionsEditPost, userMention] })}
+                      handleSpecialKeys={e => this.setState({ edit_post: false })}
                     ></DraftComposer>
                   )}
                 </FeatureEnabled>
