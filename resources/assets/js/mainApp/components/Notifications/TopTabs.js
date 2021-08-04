@@ -3,14 +3,14 @@
  * Github  : https://github.com/realinit
  * Email : nitin.1992tyagi@gmail.com
  */
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 
 export default class TobTabs extends Component {
   constructor() {
     super()
 
     this.state = {
-      activeTab: 0,
+      activeTab: 0
     }
   }
 
@@ -21,7 +21,7 @@ export default class TobTabs extends Component {
   changeActiveTab = (tab) => {
     this.setState(
       {
-        activeTab: tab,
+        activeTab: tab
       },
       () => {
         if (this.props.changeTab) {

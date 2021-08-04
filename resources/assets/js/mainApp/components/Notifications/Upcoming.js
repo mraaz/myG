@@ -3,7 +3,7 @@
  * Github  : https://github.com/realinit
  * Email : nitin.1992tyagi@gmail.com
  */
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import axios from 'axios'
 
 import UpcomingItem from './UpcomingItem'
@@ -16,7 +16,7 @@ export default class Upcoming extends Component {
       upcomingGames: [],
       moreplease: true,
       counter: 1,
-      fetching: false,
+      fetching: false
     }
     this.myRef = React.createRef()
   }
@@ -30,7 +30,7 @@ export default class Upcoming extends Component {
     if (lastChar == '0') {
       try {
         const getUpcomingGames = await axios.post('/api/ScheduleGame/myScheduledGames_Upcoming_Games', {
-          counter: 1,
+          counter: 1
         })
         if (getUpcomingGames.data && getUpcomingGames.data.myScheduledGames.length > 0) {
           this.setState({ upcomingGames: getUpcomingGames.data.myScheduledGames }, () => {
@@ -47,12 +47,12 @@ export default class Upcoming extends Component {
     let count = counter + 1
     this.setState({ fetching: true })
     const getUpcomingGames = await axios.post('/api/ScheduleGame/myScheduledGames_Upcoming_Games', {
-      counter: count,
+      counter: count
     })
     if (getUpcomingGames.data && getUpcomingGames.data.myScheduledGames.length == 0) {
       this.setState({
         moreplease: false,
-        fetching: false,
+        fetching: false
       })
       return
     }

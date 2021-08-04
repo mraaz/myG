@@ -1,6 +1,5 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { getAssetUrl } from '../../../common/assets'
 import { ignoreFunctions } from '../../../common/render'
 import { searchGamersAction } from '../../../redux/actions/searchAction'
 import Search from '../FindGamers/Search'

@@ -5,9 +5,7 @@
  */
 import React, { Component } from 'react'
 import axios from 'axios'
-import moment from 'moment'
 import { Link } from 'react-router-dom'
-import TopTabs from './TopTabs'
 import { clicked_sonsors, handleTime, mark_read_status } from './helperFunction'
 import { Toast_style } from '../Utility_Function'
 import { toast } from 'react-toastify'
@@ -17,7 +15,7 @@ const defaultUserImage = 'https://myG.gg/default_user/new-user-profile-picture.p
 const typeMapping = {
   0: 'Denied',
   1: 'Pending Approval',
-  2: 'Approved',
+  2: 'Approved'
 }
 
 export default class sponsors extends Component {
@@ -28,7 +26,7 @@ export default class sponsors extends Component {
       sponsors: [],
       moreplease: true,
       counter: 1,
-      tab: 0,
+      tab: 0
     }
     this.myRef = React.createRef()
   }
@@ -57,7 +55,7 @@ export default class sponsors extends Component {
     if (getSponsors.data && getSponsors.data.length == 0) {
       this.setState({
         moreplease: false,
-        fetching: false,
+        fetching: false
       })
       return
     }
@@ -136,18 +134,19 @@ export default class sponsors extends Component {
         focusConfirmBtn={false}
         showCloseButton={true}
         onConfirm={() => this.hideAlert('true', type, data)}
-        onCancel={() => this.hideAlert('false', type, data)}>
+        onCancel={() => this.hideAlert('false', type, data)}
+      >
         You will not be able to recover this entry!
       </SweetAlert>
     )
 
     this.setState({
-      alert: getAlert(),
+      alert: getAlert()
     })
   }
   hideAlert = (text, type, data) => {
     this.setState({
-      alert: null,
+      alert: null
     })
     if (text == 'true') {
       this.handleActionClick(type, data)
@@ -156,7 +155,7 @@ export default class sponsors extends Component {
 
   render() {
     const { active } = this.props
-    const { fetching, sponsors, alert = null } = this.state
+    const { sponsors, alert = null } = this.state
 
     const isActive = active == true ? { display: 'block' } : { display: 'none' }
 
@@ -175,7 +174,8 @@ export default class sponsors extends Component {
                     approval.read == undefined ? (approval.read_status == 0 ? 'unread' : '') : approval.read == false ? 'unread' : ''
                   }`}
                   key={approval.id}
-                  onClick={(e) => this.handleClickNotiFication(approval.id, index)}>
+                  onClick={(e) => this.handleClickNotiFication(approval.id, index)}
+                >
                   <div className='notification-user-avatar'>
                     <Link to={`/profile/${approval.alias}`}>
                       <img onError={this.addDefaultSrc} src={approval.profile_img ? approval.profile_img : defaultUserImage} />
@@ -185,7 +185,8 @@ export default class sponsors extends Component {
                     <div
                       className={`notification-description ${
                         approval.read == undefined ? (approval.read_status == 0 ? 'unread' : '') : approval.read == false ? 'unread' : ''
-                      }`}>
+                      }`}
+                    >
                       {/* <div className='username__link'>
                         <Link to={`/profile/${approval.alias}`}>
                           <div className='notification-username'>
@@ -205,7 +206,8 @@ export default class sponsors extends Component {
                           onClick={(e) => {
                             e.stopPropagation()
                             this.showAlert(2, approval)
-                          }}>
+                          }}
+                        >
                           <img src='https://myG.gg/platform_images/Dashboard/btn_Like_Feed.svg' />
                           {` Approve`}
                         </button>
@@ -214,7 +216,8 @@ export default class sponsors extends Component {
                           onClick={(e) => {
                             e.stopPropagation()
                             this.showAlert(0, approval)
-                          }}>
+                          }}
+                        >
                           <img src='https://myG.gg/platform_images/Dashboard/btn_Like_Feed.svg' />
                           {` Decline`}
                         </button>

@@ -5,7 +5,6 @@
  */
 import React, { Component } from 'react'
 import axios from 'axios'
-import moment from 'moment'
 import { Link } from 'react-router-dom'
 import TopTabs from './TopTabs'
 import { deleteReportedPost, deleteReportNotification, handleTime, mark_read_status } from './helperFunction'
@@ -174,7 +173,7 @@ export default class Reports extends Component {
 
   render() {
     const { active } = this.props
-    const { fetching, reports } = this.state
+    const { reports } = this.state
 
     const isActive = active == true ? { display: 'block' } : { display: 'none' }
 

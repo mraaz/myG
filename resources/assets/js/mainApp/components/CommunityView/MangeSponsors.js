@@ -1,7 +1,5 @@
 import React from 'react'
 import axios from 'axios'
-import Modal from 'react-modal'
-import { Link } from 'react-router-dom'
 import SweetAlert from '../common/MyGSweetAlert'
 import { toast } from 'react-toastify'
 import { Toast_style } from '../Utility_Function'
@@ -11,7 +9,7 @@ import { MyGButton } from '../common'
 const typeMapping = {
   0: 'Denied',
   1: 'Pending Approval',
-  2: 'Approved',
+  2: 'Approved'
 }
 
 export default class MangeSponsors extends React.Component {
@@ -25,7 +23,7 @@ export default class MangeSponsors extends React.Component {
       aws_key_id: '',
       file_keys: '',
       sponsors: this.props.sponsors,
-      uploading: [],
+      uploading: []
     }
 
     this.fileInputRef = []
@@ -39,7 +37,7 @@ export default class MangeSponsors extends React.Component {
           group_id: null,
           id: '',
           media_url: '',
-          link: '',
+          link: ''
         })
       })
     this.setState({ sponsors, saveButtonDisabled: true })
@@ -83,7 +81,7 @@ export default class MangeSponsors extends React.Component {
         group_id: group_id,
         id: sponsor.id,
         media_url: sponsor ? (sponsor.media_url ? sponsor.media_url : '') : '',
-        link: sponsor ? (sponsor.link ? sponsor.link : '') : '',
+        link: sponsor ? (sponsor.link ? sponsor.link : '') : ''
       })
       toast.error(<Toast_style text={'Epic! Saved successfully!'} />)
       this.props.handleModalStatus(true)
@@ -104,7 +102,7 @@ export default class MangeSponsors extends React.Component {
         type: 2,
         media_url: sponsor ? (sponsor.media_url ? sponsor.media_url : '') : '',
         link: sponsor ? (sponsor.link ? sponsor.link : '') : '',
-        aws_key_id: sponsor ? (sponsor.aws_key_id ? sponsor.aws_key_id : '') : '',
+        aws_key_id: sponsor ? (sponsor.aws_key_id ? sponsor.aws_key_id : '') : ''
       })
       toast.success(<Toast_style text={'Great, Created successfully!'} />)
       this.props.handleModalStatus(true)
@@ -121,7 +119,7 @@ export default class MangeSponsors extends React.Component {
     const sponsorData = [...sponsors]
     sponsorData[counter - 1] = {
       ...sponsorData[counter - 1],
-      link: data,
+      link: data
     }
     this.setState({ sponsors: sponsorData, saveButtonDisabled: false })
   }
@@ -170,7 +168,7 @@ export default class MangeSponsors extends React.Component {
                 ...sponsor,
                 media_url: [post.data.Location],
                 file_keys: post.data.Key,
-                aws_key_id: [post.data.aws_key_id],
+                aws_key_id: [post.data.aws_key_id]
               }
             } else {
               return sponsor
@@ -200,18 +198,19 @@ export default class MangeSponsors extends React.Component {
         focusConfirmBtn={false}
         showCloseButton={true}
         onConfirm={() => this.hideAlert('true', id)}
-        onCancel={() => this.hideAlert('false', id)}>
+        onCancel={() => this.hideAlert('false', id)}
+      >
         You will not be able to recover this entry!
       </SweetAlert>
     )
 
     this.setState({
-      alert: getAlert(),
+      alert: getAlert()
     })
   }
   hideAlert = (text, id) => {
     this.setState({
-      alert: null,
+      alert: null
     })
     if (text == 'true') {
       this.deleteSponsor(id)
@@ -232,7 +231,7 @@ export default class MangeSponsors extends React.Component {
       modalStatus = true,
       uploading = [],
       sponsors = [],
-      alert = null,
+      alert = null
     } = this.state
     return (
       <div className={`modal-container View__Member__modal ${modalStatus ? 'modal--show' : ''}`}>
