@@ -1,6 +1,5 @@
 import React from 'react'
 import axios from 'axios'
-import Modal from 'react-modal'
 import { Link } from 'react-router-dom'
 import SweetAlert from '../common/MyGSweetAlert'
 import Manage from './Manage'
@@ -13,13 +12,13 @@ const IconMap = {
   0: 'https://myG.gg/platform_icons/btn_Moderator_on.svg',
   1: 'https://myG.gg/platform_icons/btn_Moderator_on.svg',
   2: 'https://myG.gg/platform_icons/ic_chat_group_moderator.svg',
-  3: 'https://myG.gg/platform_icons/btn_Moderator_off.svg',
+  3: 'https://myG.gg/platform_icons/btn_Moderator_off.svg'
 }
 const PermissionMap = {
   0: 'Owner',
   1: 'Admin',
   2: 'Moderator',
-  3: 'Users',
+  3: 'Users'
 }
 
 const MAX_GAME_TAGS = 4
@@ -36,7 +35,7 @@ export default class Members extends React.Component {
       saveButtonDisabled: true,
       moreplease: true,
       searchMemberValue: '',
-      fetching: false,
+      fetching: false
     }
     this.scrollRef = React.createRef()
   }
@@ -54,7 +53,7 @@ export default class Members extends React.Component {
     this.setState({ fetching: true }, async () => {
       const group_member = await axios.post('/api/usergroup/member_lists/', {
         group_id,
-        counter,
+        counter
       })
       if (group_member.data && group_member.data.all_group_members.length == 0) {
         this.setState({ moreplease: false, fetching: false })
@@ -104,7 +103,7 @@ export default class Members extends React.Component {
       privacy: privacy,
       mApprovals: approval,
       description: description,
-      tags: tags,
+      tags: tags
     })
 
     if (this.props.community_Name == '') {
@@ -122,11 +121,11 @@ export default class Members extends React.Component {
   handleDelete = async (text) => {
     this.setState({
       alert: null,
-      dropdown: false,
+      dropdown: false
     })
     if (text == 'true') {
       const delete_group = await axios.post('/api/groups/delete', {
-        group_id: this.props.group_id,
+        group_id: this.props.group_id
       })
       if (delete_group) {
         toast.error(<Toast_style text={'Hmmmm, Group has been deleted successfully.'} />)
@@ -151,15 +150,16 @@ export default class Members extends React.Component {
         style={{
           display: 'flex',
           whiteSpace: 'pre',
-          width: '41%',
+          width: '41%'
         }}
         onConfirm={() => this.handleDelete('true')}
-        onCancel={() => this.handleDelete('false')}>
+        onCancel={() => this.handleDelete('false')}
+      >
         You will not be able to recover this entry!
       </SweetAlert>
     )
     this.setState({
-      alert: getAlert(),
+      alert: getAlert()
     })
   }
   showExpelAlert(member) {
@@ -176,22 +176,23 @@ export default class Members extends React.Component {
         style={{
           display: 'flex',
           whiteSpace: 'pre',
-          width: '41%',
+          width: '41%'
         }}
         onConfirm={() => this.handleExpelClick('true', member)}
-        onCancel={() => this.handleExpelClick('false', member)}>
+        onCancel={() => this.handleExpelClick('false', member)}
+      >
         You will not be able to recover this entry!
       </SweetAlert>
     )
     this.setState({
-      userExpelAlert: getAlert(),
+      userExpelAlert: getAlert()
     })
   }
 
   handleExpelClick = async (text, member) => {
     if (text == 'false') {
       this.setState({
-        userExpelAlert: '',
+        userExpelAlert: ''
       })
     } else {
       const { current_user_permission } = this.props
@@ -206,7 +207,7 @@ export default class Members extends React.Component {
         } else {
           toast.error(<Toast_style text={`Nope, nope and nope, that did not work.`} />)
           this.setState({
-            userExpelAlert: '',
+            userExpelAlert: ''
           })
         }
       } else {
@@ -231,11 +232,11 @@ export default class Members extends React.Component {
               toast.success(<Toast_style text={`All Done! Permission is now: ${PermissionMap[promoteCall.data]}`} />)
               return {
                 ...members,
-                permission_level: promoteCall.data,
+                permission_level: promoteCall.data
               }
             } else {
               return {
-                ...members,
+                ...members
               }
             }
           })
@@ -332,11 +333,11 @@ export default class Members extends React.Component {
       return
     }
 
-    const getSearchInfo = async function() {
+    const getSearchInfo = async function () {
       try {
         const group_members = await axios.post('/api/usergroup/usergroupSearchResults/', {
           group_id,
-          alias: self.state.searchMemberValue,
+          alias: self.state.searchMemberValue
         })
         if (group_members.data && group_members.data.all_group_members.length > 0) {
           self.setState({ group_members: group_members.data.all_group_members })

@@ -1,13 +1,13 @@
 import React, { Fragment, useState } from 'react'
 import { Link, withRouter } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { FeatureEnabled, checkFlag, CHANNEL } from '../../../common/flags'
+import { checkFlag, CHANNEL } from '../../../common/flags'
 import { logoutAction } from '../../../redux/actions/userAction'
 import { closeMobileMenuAction } from '../../../redux/actions/mobileMenuAction'
 import NotificationIcon from '../Notifications/Icon'
 
 const MobileMenuTop = (props) => {
-  const { initialData, notifications } = props
+  const { initialData } = props
   const [hideSideMenu, setHideSideMenu] = useState(false)
   const dispatch = useDispatch()
   const mobileMenuIsActive = useSelector((state) => state.mobileMenu.mobileMenuIsActive)

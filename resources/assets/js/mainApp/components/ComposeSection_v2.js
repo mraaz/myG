@@ -353,7 +353,7 @@ export default class ComposeSection extends Component {
   handlePreviewRemove = (e, src, key, id) => {
     e.preventDefault()
 
-    const delete_file = Remove_file(key, id)
+    Remove_file(key, id)
 
     // const deleteKeys = axios.post('/api/deleteFile', {
     //   aws_key_id: id,
@@ -391,7 +391,6 @@ export default class ComposeSection extends Component {
     const groups = [...selected_group_data]
     const AllGroups = [...selected_group_data]
     const preview_filesData = [...preview_files]
-    const previewImageGallery = this.getPreviewImageGallery(preview_filesData)
     const { communityBox = false } = this.props
 
     return (

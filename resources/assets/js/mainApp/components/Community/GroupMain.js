@@ -1,7 +1,5 @@
 import React, { Component, Fragment } from 'react'
 import axios from 'axios'
-import { toast } from 'react-toastify'
-import { Toast_style } from '../Utility_Function'
 import YourCommunityBox from './YourCommunityBox'
 import SuggestedCommunityBox from './SuggestedCommunitybox'
 
@@ -23,7 +21,7 @@ export default class GroupMain extends Component {
       suggested_more_data: false,
       suggested_less_data: false,
       yourCommunityTab: true,
-      searchText: '',
+      searchText: ''
     }
   }
 
@@ -32,13 +30,13 @@ export default class GroupMain extends Component {
 
     document.title = 'myG - Communities'
 
-    const getALLmyGroups = async function() {
+    const getALLmyGroups = async function () {
       try {
         const getmyGroups = await axios.get('/api/groups/get_my_communities/1')
 
         self.setState({
           all_my_communities: getmyGroups.data.all_my_communities,
-          more_data: getmyGroups.data.all_my_communities ? (getmyGroups.data.all_my_communities.length > 10 ? true : false) : false,
+          more_data: getmyGroups.data.all_my_communities ? (getmyGroups.data.all_my_communities.length > 10 ? true : false) : false
         })
 
         if (getmyGroups.data.all_my_communities.length == 0) {
@@ -96,14 +94,14 @@ export default class GroupMain extends Component {
   next_data_suggested = () => {
     const self = this
 
-    const getALLmySuggestedGroups = async function() {
+    const getALLmySuggestedGroups = async function () {
       try {
         const getALLmySuggestedGroups = await axios.post('/api/connections/communities_you_might_know', {
-          counter: self.state.suggested_counter,
+          counter: self.state.suggested_counter
         })
         if (getALLmySuggestedGroups.data == undefined || getALLmySuggestedGroups.data.length == 0) {
           self.setState({
-            suggested_more_data: false,
+            suggested_more_data: false
           })
           return
         }
@@ -111,7 +109,7 @@ export default class GroupMain extends Component {
         self.setState({
           all_my_suggested_communities: getALLmySuggestedGroups.data,
           suggested_less_data: self.state.suggested_counter == 1 ? false : true,
-          suggested_more_data: getALLmySuggestedGroups.data.length > 24 ? true : false,
+          suggested_more_data: getALLmySuggestedGroups.data.length > 24 ? true : false
         })
       } catch (error) {
         logToElasticsearch('error', 'List_Community', 'Failed at getALLmySuggestedGroups:' + ' ' + error)
@@ -120,7 +118,7 @@ export default class GroupMain extends Component {
 
     this.setState(
       {
-        suggested_counter: this.state.suggested_counter + 1,
+        suggested_counter: this.state.suggested_counter + 1
       },
       () => {
         getALLmySuggestedGroups()
@@ -131,22 +129,22 @@ export default class GroupMain extends Component {
   prev_data_suggested = () => {
     const self = this
 
-    const getALLmySuggestedGroups = async function() {
+    const getALLmySuggestedGroups = async function () {
       try {
         const getALLmySuggestedGroups = await axios.post('/api/connections/communities_you_might_know', {
-          counter: self.state.suggested_counter,
+          counter: self.state.suggested_counter
         })
 
         if (getALLmySuggestedGroups.data == undefined || getALLmySuggestedGroups.data.length == 0) {
           self.setState({
-            suggested_less_data: false,
+            suggested_less_data: false
           })
           return
         }
 
         self.setState({
           all_my_suggested_communities: getALLmySuggestedGroups.data,
-          suggested_more_data: getALLmySuggestedGroups.data.length > 10 ? true : false,
+          suggested_more_data: getALLmySuggestedGroups.data.length > 10 ? true : false
         })
       } catch (error) {
         logToElasticsearch('error', 'List_Community', 'Failed at getALLmySuggestedGroups:' + ' ' + error)
@@ -155,14 +153,14 @@ export default class GroupMain extends Component {
 
     if (this.state.suggested_counter == 1) {
       this.setState({
-        suggested_less_data: false,
+        suggested_less_data: false
       })
       return
     }
 
     this.setState(
       {
-        suggested_counter: this.state.suggested_counter - 1,
+        suggested_counter: this.state.suggested_counter - 1
       },
       () => {
         getALLmySuggestedGroups()
@@ -173,19 +171,19 @@ export default class GroupMain extends Component {
   next_data = () => {
     const self = this
 
-    const getGroups = async function() {
+    const getGroups = async function () {
       try {
         const getmyGroups = await axios.get(`/api/groups/get_my_communities/${self.state.counter}`)
         if (getmyGroups.data.all_my_communities.length == 0) {
           self.setState({
-            more_data: false,
+            more_data: false
           })
           return
         }
 
         self.setState({
           all_my_communities: getmyGroups.data.all_my_communities,
-          less_data: true,
+          less_data: true
         })
       } catch (error) {
         logToElasticsearch('error', 'List_Community', 'Failed at getGroups' + ' ' + error)
@@ -194,7 +192,7 @@ export default class GroupMain extends Component {
 
     this.setState(
       {
-        counter: this.state.counter + 1,
+        counter: this.state.counter + 1
       },
       () => {
         getGroups()
@@ -205,19 +203,19 @@ export default class GroupMain extends Component {
   prev_data = () => {
     const self = this
 
-    const getGroups = async function() {
+    const getGroups = async function () {
       try {
         const getmyGroups = await axios.get(`/api/groups/get_my_communities/${self.state.counter}`)
         if (getmyGroups.data.all_my_communities.length == 0) {
           self.setState({
-            less_data: false,
+            less_data: false
           })
           return
         }
 
         self.setState({
           all_my_communities: getmyGroups.data.all_my_communities,
-          more_data: getmyGroups.data.all_my_communities.length > 10 ? true : false,
+          more_data: getmyGroups.data.all_my_communities.length > 10 ? true : false
         })
       } catch (error) {
         logToElasticsearch('error', 'List_Community', 'Failed at getGroups:' + ' ' + error)
@@ -226,14 +224,14 @@ export default class GroupMain extends Component {
 
     if (this.state.counter == 1) {
       this.setState({
-        less_data: false,
+        less_data: false
       })
       return
     }
 
     this.setState(
       {
-        counter: this.state.counter - 1,
+        counter: this.state.counter - 1
       },
       () => {
         getGroups()
@@ -259,7 +257,7 @@ export default class GroupMain extends Component {
       }, 300)
     }
 
-    const getSearchInfoCommunity = async function() {
+    const getSearchInfoCommunity = async function () {
       try {
         if (searchText != '') {
           const gd = await axios.get(`/api/groups/${searchText}/groupSearchResults`)
@@ -269,7 +267,7 @@ export default class GroupMain extends Component {
           self.setState({
             all_my_communities: getmyGroups.data.all_my_communities,
             more_data: true,
-            less_data: false,
+            less_data: false
           })
         }
       } catch (error) {
@@ -277,23 +275,23 @@ export default class GroupMain extends Component {
       }
     }
 
-    const getSearchInfoSuggestedCommunity = async function() {
+    const getSearchInfoSuggestedCommunity = async function () {
       try {
         if (searchText != '') {
           const gd = await axios.get(`/api/groups/${searchText}/groupSearchResults_notMygrps`)
           self.setState({
             all_my_suggested_communities: gd.data.groupSearchResults_im_not_in,
             suggested_more_data: false,
-            suggested_less_data: false,
+            suggested_less_data: false
           })
         } else {
           const getALLmySuggestedGroups = await axios.post('/api/connections/communities_you_might_know', {
-            counter: 1,
+            counter: 1
           })
           self.setState({
             all_my_suggested_communities: getALLmySuggestedGroups.data,
             suggested_more_data: true,
-            suggested_less_data: false,
+            suggested_less_data: false
           })
         }
       } catch (error) {
@@ -332,13 +330,15 @@ export default class GroupMain extends Component {
           <div className='compose__type__section'>
             <div
               className={`share__thought ${open_compose_textTab ? 'active' : ''}`}
-              onClick={(e) => this.togglePostTypeTab('yourCommunityTab')}>
+              onClick={(e) => this.togglePostTypeTab('yourCommunityTab')}
+            >
               {`Your Communities`}
             </div>
             <div className='devider'></div>
             <div
               className={`add__post__image ${open_compose_textTab ? '' : 'active'}`}
-              onClick={(e) => this.togglePostTypeTab('suggestedCommunityTab')}>
+              onClick={(e) => this.togglePostTypeTab('suggestedCommunityTab')}
+            >
               {` Suggested Communities`}
             </div>
           </div>

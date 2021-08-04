@@ -1,20 +1,15 @@
 import React from 'react'
 import axios from 'axios'
-import Modal from 'react-modal'
-import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
-import get from 'lodash.get'
 import SweetAlert from '../common/MyGSweetAlert'
 import { toast } from 'react-toastify'
 import { Toast_style } from '../Utility_Function'
 import { Upload_to_S3, Remove_file } from '../AWS_utilities'
-import { MyGButton } from '../common'
-import { fetchProfileInfoAction } from '../../../redux/actions/profileAction'
 
 const typeMapping = {
   0: 'Denied',
   1: 'Pending Approval',
-  2: 'Approved',
+  2: 'Approved'
 }
 
 class MangeSponsors extends React.Component {
@@ -28,7 +23,7 @@ class MangeSponsors extends React.Component {
       aws_key_id: '',
       file_keys: '',
       uploading: [],
-      alert: null,
+      alert: null
     }
     this.fileInputRef = []
   }
@@ -48,7 +43,7 @@ class MangeSponsors extends React.Component {
           group_id: null,
           id: '',
           media_url: '',
-          link: '',
+          link: ''
         })
       })
     this.setState({ sponsors })
@@ -78,19 +73,20 @@ class MangeSponsors extends React.Component {
         focusConfirmBtn={false}
         showCloseButton={true}
         onConfirm={() => this.hideAlert('true', id)}
-        onCancel={() => this.hideAlert('false', id)}>
+        onCancel={() => this.hideAlert('false', id)}
+      >
         You will not be able to recover this entry!
       </SweetAlert>
     )
 
     this.setState({
-      alert: getAlert(),
+      alert: getAlert()
     })
   }
 
   hideAlert = (text, id) => {
     this.setState({
-      alert: null,
+      alert: null
     })
     if (text == 'true') {
       this.deleteSponsor(id)
@@ -113,7 +109,7 @@ class MangeSponsors extends React.Component {
 
   handleClose = (e) => {
     if (this.state.aws_key_id != '') {
-      const delete_file = Remove_file(this.state.file_keys, this.state.aws_key_id)
+      Remove_file(this.state.file_keys, this.state.aws_key_id)
     }
   }
 
@@ -126,7 +122,7 @@ class MangeSponsors extends React.Component {
         group_id: groups_id,
         id: sponsor.id,
         media_url: media_url,
-        link: linkValue,
+        link: linkValue
       })
       toast.error(<Toast_style text={'Epic! Saved successfully!'} />)
     } else {
@@ -146,7 +142,7 @@ class MangeSponsors extends React.Component {
         type: 2,
         media_url: media_url,
         link: linkValue,
-        aws_key_id: sponsor ? (sponsor.aws_key_id ? sponsor.aws_key_id : '') : '',
+        aws_key_id: sponsor ? (sponsor.aws_key_id ? sponsor.aws_key_id : '') : ''
       })
       toast.error(<Toast_style text={'Great, Created successfully!'} />)
     } else {
@@ -164,7 +160,7 @@ class MangeSponsors extends React.Component {
       if (index == counter - 1) {
         return {
           ...sponsor,
-          link: data,
+          link: data
         }
       } else {
         return sponsor
@@ -218,7 +214,7 @@ class MangeSponsors extends React.Component {
                 ...sponsor,
                 media_url: [post.data.Location],
                 file_keys: post.data.Key,
-                aws_key_id: [post.data.aws_key_id],
+                aws_key_id: [post.data.aws_key_id]
               }
             } else {
               return sponsor
@@ -249,7 +245,7 @@ class MangeSponsors extends React.Component {
       modalStatus = true,
       uploading = [],
       sponsors = [],
-      alert,
+      alert
     } = this.state
 
     return (
@@ -315,7 +311,7 @@ class MangeSponsors extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    alias: state.user.alias,
+    alias: state.user.alias
   }
 }
 

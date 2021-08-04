@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 
 const MobileGameComments = ({
   toggleBack,
-  comments,
   allowComments,
   showComment,
   value,
@@ -17,7 +16,7 @@ const MobileGameComments = ({
   defaultUserImage,
   uploading,
   previewFile,
-  clearPreviewImage,
+  clearPreviewImage
 }) => {
   const textInput = useRef(null)
 
@@ -62,8 +61,9 @@ const MobileGameComments = ({
                 className='profile__image'
                 style={{
                   backgroundImage: `url('${userInfo.profile_img ? userInfo.profile_img : defaultUserImage}')`,
-                  backgroundSize: 'cover',
-                }}>
+                  backgroundSize: 'cover'
+                }}
+              >
                 <div className='online__status'></div>
               </div>
             </Link>

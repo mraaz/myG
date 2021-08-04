@@ -1,11 +1,7 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import Uploader from '../../common/Uploader'
 import get from 'lodash.get'
-import Dossier from '../Dossier'
-import ViewFriends from '../ViewFriends'
 import { ignoreFunctions } from '../../../../common/render'
-import { openChatByContact } from './../../../../common/chat'
-import { showMessengerAlert } from './../../../../common/alert'
 import Progress from './../../common/ProgressCircle/progress'
 import ProfileInfo from './../Info/MobileInfo'
 

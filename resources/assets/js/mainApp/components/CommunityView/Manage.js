@@ -2,8 +2,8 @@ import React from 'react'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 
-import { Toast_style, Disable_keys, Convert_to_comma_delimited_value } from '../Utility_Function'
-import { MyGTextarea, MyGAsyncSelect, MyGCreateableSelect } from '../common'
+import { Toast_style, Convert_to_comma_delimited_value } from '../Utility_Function'
+import { MyGTextarea, MyGAsyncSelect } from '../common'
 
 import { parsePlayersToSelectData } from '../../utils/InvitePlayersUtils'
 
@@ -12,7 +12,7 @@ const MAX_INVITEES = 8
 const createOption = (label, hash_tag_id) => ({
   label,
   value: label,
-  hash_tag_id,
+  hash_tag_id
 })
 
 export default class Manage extends React.Component {
@@ -25,7 +25,7 @@ export default class Manage extends React.Component {
       privacy: 1,
       approval: 'true',
       description: '',
-      coHosts: null,
+      coHosts: null
     }
   }
 
@@ -37,16 +37,16 @@ export default class Manage extends React.Component {
       communityName: match.params.name,
       privacy: community_type,
       approval: community_Membership_Approval == 1 ? 'true' : 'false',
-      description: community_grp_description,
+      description: community_grp_description
     })
   }
 
   onPlayersSuggestionFetch = async (value) => {
     try {
       const {
-        data: { playerSearchResults },
+        data: { playerSearchResults }
       } = await axios.post(`/api/user/playerSearchResults`, {
-        alias: value,
+        alias: value
       })
       const parsedData = parsePlayersToSelectData(playerSearchResults)
       return parsedData
@@ -86,7 +86,7 @@ export default class Manage extends React.Component {
     if (communityName && communityName.length > 3) {
       const change_group = axios.post('/api/groups/update_name', {
         group_id: this.props.group_id,
-        name: communityName.trim(),
+        name: communityName.trim()
       })
       if (change_group) {
         toast.success(<Toast_style text={'Nice! Community name has successfully saved.'} />)
@@ -104,7 +104,7 @@ export default class Manage extends React.Component {
 
       axios.post('/api/groups/groupInvites', {
         group_id: this.props.group_id,
-        invitees: co_hosts,
+        invitees: co_hosts
       })
       toast.success(<Toast_style text={'Now been sent!! Bon voyage invites have.'} />)
       this.setState({ coHosts: null })

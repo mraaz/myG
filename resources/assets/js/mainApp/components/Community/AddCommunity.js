@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 const buckectBaseUrl = 'https://myG.gg/platform_images/'
 
 import { toast } from 'react-toastify'
@@ -25,7 +25,7 @@ const AddCommunity = ({
   updateAdvancedSettingsState,
   mainSettingsState,
   updateMainSettingsState,
-  additional_info,
+  additional_info
 }) => {
   // Similar to componentDidMount and componentDidUpdate:
   useEffect(() => {
@@ -55,28 +55,28 @@ const AddCommunity = ({
   const updateMainSettings = (stateUpdates) => {
     updateMainSettingsState((currentState) => ({
       ...currentState,
-      ...stateUpdates,
+      ...stateUpdates
     }))
   }
 
   const updateAdvancedSettings = (stateUpdates) => {
     updateAdvancedSettingsState((currentState) => ({
       ...currentState,
-      ...stateUpdates,
+      ...stateUpdates
     }))
   }
 
   const updateState = (stateUpdates) => {
     updateComponentState((currentState) => ({
       ...currentState,
-      ...stateUpdates,
+      ...stateUpdates
     }))
   }
 
   const updateOptionalSettings = (stateUpdates) => {
     updateOptionalFieldsState((currentState) => ({
       ...currentState,
-      ...stateUpdates,
+      ...stateUpdates
     }))
   }
 
@@ -177,7 +177,7 @@ const AddCommunity = ({
     value: inputValue,
     label: optionLabel,
     __isNew__: true,
-    isEqual: () => false,
+    isEqual: () => false
   })
 
   // api calls
@@ -218,9 +218,9 @@ const AddCommunity = ({
   const onPlayersSuggestionFetch = async (value) => {
     try {
       const {
-        data: { playerSearchResults },
+        data: { playerSearchResults }
       } = await axios.post(`/api/user/playerSearchResults`, {
-        alias: value,
+        alias: value
       })
       const parsedData = parsePlayersToSelectData(playerSearchResults)
       return parsedData
@@ -286,7 +286,7 @@ const AddCommunity = ({
       new_preview_files.push({
         src: post.data.Location,
         key: post.data.Key,
-        id: post.data.aws_key_id,
+        id: post.data.aws_key_id
       })
 
       updateAdvancedSettings({ preview_files: new_preview_files, uploading: false })
@@ -316,7 +316,8 @@ const AddCommunity = ({
               containerStyles={{ width: '100%' }}
               onChange={(value) => {
                 updateMainSettings({ community_name: value.target.value })
-              }}></MyGInput>
+              }}
+            ></MyGInput>
           </div>
           <div className='field-title'>
             <p>Game Title</p>
@@ -349,7 +350,8 @@ const AddCommunity = ({
                 maxSizeBytes={11185350}
                 accept='image/jpeg,image/jpg,image/png,image/gif'
                 disabled={advancedSettingsState.uploading}
-                className='dropzone-thumb'>
+                className='dropzone-thumb'
+              >
                 {(props) => {
                   return (
                     <section className='custom__html dropzone-section'>

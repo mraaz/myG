@@ -6,7 +6,7 @@
 import React, { Component } from 'react'
 import { toast } from 'react-toastify'
 import { connect } from 'react-redux'
-import { FormattedMessage, injectIntl } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl'
 import axios from 'axios'
 import { Toast_style } from '../Utility_Function'
 import SweetAlert from '../common/MyGSweetAlert'
@@ -16,13 +16,13 @@ import {
   toggleMainChannelAction,
   toggleOnlineNotificationsAction,
   toggleNotificationSoundsAction,
-  togglePushNotificationsAction,
+  togglePushNotificationsAction
 } from '../../../redux/actions/userAction'
 
 import MangeSponsors from './MangeSponsors'
-import { MyGSelect } from '../common';
-import { selectLanguage } from '../../../common/user';
-import { languages } from '../Languages/LanguageProvider';
+import { MyGSelect } from '../common'
+import { selectLanguage } from '../../../common/user'
+import { languages } from '../Languages/LanguageProvider'
 
 class Settings extends Component {
   constructor() {
@@ -32,7 +32,7 @@ class Settings extends Component {
       feature_on: false,
       alert: null,
       redirect_: false,
-      modalStatus: false,
+      modalStatus: false
     }
   }
 
@@ -51,12 +51,12 @@ class Settings extends Component {
       const environment = window.location.href.includes('localhost')
         ? 'development'
         : window.location.href.includes('myG.gg')
-          ? 'production'
-          : 'staging'
+        ? 'production'
+        : 'staging'
 
       if (environment == 'development') {
         this.setState({
-          feature_on: true,
+          feature_on: true
         })
       }
 
@@ -64,7 +64,7 @@ class Settings extends Component {
         try {
           const getSettings = await axios.get('/api/settings')
           self.setState({
-            viaEmail: getSettings.data.mySettings[0].email_notification,
+            viaEmail: getSettings.data.mySettings[0].email_notification
           })
         } catch (error) {
           logToElasticsearch('error', 'Settings', 'Failed getSettings:' + ' ' + error)
@@ -79,8 +79,8 @@ class Settings extends Component {
     this.setState({ viaEmail })
     toast.success(<Toast_style text={'Roger roger'} />)
     try {
-      const post = axios.post('/api/settings', {
-        email_notification: viaEmail,
+      axios.post('/api/settings', {
+        email_notification: viaEmail
       })
     } catch (error) {
       logToElasticsearch('error', 'Settings', 'Failed handleNotifyViaEmailChange:' + ' ' + error)
@@ -111,19 +111,20 @@ class Settings extends Component {
         focusConfirmBtn={false}
         showCloseButton={true}
         onConfirm={() => this.hideAlert('true')}
-        onCancel={() => this.hideAlert('false')}>
+        onCancel={() => this.hideAlert('false')}
+      >
         You will not be able to recover this Account!!
       </SweetAlert>
     )
 
     this.setState({
-      alert: getAlert(),
+      alert: getAlert()
     })
   }
 
   hideAlert = (text) => {
     this.setState({
-      alert: null,
+      alert: null
     })
     if (text == 'true') {
       this.confirm_delete_exp()
@@ -137,9 +138,9 @@ class Settings extends Component {
 
   delete_exp = () => {
     try {
-      const byebyebye = axios.get('/api/user/delete')
+      axios.get('/api/user/delete')
     } catch (error) {
-      console.log(error)
+      logToElasticsearch('error', 'Settings', 'Failed delete_exp:' + ' ' + error)
     }
     this.setState({ redirect_: true })
   }
@@ -154,7 +155,7 @@ class Settings extends Component {
     const { active } = this.props
 
     const isActive = active == true ? { display: 'block' } : { display: 'none' }
-    const selectedLanguage = this.props.language && languages.find(({ value }) => this.props.language === value);
+    const selectedLanguage = this.props.language && languages.find(({ value }) => this.props.language === value)
 
     return (
       <div className='settings__container'>
@@ -205,7 +206,10 @@ class Settings extends Component {
             <div className='option'>
               <div className='title'>Main channel</div>
               <div className='button__switch browser__notification'>
-                <label className={`switchLabel ${this.props.mainChannelEnabled ? 'on' : 'off'}`} onClick={() => this.props.toggleMainChannel(this.props.userId)}>
+                <label
+                  className={`switchLabel ${this.props.mainChannelEnabled ? 'on' : 'off'}`}
+                  onClick={() => this.props.toggleMainChannel(this.props.userId)}
+                >
                   {this.props.mainChannelEnabled ? 'on' : 'off'}
                 </label>
                 <input
@@ -221,7 +225,10 @@ class Settings extends Component {
             <div className='option'>
               <div className='title'>Online Notifications</div>
               <div className='button__switch browser__notification'>
-                <label className={`switchLabel ${this.props.onlineNotificationsEnabled ? 'on' : 'off'}`} onClick={() => this.props.toggleOnlineNotifications(this.props.userId)}>
+                <label
+                  className={`switchLabel ${this.props.onlineNotificationsEnabled ? 'on' : 'off'}`}
+                  onClick={() => this.props.toggleOnlineNotifications(this.props.userId)}
+                >
                   {this.props.onlineNotificationsEnabled ? 'on' : 'off'}
                 </label>
                 <input
@@ -235,18 +242,23 @@ class Settings extends Component {
               </div>
             </div>
             <div className='option languages'>
-              <div className='title'><FormattedMessage id="settings.languages" defaultMessage="Languages" /></div>
+              <div className='title'>
+                <FormattedMessage id='settings.languages' defaultMessage='Languages' />
+              </div>
               <MyGSelect
-                options={languages.map(language => ({ value: language.value, label: this.props.intl.formatMessage(language.label) }))}
+                options={languages.map((language) => ({ value: language.value, label: this.props.intl.formatMessage(language.label) }))}
                 onChange={({ value }) => selectLanguage(value)}
                 value={selectedLanguage ? { value: this.props.language, label: this.props.intl.formatMessage(selectedLanguage.label) } : ''}
-                placeholder={this.props.intl.formatMessage({ id: "settings.languages.select", defaultMessage: "Select a Language" })}
+                placeholder={this.props.intl.formatMessage({ id: 'settings.languages.select', defaultMessage: 'Select a Language' })}
               />
             </div>
             <div className='option'>
               <div className='title'>Browser notifications</div>
               <div className='button__switch browser__notification'>
-                <label className={`switchLabel ${this.props.pushNotificationsEnabled ? 'on' : 'off'}`} onClick={() => this.props.togglePushNotifications(this.props.userId)}>
+                <label
+                  className={`switchLabel ${this.props.pushNotificationsEnabled ? 'on' : 'off'}`}
+                  onClick={() => this.props.togglePushNotifications(this.props.userId)}
+                >
                   {this.props.pushNotificationsEnabled ? 'on' : 'off'}
                 </label>
                 <input
@@ -262,7 +274,10 @@ class Settings extends Component {
             <div className='option'>
               <div className='title'>Sound notifications</div>
               <div className='button__switch sound__notification'>
-                <label className={`switchLabel ${!this.props.notificationSoundsDisabled ? 'on' : 'off'}`} onClick={() => this.props.toggleNotificationSounds(!this.props.notificationSoundsDisabled)}>
+                <label
+                  className={`switchLabel ${!this.props.notificationSoundsDisabled ? 'on' : 'off'}`}
+                  onClick={() => this.props.toggleNotificationSounds(!this.props.notificationSoundsDisabled)}
+                >
                   {!this.props.notificationSoundsDisabled ? 'on' : 'off'}
                 </label>
                 <input
@@ -281,7 +296,8 @@ class Settings extends Component {
                   style={{ 'text-decoration': 'none', color: '#FFFFFF' }}
                   rel='noopener noreferrer'
                   href='https://github.com/mraaz/myG_RoadMap'
-                  target='_blank'>
+                  target='_blank'
+                >
                   Report bugs or request features{' '}
                 </a>
               </div>
@@ -357,7 +373,7 @@ function mapStateToProps(state) {
     mainChannelEnabled: state.user.mainChannelEnabled,
     onlineNotificationsEnabled: state.user.onlineNotificationsEnabled,
     notificationSoundsDisabled: state.user.notificationSoundsDisabled,
-    pushNotificationsEnabled: state.user.pushNotificationsEnabled,
+    pushNotificationsEnabled: state.user.pushNotificationsEnabled
   }
 }
 
@@ -367,7 +383,7 @@ function mapDispatchToProps(dispatch) {
     togglePushNotifications: (userId) => dispatch(togglePushNotificationsAction(userId)),
     toggleMainChannel: (disabled) => dispatch(toggleMainChannelAction(disabled)),
     toggleOnlineNotifications: (disabled) => dispatch(toggleOnlineNotificationsAction(disabled)),
-    toggleNotificationSounds: (disabled) => dispatch(toggleNotificationSoundsAction(disabled)),
+    toggleNotificationSounds: (disabled) => dispatch(toggleNotificationSoundsAction(disabled))
   }
 }
 
