@@ -7,6 +7,7 @@ import IndividualSponsoredPost from './IndividualSponsoredPost'
 import ComposeSection from './ComposeSection_v2'
 import GamerSuggestions from './Profile/GamerSuggestions'
 import Channel from './Channel'
+import Events from './Events/main'
 
 import { logToElasticsearch } from '../../integration/http/logger'
 
@@ -120,10 +121,6 @@ class Posts extends Component {
     const { myPosts = [], moreplease, isFetching = false, post_submit_loading = false } = this.state
     return (
       <Fragment>
-        <ComposeSection
-          successCallback={this.composeSuccess}
-          initialData={this.props.initialData == undefined ? 'loading' : this.props.initialData}
-        />
         {post_submit_loading && (
           <div className='timeline-item'>
             <div className='animated-background'>
@@ -145,6 +142,12 @@ class Posts extends Component {
         )}
         <GamerSuggestions />
         {!!this.props.mainChannelEnabled && <Channel channelId='main' />}
+        <Events />
+        <ComposeSection
+          successCallback={this.composeSuccess}
+          initialData={this.props.initialData == undefined ? 'loading' : this.props.initialData}
+        />
+
         {myPosts.length > 0 && !post_submit_loading && (
           <section id='posts' className={isFetching ? '' : `active`}>
             <InfiniteScroll dataLength={myPosts.length} next={this.fetchMoreData} hasMore={moreplease}>

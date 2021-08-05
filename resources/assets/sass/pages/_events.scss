@@ -1,0 +1,28 @@
+.events-main {
+  padding-top: 35px;
+  margin: auto;
+  width: 80%;
+  .viewGame__header {
+    border-bottom: none;
+  }
+
+  .event-component-body {
+    background-color: #1d2326;
+    border: 1px solid #273137;
+    border-radius: 8px;
+  }
+  .event-box-img {
+    width: 50%;
+  }
+
+  .event-component-body {
+    display: flex;
+    color: white;
+  }
+  .event-component-body-border {
+    padding-left: 18px;
+  }
+  .body-text {
+    padding: 8px;
+  }
+}
