@@ -17,6 +17,8 @@
   align-items: center;
   justify-content: center;
   border-bottom: 2px solid #344953;
+  border-radius: 10px;
+
   .title {
     padding: 0;
     font: Bold 20px/14px Montserrat;
@@ -954,7 +956,7 @@
           position: relative;
           cursor: pointer;
           &.active {
-            background: #fff0d;
+            background: #fff0;
             &::after {
               border-bottom: 2px solid #a09770;
               content: '';
@@ -965,7 +967,7 @@
             }
           }
           &:hover {
-            background: #fff0d;
+            background: #fff0;
             .copy__clipboard {
               opacity: 1;
             }

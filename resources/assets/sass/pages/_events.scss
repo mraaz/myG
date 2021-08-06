@@ -1,0 +1,45 @@
+.events-main {
+  padding-top: 35px;
+  margin: auto;
+  width: 80%;
+  .viewGame__header {
+    border-bottom: none;
+  }
+
+  .event-component-body {
+    background-color: #1d2326;
+    border: 1px solid #273137;
+    border-radius: 8px;
+  }
+  .event-box-img {
+    width: 100%;
+    object-fit: contain;
+    cursor: pointer;
+    max-height: 800px;
+  }
+
+  .event-component-body {
+    display: block;
+    color: white;
+  }
+  .event-component-body-border {
+    padding-bottom: 18px;
+  }
+  .body-text {
+    padding: 8px;
+    white-space: pre-line;
+  }
+
+  .btn-events {
+    display: block;
+    background-color: #e7bb30;
+    margin: 8px auto;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: bolder;
+    text-align: center;
+    color: #0a0a0a;
+    border: none;
+  }
+}
