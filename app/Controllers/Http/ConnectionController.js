@@ -17,7 +17,7 @@ class ConnectionController {
         .first()
 
       if (getRunTime == undefined) {
-        var newUserSettings = await Settings.create({
+        await Settings.create({
           user_id: auth.user.id,
           gamer_connection_last_runtime: new Date().toISOString().slice(0, 19).replace('T', ' ')
         })
@@ -35,7 +35,7 @@ class ConnectionController {
 
       if (Date.now() > new Date(new Date(getRunTime.gamer_connection_last_runtime).getTime() + 60 * 60 * 24 * 1000)) {
         let mysql_friendly_date = new Date().toISOString().slice(0, 19).replace('T', ' ')
-        const updateRead_Status = await Settings.query()
+        await Settings.query()
           .where({
             id: getRunTime.id
           })
@@ -130,8 +130,7 @@ class ConnectionController {
         // return getConnections
 
         // presumably you wanted to return the influencers?
-        return influencers;
-
+        return influencers
       } catch (error) {
         LoggingRepository.log({
           environment: process.env.NODE_ENV,
@@ -758,7 +757,7 @@ class ConnectionController {
           if (check_all_my_Connections.updated_at < myTime) {
             let mysql_friendly_date = new Date().toISOString().slice(0, 19).replace('T', ' ')
 
-            const update_my_Connections = await Database.from('connection_transactions')
+            await Database.from('connection_transactions')
               .where({
                 id: check_all_my_Connections.id
               })

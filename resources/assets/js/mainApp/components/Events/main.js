@@ -1,15 +1,29 @@
 import React from 'react'
+import moment from 'moment'
 
 export default class Events extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      Raaz: 'true'
+      tourny_Date: '',
+      start_time: 'Now!',
+      live: false
     }
   }
 
   componentDidMount() {
-    console.log('Nothing to see yet')
+    const testDateUtc = moment.utc('2021-08-08 00:00:00')
+    const localDate = moment(testDateUtc).local()
+    this.setState({ tourny_Date: localDate.format('LLL') })
+
+    const duration = moment.duration(testDateUtc.diff(Date.now()))
+    console.log(duration)
+    const hours = Math.floor(duration.asHours()) + 'h '
+    if (Math.floor(duration.asHours()) < 0) {
+      this.setState({ live: true })
+    } else {
+      this.setState({ start_time: hours })
+    }
   }
 
   renderHeader = () => {
@@ -20,20 +34,26 @@ export default class Events extends React.Component {
     )
   }
 
+  redirect2Group = () => {
+    this.props.props.routeProps.routeProps.history.push(`/community/${encodeURI('myG.L%20PUBG%20MOBILE')}`)
+  }
+
   renderBody = () => {
     return (
       <div className='event-component-body'>
         <img
-          src='https://myG.gg/user_files/1_1627863083435_4KmQXr_1_1622256315556_NoiJVh_IMG-20210529-WA0003.jpg'
+          src='https://myG.gg/user_files/1_1628228167859_00dneO_myGL_NA_Social_Media_no_players.png'
           className='event-box-img'
+          onClick={this.redirect2Group}
         />
         <div className='event-component-body-border'></div>
         <div className='body-text'>
-          Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text
-          ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived
-          not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the
-          1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like
-          Aldus PageMaker including versions of Lorem Ipsum
+          {`Live ${
+            this.state.live ? 'Now!' : `in ${this.state.start_time} on ${this.state.tourny_Date}.`
+          } This tournament has three special events:\n\n🔶 Support your team by voting for them\n🔶 Vote for the People Choice award\n🔶 Win $300 worth of Amazon eGift cards`}
+          <button className='btn-events' onClick={this.redirect2Group}>
+            Jump in!!!
+          </button>
         </div>
       </div>
     )

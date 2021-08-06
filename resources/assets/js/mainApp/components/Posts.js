@@ -18,7 +18,8 @@ class Posts extends Component {
       counter: 0,
       myPosts: [],
       moreplease: true,
-      post_submit_loading: false
+      post_submit_loading: false,
+      showEvents: true
     }
   }
 
@@ -142,7 +143,7 @@ class Posts extends Component {
         )}
         <GamerSuggestions />
         {!!this.props.mainChannelEnabled && <Channel channelId='main' />}
-        <Events />
+        {this.state.showEvents && <Events props={this.props} />}
         <ComposeSection
           successCallback={this.composeSuccess}
           initialData={this.props.initialData == undefined ? 'loading' : this.props.initialData}
