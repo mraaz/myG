@@ -102,35 +102,35 @@ class ConnectionController {
   async these_you_might_want_to_follow({ auth }) {
     if (auth.user) {
       try {
-        const influencers = await Database.from('followers')
-          .leftJoin('users', 'users.id', 'followers.user_id')
-          .leftJoin('groups', 'groups.id', 'followers.group_id')
+        const users = await Database.from('followers')
+          .leftJoin('users', 'users.id', 'followers.follower_id')
           .select(
-            'users.alias',
-            'users.level',
-            'users.id as user_id',
-            'users.profile_img as user_profile_img',
-            'groups.id as group_id',
-            'group_img',
-            'name as group_name'
+            'users.id as profileId',
+            'users.alias as alias',
+            'users.level as level',
+            'users.profile_img as image',
+            'users.profile_bg as background',
           )
+          .where(function () { this.whereNotNull("followers.follower_id") })
           .groupBy('follower_id')
           .count('* as no_of_followers')
           .orderBy('no_of_followers', 'desc')
-          .limit(10)
+          .limit(5);
 
-        console.log(influencers, '<<<influencers')
+        const groups = await Database.from('followers')
+          .leftJoin('groups', 'groups.id', 'followers.group_id')
+          .select(
+            'groups.id as groupId',
+            'group_img as groupImage',
+            'name as groupName',
+          )
+          .where(function () { this.whereNotNull("followers.group_id") })
+          .groupBy('group_id')
+          .count('* as no_of_followers')
+          .orderBy('no_of_followers', 'desc')
+          .limit(5);
 
-        //loop thru array
-        //determine if user or group
-        //get relevant info
-        //if user: alias, level id, profile imge
-        //if group: group name, group image, number of members
-
-        // return getConnections
-
-        // presumably you wanted to return the influencers?
-        return influencers
+        return [...users, ...groups];
       } catch (error) {
         LoggingRepository.log({
           environment: process.env.NODE_ENV,
