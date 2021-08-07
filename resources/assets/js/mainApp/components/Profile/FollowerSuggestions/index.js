@@ -24,6 +24,9 @@ export default class FollowerSuggestions extends React.Component {
   async fetchSuggestions() {
     this.setState({ loading: true });
     const response = await axios.get('/api/connections/show_whom_to_follow');
+    if (response.data[0].alias == "myG"){
+        this.props.follow(response.data[0].alias, response.data[0].profileId)
+    }
     this.setState({ loading: false, suggestions: response.data });
   }
 
@@ -161,7 +164,7 @@ export default class FollowerSuggestions extends React.Component {
     return (
       <div className="onboarding-buttons">
         <div className="small-button clickable" onClick={(event) => { event.stopPropagation(); this.props.skipOnboarding() }}>Skip</div>
-        <div className="small-button clickable" onClick={(event) => { event.stopPropagation(); this.props.setOnboardingStep(4) }}>Next 2/2</div>
+        <div className="small-button clickable" onClick={(event) => { event.stopPropagation(); this.props.setOnboardingStep(5) }}>Next 2/2</div>
       </div>
     );
   }

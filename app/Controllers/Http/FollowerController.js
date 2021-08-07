@@ -31,6 +31,9 @@ class FollowerController {
 
         return 'Saved'
       } catch (error) {
+        if (error.code == 'ER_DUP_ENTRY') {
+          return
+        }
         LoggingRepository.log({
           environment: process.env.NODE_ENV,
           type: 'error',
@@ -55,6 +58,9 @@ class FollowerController {
 
         return 'Saved'
       } catch (error) {
+        if (error.code == 'ER_DUP_ENTRY') {
+          return
+        }
         LoggingRepository.log({
           environment: process.env.NODE_ENV,
           type: 'error',

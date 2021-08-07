@@ -17,7 +17,6 @@ export default class Events extends React.Component {
     this.setState({ tourny_Date: localDate.format('LLL') })
 
     const duration = moment.duration(testDateUtc.diff(Date.now()))
-    console.log(duration)
     const hours = Math.floor(duration.asHours()) + 'h '
     if (Math.floor(duration.asHours()) < 0) {
       this.setState({ live: true })
@@ -29,7 +28,7 @@ export default class Events extends React.Component {
   renderHeader = () => {
     return (
       <div className='viewGame__header'>
-        <div className='title'>Events</div>
+        <div className='title'>Main Event</div>
       </div>
     )
   }
@@ -42,7 +41,7 @@ export default class Events extends React.Component {
     return (
       <div className='event-component-body'>
         <img
-          src='https://myG.gg/user_files/1_1628228167859_00dneO_myGL_NA_Social_Media_no_players.png'
+          src='https://myG.gg/user_files/1_1628311610248_sJIVjK_updated_image.jpeg'
           className='event-box-img'
           onClick={this.redirect2Group}
         />
@@ -52,7 +51,7 @@ export default class Events extends React.Component {
             this.state.live ? 'Now!' : `in ${this.state.start_time} on ${this.state.tourny_Date}.`
           } This tournament has three special events:\n\n🔶 Support your team by voting for them\n🔶 Vote for the People Choice award\n🔶 Win $300 worth of Amazon eGift cards`}
           <button className='btn-events' onClick={this.redirect2Group}>
-            Jump in!!!
+            Come Join us!
           </button>
         </div>
       </div>

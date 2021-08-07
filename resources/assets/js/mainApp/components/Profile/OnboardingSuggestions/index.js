@@ -8,8 +8,9 @@ export default class OnboardingSuggestions extends React.Component {
   }
 
   onSetOnboardingStep = (step) => {
-    if (this.state.seeingFriendSuggestions) this.props.setOnboardingStep(step);
-    else this.setState({ seeingFriendSuggestions: true });
+    this.props.setOnboardingStep(step);
+    // if (this.state.seeingFriendSuggestions) 
+    // else this.setState({ seeingFriendSuggestions: true });
   }
 
   renderFollowerSuggestions() {

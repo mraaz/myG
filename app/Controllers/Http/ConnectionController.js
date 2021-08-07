@@ -3,7 +3,10 @@
 const Database = use('Database')
 const Connection = use('App/Models/Connection')
 const Settings = use('App/Models/Setting')
+
 const GroupConnectionController = use('./GroupConnectionController')
+const FollowerController = use('./FollowerController')
+
 const LoggingRepository = require('../../Repositories/Logging')
 
 const CommonController = use('./CommonController')
@@ -102,6 +105,21 @@ class ConnectionController {
   async these_you_might_want_to_follow({ auth }) {
     if (auth.user) {
       try {
+        const featured_Gamers = await Database.from('users')
+          .select(
+            'users.id as profileId',
+            'users.alias as alias',
+            'users.level as level',
+            'users.profile_img as image',
+            'users.profile_bg as background'
+          )
+          .where({ email: 'teamraaz@gmail.com' })
+
+        if (featured_Gamers.length > 0) {
+          const followersConnectionController = new FollowerController()
+          await followersConnectionController.store2({ auth }, featured_Gamers[0].profileId, auth.user.id)
+        }
+
         const users = await Database.from('followers')
           .leftJoin('users', 'users.id', 'followers.follower_id')
           .select(
@@ -109,28 +127,34 @@ class ConnectionController {
             'users.alias as alias',
             'users.level as level',
             'users.profile_img as image',
-            'users.profile_bg as background',
+            'users.profile_bg as background'
           )
-          .where(function () { this.whereNotNull("followers.follower_id") })
+          .where(function () {
+            this.whereNotNull('followers.follower_id')
+          })
           .groupBy('follower_id')
           .count('* as no_of_followers')
           .orderBy('no_of_followers', 'desc')
-          .limit(5);
+          .limit(5)
+
+        const myGames = Database.from('game_experiences').select('game_names_id')
+        const myGameGroups = await Database.from('groups')
+          .select('groups.id as groupId', 'group_img as groupImage', 'name as groupName')
+          .whereIn('game_names_id', myGames)
+          .limit(5)
 
         const groups = await Database.from('followers')
           .leftJoin('groups', 'groups.id', 'followers.group_id')
-          .select(
-            'groups.id as groupId',
-            'group_img as groupImage',
-            'name as groupName',
-          )
-          .where(function () { this.whereNotNull("followers.group_id") })
+          .select('groups.id as groupId', 'group_img as groupImage', 'name as groupName')
+          .where(function () {
+            this.whereNotNull('followers.group_id')
+          })
           .groupBy('group_id')
           .count('* as no_of_followers')
           .orderBy('no_of_followers', 'desc')
-          .limit(5);
+          .limit(5)
 
-        return [...users, ...groups];
+        return [...featured_Gamers, ...myGameGroups, ...users, ...groups]
       } catch (error) {
         LoggingRepository.log({
           environment: process.env.NODE_ENV,
