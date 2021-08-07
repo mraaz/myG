@@ -150,8 +150,6 @@ class ConnectionController {
           .orderBy('no_of_followers', 'desc')
           .limit(5)
 
-        console.log(myGameGroups)
-
         const groups = await Database.from('followers')
           .leftJoin('groups', 'groups.id', 'followers.group_id')
           .select('groups.id as groupId', 'group_img as groupImage', 'name as groupName')
