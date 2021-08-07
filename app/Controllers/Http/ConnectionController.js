@@ -141,17 +141,16 @@ class ConnectionController {
           .limit(5)
 
         const myGames = Database.from('game_experiences').select('game_names_id').where({ user_id: auth.user.id })
-        const myGameGroups = await Database.from('followers')
-          .leftJoin('groups', 'groups.id', 'followers.group_id')
+        const myGameGroups = await Database.from('groups')
+          .leftJoin('followers', 'followers.group_id', 'groups.id')
           .select('groups.id as groupId', 'group_img as groupImage', 'name as groupName')
-          .where(function () {
-            this.whereNotNull('followers.group_id')
-          })
           .whereIn('groups.game_names_id', myGames)
           .groupBy('group_id')
           .count('* as no_of_followers')
           .orderBy('no_of_followers', 'desc')
           .limit(5)
+
+        console.log(myGameGroups)
 
         const groups = await Database.from('followers')
           .leftJoin('groups', 'groups.id', 'followers.group_id')
