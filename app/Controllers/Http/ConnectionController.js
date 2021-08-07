@@ -120,6 +120,8 @@ class ConnectionController {
           await followersConnectionController.store2({ auth }, featured_Gamers[0].profileId, auth.user.id)
         }
 
+        const featured_gamers = Database.from('users').select('id').where({ email: 'teamraaz@gmail.com' })
+
         const users = await Database.from('followers')
           .leftJoin('users', 'users.id', 'followers.follower_id')
           .select(
@@ -132,15 +134,23 @@ class ConnectionController {
           .where(function () {
             this.whereNotNull('followers.follower_id')
           })
+          .whereNotIn('users.id', featured_gamers)
           .groupBy('follower_id')
           .count('* as no_of_followers')
           .orderBy('no_of_followers', 'desc')
           .limit(5)
 
-        const myGames = Database.from('game_experiences').select('game_names_id')
-        const myGameGroups = await Database.from('groups')
+        const myGames = Database.from('game_experiences').select('game_names_id').where({ user_id: auth.user.id })
+        const myGameGroups = await Database.from('followers')
+          .leftJoin('groups', 'groups.id', 'followers.group_id')
           .select('groups.id as groupId', 'group_img as groupImage', 'name as groupName')
-          .whereIn('game_names_id', myGames)
+          .where(function () {
+            this.whereNotNull('followers.group_id')
+          })
+          .whereIn('groups.game_names_id', myGames)
+          .groupBy('group_id')
+          .count('* as no_of_followers')
+          .orderBy('no_of_followers', 'desc')
           .limit(5)
 
         const groups = await Database.from('followers')
@@ -149,12 +159,18 @@ class ConnectionController {
           .where(function () {
             this.whereNotNull('followers.group_id')
           })
+          .whereNotIn('groups.game_names_id', myGames)
           .groupBy('group_id')
           .count('* as no_of_followers')
           .orderBy('no_of_followers', 'desc')
           .limit(5)
 
-        return [...featured_Gamers, ...myGameGroups, ...users, ...groups]
+        let _1stpass = [...users, ...groups]
+
+        const common_Controller = new CommonController()
+        _1stpass = await common_Controller.shuffle(_1stpass)
+
+        return [...featured_Gamers, ...myGameGroups, ..._1stpass]
       } catch (error) {
         LoggingRepository.log({
           environment: process.env.NODE_ENV,
