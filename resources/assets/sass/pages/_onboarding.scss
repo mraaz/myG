@@ -72,7 +72,22 @@
   }
 }
 
+.onboarding-buttons-followers {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  bottom: 248px;
+  left: 0;
+  right: 0;
+}
+
 @media screen and (max-width: 575px) {
+  .onboarding-buttons-followers {
+    bottom: 64px !important;
+  }
+
   .onboarding-follower-container {
     max-height: 80vh !important;
     overflow-y: scroll !important;

@@ -162,7 +162,7 @@ export default class FollowerSuggestions extends React.Component {
 
   renderOnboardingButtons() {
     return (
-      <div className="onboarding-buttons">
+      <div className="onboarding-buttons-followers">
         <div className="small-button clickable" onClick={(event) => { event.stopPropagation(); this.props.skipOnboarding() }}>Skip</div>
         <div className="small-button clickable" onClick={(event) => { event.stopPropagation(); this.props.setOnboardingStep(5) }}>Next 2/2</div>
       </div>
@@ -173,17 +173,19 @@ export default class FollowerSuggestions extends React.Component {
     const suggestions = this.state.suggestions;
     if (this.state.loading) return null;
     return (
-      <div id="profile">
-        <div id="profile-game-experiences" className="onboarding-follower-container">
-          {!this.props.noTitle && this.renderHeaders()}
-          <div className="scroll suggestions-scroll onboarding-follower-content">
-            {this.renderPageButtons()}
-            {suggestions.slice(this.state.page, this.state.page + 4).map((profile, index) => this.renderSuggestion(profile, index))}
-            {!suggestions.length && <span className="no-users">Sorry mate, no suggestions found for you at this moment :(</span>}
-            {this.renderOnboardingButtons()}
+      <React.Fragment>
+        <div id="profile">
+          <div id="profile-game-experiences" className="onboarding-follower-container">
+            {!this.props.noTitle && this.renderHeaders()}
+            <div className="scroll suggestions-scroll onboarding-follower-content">
+              {this.renderPageButtons()}
+              {suggestions.slice(this.state.page, this.state.page + 4).map((profile, index) => this.renderSuggestion(profile, index))}
+              {!suggestions.length && <span className="no-users">Sorry mate, no suggestions found for you at this moment :(</span>}
+            </div>
           </div>
         </div>
-      </div>
+        {this.renderOnboardingButtons()}
+      </React.Fragment>
     );
   }
 }
