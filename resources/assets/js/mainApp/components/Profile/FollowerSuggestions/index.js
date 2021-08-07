@@ -24,8 +24,8 @@ export default class FollowerSuggestions extends React.Component {
   async fetchSuggestions() {
     this.setState({ loading: true });
     const response = await axios.get('/api/connections/show_whom_to_follow');
-    if (response.data[0].alias == "myG"){
-        this.props.follow(response.data[0].alias, response.data[0].profileId)
+    if (response.data[0].alias == "myG") {
+      this.props.follow(response.data[0].alias, response.data[0].profileId)
     }
     this.setState({ loading: false, suggestions: response.data });
   }
@@ -174,13 +174,13 @@ export default class FollowerSuggestions extends React.Component {
     if (this.state.loading) return null;
     return (
       <div id="profile">
-        <div id="profile-game-experiences">
-          {this.renderOnboardingButtons()}
+        <div id="profile-game-experiences" className="onboarding-follower-container">
           {!this.props.noTitle && this.renderHeaders()}
-          <div className="scroll suggestions-scroll">
+          <div className="scroll suggestions-scroll onboarding-follower-content">
             {this.renderPageButtons()}
             {suggestions.slice(this.state.page, this.state.page + 4).map((profile, index) => this.renderSuggestion(profile, index))}
             {!suggestions.length && <span className="no-users">Sorry mate, no suggestions found for you at this moment :(</span>}
+            {this.renderOnboardingButtons()}
           </div>
         </div>
       </div>
