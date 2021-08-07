@@ -113,14 +113,14 @@ class ConnectionController {
             'users.profile_img as image',
             'users.profile_bg as background'
           )
-          .where({ email: 'teamraaz@gmail.com' })
+          .where({ alias: 'myG' })
 
         if (featured_Gamers.length > 0) {
           const followersConnectionController = new FollowerController()
           await followersConnectionController.store2({ auth }, featured_Gamers[0].profileId, auth.user.id)
         }
 
-        const featured_gamers = Database.from('users').select('id').where({ email: 'teamraaz@gmail.com' })
+        const featured_gamers = Database.from('users').select('id').where({ alias: 'myG' })
 
         const users = await Database.from('followers')
           .leftJoin('users', 'users.id', 'followers.follower_id')
