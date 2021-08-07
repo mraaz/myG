@@ -16,15 +16,34 @@ export default class Posts extends Component {
       activeTab: 'All',
       fetching: false
     }
-    this.scrollRef = React.createRef()
   }
 
   componentDidMount() {
-    window.scrollTo({
-      top: 500,
-      behavior: 'smooth'
-    })
-    this.fetchMoreData()
+    window.scrollTo({ top: 500, behavior: 'smooth' });
+    this.fetchMoreData();
+    document.addEventListener('scroll', this.handleScroll, { passive: true });
+    document.addEventListener('wheel', this.handleScroll, { passive: true });
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('scroll', this.handleScroll, false);
+    document.removeEventListener('wheel', this.handleScroll, false);
+  }
+
+  handleScroll = () => {
+    if (!document.getElementById("posts")) return;
+    const windowHeight = window.innerHeight;
+    const container = document.getElementById("posts");
+    const containerHeight = container.offsetHeight;
+    const containerPosition = container.getBoundingClientRect();
+    const containerOffset = containerPosition.y;
+    const needsMoreData = (windowHeight - (containerHeight + containerOffset)) > 0;
+    if (needsMoreData && this.state.moreplease && !this.state.fetching) {
+      const { counter = 1 } = this.state
+      this.setState({ counter: counter + 1 }, () => {
+        this.fetchMoreData()
+      });
+    }
   }
 
   showLatestPosts = () => {
@@ -50,10 +69,6 @@ export default class Posts extends Component {
   }
 
   fetchMoreData = () => {
-    // if (this.state.myPosts.length > 0) {
-    //   window.scrollTo(0, document.documentElement.offsetHeight - 4000)
-    // }
-
     const getPosts = async () => {
       try {
         const myPosts = await axios.post('/api/get_group_posts', {
@@ -127,17 +142,6 @@ export default class Posts extends Component {
     })
   }
 
-  handleScroll = (event) => {
-    const _event = event.currentTarget,
-      _current = this.scrollRef.current
-    if (_event.scrollTop + (3 / 2) * _current.offsetHeight > _event.scrollHeight && this.state.moreplease && !this.state.fetching) {
-      const { counter = 1 } = this.state
-      this.setState({ counter: counter + 1 }, () => {
-        this.fetchMoreData()
-      })
-    }
-  }
-
   render() {
     const { myPosts = [], moreplease, isFetching = false, post_submit_loading = false, activeTab } = this.state
     return (
@@ -182,11 +186,7 @@ export default class Posts extends Component {
         )}
         {myPosts.length > 0 && !post_submit_loading && (
           <section id='posts' className={isFetching ? '' : `active`}>
-            <div className='GroupMember__post__list' onScroll={this.handleScroll} ref={this.scrollRef}>
-              {/* <InfiniteScroll dataLength={myPosts.length} next={this.fetchMoreData} hasMore={moreplease}> */}
-              {this.showLatestPosts()}
-              {/* </InfiniteScroll> */}
-            </div>
+            {this.showLatestPosts()}
           </section>
         )}
       </Fragment>
