@@ -23,10 +23,18 @@ export default class FollowerSuggestions extends React.Component {
 
   async fetchSuggestions() {
     this.setState({ loading: true });
-    const response = await axios.get('/api/connections/show_whom_to_follow');
-    if (response.data[0].alias == "myG") {
-      this.props.follow(response.data[0].alias, response.data[0].profileId)
+    let response
+    
+    try {
+        response = await axios.get('/api/connections/show_whom_to_follow')
+        if (response.data && response.data[0] && response.data[0].alias == "myG") {
+            this.props.follow(response.data[0].alias, response.data[0].profileId)
+        }
+    } catch (error) {
+      //logToElasticsearch('error', 'Utility_Function', 'Failed Game_name_values:' + ' ' + error)
+      console.log("Error show_whom_to_follow")
     }
+
     this.setState({ loading: false, suggestions: response.data });
   }
 
@@ -162,7 +170,7 @@ export default class FollowerSuggestions extends React.Component {
 
   renderOnboardingButtons() {
     return (
-      <div className="onboarding-buttons-followers">
+      <div className="onboarding-buttons">
         <div className="small-button clickable" onClick={(event) => { event.stopPropagation(); this.props.skipOnboarding() }}>Skip</div>
         <div className="small-button clickable" onClick={(event) => { event.stopPropagation(); this.props.setOnboardingStep(5) }}>Next 2/2</div>
       </div>
@@ -173,7 +181,6 @@ export default class FollowerSuggestions extends React.Component {
     const suggestions = this.state.suggestions;
     if (this.state.loading) return null;
     return (
-      <React.Fragment>
         <div id="profile">
           <div id="profile-game-experiences" className="onboarding-follower-container">
             {!this.props.noTitle && this.renderHeaders()}
@@ -181,11 +188,10 @@ export default class FollowerSuggestions extends React.Component {
               {this.renderPageButtons()}
               {suggestions.slice(this.state.page, this.state.page + 4).map((profile, index) => this.renderSuggestion(profile, index))}
               {!suggestions.length && <span className="no-users">Sorry mate, no suggestions found for you at this moment :(</span>}
+              {this.renderOnboardingButtons()}
             </div>
           </div>
         </div>
-        {this.renderOnboardingButtons()}
-      </React.Fragment>
     );
   }
 }
