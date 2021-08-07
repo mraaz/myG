@@ -71,3 +71,26 @@
     }
   }
 }
+
+@media screen and (max-width: 575px) {
+  .onboarding-follower-container {
+    max-height: 80vh !important;
+    overflow-y: scroll !important;
+  }
+  
+  .onboarding-follower-content {
+    display: flex !important;
+    flex-direction: column !important;
+    flex-wrap: nowrap !important;
+  }
+
+  .go-left {
+    left: 0 !important;
+    z-index: 10 !important;
+  }
+
+  .go-right {
+    right: 0 !important;
+    z-index: 10 !important;
+  }
+}

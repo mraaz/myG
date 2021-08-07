@@ -1,7 +1,7 @@
 import logger from '../../common/logger'
 
 const initialState = {
-  step: 5,
+  step: 6,
 };
 
 export default function reducer(state = initialState, action) {
