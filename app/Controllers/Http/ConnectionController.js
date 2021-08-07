@@ -2,10 +2,10 @@
 
 const Database = use('Database')
 const Connection = use('App/Models/Connection')
+const Follower = use('App/Models/Follower')
 const Settings = use('App/Models/Setting')
 
 const GroupConnectionController = use('./GroupConnectionController')
-const FollowerController = use('./FollowerController')
 
 const LoggingRepository = require('../../Repositories/Logging')
 
@@ -115,11 +115,6 @@ class ConnectionController {
           )
           .where({ alias: 'myG' })
 
-        if (featured_Gamers.length > 0) {
-          const followersConnectionController = new FollowerController()
-          await followersConnectionController.store2({ auth }, featured_Gamers[0].profileId, auth.user.id)
-        }
-
         const featured_gamers = Database.from('users').select('id').where({ alias: 'myG' })
 
         const users = await Database.from('followers')
@@ -166,6 +161,22 @@ class ConnectionController {
 
         const common_Controller = new CommonController()
         _1stpass = await common_Controller.shuffle(_1stpass)
+
+        if (featured_Gamers.length > 0) {
+          //Putting in the Followers controller broken this class:
+          //"message": "ConnectionController is not a constructor"
+
+          //const followersConnectionController = new FollowerController()
+          //await followersConnectionController.store2({ auth }, featured_Gamers[0].profileId, auth.user.id)
+
+          const check = await Database.from('followers').where({ follower_id: featured_Gamers[0].profileId, user_id: auth.user.id }).first()
+          if (check == undefined) {
+            await Follower.create({
+              follower_id: featured_Gamers[0].profileId,
+              user_id: auth.user.id
+            })
+          }
+        }
 
         return [...featured_Gamers, ...myGameGroups, ..._1stpass]
       } catch (error) {
