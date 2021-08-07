@@ -9,7 +9,7 @@ class OnboardingController {
     try {
       const connections = new ConnectionController()
       connections.master_controller({ auth })
-      
+
       const requestingUserId = auth.user.id
       if (!requestingUserId) throw new Error('Auth Error')
       const user = await User.query().where({ id: requestingUserId }).first()
@@ -22,7 +22,7 @@ class OnboardingController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -32,7 +32,7 @@ class OnboardingController {
       const requestingUserId = auth.user.id
       if (!requestingUserId) throw new Error('Auth Error')
       const step = parseInt(request.params.step)
-      if (![0, 1, 2, 3, 4, 5].includes(step)) throw new Error('Invalid Step')
+      if (![0, 1, 2, 3, 4, 5, 6].includes(step)) throw new Error('Invalid Step')
       await User.query().where({ id: requestingUserId }).update({ onboarding: step })
       return response.send({ step })
     } catch (error) {
@@ -41,7 +41,7 @@ class OnboardingController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }

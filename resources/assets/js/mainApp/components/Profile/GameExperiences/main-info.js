@@ -16,7 +16,7 @@ const MAIN_FIELDS_OPTIONS = [
   { value: 'Nickname', label: 'Nickname' },
   { value: 'Level', label: 'Career' },
   { value: 'Experience', label: 'Experience' },
-  { value: 'Team', label: 'Team' },
+  { value: 'Team', label: 'Team' }
 ]
 
 const EXPERIENCE_OPTIONS = [
@@ -25,13 +25,13 @@ const EXPERIENCE_OPTIONS = [
   { value: 'Less than 3 years', label: 'Less than 3 years' },
   { value: 'Less than 4 years', label: 'Less than 4 years' },
   { value: 'Less than 5 years', label: 'Less than 5 years' },
-  { value: '5+ years', label: '5+ years' },
+  { value: '5+ years', label: '5+ years' }
 ]
 
 const LEVEL_OPTIONS = [
   { value: 'Pro Gamer', label: 'Pro Gamer' },
   { value: 'Semi Pro', label: 'Semi Pro' },
-  { value: 'Casual', label: 'Casual' },
+  { value: 'Casual', label: 'Casual' }
 ]
 
 const commendationLevel = (commends) => {
@@ -50,7 +50,7 @@ export default class MainInfo extends React.Component {
   }
 
   state = {
-    dynamicFields: [],
+    dynamicFields: []
   }
 
   componentDidMount() {
@@ -170,7 +170,8 @@ export default class MainInfo extends React.Component {
           <input
             className='input'
             value={this.props.experience.team || ''}
-            onChange={(event) => this.props.storeExperience({ team: event.target.value })}></input>
+            onChange={(event) => this.props.storeExperience({ team: event.target.value })}
+          ></input>
         </div>
       </div>
     )
@@ -187,7 +188,8 @@ export default class MainInfo extends React.Component {
           <input
             className='input'
             value={this.props.experience.nickname || ''}
-            onChange={(event) => this.props.storeExperience({ nickname: event.target.value })}></input>
+            onChange={(event) => this.props.storeExperience({ nickname: event.target.value })}
+          ></input>
         </div>
       </div>
     )
@@ -375,7 +377,7 @@ export default class MainInfo extends React.Component {
     const isValid = validation
       ? validation.test(get(this.props, `experience.dynamic.${field.id}.value`, get(this.props, `experience.dynamic.${field.id}`)))
       : true
-    const value = get(this.props, `experience.dynamic.${field.id}.value`, get(this.props, `experience.dynamic.${field.id}`));
+    const value = get(this.props, `experience.dynamic.${field.id}.value`, get(this.props, `experience.dynamic.${field.id}`))
     return (
       <React.Fragment>
         <span className='hint'>{field.label}</span>
@@ -385,9 +387,8 @@ export default class MainInfo extends React.Component {
             className={`input${isValid ? '' : ' input-error'}`}
             value={value}
             placeholder={field.profile_placeholder}
-            onChange={(event) =>
-              this.props.storeDynamicExperience({ [field.id]: { value: event.target.value, text: field.label } })
-            }></input>
+            onChange={(event) => this.props.storeDynamicExperience({ [field.id]: { value: event.target.value, text: field.label } })}
+          ></input>
         </div>
         {showLink && (
           <div
@@ -414,7 +415,7 @@ export default class MainInfo extends React.Component {
       uploading: false,
       imageSource: uploadResult.data.Location,
       imageKey: uploadResult.data.Key,
-      imageId: uploadResult.data.aws_key_id,
+      imageId: uploadResult.data.aws_key_id
     })
   }
 
@@ -424,7 +425,7 @@ export default class MainInfo extends React.Component {
       uploading: false,
       imageSource: null,
       imageKey: null,
-      imageId: null,
+      imageId: null
     })
   }
 
@@ -438,7 +439,8 @@ export default class MainInfo extends React.Component {
           minSize={0}
           maxSizeBytes={11185350}
           accept='image/jpeg,image/jpg,image/png,image/gif'
-          disabled={this.props.experience.uploading}>
+          disabled={this.props.experience.uploading}
+        >
           <section className='inner-uploader'>
             <div className='text'>Drop your game image</div>
             <div className='images community-images-container'>

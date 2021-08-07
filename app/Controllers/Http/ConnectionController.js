@@ -3,7 +3,10 @@
 const Database = use('Database')
 const Connection = use('App/Models/Connection')
 const Settings = use('App/Models/Setting')
+
 const GroupConnectionController = use('./GroupConnectionController')
+const FollowerController = use('./FollowerController')
+
 const LoggingRepository = require('../../Repositories/Logging')
 
 const CommonController = use('./CommonController')
@@ -102,35 +105,56 @@ class ConnectionController {
   async these_you_might_want_to_follow({ auth }) {
     if (auth.user) {
       try {
-        const influencers = await Database.from('followers')
-          .leftJoin('users', 'users.id', 'followers.user_id')
-          .leftJoin('groups', 'groups.id', 'followers.group_id')
+        const featured_Gamers = await Database.from('users')
           .select(
-            'users.alias',
-            'users.level',
-            'users.id as user_id',
-            'users.profile_img as user_profile_img',
-            'groups.id as group_id',
-            'group_img',
-            'name as group_name'
+            'users.id as profileId',
+            'users.alias as alias',
+            'users.level as level',
+            'users.profile_img as image',
+            'users.profile_bg as background'
           )
+          .where({ email: 'teamraaz@gmail.com' })
+
+        if (featured_Gamers.length > 0) {
+          const followersConnectionController = new FollowerController()
+          await followersConnectionController.store2({ auth }, featured_Gamers[0].profileId, auth.user.id)
+        }
+
+        const users = await Database.from('followers')
+          .leftJoin('users', 'users.id', 'followers.follower_id')
+          .select(
+            'users.id as profileId',
+            'users.alias as alias',
+            'users.level as level',
+            'users.profile_img as image',
+            'users.profile_bg as background'
+          )
+          .where(function () {
+            this.whereNotNull('followers.follower_id')
+          })
           .groupBy('follower_id')
           .count('* as no_of_followers')
           .orderBy('no_of_followers', 'desc')
-          .limit(10)
+          .limit(5)
 
-        console.log(influencers, '<<<influencers')
+        const myGames = Database.from('game_experiences').select('game_names_id')
+        const myGameGroups = await Database.from('groups')
+          .select('groups.id as groupId', 'group_img as groupImage', 'name as groupName')
+          .whereIn('game_names_id', myGames)
+          .limit(5)
 
-        //loop thru array
-        //determine if user or group
-        //get relevant info
-        //if user: alias, level id, profile imge
-        //if group: group name, group image, number of members
+        const groups = await Database.from('followers')
+          .leftJoin('groups', 'groups.id', 'followers.group_id')
+          .select('groups.id as groupId', 'group_img as groupImage', 'name as groupName')
+          .where(function () {
+            this.whereNotNull('followers.group_id')
+          })
+          .groupBy('group_id')
+          .count('* as no_of_followers')
+          .orderBy('no_of_followers', 'desc')
+          .limit(5)
 
-        // return getConnections
-
-        // presumably you wanted to return the influencers?
-        return influencers
+        return [...featured_Gamers, ...myGameGroups, ...users, ...groups]
       } catch (error) {
         LoggingRepository.log({
           environment: process.env.NODE_ENV,

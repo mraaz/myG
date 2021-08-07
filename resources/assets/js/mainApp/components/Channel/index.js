@@ -140,7 +140,7 @@ export class Channel extends React.Component {
           messageListRef={this.messageListRef}
           editing={this.state.editing}
           isGroup={true}
-          canDelete={true}
+          canDelete={false}
           onEdit={this.onEdit}
           addReaction={this.props.addReaction}
           removeReaction={this.props.removeReaction}
