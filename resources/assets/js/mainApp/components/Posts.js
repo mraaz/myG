@@ -19,7 +19,7 @@ class Posts extends Component {
       myPosts: [],
       moreplease: true,
       post_submit_loading: false,
-      showEvents: true
+      showEvents: false
     }
   }
 
