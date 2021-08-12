@@ -9,9 +9,17 @@ const LoggingRepository = require('../../Repositories/Logging')
 const AchievementsRepository = require('../../Repositories/Achievements')
 
 class ReplyController {
-  async store({ auth, request, response }) {
+  async store({ auth, request }) {
     if (auth.user) {
       try {
+        const thisComment = await Database.from('comments')
+          .innerJoin('posts', 'posts.id', 'comments.post_id')
+          .where('comments.id', '=', request.input('comment_id'))
+          .select('posts.allow_comments', 'posts.id')
+          .first()
+
+        if (thisComment == undefined || thisComment.allow_comments == false) return
+
         let newReply = await Reply.create({
           user_id: auth.user.id,
           comment_id: request.input('comment_id'),

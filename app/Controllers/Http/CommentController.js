@@ -9,9 +9,15 @@ const LoggingRepository = require('../../Repositories/Logging')
 const AchievementsRepository = require('../../Repositories/Achievements')
 
 class CommentController {
-  async store({ auth, request, response }) {
+  async store({ auth, request }) {
     if (auth.user) {
       try {
+        const thisPost = await Database.from('posts')
+          .where({ id: request.input('post_id') })
+          .first()
+
+        if (thisPost == undefined || thisPost.allow_comments == false) return
+
         let newComment = await Comment.create({
           content: request.input('content'),
           post_id: request.input('post_id'),
@@ -25,7 +31,7 @@ class CommentController {
         if (tmpArr != undefined && tmpArr.length > 0) {
           const apiController = new ApiController()
           for (let i = 0; i < tmpArr.length; i++) {
-            const alicia_key = await apiController.update_aws_keys_entry({ auth }, tmpArr[i], '7', newComment.id)
+            await apiController.update_aws_keys_entry({ auth }, tmpArr[i], '7', newComment.id)
           }
         }
 
@@ -74,7 +80,7 @@ class CommentController {
     }
   }
 
-  async show({ auth, request, response }) {
+  async show({ request }) {
     try {
       const allPinnedComments = await Database.from('comments')
         .innerJoin('users', 'users.id', 'comments.user_id')
@@ -108,7 +114,7 @@ class CommentController {
     }
   }
 
-  async comments_count({ auth, request, response }) {
+  async comments_count({ auth, request }) {
     try {
       const no_of_my_comments = await Database.from('comments')
         .where({ id: request.params.id, user_id: auth.user.id })
