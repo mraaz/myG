@@ -28,11 +28,6 @@ class PostController {
       }
 
       if (request.input('video') != undefined && request.input('video').trim() != '') {
-        // const rules = {
-        //   video: 'url',
-        // }
-        //
-        // const validation = await validate(request.input('video'), rules)
         let pattern = new RegExp(
           '^(https?:\\/\\/)?' + // protocol
             '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
@@ -49,6 +44,15 @@ class PostController {
       }
 
       if (auth.user) {
+        let game_names_id = null
+
+        if (request.input('game_names_id') != undefined && String(request.input('game_names_id')).trim().length > 0) {
+          const getGame = await Database.from('game_names').where('id', '=', request.input('game_names_id')).first()
+          if (getGame != undefined) {
+            game_names_id = getGame.id
+          }
+        }
+
         if (arrGroups_id.length == 0) {
           newPost = await Post.create({
             content: request.input('content'),
@@ -57,7 +61,8 @@ class PostController {
             type: 'text',
             group_id: null,
             visibility: request.input('visibility'),
-            media_url: request.input('media_url')
+            media_url: request.input('media_url'),
+            game_names_id
           })
 
           if (request.input('hash_tags') != undefined && request.input('hash_tags') != null && request.input('hash_tags').length > 0) {
@@ -72,19 +77,20 @@ class PostController {
               type: 'text',
               group_id: arrGroups_id[i],
               visibility: request.input('visibility'),
-              media_url: request.input('media_url')
+              media_url: request.input('media_url'),
+              game_names_id
             })
             if (request.input('hash_tags') != undefined && request.input('hash_tags') != null && request.input('hash_tags').length > 0) {
               await this.process_hash_tags({ auth }, request.input('hash_tags'), newPost.id)
             }
           }
         }
-        let tmpArr = request.input('aws_key_id')
+        const tmpArr = request.input('aws_key_id')
 
         if (tmpArr != undefined && tmpArr.length > 0) {
           const apiController = new ApiController()
           for (let i = 0; i < tmpArr.length; i++) {
-            const alicia_key = await apiController.update_aws_keys_entry({ auth }, tmpArr[i], '3', newPost.id)
+            await apiController.update_aws_keys_entry({ auth }, tmpArr[i], '3', newPost.id)
           }
         }
 
@@ -186,7 +192,7 @@ class PostController {
         .orWhere('groups.user_id', '=', auth.user.id)
         .select('groups.id')
 
-      // *** UnDO once we have alot more content on the site ***
+      // *** RAAZ UnDO once we have alot more content on the site ***
 
       //   var today = new Date()
       //   var priorDate = new Date().setDate(today.getDate() - 7)
