@@ -302,7 +302,7 @@ class ConnectionController {
         const _1stpass = [...groups_my_friends_are_in, ...popin_groups, ...my_gaming_grps]
 
         let mySet = new Set()
-        for (var i = 0; i < _1stpass.length; i++) {
+        for (let i = 0; i < _1stpass.length; i++) {
           mySet.add(_1stpass[i])
         }
 

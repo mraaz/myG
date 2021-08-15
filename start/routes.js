@@ -70,6 +70,7 @@ Route.get('/api/getpost/:id', 'PostController.showpost')
 Route.post('/api/post/featureToggle/', 'PostController.featureToggle')
 Route.post('/api/post/showHashTagPosts/', 'PostController.showHashTagPosts')
 Route.post('/api/post/update_allow_comments', 'PostController.update_allow_comments')
+Route.get('/api/post/guest_feed/:counter', 'PostController.guestShow')
 
 Route.post('/api/sponsoredPost/update_clicks/', 'SponsoredPostController.update_clicks')
 
