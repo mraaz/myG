@@ -2,9 +2,9 @@
 
 const { validate } = use('Validator')
 const User = use('App/Models/User')
-const SeatsAvailable = use('App/Models/SeatsAvailable')
-const ExtraSeatsCodes = use('App/Models/ExtraSeatsCodes')
-const ExtraSeatsCodesTran = use('App/Models/ExtraSeatsCodesTran')
+// const SeatsAvailable = use('App/Models/SeatsAvailable')
+// const ExtraSeatsCodes = use('App/Models/ExtraSeatsCodes')
+// const ExtraSeatsCodesTran = use('App/Models/ExtraSeatsCodesTran')
 
 const axios = use('axios')
 const querystring = use('querystring')
@@ -62,12 +62,10 @@ class CommonSaveController {
           var newMsg = 'Sorry, ' + tmp[0].field + ' is not unique. Please try again.'
           session.withErrors([{ field: 'alias', message: newMsg }]).flashAll()
           return response.redirect('back')
-          break
         case 'required':
           var newMsg = 'Sorry, ' + tmp[0].field + ' is required. Please try again.'
           session.withErrors([{ field: 'alias', message: newMsg }]).flashAll()
           return response.redirect('back')
-          break
         default:
           session.withErrors(validation.messages()).flashAll()
           return response.redirect('back')

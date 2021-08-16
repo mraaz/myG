@@ -9,12 +9,13 @@ const fetch = require('node-fetch')
 const FormData = require('form-data')
 
 const ConnectionController = use('./ConnectionController')
-const SeatsAvailable = use('App/Models/SeatsAvailable')
-const ExtraSeatsCodes = use('App/Models/ExtraSeatsCodes')
-const ExtraSeatsCodesTran = use('App/Models/ExtraSeatsCodesTran')
 const ChatRepository = require('../../Repositories/Chat')
 const EncryptionRepository = require('../../Repositories/Encryption')
 const LoggingRepository = require('../../Repositories/Logging')
+
+// const SeatsAvailable = use('App/Models/SeatsAvailable')
+// const ExtraSeatsCodes = use('App/Models/ExtraSeatsCodes')
+// const ExtraSeatsCodesTran = use('App/Models/ExtraSeatsCodesTran')
 
 class DiscordLoginController {
   async redirect({ ally, response }) {
