@@ -59,7 +59,7 @@ class Posts extends Component {
       try {
         const myPosts = await axios({
           method: 'GET',
-          url: `/api/post/guest_feed/${self.state.counter}`
+          url: `/api/post/${self.state.counter}`
         })
 
         if (myPosts.data == '' || myPosts.data == {} || (myPosts.data.myPosts && myPosts.data.myPosts.length == 0)) {
