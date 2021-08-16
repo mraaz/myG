@@ -5,9 +5,9 @@ const Hash = use('Hash')
 const Database = use('Database')
 const User = use('App/Models/User')
 const Settings = use('App/Models/Setting')
-const SeatsAvailable = use('App/Models/SeatsAvailable')
-const ExtraSeatsCodes = use('App/Models/ExtraSeatsCodes')
-const ExtraSeatsCodesTran = use('App/Models/ExtraSeatsCodesTran')
+// const SeatsAvailable = use('App/Models/SeatsAvailable')
+// const ExtraSeatsCodes = use('App/Models/ExtraSeatsCodes')
+// const ExtraSeatsCodesTran = use('App/Models/ExtraSeatsCodesTran')
 
 const ConnectionController = use('./ConnectionController')
 
@@ -48,7 +48,7 @@ class AuthController {
       confirm_password: 'required',
       encryption: 'required|min:7|max:30',
       firstName: 'required',
-      lastName: 'required',
+      lastName: 'required'
     }
 
     const messages = {
@@ -56,7 +56,7 @@ class AuthController {
       email: 'Enter valid email address',
       min: 'Not enough characters - Minimum 4 for Alias & 7 for Chat Password',
       max: 'Wow! Too many characters - Max 30',
-      unique: 'Sorry, this field is not unique. Try again please.',
+      unique: 'Sorry, this field is not unique. Try again please.'
     }
 
     const validation = await validate(request.all(), rules, messages)
@@ -65,7 +65,7 @@ class AuthController {
       session.withErrors(validation.messages()).flashAll()
       return response.redirect('back')
     } else {
-      var strMsg =
+      let strMsg =
         'Special characters:\r\nAlias can only contain letters (a-z), numbers (0-9), and periods (.).\r\nAlias can begin or end with non-alphanumeric characters except periods (.) and they can not have multiple periods.'
 
       try {
@@ -79,8 +79,8 @@ class AuthController {
           return response.redirect('back')
         }
 
-        var x = request.input('alias').toString()
-        for (var i = 0; i < x.length; i++) {
+        let x = request.input('alias').toString()
+        for (let i = 0; i < x.length; i++) {
           if (x.charCodeAt(i) > 122 || x.charCodeAt(i) < 46) {
             session.withErrors([{ field: 'alias', message: strMsg }]).flashAll()
             return response.redirect('back')
@@ -92,7 +92,7 @@ class AuthController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
         session.withErrors(validation.messages()).flashAll()
         return response.redirect('back')
@@ -100,12 +100,12 @@ class AuthController {
 
       try {
         // Seats Availability
-        const seatsAvailable = await SeatsAvailable.query().first()
-        const extraSeatsCode = request.input('extraSeatsCode')
-        const unlockedByCheatCode = request.input('unlockedByCheatCode')
-        if (!seatsAvailable.seats_available && !extraSeatsCode && !unlockedByCheatCode) {
-          return response.redirect('/?error=seats')
-        }
+        // const seatsAvailable = await SeatsAvailable.query().first()
+        // const extraSeatsCode = request.input('extraSeatsCode')
+        // const unlockedByCheatCode = request.input('unlockedByCheatCode')
+        // if (!seatsAvailable.seats_available && !extraSeatsCode && !unlockedByCheatCode) {
+        //   return response.redirect('/?error=seats')
+        // }
 
         const newUser = await User.create({
           email: await EncryptionRepository.encryptField(request.input('email')),
@@ -113,37 +113,33 @@ class AuthController {
           last_name: await EncryptionRepository.encryptField(request.input('lastName')),
           password: request.input('password'),
           alias: request.input('alias'),
-          profile_img: 'https://myG.gg/default_user/new-user-profile-picture.png',
+          profile_img: 'https://myG.gg/default_user/new-user-profile-picture.png'
         })
 
         // Decrease Seats Available upon Registration
-        if (seatsAvailable.seats_available > 0) {
-          seatsAvailable.seats_available = (seatsAvailable.seats_available || 1) - 1
-          seatsAvailable.save()
-        }
+        // if (seatsAvailable.seats_available > 0) {
+        //   seatsAvailable.seats_available = (seatsAvailable.seats_available || 1) - 1
+        //   seatsAvailable.save()
+        // }
 
-        // Mark Extra Seat Code as Used
-        if (extraSeatsCode) {
-          const extraSeatsCodes = await ExtraSeatsCodes.query()
-            .where('code', extraSeatsCode)
-            .first()
+        // // Mark Extra Seat Code as Used
+        // if (extraSeatsCode) {
+        //   const extraSeatsCodes = await ExtraSeatsCodes.query().where('code', extraSeatsCode).first()
 
-          if (extraSeatsCodes != undefined) {
-            await ExtraSeatsCodes.query()
-              .where('code', extraSeatsCode)
-              .increment('counter', 1)
+        //   if (extraSeatsCodes != undefined) {
+        //     await ExtraSeatsCodes.query().where('code', extraSeatsCode).increment('counter', 1)
 
-            if (extraSeatsCodes.id) {
-              await ExtraSeatsCodesTran.create({
-                extra_seats_codes_id: extraSeatsCodes.id,
-                user_id: user.id,
-              })
-            }
-          }
-        }
+        //     if (extraSeatsCodes.id) {
+        //       await ExtraSeatsCodesTran.create({
+        //         extra_seats_codes_id: extraSeatsCodes.id,
+        //         user_id: user.id
+        //       })
+        //     }
+        //   }
+        // }
 
-        var newUserSettings = await Settings.create({
-          user_id: newUser.id,
+        await Settings.create({
+          user_id: newUser.id
         })
       } catch (error) {
         console.log('error')
@@ -151,8 +147,8 @@ class AuthController {
           .withErrors([
             {
               field: 'alias',
-              message: 'Opps, there was an error with the Database, please try again later',
-            },
+              message: 'Opps, there was an error with the Database, please try again later'
+            }
           ])
 
           .flashExcept(['password'])
@@ -161,10 +157,7 @@ class AuthController {
       }
       //session.flash({ notification: 'Welcome to myGame!!!' })
 
-      const fallbackUser = async () =>
-        await User.query()
-          .where('email', request.input('email'))
-          .first()
+      const fallbackUser = async () => await User.query().where('email', request.input('email')).first()
 
       const user = await User.query()
         .where('email', await EncryptionRepository.encryptField(request.input('email')))
@@ -195,9 +188,7 @@ class AuthController {
     const postData = request.post()
 
     //find the user in the Database by their Email
-    const user = await User.query()
-      .where('email', postData.email)
-      .first()
+    const user = await User.query().where('email', postData.email).first()
     if (user) {
       //Verfiy the Password
       const passwordVerified = await Hash.verify(postData.password, user.password)
@@ -209,9 +200,7 @@ class AuthController {
         const connections = new ConnectionController()
         connections.master_controller({ auth })
 
-        const onlineQueryResponse = await Database.from('users')
-          .where('status', 'online')
-          .count()
+        const onlineQueryResponse = await Database.from('users').where('status', 'online').count()
         const onlineUsers = onlineQueryResponse[0]['count(*)']
         if (onlineUsers < 10) await ChatRepository.publishOnMainChannel(`Welcome ${user.alias} !!`)
 
@@ -221,8 +210,8 @@ class AuthController {
           .withErrors([
             {
               field: 'password',
-              message: 'Opps, Incorrect Password',
-            },
+              message: 'Opps, Incorrect Password'
+            }
           ])
 
           .flashExcept(['password'])
@@ -235,8 +224,8 @@ class AuthController {
         .withErrors([
           {
             field: 'email',
-            message: 'Sorry, can not find user with that email',
-          },
+            message: 'Sorry, can not find user with that email'
+          }
         ])
 
         .flashExcept(['password'])
@@ -264,7 +253,7 @@ class AuthController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
       return 'Error, unable to logout'
     }
