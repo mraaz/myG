@@ -9,12 +9,13 @@ const fetch = require('node-fetch')
 const FormData = require('form-data')
 
 const ConnectionController = use('./ConnectionController')
-const SeatsAvailable = use('App/Models/SeatsAvailable')
-const ExtraSeatsCodes = use('App/Models/ExtraSeatsCodes')
-const ExtraSeatsCodesTran = use('App/Models/ExtraSeatsCodesTran')
 const ChatRepository = require('../../Repositories/Chat')
 const EncryptionRepository = require('../../Repositories/Encryption')
 const LoggingRepository = require('../../Repositories/Logging')
+
+// const SeatsAvailable = use('App/Models/SeatsAvailable')
+// const ExtraSeatsCodes = use('App/Models/ExtraSeatsCodes')
+// const ExtraSeatsCodesTran = use('App/Models/ExtraSeatsCodesTran')
 
 class DiscordLoginController {
   async redirect({ ally, response }) {
@@ -45,7 +46,7 @@ class DiscordLoginController {
 
       const res = await fetch('https://discord.com/api/oauth2/token', {
         method: 'POST',
-        body: data,
+        body: data
       })
 
       const json = await res.json()
@@ -54,24 +55,24 @@ class DiscordLoginController {
       const res = await fetch(`https://discord.com/api/users/@me`, {
         method: 'GET',
         headers: {
-          Authorization: `Bearer ${token}`,
-        },
+          Authorization: `Bearer ${token}`
+        }
       })
       const json = await res.json()
       try {
         const authUser = await User.query()
           .where({
             provider: 'discord',
-            provider_id: json.id,
+            provider_id: json.id
           })
           .first()
         if (!(authUser === null)) {
           await auth.loginViaId(authUser.id)
           const connections = new ConnectionController()
           connections.master_controller({ auth })
-          const onlineQueryResponse = await Database.from('users').where('status', 'online').count();
-          const onlineUsers = onlineQueryResponse[0]['count(*)'];
-          if (onlineUsers < 10) await ChatRepository.publishOnMainChannel(`Welcome ${authUser.alias} !!`);
+          const onlineQueryResponse = await Database.from('users').where('status', 'online').count()
+          const onlineUsers = onlineQueryResponse[0]['count(*)']
+          if (onlineUsers < 10) await ChatRepository.publishOnMainChannel(`Welcome ${authUser.alias} !!`)
           return response.redirect('/')
         } else {
           session.put('provider', 'discord')
@@ -86,7 +87,7 @@ class DiscordLoginController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
         return response.redirect('/login/discord')
       }
@@ -108,7 +109,7 @@ class DiscordLoginController {
       const authUser = await User.query()
         .where({
           provider: provider,
-          provider_id: userData.getId(),
+          provider_id: userData.getId()
         })
         .first()
       if (!(authUser === null)) {
@@ -117,12 +118,12 @@ class DiscordLoginController {
       }
 
       // Seats Availability
-      const seatsAvailable = await SeatsAvailable.query().first()
-      const extraSeatsCode = request.input('extraSeatsCode')
-      const unlockedByCheatCode = request.input('unlockedByCheatCode')
-      if (!seatsAvailable.seats_available && !extraSeatsCode && !unlockedByCheatCode) {
-        return response.redirect('/?error=seats')
-      }
+      //   const seatsAvailable = await SeatsAvailable.query().first()
+      //   const extraSeatsCode = request.input('extraSeatsCode')
+      //   const unlockedByCheatCode = request.input('unlockedByCheatCode')
+      //   if (!seatsAvailable.seats_available && !extraSeatsCode && !unlockedByCheatCode) {
+      //     return response.redirect('/?error=seats')
+      //   }
 
       const user = new User()
       user.first_name = await EncryptionRepository.encryptField(userData.getName())
@@ -136,31 +137,31 @@ class DiscordLoginController {
 
       await user.save()
 
-      // Decrease Seats Available upon Registration
-      if (seatsAvailable.seats_available > 0) {
-        seatsAvailable.seats_available = (seatsAvailable.seats_available || 1) - 1
-        seatsAvailable.save()
-      }
+      //   // Decrease Seats Available upon Registration
+      //   if (seatsAvailable.seats_available > 0) {
+      //     seatsAvailable.seats_available = (seatsAvailable.seats_available || 1) - 1
+      //     seatsAvailable.save()
+      //   }
 
       // Mark Extra Seat Code as Used
-      if (extraSeatsCode) {
-        const extraSeatsCodes = await ExtraSeatsCodes.query()
-          .where('code', extraSeatsCode)
-          .first()
+      //   if (extraSeatsCode) {
+      //     const extraSeatsCodes = await ExtraSeatsCodes.query()
+      //       .where('code', extraSeatsCode)
+      //       .first()
 
-        if (extraSeatsCodes != undefined) {
-          await ExtraSeatsCodes.query()
-            .where('code', extraSeatsCode)
-            .increment('counter', 1)
+      //     if (extraSeatsCodes != undefined) {
+      //       await ExtraSeatsCodes.query()
+      //         .where('code', extraSeatsCode)
+      //         .increment('counter', 1)
 
-          if (extraSeatsCodes.id) {
-            await ExtraSeatsCodesTran.create({
-              extra_seats_codes_id: extraSeatsCodes.id,
-              user_id: user.id,
-            })
-          }
-        }
-      }
+      //       if (extraSeatsCodes.id) {
+      //         await ExtraSeatsCodesTran.create({
+      //           extra_seats_codes_id: extraSeatsCodes.id,
+      //           user_id: user.id,
+      //         })
+      //       }
+      //     }
+      //   }
 
       await auth.loginViaId(user.id)
       return response.redirect('/')
