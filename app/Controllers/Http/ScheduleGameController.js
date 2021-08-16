@@ -257,14 +257,14 @@ class ScheduleGameController {
         )
 
         // If a game is created for a team, all team members are notified
-        const teamId = request.input('team_id');
+        const teamId = request.input('team_id')
         if (teamId) {
-          const gameId = gameInfo.id;
-          const members = await Database.from('team_members').where('team_id', teamId).select('user_id');
-          const requestingUserId = gameInfo.user_id;
+          const gameId = gameInfo.id
+          const members = await Database.from('team_members').where('team_id', teamId).select('user_id')
+          const requestingUserId = gameInfo.user_id
           for (const member of members) {
-            const userId = member.user_id;
-            await NotificationsRepository.notifyTeamGameCreated({ requestingUserId, userId, teamId, gameId });
+            const userId = member.user_id
+            await NotificationsRepository.notifyTeamGameCreated({ requestingUserId, userId, teamId, gameId })
           }
         }
 
@@ -500,17 +500,17 @@ class ScheduleGameController {
           })
         }
         if (request.input('co_hosts') != null) {
-          const delete_co_hosts = await Database.table('co_hosts')
+          await Database.table('co_hosts')
             .where({
               schedule_games_id: request.input('id')
             })
             .delete()
 
-          var arrCo_hosts = request.input('co_hosts').split(',')
+          const arrCo_hosts = request.input('co_hosts').split(',')
 
           if (arrCo_hosts != '') {
-            for (var i = 0; i < arrCo_hosts.length; i++) {
-              const create_co_hosts = await CoHost.create({
+            for (let i = 0; i < arrCo_hosts.length; i++) {
+              await CoHost.create({
                 schedule_games_id: request.input('id'),
                 user_id: arrCo_hosts[i]
               })
@@ -519,7 +519,7 @@ class ScheduleGameController {
         }
 
         //Delete all Tags
-        const delete_schedule_games_tags = await Database.table('schedule_games_tags')
+        await Database.table('schedule_games_tags')
           .where({
             schedule_games_id: request.input('id')
           })

@@ -112,26 +112,28 @@ class PostController {
   }
 
   async process_hash_tags({ auth }, hash_tags, post_id) {
-    var arrTags = JSON.parse(hash_tags)
-    let PHController = new PostHashTagTransactionController()
+    if (auth.user) {
+      const arrTags = JSON.parse(hash_tags)
+      const PHController = new PostHashTagTransactionController()
 
-    for (var i = 0; i < MAX_HASH_TAGS && i < arrTags.length; i++) {
-      if (arrTags[i].hash_tag_id == null) {
-        if (/['/.%#$;`\\]/.test(arrTags[i].value)) {
-          continue
+      for (let i = 0; i < MAX_HASH_TAGS && i < arrTags.length; i++) {
+        if (arrTags[i].hash_tag_id == null) {
+          if (/['/.%#$;`\\]/.test(arrTags[i].value)) {
+            continue
+          }
+
+          let hash_tags_Controller = new HashTagController()
+          const hash_tag_id = await hash_tags_Controller.store({ auth }, arrTags[i].value)
+          await PHController.store({ auth }, post_id, hash_tag_id)
+        } else {
+          await PHController.store({ auth }, post_id, arrTags[i].hash_tag_id)
+          await HashTags.query().where({ id: arrTags[i].hash_tag_id }).increment('counter', 1)
         }
-
-        let hash_tags_Controller = new HashTagController()
-        const hash_tag_id = await hash_tags_Controller.store({ auth }, arrTags[i].value)
-        await PHController.store({ auth }, post_id, hash_tag_id)
-      } else {
-        await PHController.store({ auth }, post_id, arrTags[i].hash_tag_id)
-        await HashTags.query().where({ id: arrTags[i].hash_tag_id }).increment('counter', 1)
       }
     }
   }
 
-  async show({ auth, request, response }) {
+  async show({ auth, request }) {
     try {
       let grp_limit = 3
 
@@ -825,6 +827,100 @@ class PostController {
       result.push(array.splice(0, Math.ceil(array.length / n--)))
     }
     return result
+  }
+
+  async guestShow({ request }) {
+    try {
+      //Find top trending posts:
+      // Posts with most likes n updated recently
+      // Shuffle
+
+      let game_names = null
+      let counterValue = 20
+
+      if (request.input('game_names_ids') != undefined && request.input('game_names_ids') != null) {
+        game_names = JSON.parse(request.input('game_names_ids'))
+        counterValue = 10
+      }
+
+      const trendingPosts_likes = await Database.from('posts')
+        .innerJoin('likes', 'likes.post_id', 'posts.id')
+        .whereIn('posts.visibility', [1])
+        .where((builder) => {
+          if (game_names != null) builder.whereIn('posts.game_names_id', [game_names])
+        })
+        .groupBy('posts.id')
+        .count('* as no_of_likes')
+        .orderBy('no_of_likes', 'desc')
+        .select('posts.id')
+        .paginate(request.input('counter'), counterValue)
+
+      let array_ = []
+
+      trendingPosts_likes.data.map((posts) => {
+        array_.push(posts.id)
+      })
+
+      if (game_names != null) {
+        const trendingPosts_communities = await Database.from('posts')
+          .innerJoin('groups', 'groups.id', 'posts.group_id')
+          .innerJoin('likes', 'likes.post_id', 'posts.id')
+          .whereIn('posts.visibility', [1])
+          .whereIn('groups.game_names_id', [game_names])
+          .groupBy('posts.id')
+          .count('* as no_of_likes')
+          .orderBy('no_of_likes', 'desc')
+          .select('posts.id')
+          .paginate(request.input('counter'), counterValue)
+
+        trendingPosts_communities.data.map((posts) => {
+          array_.push(posts.id)
+        })
+      }
+
+      let myPosts = await this.guestBody(array_)
+      myPosts = myPosts.tmpResults
+
+      return {
+        myPosts
+      }
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error
+      })
+    }
+  }
+
+  async guestBody(superSet) {
+    try {
+      const trendingPosts = await Database.from('posts')
+        .innerJoin('users', 'users.id', 'posts.user_id')
+        .whereIn('posts.id', superSet)
+        .select('users.*', 'posts.*', 'posts.id', 'posts.updated_at', 'posts.created_at')
+        .orderBy('posts.updated_at', 'desc')
+
+      let _1stpass = [...trendingPosts]
+
+      const common_Controller = new CommonController()
+      _1stpass = await common_Controller.shuffle(_1stpass)
+
+      const tmpResults = await this.get_additional_info({ auth: { user: -1 } }, _1stpass)
+      return {
+        tmpResults
+      }
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error
+      })
+    }
   }
 }
 
