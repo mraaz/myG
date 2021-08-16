@@ -107,7 +107,9 @@ class CommonSaveController {
         'https://www.google.com/recaptcha/api/siteverify',
         querystring.stringify({ secret: Env.get('SECRET_KEY'), response: token })
       )
-      if (!process.env.SKIP_CAPTCHA && !data_request.data.success) {
+      if (!data_request.data.success) {
+        console.log('Google 1: ' + data_request.data.success)
+        console.log('Google 2: ' + data_request)
         console.log('Google Recaptcha Verification Failed: ' + data_request.data)
         return response.redirect('/?error=google-recaptcha')
       } else {
@@ -172,5 +174,4 @@ class CommonSaveController {
     }
   }
 }
-
 module.exports = CommonSaveController
