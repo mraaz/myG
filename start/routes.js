@@ -95,12 +95,13 @@ Route.get('/api/users_additional_infos/', 'UsersAdditionalInfoController.process
 
 Route.post('/api/GameExperiences/commend/:game_exp_id', 'GameExperienceController.updateCommend')
 Route.get('/api/GameExperiences/exp/:id', 'GameExperienceController.myShow')
-Route.get('/api/GameExperiences/:id', 'GameExperienceController.show')
+Route.get('/api/GameExperiences/show', 'GameExperienceController.show')
 Route.post('/api/GameExperiences', 'GameExperienceController.store')
 Route.get('/api/GameExperiences/delete/:game_id', 'GameExperienceController.destroy')
 Route.post('/api/GameExperiences/:id/:game_id', 'GameExperienceController.update')
 Route.get('/api/GameExperiences/:id/:game_id', 'GameExperienceController.show_Game')
 Route.post('/api/GameExperiences/gameExpSearchResults', 'GameExperienceController.gameExpSearchResults')
+Route.get('/api/GameExperiences/showGuest/', 'GameExperienceController.showGuest')
 
 Route.get('/api/ScheduleGame/additional_game_info/:id', 'ScheduleGameController.additional_game_info')
 
