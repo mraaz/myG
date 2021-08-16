@@ -52,21 +52,7 @@
             <div class="sso-text">Log in with Email (Dev use ONLY)</div>
           </a>
         </div>
-      </div>
-      <div class="col-3 card-round">
-        <div id="seats-header" class="seats-header">
-          <b>We currently have</b>
-        </div>
-        <div id="seats-desc" class="seats-desc">
-          <div class="card-seats">
-            <b id="seats-available"> Loading... </b>
-          </div>
-          <b>accounts available</b>
-        </div>
-        <div class="register-message"><b>Register</b> while there's still time!</div>
-        <div id="extra-seats-code-container"></div>
-        <div id="extra-seats-email-container"></div>
-      </div>
+      </div>      
       <div class="col-3 card-round">
         <div class="register-message">
         myG © 2021 · <a href="/terms">
@@ -80,28 +66,28 @@
   </div>
 </div>
 <script>
-  function fetchSeatsAvailable() {
-    const xmlHttp = new XMLHttpRequest();
-    xmlHttp.open( "GET", '/api/seats_available', false );
-    xmlHttp.send( null );
-    return xmlHttp.responseText;
-  }
+//   function fetchSeatsAvailable() {
+//     const xmlHttp = new XMLHttpRequest();
+//     xmlHttp.open( "GET", '/api/seats_available', false );
+//     xmlHttp.send( null );
+//     return xmlHttp.responseText;
+//   }
 
-  function setSeatsAvailable() {
-    const unlocked = window.localStorage.getItem('unlockedByCheatCode');
-    if (unlocked) {
-      document.getElementById('seats-header').innerText = "Unlocked by cheat code!";
-      document.getElementById('seats-desc').innerHTML = null;
-      return;
-    }
-    const seatsAvailable = parseInt(fetchSeatsAvailable());
-    document.getElementById('seats-available').innerText = seatsAvailable || 0;
-    if (!seatsAvailable) {
-      document.getElementsByClassName('register-message')[0].innerText = "Only Invitation Codes can get you in now!";
-      injectInvitationCodeInput();
-      injectInvitationEmailInput();
-    }
-  }
+//   function setSeatsAvailable() {
+//     const unlocked = window.localStorage.getItem('unlockedByCheatCode');
+//     if (unlocked) {
+//       document.getElementById('seats-header').innerText = "Unlocked by cheat code!";
+//       document.getElementById('seats-desc').innerHTML = null;
+//       return;
+//     }
+//     const seatsAvailable = parseInt(fetchSeatsAvailable());
+//     document.getElementById('seats-available').innerText = seatsAvailable || 0;
+//     if (!seatsAvailable) {
+//       document.getElementsByClassName('register-message')[0].innerText = "Only Invitation Codes can get you in now!";
+//       injectInvitationCodeInput();
+//       injectInvitationEmailInput();
+//     }
+//   }
 
   function checkDevEnvironment() {
     const url = window.location.href;
@@ -112,131 +98,131 @@
     }
   }
 
-  function injectInvitationCodeInput() {
-    const inputHtml = ''
-      + '<div class="extra-seats-code-container">'
-        + '<p id="extra-seats-code-hint" class="extra-seats-code-hint">Enter Invitation Code</p>'
-        + '<input class="input-common extra-seats-code-input"'
-        + 'id="extra-seats-code-input"'
-        + 'placeholder="e.g. A1B2C3"'
-        + 'type="text"'
-        + 'maxlength="23"'
-        + 'name="extra-seats-code"'
-        + 'style="text-transform:uppercase"'
-        + '></input>'
-        + '<div class="extra-seats-code-button clickable" onclick="checkExtraSeatsCode()">'
-          + 'Check'
-        + '</div>'
-      + '</div>';
-    document.getElementById('extra-seats-code-container').innerHTML = inputHtml;
-  }
+//   function injectInvitationCodeInput() {
+//     const inputHtml = ''
+//       + '<div class="extra-seats-code-container">'
+//         + '<p id="extra-seats-code-hint" class="extra-seats-code-hint">Enter Invitation Code</p>'
+//         + '<input class="input-common extra-seats-code-input"'
+//         + 'id="extra-seats-code-input"'
+//         + 'placeholder="e.g. A1B2C3"'
+//         + 'type="text"'
+//         + 'maxlength="23"'
+//         + 'name="extra-seats-code"'
+//         + 'style="text-transform:uppercase"'
+//         + '></input>'
+//         + '<div class="extra-seats-code-button clickable" onclick="checkExtraSeatsCode()">'
+//           + 'Check'
+//         + '</div>'
+//       + '</div>';
+//     document.getElementById('extra-seats-code-container').innerHTML = inputHtml;
+//   }
 
-  function setupCheatCode() {
-    const cheatCode = ['ARROWRIGHT', 'ARROWDOWN', 'ARROWRIGHT', 'H', 'P']
-    document.onkeydown = ({ key }) => {
-      if (window.unlockedByCheatCode) return;
-      if (!window.cheatCode) window.cheatCode = [];
-      window.cheatCode.push(key ? key.toUpperCase() : '');
-      if (JSON.stringify(window.cheatCode) !== JSON.stringify(cheatCode.slice(0, window.cheatCode.length))) {
-        window.cheatCode = [];
-        return;
-      }
-      if (JSON.stringify(window.cheatCode) === JSON.stringify(cheatCode)) {
-        document.getElementById('extra-seats-code-container').innerHTML = null;
-        document.getElementById('extra-seats-email-container').innerHTML = null;
-        document.getElementsByClassName('register-message')[0].innerText = "Nice one! You're granted access, come on down!";
-        document.getElementsByClassName('register-message')[0].style = "color: #FFF";
-        window.unlockedByCheatCode = true;
-        window.localStorage.setItem('unlockedByCheatCode', true);
-        alert("Nice one! You're granted access, come on down!");
-      }
-    };
-  }
+//   function setupCheatCode() {
+//     const cheatCode = ['ARROWRIGHT', 'ARROWDOWN', 'ARROWRIGHT', 'H', 'P']
+//     document.onkeydown = ({ key }) => {
+//       if (window.unlockedByCheatCode) return;
+//       if (!window.cheatCode) window.cheatCode = [];
+//       window.cheatCode.push(key ? key.toUpperCase() : '');
+//       if (JSON.stringify(window.cheatCode) !== JSON.stringify(cheatCode.slice(0, window.cheatCode.length))) {
+//         window.cheatCode = [];
+//         return;
+//       }
+//       if (JSON.stringify(window.cheatCode) === JSON.stringify(cheatCode)) {
+//         document.getElementById('extra-seats-code-container').innerHTML = null;
+//         document.getElementById('extra-seats-email-container').innerHTML = null;
+//         document.getElementsByClassName('register-message')[0].innerText = "Nice one! You're granted access, come on down!";
+//         document.getElementsByClassName('register-message')[0].style = "color: #FFF";
+//         window.unlockedByCheatCode = true;
+//         window.localStorage.setItem('unlockedByCheatCode', true);
+//         alert("Nice one! You're granted access, come on down!");
+//       }
+//     };
+//   }
 
-  function checkExtraSeatsCode() {
-    const code = document.getElementById('extra-seats-code-input').value;
+//   function checkExtraSeatsCode() {
+//     const code = document.getElementById('extra-seats-code-input').value;
 
-    if (!code){
-      document.getElementById('extra-seats-code-hint').innerText = "Fair dinkum, this code is beyond garbage (◔_◔)";
-      document.getElementById('extra-seats-code-hint').style = "color: #ce2b35";
-      return
-    }
+//     if (!code){
+//       document.getElementById('extra-seats-code-hint').innerText = "Fair dinkum, this code is beyond garbage (◔_◔)";
+//       document.getElementById('extra-seats-code-hint').style = "color: #ce2b35";
+//       return
+//     }
 
-    if (code.length < 15 || code.length > 15){
-      document.getElementById('extra-seats-code-hint').innerText = "Fair dinkum, this code " + code.toUpperCase() + " is garbage :(";
-      document.getElementById('extra-seats-code-hint').style = "color: #ce2b35";
-      return
-    }
+//     if (code.length < 15 || code.length > 15){
+//       document.getElementById('extra-seats-code-hint').innerText = "Fair dinkum, this code " + code.toUpperCase() + " is garbage :(";
+//       document.getElementById('extra-seats-code-hint').style = "color: #ce2b35";
+//       return
+//     }
 
-    var strFirstThree = code.substring(0,4);
+//     var strFirstThree = code.substring(0,4);
 
-    if (strFirstThree.toUpperCase() != "MYG-"){
-      document.getElementById('extra-seats-code-hint').innerText = "Fair dinkum, this code " + code.toUpperCase() + " is garbage :(";
-      document.getElementById('extra-seats-code-hint').style = "color: #ce2b35";
-      alert("Smells like a bot! If you're a bot, please stop... pretty pls, otherwise try again")
-      return
-    }
+//     if (strFirstThree.toUpperCase() != "MYG-"){
+//       document.getElementById('extra-seats-code-hint').innerText = "Fair dinkum, this code " + code.toUpperCase() + " is garbage :(";
+//       document.getElementById('extra-seats-code-hint').style = "color: #ce2b35";
+//       alert("Smells like a bot! If you're a bot, please stop... pretty pls, otherwise try again")
+//       return
+//     }
 
-    const xmlHttp = new XMLHttpRequest();
-    xmlHttp.open( "GET", '/api/seats_available/' + code, false );
-    xmlHttp.send( null );
-    const isCodeValid = xmlHttp.responseText === "true";
-    if (isCodeValid) {
-      document.getElementById('extra-seats-code-container').innerHTML = null;
-      document.getElementById('extra-seats-email-container').innerHTML = null;
-      document.getElementsByClassName('register-message')[0].innerText = "Nice mate... You're In! Login via your social of choice.";
-      document.getElementsByClassName('register-message')[0].style = "color: #ce2b35";
-      window.localStorage.setItem('extraSeatsCode', code);
-    } else {
-      if (xmlHttp.responseText === "LIMIT_EXCEEED") {
-        document.getElementById('extra-seats-code-hint').innerText = "Hey bro, limit exceeded, please try again in five minutes.";
-      }
-      else if (xmlHttp.responseText === "COUNTER_EXCEEED") {
-        document.getElementById('extra-seats-code-hint').innerText = "Sorry! This code " + code.toUpperCase() + " has reached its limit. Please try a new code";
-        document.getElementById('extra-seats-code-hint').style = "color: #ce2b35";
-      }
-      else{
-        document.getElementById('extra-seats-code-hint').innerText = "This code " + code.toUpperCase() + " is not valid!";
-        document.getElementById('extra-seats-code-hint').style = "color: #ce2b35";
-      }
-    }
-  }
+//     const xmlHttp = new XMLHttpRequest();
+//     xmlHttp.open( "GET", '/api/seats_available/' + code, false );
+//     xmlHttp.send( null );
+//     const isCodeValid = xmlHttp.responseText === "true";
+//     if (isCodeValid) {
+//       document.getElementById('extra-seats-code-container').innerHTML = null;
+//       document.getElementById('extra-seats-email-container').innerHTML = null;
+//       document.getElementsByClassName('register-message')[0].innerText = "Nice mate... You're In! Login via your social of choice.";
+//       document.getElementsByClassName('register-message')[0].style = "color: #ce2b35";
+//       window.localStorage.setItem('extraSeatsCode', code);
+//     } else {
+//       if (xmlHttp.responseText === "LIMIT_EXCEEED") {
+//         document.getElementById('extra-seats-code-hint').innerText = "Hey bro, limit exceeded, please try again in five minutes.";
+//       }
+//       else if (xmlHttp.responseText === "COUNTER_EXCEEED") {
+//         document.getElementById('extra-seats-code-hint').innerText = "Sorry! This code " + code.toUpperCase() + " has reached its limit. Please try a new code";
+//         document.getElementById('extra-seats-code-hint').style = "color: #ce2b35";
+//       }
+//       else{
+//         document.getElementById('extra-seats-code-hint').innerText = "This code " + code.toUpperCase() + " is not valid!";
+//         document.getElementById('extra-seats-code-hint').style = "color: #ce2b35";
+//       }
+//     }
+//   }
 
-  function injectInvitationEmailInput() {
-    const inputHtml = ''
-      + '<div class="extra-seats-email-container">'
-        + '<p id="extra-seats-code-hint" class="extra-seats-code-hint">Or... enter email address to be notified for next round of open seats.</p>'
-        + '<input class="input-common extra-seats-code-input"'
-        + 'id="extra-seats-email-input"'
-        + 'placeholder="Enter Email"'
-        + 'type="email"'
-        + 'name="extra-seats-email"'
-        + 'style="text-transform:uppercase"'
-        + '></input>'
-        + '<div class="extra-seats-code-button clickable" onclick="saveExtraSeatsEmail()">'
-          + 'Request'
-        + '</div>'
-      + '</div>';
-    document.getElementById('extra-seats-email-container').innerHTML = inputHtml;
-  }
+//   function injectInvitationEmailInput() {
+//     const inputHtml = ''
+//       + '<div class="extra-seats-email-container">'
+//         + '<p id="extra-seats-code-hint" class="extra-seats-code-hint">Or... enter email address to be notified for next round of open seats.</p>'
+//         + '<input class="input-common extra-seats-code-input"'
+//         + 'id="extra-seats-email-input"'
+//         + 'placeholder="Enter Email"'
+//         + 'type="email"'
+//         + 'name="extra-seats-email"'
+//         + 'style="text-transform:uppercase"'
+//         + '></input>'
+//         + '<div class="extra-seats-code-button clickable" onclick="saveExtraSeatsEmail()">'
+//           + 'Request'
+//         + '</div>'
+//       + '</div>';
+//     document.getElementById('extra-seats-email-container').innerHTML = inputHtml;
+//   }
 
-  function saveExtraSeatsEmail() {
-    const email = document.getElementById('extra-seats-email-input').value;
+//   function saveExtraSeatsEmail() {
+//     const email = document.getElementById('extra-seats-email-input').value;
 
-    if (!email) return alert('Fair dinkum, this email is beyond garbage!')
-    var validations ={
-      email: [/^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/, 'Mate! Please enter a valid email address']
-    };
+//     if (!email) return alert('Fair dinkum, this email is beyond garbage!')
+//     var validations ={
+//       email: [/^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/, 'Mate! Please enter a valid email address']
+//     };
 
-    var validation = new RegExp(validations['email'][0])
-    if (!validation.test(email)){
-      return alert('Enter valid email address')
-    }
-    const xmlHttp = new XMLHttpRequest();
-    xmlHttp.open( "GET", '/api/seats_available_email/' + email.trim().toLowerCase(), false );
-    xmlHttp.send( null );
-    alert('Cheers mate! We will be in touch.')
-  }
+//     var validation = new RegExp(validations['email'][0])
+//     if (!validation.test(email)){
+//       return alert('Enter valid email address')
+//     }
+//     const xmlHttp = new XMLHttpRequest();
+//     xmlHttp.open( "GET", '/api/seats_available_email/' + email.trim().toLowerCase(), false );
+//     xmlHttp.send( null );
+//     alert('Cheers mate! We will be in touch.')
+//   }
 
   function checkErrors() {
     const searchParams = window.location.search;
@@ -247,9 +233,25 @@
     }
   }
 
-  setupCheatCode();
-  setSeatsAvailable()
+  //setupCheatCode();
+  //setSeatsAvailable()
   checkDevEnvironment()
   setTimeout(checkErrors, 500)
 </script>
 @endsection
+
+
+{{--  <div class="col-3 card-round">
+    <div id="seats-header" class="seats-header">
+      <b>We currently have</b>
+    </div>
+    <div id="seats-desc" class="seats-desc">
+      <div class="card-seats">
+        <b id="seats-available"> Loading... </b>
+      </div>
+      <b>accounts available</b>
+    </div>
+    <div class="register-message"><b>Register</b> while there's still time!</div>
+    <div id="extra-seats-code-container"></div>
+    <div id="extra-seats-email-container"></div>
+  </div>  --}}

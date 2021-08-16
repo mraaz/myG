@@ -446,9 +446,9 @@ Route.get('/api/guest/user_posts/:profileId/:paginateNo', 'PostController.fetchG
 Route.get('/api/guest/community/:id', 'GroupController.fetchGuestCommunity')
 
 // Seats Available
-Route.get('/api/seats_available', 'SeatsAvailableController.fetchSeatsAvailable')
-Route.get('/api/seats_available/:code', 'SeatsAvailableController.checkExtraSeatsCode')
-Route.get('/api/seats_available_email/:email', 'SeatsAvailableController.storeSeatsAvailableEmail')
+// Route.get('/api/seats_available', 'SeatsAvailableController.fetchSeatsAvailable')
+// Route.get('/api/seats_available/:code', 'SeatsAvailableController.checkExtraSeatsCode')
+// Route.get('/api/seats_available_email/:email', 'SeatsAvailableController.storeSeatsAvailableEmail')
 
 // Profile
 Route.get('/api/profile/:alias', 'ProfileController.fetchProfileInfo')
