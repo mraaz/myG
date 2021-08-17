@@ -28,6 +28,7 @@ import {
   convertToEditorState,
   cloneEditorState,
   prepareDraftsEditorForSave,
+  isEmptyDraftJs,
   MAX_HASH_TAGS,
   POST_STATIC,
   POST_EDIT,
@@ -307,7 +308,7 @@ export default class IndividualPost extends Component {
 
   insert_comment = () => {
     const { preview_file = [], aws_key_id = [] } = this.state
-    if (this.state.comment.getCurrentContent().getPlainText() == '' && preview_file.length == 0) {
+    if (isEmptyDraftJs(this.state.comment) && preview_file.length == 0) {
       return
     }
     this.onFocus()
@@ -372,15 +373,10 @@ export default class IndividualPost extends Component {
   }
 
   update_post = (e) => {
-    if (this.state.contentEdited.getCurrentContent().getPlainText() == '') {
+    if (isEmptyDraftJs(this.state.contentEdited)) {
       return
     }
-    if (this.state.contentEdited.getCurrentContent().getPlainText() == '') {
-      this.setState({
-        comment: EditorState.createEmpty()
-      })
-      return
-    }
+
     const self = this
     var post_id = this.props.post.id
 
@@ -466,22 +462,6 @@ export default class IndividualPost extends Component {
       } else {
         toast.warn(<Toast_style text={'Opps,Image is uploading Please Wait...'} />)
       }
-    }
-  }
-
-  submitEditPost = () => {
-    this.update_post()
-  }
-
-  detectKey2 = (e) => {
-    if (e.key === 'Enter' && e.shiftKey) {
-      return
-    }
-
-    if (e.key === 'Enter') {
-      event.preventDefault()
-      event.stopPropagation()
-      this.update_post()
     }
   }
 
@@ -793,7 +773,7 @@ export default class IndividualPost extends Component {
                     editorType={POST_EDIT}
                     editorState={contentEdited}
                     setEditorState={(state) => this.setState({ contentEdited: state })}
-                    handleReturnKey={this.submitEditPost}
+                    handleReturnKey={this.update_post}
                     addHashtag={(hashtagMention) =>
                       this.setState({ contentEditedHashtags: [...this.state.contentEditedHashtags, hashtagMention] })
                     }

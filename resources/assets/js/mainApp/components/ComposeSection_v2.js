@@ -14,7 +14,7 @@ import ImageGallery from './common/ImageGallery/ImageGallery.js'
 import { Toast_style } from './Utility_Function'
 import { logToElasticsearch } from '../../integration/http/logger'
 import { DraftComposer } from './common/Draftjs'
-import { prepareDraftsEditorForSave, MAX_HASH_TAGS, POST_COMPOSER } from '../../common/draftjs'
+import { prepareDraftsEditorForSave, isEmptyDraftJs, MAX_HASH_TAGS, POST_COMPOSER } from '../../common/draftjs'
 
 const createOption = (label, hash_tag_id) => ({
   label,
@@ -398,7 +398,7 @@ export default class ComposeSection extends Component {
       isShowAllGroup = false,
       visibility
     } = this.state
-    const isButtonDisable = this.state.postContent.getCurrentContent().getPlainText() !== '' || preview_files.length > 0 ? true : false
+    const isButtonDisable = isEmptyDraftJs(this.state.postContent) || preview_files.length > 0 ? true : false
     const groups = [...selected_group_data]
     const AllGroups = [...selected_group_data]
     const preview_filesData = [...preview_files]

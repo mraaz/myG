@@ -23,6 +23,7 @@ import {
   cloneEditorState,
   prepareDraftsEditorForSave,
   convertToEditorState,
+  isEmptyDraftJs,
   COMMENT_STATIC,
   COMMENT_EDIT,
   REPLY_COMPOSER
@@ -321,13 +322,7 @@ export default class IndividualComment extends Component {
   }
 
   insert_comment = () => {
-    if (this.state.commentEdited.getCurrentContent().getPlainText() === '') {
-      return
-    }
-    if (this.state.commentEdited.getCurrentContent().getPlainText() === '') {
-      this.setState({
-        commentEdited: EditorState.createEmpty()
-      })
+    if (isEmptyDraftJs(this.state.commentEdited)) {
       return
     }
     const self = this
@@ -361,7 +356,7 @@ export default class IndividualComment extends Component {
   insert_reply = (e) => {
     const { reply = EditorState.createEmpty(), preview_file = [], aws_key_id = [] } = this.state
 
-    if (reply.getCurrentContent().getPlainText() === '' && preview_file.length == 0) {
+    if (isEmptyDraftJs(reply) && preview_file.length == 0) {
       return
     }
     const self = this
