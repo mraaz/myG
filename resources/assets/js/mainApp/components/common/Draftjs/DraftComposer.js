@@ -39,7 +39,8 @@ export const DraftComposer = ({
   handleReturnKey,
   addHashtag,
   addMention,
-  handleSpecialKeys
+  handleSpecialKeys,
+  children
 }) => {
   // Setup plugins
   const { plugins, UserMentionSuggestions, HashtagMentionSuggestions, EmojiSuggestions, EmojiSelect } = useMemo(() => {
@@ -232,55 +233,59 @@ export const DraftComposer = ({
 
   return (
     <div className={`editorWrapper ${editorType}`}>
-      <div
-        className={`editor ${editorType}`}
-        id='draftComposer'
-        onClick={(e) => {
-          setTimeout(function () {
-            document.getElementById('draftComposer').focus()
-          }, 0)
-          if (handleFocus_txtArea) {
-            handleFocus_txtArea()
-          }
-        }}
-      >
-        <Editor
-          editorState={editorState}
-          onChange={setEditorState}
-          plugins={plugins}
-          placeholder={placeholder}
-          readOnly={editorType === COMMENT_STATIC || editorType === REPLY_STATIC || editorType === POST_STATIC ? true : false}
-          handleReturn={handleReturn}
-          handleKeyCommand={handleKeyCommand}
-          keyBindingFn={myKeyBindingFn}
-        />
-        {(editorType === POST_COMPOSER ||
-          editorType === POST_EDIT ||
-          editorType === REPLY_COMPOSER ||
-          editorType === REPLY_EDIT ||
-          editorType === COMMENT_COMPOSER ||
-          editorType === COMMENT_EDIT) && (
-          <Fragment>
-            <EmojiSuggestions />
-            <UserMentionSuggestions
-              open={mentionUserMenuIsOpen}
-              onOpenChange={setMentionUserMenuIsOpen}
-              suggestions={mentionUserSuggestionsList}
-              onSearchChange={performMentionUserSearch}
-              onAddMention={(userMention) => addMention(userMention)}
-              entryComponent={UserEntryComponent}
-            />
-            <HashtagMentionSuggestions
-              open={mentionHashtagMenuIsOpen}
-              onOpenChange={setMentionHashtagMenuIsOpen}
-              suggestions={mentionHashtagSuggestionsList}
-              onSearchChange={performMentionHashtagSearch}
-              onAddMention={(hashtagMention) => addHashtag(hashtagMention)}
-              entryComponent={HashtagEntryComponent}
-            />
-          </Fragment>
-        )}
+      <div className='postRow'>
+        {children}
+        <div
+          className={`editor ${editorType}`}
+          id='draftComposer'
+          onClick={(e) => {
+            setTimeout(function () {
+              document.getElementById('draftComposer').focus()
+            }, 0)
+            if (handleFocus_txtArea) {
+              handleFocus_txtArea()
+            }
+          }}
+        >
+          <Editor
+            editorState={editorState}
+            onChange={setEditorState}
+            plugins={plugins}
+            placeholder={placeholder}
+            readOnly={editorType === COMMENT_STATIC || editorType === REPLY_STATIC || editorType === POST_STATIC ? true : false}
+            handleReturn={handleReturn}
+            handleKeyCommand={handleKeyCommand}
+            keyBindingFn={myKeyBindingFn}
+          />
+          {(editorType === POST_COMPOSER ||
+            editorType === POST_EDIT ||
+            editorType === REPLY_COMPOSER ||
+            editorType === REPLY_EDIT ||
+            editorType === COMMENT_COMPOSER ||
+            editorType === COMMENT_EDIT) && (
+            <Fragment>
+              <EmojiSuggestions />
+              <UserMentionSuggestions
+                open={mentionUserMenuIsOpen}
+                onOpenChange={setMentionUserMenuIsOpen}
+                suggestions={mentionUserSuggestionsList}
+                onSearchChange={performMentionUserSearch}
+                onAddMention={(userMention) => addMention(userMention)}
+                entryComponent={UserEntryComponent}
+              />
+              <HashtagMentionSuggestions
+                open={mentionHashtagMenuIsOpen}
+                onOpenChange={setMentionHashtagMenuIsOpen}
+                suggestions={mentionHashtagSuggestionsList}
+                onSearchChange={performMentionHashtagSearch}
+                onAddMention={(hashtagMention) => addHashtag(hashtagMention)}
+                entryComponent={HashtagEntryComponent}
+              />
+            </Fragment>
+          )}
+        </div>
       </div>
+
       {editorType !== POST_STATIC && editorType !== REPLY_STATIC && editorType !== COMMENT_STATIC && (
         <div className={`emojiBox ${editorType}`}>
           {editorType === POST_COMPOSER && <span className='addToBoxLabel'>Add Emoji</span>}

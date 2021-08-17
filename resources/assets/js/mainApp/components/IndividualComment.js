@@ -707,26 +707,39 @@ export default class IndividualComment extends Component {
 
             {this.state.show_add_reply && (
               <div className='add-reply'>
-                <DraftComposer
-                  editorType={REPLY_COMPOSER}
-                  editorState={this.state.reply}
-                  setEditorState={(state) => this.setState({ reply: state })}
-                  addHashtag={(hashtagMention) => this.setState({ replyHashtags: [...this.state.replyHashtags, hashtagMention] })}
-                  addMention={(userMention) => this.setState({ replyMentions: [...this.state.replyMentions, userMention] })}
-                  handleReturnKey={() => {
-                    if (!this.state.uploading) {
-                      this.insert_reply()
-                    } else {
-                      toast.warn(<Toast_style text={'Opps,An image is uploading. Please Wait...'} />)
+                <div className='reply-row'>
+                  {/* The draft editor */}
+                  <DraftComposer
+                    editorType={REPLY_COMPOSER}
+                    editorState={this.state.reply}
+                    setEditorState={(state) => this.setState({ reply: state })}
+                    addHashtag={(hashtagMention) => this.setState({ replyHashtags: [...this.state.replyHashtags, hashtagMention] })}
+                    addMention={(userMention) => this.setState({ replyMentions: [...this.state.replyMentions, userMention] })}
+                    handleReturnKey={() => {
+                      if (!this.state.uploading) {
+                        this.insert_reply()
+                      } else {
+                        toast.warn(<Toast_style text={'Opps,An image is uploading. Please Wait...'} />)
+                      }
+                    }}
+                    handleSpecialKeys={(e) =>
+                      this.setState({
+                        show_add_reply: false,
+                        reply: EditorState.createEmpty()
+                      })
                     }
-                  }}
-                  handleSpecialKeys={(e) =>
-                    this.setState({
-                      show_add_reply: false,
-                      reply: EditorState.createEmpty()
-                    })
-                  }
-                ></DraftComposer>
+                  ></DraftComposer>
+                  {/* Image upload box */}
+                  {this.state.uploading && <div className='uploadImage_loading'>Uploading ...</div>}
+                  {this.state.preview_file.length > 0 && (
+                    <div className='preview__image'>
+                      <img src={`${this.state.preview_file[0]}`} />
+                      <div className='clear__preview__image' onClick={this.clearPreviewImage}>
+                        X
+                      </div>
+                    </div>
+                  )}
+                </div>
                 <div className='insert__images' onClick={this.insert_image_comment}>
                   <input
                     type='file'
@@ -738,15 +751,6 @@ export default class IndividualComment extends Component {
                   />
                   <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Image.svg`} />
                 </div>
-                {this.state.uploading && <div className='uploadImage_loading'>Uploading ...</div>}
-                {this.state.preview_file.length > 0 && (
-                  <div className='preview__image'>
-                    <img src={`${this.state.preview_file[0]}`} />
-                    <div className='clear__preview__image' onClick={this.clearPreviewImage}>
-                      X
-                    </div>
-                  </div>
-                )}
                 <div className='send__btn' onClick={(e) => this.detectKey(e, false)}>
                   <img src={`${buckectBaseUrl}Dashboard/BTN_Send_Post.svg`} className='img-fluid' />
                 </div>

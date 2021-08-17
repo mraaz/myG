@@ -418,11 +418,6 @@ export default class ComposeSection extends Component {
           </div>
           {open_compose_textTab && (
             <div className='text__editor__section'>
-              <div className='media'>
-                {preview_filesData.length > 0 && (
-                  <ImageGallery items={preview_filesData} showFullscreenButton={false} showGalleryFullscreenButton={false} />
-                )}
-              </div>
               <DraftComposer
                 editorType={POST_COMPOSER}
                 editorState={this.state.postContent}
@@ -430,7 +425,13 @@ export default class ComposeSection extends Component {
                 placeholder={"What's up..."}
                 addHashtag={(hashtagMention) => this.setState({ postContentHashtags: [...this.state.postContentHashtags, hashtagMention] })}
                 addMention={(userMention) => this.setState({ postContentMentions: [...this.state.postContentMentions, userMention] })}
-              ></DraftComposer>
+              >
+                {preview_filesData.length > 0 && (
+                  <div className='media'>
+                    <ImageGallery items={preview_filesData} showFullscreenButton={false} showGalleryFullscreenButton={false} />
+                  </div>
+                )}
+              </DraftComposer>
             </div>
           )}
           {open_compose_textTab && (
