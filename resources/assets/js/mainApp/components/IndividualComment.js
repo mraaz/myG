@@ -8,18 +8,23 @@ import { Link } from 'react-router-dom'
 import axios from 'axios'
 import IndividualReply from './IndividualReply'
 import moment from 'moment'
-import { ContentState, EditorState, convertFromRaw, convertToRaw } from 'draft-js'
+import { EditorState } from 'draft-js'
 import SweetAlert from './common/MyGSweetAlert'
-import { Is_json } from './Utility_Function'
 import { Upload_to_S3, Remove_file } from './AWS_utilities'
 const buckectBaseUrl = 'https://myG.gg/platform_images/'
 
 import { logToElasticsearch } from '../../integration/http/logger'
 import ReportPost from './common/ReportPost'
-import { FeatureEnabled, FeatureDisabled, DRAFT_JS } from '../../common/flags'
 
-import { DraftComposer } from './Draftjs'
-import { COMPOSER_TYPE_ENUM } from './Draftjs/helpers'
+import { DraftComposer } from './common/Draftjs'
+import {
+  cloneEditorState,
+  prepareDraftsEditorForSave,
+  convertToEditorState,
+  COMMENT_STATIC,
+  COMMENT_EDIT,
+  REPLY_COMPOSER
+} from '../../common/draftjs'
 
 export default class IndividualComment extends Component {
   constructor() {
@@ -37,7 +42,6 @@ export default class IndividualComment extends Component {
       dropdown: false,
       comment_deleted: false,
       show_edit_comment: false,
-      content: '',
       comment_time: '',
       alert: null,
       uploading: false,
@@ -46,13 +50,13 @@ export default class IndividualComment extends Component {
       aws_key_id: [],
       hideReplies: false,
       replyShowCount: 1,
-      editorState: EditorState.createEmpty(),
-      value: EditorState.createEmpty(),
-      value2: EditorState.createEmpty(),
-      commentHashtags: [],
-      commentMentions: [],
+      content: null,
+      commentEdited: EditorState.createEmpty(),
+      commentEditedHashtags: [],
+      commentEditedMentions: [],
+      reply: EditorState.createEmpty(),
       replyHashtags: [],
-      replyMentions: [],
+      replyMentions: []
     }
     this.textInput = null
     this.fileInputRef = React.createRef()
@@ -71,16 +75,11 @@ export default class IndividualComment extends Component {
     if (this.props.comment.profile_img != null) {
       this.setState({ show_profile_img: true })
     }
-    console.log('hgereere', this.props.comment.content)
-    if (Is_json(this.props.comment.content)) {
-      this.setState({ editorState: EditorState.createWithContent(convertFromRaw(JSON.parse(this.props.comment.content))) })
-    } else {
-      this.setState({ editorState: EditorState.createWithContent(ContentState.createFromText(this.props.comment.content)) })
-    }
 
-    // this.setState({
-    //   content: this.props.comment.content
-    // })
+    let content = convertToEditorState(this.props.comment.content)
+    this.setState({
+      content
+    })
 
     var comment_timestamp = moment(this.props.comment.updated_at, 'YYYY-MM-DD HH:mm:ssZ')
     this.setState({ comment_time: comment_timestamp.local().fromNow() })
@@ -198,14 +197,6 @@ export default class IndividualComment extends Component {
     })
   }
 
-  handleChange = (e) => {
-    this.setState({ value: e.target.value })
-  }
-
-  handleChange2 = (e) => {
-    this.setState({ value2: e.target.value })
-  }
-
   toggleReply = () => {
     this.setState({
       show_add_reply: !this.state.show_add_reply
@@ -307,7 +298,7 @@ export default class IndividualComment extends Component {
       this.setState({
         show_edit_comment: false,
         dropdown: false,
-        value2: EditorState.createEmpty()
+        commentEdited: EditorState.createEmpty()
       })
     }
 
@@ -319,12 +310,12 @@ export default class IndividualComment extends Component {
   }
 
   insert_comment = () => {
-    if (this.state.value2.getCurrentContent().getPlainText() === '') {
+    if (this.state.commentEdited.getCurrentContent().getPlainText() === '') {
       return
     }
-    if (this.state.value2.getCurrentContent().getPlainText() === '') {
+    if (this.state.commentEdited.getCurrentContent().getPlainText() === '') {
       this.setState({
-        value2: EditorState.createEmpty()
+        commentEdited: EditorState.createEmpty()
       })
       return
     }
@@ -332,19 +323,22 @@ export default class IndividualComment extends Component {
     var comment_id = this.props.comment.id
 
     const saveComment = async function () {
-      console.log('lolololololol', self.state.value2.getCurrentContent())
-      const value2 = JSON.stringify(convertToRaw(self.state.value2.getCurrentContent()))
+      const { content } = prepareDraftsEditorForSave(
+        self.state.commentEdited,
+        self.state.commentEditedHashtags,
+        self.state.commentEditedMentions
+      )
 
       try {
         const mysaveComment = await axios.post(`/api/comments/update/${comment_id}`, {
-          content: value2
+          content
         })
 
         self.setState({
           show_edit_comment: false,
           dropdown: false,
-          editorState: self.state.value2,
-          value2: EditorState.createEmpty()
+          content: cloneEditorState(self.state.commentEdited),
+          commentEdited: EditorState.createEmpty()
         })
       } catch (error) {
         logToElasticsearch('error', 'IndividualComment', 'Failed saveComment:' + ' ' + error)
@@ -354,9 +348,9 @@ export default class IndividualComment extends Component {
   }
 
   insert_reply = (e) => {
-    const { value = EditorState.createEmpty(), preview_file = [], aws_key_id = [] } = this.state
+    const { reply = EditorState.createEmpty(), preview_file = [], aws_key_id = [] } = this.state
 
-    if (value.getCurrentContent().getPlainText() === '' && preview_file.length == 0) {
+    if (reply.getCurrentContent().getPlainText() === '' && preview_file.length == 0) {
       return
     }
     const self = this
@@ -364,9 +358,11 @@ export default class IndividualComment extends Component {
 
     const saveReply = async () => {
       const { myReplies = [] } = this.state
+      const { content } = prepareDraftsEditorForSave(self.state.reply)
+
       try {
         postReply = await axios.post('/api/replies', {
-          content: JSON.stringify(convertToRaw(self.state.value.getCurrentContent())),
+          content,
           comment_id: self.props.comment.id,
           media_url: self.state.preview_file.length > 0 ? JSON.stringify(self.state.preview_file) : '',
           aws_key_id: aws_key_id.length > 0 ? aws_key_id : ''
@@ -377,7 +373,7 @@ export default class IndividualComment extends Component {
         })
 
         self.setState({
-          value: EditorState.createEmpty(),
+          reply: EditorState.createEmpty(),
           show_more_replies: !self.show_more_replies,
           show_add_reply: false,
           reply_total: self.state.reply_total + 1,
@@ -401,21 +397,13 @@ export default class IndividualComment extends Component {
     let comment_id = this.props.comment.id
     try {
       const myComment_content = await axios.get(`/api/comments/show_comment/${comment_id}`)
-      const content = myComment_content.data.this_comment[0].content
 
-      if (Is_json(content)) {
-        this.setState({
-          show_edit_comment: true,
-          dropdown: false,
-          value2: EditorState.createWithContent(convertFromRaw(JSON.parse(content)))
-        })
-      } else {
-        this.setState({
-          show_edit_comment: true,
-          dropdown: false,
-          value2: EditorState.createWithContent(ContentState.createFromText(content))
-        })
-      }
+      const commentEdited = convertToEditorState(myComment_content.data.this_comment[0].content)
+      this.setState({
+        show_edit_comment: true,
+        dropdown: false,
+        commentEdited
+      })
 
       this.focusTextInput()
     } catch (error) {
@@ -549,15 +537,13 @@ export default class IndividualComment extends Component {
             <div className='comment-info'>
               <Link to={`/profile/${comment.alias}`}>{`@${comment.alias}`}</Link>
               {'  '}
-              {!this.state.show_edit_comment && (
+              {!this.state.show_edit_comment && this.state.content && (
                 <div className='comment-content'>
-                  {this.state.editorState && (
-                    <DraftComposer
-                      editorType={COMPOSER_TYPE_ENUM.INDIVIDUAL_COMMENT_STATIC}
-                      editorState={this.state.editorState}
-                      setEditorState={(state) => this.setState({ editorState: state })}
-                    ></DraftComposer>
-                  )}
+                  <DraftComposer
+                    editorType={COMMENT_STATIC}
+                    editorState={this.state.content}
+                    setEditorState={(state) => this.setState({ content: state })}
+                  ></DraftComposer>
                   {media_urls.length > 0 && (
                     <div className='show__comment__image'>
                       {media_urls.map((img) => {
@@ -596,30 +582,25 @@ export default class IndividualComment extends Component {
               </div>
             </div>
             {/* comment option end  */}
-            {this.state.show_edit_comment && (
+            {this.state.show_edit_comment && this.state.commentEdited && (
               <div className='edit__comment__input'>
                 <DraftComposer
-                  editorType={COMPOSER_TYPE_ENUM.INDIVIDUAL_EDIT_COMPOSER}
-                  editorState={this.state.value2}
-                  setEditorState={(state) => this.setState({ value2: state })}
+                  editorType={COMMENT_EDIT}
+                  editorState={this.state.commentEdited}
+                  setEditorState={(state) => this.setState({ commentEdited: state })}
                   handleReturnKey={() => this.insert_comment()}
-                  addHashtag={(hashtagMention) => this.setState({ commentHashtags: [...this.state.commentHashtags, hashtagMention] })}
-                  addMention={(userMention) => this.setState({ commentMentions: [...this.state.commentMentions, userMention] })}
-                  handleSpecialKeys={e => this.setState({
-                    show_edit_comment: false,
-                    dropdown: false,
-                    value2: EditorState.createEmpty(),
-                  })}
+                  addHashtag={(hashtagMention) =>
+                    this.setState({ commentEditedHashtags: [...this.state.commentEditedHashtags, hashtagMention] })
+                  }
+                  addMention={(userMention) => this.setState({ commentEditedMentions: [...this.state.commentEditedMentions, userMention] })}
+                  handleSpecialKeys={(e) =>
+                    this.setState({
+                      show_edit_comment: false,
+                      dropdown: false,
+                      commentEdited: EditorState.createEmpty()
+                    })
+                  }
                 ></DraftComposer>
-                {/* <input
-                  type='text'
-                  id='reply_name_box'
-                  className='reply-name-box'
-                  onKeyDown={this.detectKey2}
-                  ref={this.setTextInputRef}
-                  onChange={this.handleChange2}
-                  value={this.state.value2}
-                /> */}
               </div>
             )}
             {/* profile section start  */}
@@ -671,11 +652,11 @@ export default class IndividualComment extends Component {
             {this.state.show_add_reply && (
               <div className='add-reply'>
                 <DraftComposer
-                  editorType={COMPOSER_TYPE_ENUM.INDIVIDUAL_COMMENT_REPLY_COMPOSER}
-                  editorState={this.state.value}
-                  setEditorState={(state) => this.setState({ value: state })}
-                  addHashtag={(hashtagMention) => this.setState({ hashtags: [...this.state.replyHashtags, hashtagMention] })}
-                  addMention={(userMention) => this.setState({ mentions: [...this.state.replyMentions, userMention] })}
+                  editorType={REPLY_COMPOSER}
+                  editorState={this.state.reply}
+                  setEditorState={(state) => this.setState({ reply: state })}
+                  addHashtag={(hashtagMention) => this.setState({ replyHashtags: [...this.state.replyHashtags, hashtagMention] })}
+                  addMention={(userMention) => this.setState({ replyMentions: [...this.state.replyMentions, userMention] })}
                   handleReturnKey={() => {
                     if (!this.state.uploading) {
                       this.insert_reply()
@@ -683,22 +664,13 @@ export default class IndividualComment extends Component {
                       toast.warn(<Toast_style text={'Opps,An image is uploading. Please Wait...'} />)
                     }
                   }}
-                  handleSpecialKeys={e => this.setState({
-                    show_add_reply: false,
-                    value: EditorState.createEmpty(),
-                  })}
-                >
-                </DraftComposer>
-                {/* <input
-                  type='text'
-                  id='reply_name_box'
-                  className='reply-name-box'
-                  placeholder='Add a reply...'
-                  onKeyDown={(e) => this.detectKey(e, true)}
-                  ref={this.setTextInputRef}
-                  onChange={this.handleChange}
-                  value={this.state.value}
-                /> */}
+                  handleSpecialKeys={(e) =>
+                    this.setState({
+                      show_add_reply: false,
+                      reply: EditorState.createEmpty()
+                    })
+                  }
+                ></DraftComposer>
                 <div className='insert__images' onClick={this.insert_image_comment}>
                   <input
                     type='file'

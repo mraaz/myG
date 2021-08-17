@@ -2,20 +2,19 @@ import React, { Component, Fragment } from 'react'
 import axios from 'axios'
 import Dropzone from 'react-dropzone'
 import { toast } from 'react-toastify'
-import { EditorState, convertToRaw } from 'draft-js'
+import { EditorState } from 'draft-js'
+
+const buckectBaseUrl = 'https://myG.gg/platform_images/'
 
 import PostFileModal from './PostFileModal'
-const buckectBaseUrl = 'https://myG.gg/platform_images/'
-import { MyGCreateableSelect } from './common'
-import { Disable_keys, Hash_Tags } from './Utility_Function'
+import { Hash_Tags } from './Utility_Function'
 import { Upload_to_S3, Remove_file } from './AWS_utilities'
 
-import { Toast_style } from './Utility_Function'
 import ImageGallery from './common/ImageGallery/ImageGallery.js'
+import { Toast_style } from './Utility_Function'
 import { logToElasticsearch } from '../../integration/http/logger'
-import { DraftComposer } from './Draftjs'
-import { COMPOSER_TYPE_ENUM, MAX_HASH_TAGS, getCurrentlyListedMentionsAndHashtags, reduceMentions } from './Draftjs/helpers'
-import { checkFlag, FeatureEnabled, FeatureDisabled, DRAFT_JS } from '../../common/flags'
+import { DraftComposer } from './common/Draftjs'
+import { prepareDraftsEditorForSave, MAX_HASH_TAGS, POST_COMPOSER } from '../../common/draftjs'
 
 const createOption = (label, hash_tag_id) => ({
   label,
@@ -29,7 +28,6 @@ export default class ComposeSection extends Component {
     this.state = {
       show_post: false,
       profile_img: '',
-      post_content: '',
       video: '',
       bFileModalOpen: false,
       fileType: 'photo',
@@ -47,9 +45,9 @@ export default class ComposeSection extends Component {
       options_tags: '',
       value_tags: [],
       isShowAllGroup: false,
-      editorState: EditorState.createEmpty(),
-      hashtags: [],
-      mentions: []
+      postContent: EditorState.createEmpty(),
+      postContentHashtags: [],
+      postContentMentions: []
     }
 
     this.openPhotoPost = this.openPhotoPost.bind(this)
@@ -104,7 +102,7 @@ export default class ComposeSection extends Component {
   }
   handleClear = () => {
     this.setState({
-      post_content: '',
+      postContent: EditorState.createEmpty(),
       preview_files: [],
       keys: [],
       overlay_active: false,
@@ -129,78 +127,45 @@ export default class ComposeSection extends Component {
     }
 
     let hash_tags = []
-    let content = this.state.post_content.trim()
     let data = null
 
-    // IF DraftsJS, use the updated method
-    if (checkFlag(DRAFT_JS)) {
-      content = JSON.stringify(convertToRaw(this.state.editorState.getCurrentContent()))
-      const plainTextContent = this.state.editorState.getCurrentContent().getPlainText()
-      const { hashtagList, mentionsList } = getCurrentlyListedMentionsAndHashtags(plainTextContent)
-      let reducedHashtagList = reduceMentions(this.state.hashtags, hashtagList, '#')
-      const reducedMentionsList = reduceMentions(this.state.mentions, mentionsList, '@')
+    const { content, hashtags, mentions } = prepareDraftsEditorForSave(
+      this.state.postContent,
+      this.state.postContentHashtags,
+      this.state.postContentMentions
+    )
 
-      if (reducedHashtagList !== null && reducedHashtagList.length !== 0) {
-        // Verify all tags are valid, if any found early return
-        if (reducedHashtagList.some((hashtag) => /['/.%#$,;`\\]/.test(hashtag.tag))) {
-          toast.success(<Toast_style text={'Sorry mate! Hash tags can not have invalid characters'} />)
-          return
-        }
-
-        if (reducedHashtagList.length >= MAX_HASH_TAGS) {
-          toast.success(<Toast_style text={"Crikey, mate! That's alot of tags. I'll only grab 20 and dump the rest."} />)
-          reducedHashtagList = reducedHashtagList.slice(0, 20)
-        }
+    if (hashtags !== null && hashtags.length !== 0) {
+      // Verify all tags are valid, if any found early return
+      if (hashtags.some((hashtag) => /['/.%#$,;`\\]/.test(hashtag.tag))) {
+        toast.success(<Toast_style text={'Sorry mate! Hash tags can not have invalid characters'} />)
+        return
       }
 
-      hash_tags = JSON.stringify(
-        reducedHashtagList.map((hashtag) => ({
-          value: hashtag.tag,
-          hash_tag_id: hashtag.id
-        }))
-      )
-
-      data = {
-        content,
-        video: this.state.video,
-        user_id: this.props.initialData.userInfo.id,
-        type: 'text',
-        visibility: this.state.visibility,
-        group_id: this.props.group_id ? this.props.group_id : this.state.group_id.toString(),
-        media_url: media_url.length > 0 ? JSON.stringify(media_url) : '',
-        aws_key_id: aws_key_id.length > 0 ? aws_key_id : '',
-        hash_tags,
-        mentionsList: JSON.stringify(reducedMentionsList)
+      if (hashtags.length >= MAX_HASH_TAGS) {
+        toast.success(<Toast_style text={"Crikey, mate! That's alot of tags. I'll only grab 20 and dump the rest."} />)
+        hashtags = hashtags.slice(0, 20)
       }
+    }
 
-      // IF NOT DraftJS, use the older method
-    } else {
-      if (this.state.value_tags.length != 0 && this.state.value_tags != null) {
-        if (this.state.value_tags.length >= MAX_HASH_TAGS) {
-          toast.success(<Toast_style text={"Crikey, mate! That's alot of tags. I'll only grab 20 and dump the rest."} />)
-        }
-        for (let i = 0; i < MAX_HASH_TAGS && i < this.state.value_tags.length; i++) {
-          if (/['/.%#$,;`\\]/.test(this.state.value_tags[i].value)) {
-            toast.success(<Toast_style text={'Sorry mate! Hash tags can not have invalid characters'} />)
-            return
-          }
+    hash_tags = JSON.stringify(
+      hashtags.map((hashtag) => ({
+        value: hashtag.tag,
+        hash_tag_id: hashtag.id
+      }))
+    )
 
-          delete this.state.value_tags[i].label
-        }
-        hash_tags = JSON.stringify(this.state.value_tags)
-      }
-
-      data = {
-        content: content,
-        video: this.state.video,
-        user_id: this.props.initialData.userInfo.id,
-        type: 'text',
-        visibility: this.state.visibility,
-        group_id: this.props.group_id ? this.props.group_id : this.state.group_id.toString(),
-        media_url: media_url.length > 0 ? JSON.stringify(media_url) : '',
-        aws_key_id: aws_key_id.length > 0 ? aws_key_id : '',
-        hash_tags: hash_tags
-      }
+    data = {
+      content,
+      video: this.state.video,
+      user_id: this.props.initialData.userInfo.id,
+      type: 'text',
+      visibility: this.state.visibility,
+      group_id: this.props.group_id ? this.props.group_id : this.state.group_id.toString(),
+      media_url: media_url.length > 0 ? JSON.stringify(media_url) : '',
+      aws_key_id: aws_key_id.length > 0 ? aws_key_id : '',
+      hash_tags,
+      mentionsList: JSON.stringify(mentions)
     }
 
     try {
@@ -213,7 +178,6 @@ export default class ComposeSection extends Component {
       this.setState(
         {
           bFileModalOpen: false,
-          post_content: '',
           media_url: [],
           preview_files: [],
           keys: [],
@@ -225,9 +189,9 @@ export default class ComposeSection extends Component {
           group_id: [],
           open_compose_textTab: true,
           video: '',
-          editorState: EditorState.createEmpty(),
-          hashtags: [],
-          mentions: []
+          postContent: EditorState.createEmpty(),
+          postContentHashtags: [],
+          postContentMentions: []
         },
         () => {
           media_url = []
@@ -248,10 +212,6 @@ export default class ComposeSection extends Component {
     })
   }
 
-  handleChange_txtArea = (event) => {
-    const value = event.target.value
-    this.setState({ post_content: value })
-  }
   handleFocus_txtArea = () => {
     this.setState({ overlay_active: true })
   }
@@ -260,10 +220,6 @@ export default class ComposeSection extends Component {
   }
 
   detectKey = (e) => {
-    // if (e.key === 'Enter') {
-    //
-    // }
-
     if (e.key === 'Enter' && e.shiftKey) {
       e.preventDefault()
       e.stopPropagation()
@@ -311,11 +267,7 @@ export default class ComposeSection extends Component {
     }
     if (label == 'text') {
       setTimeout(function () {
-        if (checkFlag(DRAFT_JS)) {
-          document.getElementById('draftComposer').focus()
-        } else {
-          document.getElementById('composeTextarea').focus()
-        }
+        document.getElementById('draftComposer').focus()
       }, 0)
     }
     this.setState({ open_compose_textTab, overlay_active: true })
@@ -437,22 +389,16 @@ export default class ComposeSection extends Component {
 
   render() {
     const {
-      profile_img,
       open_compose_textTab,
       bFileModalOpen,
       preview_files = [],
       selected_group_data,
       group_id,
       overlay_active,
-      post_content = '',
       isShowAllGroup = false,
-      uploading,
-      video,
-      visibility,
-      editorState
+      visibility
     } = this.state
-    const isButtonDisable =
-      post_content != '' || editorState.getCurrentContent().getPlainText() !== '' || preview_files.length > 0 ? true : false
+    const isButtonDisable = this.state.postContent.getCurrentContent().getPlainText() !== '' || preview_files.length > 0 ? true : false
     const groups = [...selected_group_data]
     const AllGroups = [...selected_group_data]
     const preview_filesData = [...preview_files]
@@ -479,28 +425,14 @@ export default class ComposeSection extends Component {
                 )}
               </div>
 
-              <FeatureEnabled allOf={[DRAFT_JS]}>
-                <DraftComposer
-                  editorType={COMPOSER_TYPE_ENUM.POST_COMPOSER}
-                  editorState={editorState}
-                  setEditorState={(state) => this.setState({ editorState: state })}
-                  placeholder={"What's up..."}
-                  addHashtag={(hashtagMention) => this.setState({ hashtags: [...this.state.hashtags, hashtagMention] })}
-                  addMention={(userMention) => this.setState({ mentions: [...this.state.mentions, userMention] })}
-                ></DraftComposer>
-              </FeatureEnabled>
-
-              <FeatureDisabled anyOf={[DRAFT_JS]}>
-                <textarea
-                  onChange={this.handleChange_txtArea}
-                  onFocus={this.handleFocus_txtArea}
-                  onKeyDown={this.detectKey}
-                  maxLength='2048'
-                  value={post_content}
-                  placeholder="What's up... "
-                  id={`composeTextarea`}
-                />
-              </FeatureDisabled>
+              <DraftComposer
+                editorType={POST_COMPOSER}
+                editorState={this.state.postContent}
+                setEditorState={(state) => this.setState({ postContent: state })}
+                placeholder={"What's up..."}
+                addHashtag={(hashtagMention) => this.setState({ postContentHashtags: [...this.state.postContentHashtags, hashtagMention] })}
+                addMention={(userMention) => this.setState({ postContentMentions: [...this.state.postContentMentions, userMention] })}
+              ></DraftComposer>
             </div>
           )}
           {open_compose_textTab && (
@@ -585,27 +517,6 @@ export default class ComposeSection extends Component {
               <div className='button video-btn' onClick={() => this.openAudioPost()}>
                 <i className='far fa-volume-up' />
               </div> */}
-            </div>
-          )}
-          {open_compose_textTab && !checkFlag(DRAFT_JS) && (
-            <div className='hashTag_section'>
-              <div className='hashtag_label'>Add Hashtags</div>
-              <div className='hashtag_input'>
-                <MyGCreateableSelect
-                  isClearable
-                  isMulti
-                  onKeyDown={Disable_keys}
-                  onCreateOption={this.handleCreateHashTags}
-                  getNewOptionData={this.getNewOptionData}
-                  options={this.state.options_tags}
-                  value={this.state.value_tags}
-                  onChange={this.handleChange_Hash_tags}
-                  onInputChange={this.getOptions_tags}
-                  classNamePrefix='filter'
-                  className='hash_tag_name_box'
-                  placeholder='Search, Select or create Hash Tags'
-                />
-              </div>
             </div>
           )}
           {open_compose_textTab && !communityBox && (

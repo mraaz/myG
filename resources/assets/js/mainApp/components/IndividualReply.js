@@ -2,14 +2,13 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 import moment from 'moment'
-import { ContentState, EditorState, convertFromRaw, convertToRaw } from 'draft-js'
+import { EditorState } from 'draft-js'
 
 import SweetAlert from './common/MyGSweetAlert'
-import { Is_json } from './Utility_Function'
 import { logToElasticsearch } from '../../integration/http/logger'
 import ReportPost from './common/ReportPost'
-import { DraftComposer } from './Draftjs'
-import { COMPOSER_TYPE_ENUM, MAX_HASH_TAGS, getCurrentlyListedMentionsAndHashtags, reduceMentions } from './Draftjs/helpers'
+import { DraftComposer } from './common/Draftjs'
+import { convertToEditorState, REPLY_EDIT, REPLY_STATIC } from '../../common/draftjs'
 
 export default class IndividualReply extends Component {
   constructor() {
@@ -25,7 +24,7 @@ export default class IndividualReply extends Component {
       reply_deleted: false,
       show_edit_reply: false,
       value: EditorState.createEmpty(),
-      content: EditorState.createEmpty(),
+      content: null,
       reply_time: '',
       alert: null,
       mentions: [],
@@ -48,16 +47,8 @@ export default class IndividualReply extends Component {
       this.setState({ show_profile_img: true })
     }
 
-    let content = null
-    this.props.reply.content
-    if (Is_json(this.props.reply.content)) {
-      // Its a Draft post, convert it to content state
-      content = EditorState.createWithContent(convertFromRaw(JSON.parse(this.props.reply.content)))
-    } else {
-      // Its a old string post, create a state from it
-      content = EditorState.createWithContent(ContentState.createFromText(this.props.reply.content))
-    }
-
+    const content = convertToEditorState(this.props.reply.content)
+    console.log('reply content', content)
     this.setState({
       content
     })
@@ -179,7 +170,7 @@ export default class IndividualReply extends Component {
       this.setState({
         show_edit_reply: true,
         dropdown: false,
-        value: myReply_content.data.this_reply[0].content
+        value: convertToEditorState(myReply_content.data.this_reply[0].content)
       })
       this.focusTextInput()
     } catch (error) {
@@ -306,9 +297,13 @@ export default class IndividualReply extends Component {
             <div className='comment-info'>
               <Link to={`/profile/${reply.alias}`}>{`@${reply.alias}`}</Link>
               {'  '}
-              {!this.state.show_edit_reply && (
+              {!this.state.show_edit_reply && this.state.content && (
                 <div className='comment-content'>
-                  <DraftComposer editorType={COMPOSER_TYPE_ENUM.INDIVIDUAL_COMMENT_STATIC} editorState={this.state.content}></DraftComposer>
+                  <DraftComposer
+                    editorType={REPLY_STATIC}
+                    editorState={this.state.content}
+                    setEditorState={(state) => this.setState({ content: state })}
+                  ></DraftComposer>
                   {media_urls.length > 0 && (
                     <div className='show__comment__image'>
                       {media_urls.map((img) => {
@@ -349,11 +344,17 @@ export default class IndividualReply extends Component {
             {/* reply option end  */}
             {this.state.show_edit_reply && (
               <DraftComposer
-                editorType={COMPOSER_TYPE_ENUM.INDIVIDUAL_COMMENT_REPLY_COMPOSER}
+                editorType={REPLY_EDIT}
                 editorState={this.state.value}
                 setEditorState={(state) => this.setState({ value: state })}
-                placeholder={'Write a comment...'}
-                handleReturnKey={this.submit}
+                handleReturnKey={this.insert_reply}
+                handleSpecialKeys={(e) =>
+                  this.setState({
+                    show_edit_reply: false,
+                    dropdown: false,
+                    value: EditorState.createEmpty()
+                  })
+                }
                 addHashtag={(hashtagMention) => this.setState({ hashtags: [...this.state.hashtags, hashtagMention] })}
                 addMention={(userMention) => this.setState({ mentions: [...this.state.mentions, userMention] })}
               ></DraftComposer>

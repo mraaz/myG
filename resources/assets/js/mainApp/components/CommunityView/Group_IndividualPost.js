@@ -3,11 +3,12 @@
  * github  : https://github.com/realinit
  * Email : nitin.1992tyagi@gmail.com
  */
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import ReactPlayer from 'react-player'
 import axios from 'axios'
 import moment from 'moment'
+import { EditorState } from 'draft-js'
 
 import IndividualComment from '../IndividualComment'
 import SweetAlert from '../common/MyGSweetAlert'
@@ -21,6 +22,7 @@ const buckectBaseUrl = 'https://myG.gg/platform_images/'
 
 import ImageGallery from '../common/ImageGallery/ImageGallery'
 import { WithTooltip } from '../Tooltip'
+import { convertToEditorState } from '../../../common/draftjs'
 
 export default class Group_IndividualPost extends Component {
   constructor() {
@@ -35,13 +37,13 @@ export default class Group_IndividualPost extends Component {
       admirer_first_name: '',
       pull_once: true,
       value: '',
-      value2: '',
+      contentEdited: '',
       zero_comments: false,
       dropdown: false,
       show_post_options: false,
       post_deleted: false,
       edit_post: false,
-      content: '',
+      content: EditorState.createEmpty(),
       post_time: '',
       alert: null,
       media_urls: [],
@@ -59,7 +61,11 @@ export default class Group_IndividualPost extends Component {
       hideComments: false,
       commentShowCount: 2,
       showPostExtraOption: false,
-      featured_enabled: false
+      featured_enabled: false,
+      postHashtags: [],
+      postMentions: [],
+      hashtagsContentEdited: [],
+      mentionsContentEdited: []
     }
     this.imageFileType = ['jpeg', 'jpg', 'png', 'gif']
     this.videoFileType = ['mov', 'webm', 'mpg', 'mp4', 'avi', 'ogg']
@@ -174,7 +180,8 @@ export default class Group_IndividualPost extends Component {
       total: this.props.post.total,
       admirer_first_name: this.props.post.admirer_first_name,
       post_time: post_timestamp.local().fromNow(),
-      content: this.props.post.content,
+      // content: this.props.post.content,
+      content: convertToEditorState(this.props.post.content),
       featured_enabled: this.props.featured,
       galleryItems
     })
@@ -212,7 +219,7 @@ export default class Group_IndividualPost extends Component {
   }
 
   handleChange2 = (e) => {
-    this.setState({ value2: e.target.value })
+    this.setState({ contentEdited: e.target.value })
   }
 
   show_more_comments = () => {
@@ -326,10 +333,10 @@ export default class Group_IndividualPost extends Component {
   }
 
   update_post = (e) => {
-    if (this.state.value2 == '') {
+    if (this.state.contentEdited == '') {
       return
     }
-    if (this.state.value2.trim() == '') {
+    if (this.state.contentEdited.trim() == '') {
       this.setState({
         value: ''
       })
@@ -341,12 +348,12 @@ export default class Group_IndividualPost extends Component {
     const editPost = async function () {
       try {
         const myEditPost = await axios.post(`/api/post/update/${post_id}`, {
-          content: self.state.value2
+          content: self.state.contentEdited
         })
         self.setState({
-          content: self.state.value2,
+          content: self.state.contentEdited,
           edit_post: false,
-          value2: ''
+          contentEdited: ''
         })
       } catch (error) {
         logToElasticsearch('error', 'IndividualComment', 'Failed editPost:' + ' ' + error)
@@ -388,7 +395,7 @@ export default class Group_IndividualPost extends Component {
     if (e.key === 'Escape') {
       this.setState({
         edit_post: false,
-        value2: ''
+        contentEdited: ''
       })
     }
 
@@ -432,7 +439,7 @@ export default class Group_IndividualPost extends Component {
     this.clickedGamePostExtraOption()
     this.setState({
       edit_post: true,
-      value2: this.state.content.trim(),
+      contentEdited: this.state.content.trim(),
       dropdown: false
     })
     setTimeout(
@@ -680,36 +687,33 @@ export default class Group_IndividualPost extends Component {
               </div>
               <div className='post__content'>
                 {!this.state.edit_post && this.state.showmore && (
-                  <Fragment>
-                    <p style={{ whiteSpace: 'pre-line' }}>
-                      {`${this.state.content}  `}
-                      {this.renderHashTags(hash_tags)}
-                      <strong onClick={this.toggleShowmore}>{' ... '}See less</strong>
-                    </p>
-                  </Fragment>
+                  <DraftComposer
+                    editorType={POST_STATIC}
+                    editorState={content}
+                    setEditorState={(state) => this.setState({ content: state })}
+                  ></DraftComposer>
                 )}
                 {!this.state.edit_post && !this.state.showmore && (
-                  <Fragment>
-                    <p style={{ whiteSpace: 'pre-line' }}>
-                      {`${this.state.content.slice(0, 254)}  `} {this.renderHashTags(hash_tags)}
-                      {this.state.content.length > 254 && <strong onClick={this.toggleShowmore}> {' ... '} See more</strong>}
-                    </p>
-                  </Fragment>
+                  <DraftComposer
+                    editorType={POST_STATIC}
+                    editorState={content}
+                    setEditorState={(state) => this.setState({ content: state })}
+                  ></DraftComposer>
                 )}
-
                 {this.state.edit_post && (
-                  <div className='post_content_editbox'>
-                    <textarea
-                      name='name2'
-                      rows={8}
-                      cols={80}
-                      value={this.state.value2}
-                      onChange={this.handleChange2}
-                      maxLength='254'
-                      onKeyDown={this.detectKey2}
-                      ref={this.setTextInputRef2}
-                    />
-                  </div>
+                  <DraftComposer
+                    editorType={POST_EDIT}
+                    editorState={this.state.contentEdited}
+                    setEditorState={(state) => this.setState({ contentEdited: state })}
+                    handleReturnKey={this.update_post()}
+                    addHashtag={(hashtagMention) =>
+                      this.setState({ hashtagsContentEdited: [...this.state.hashtagsContentEdited, hashtagMention] })
+                    }
+                    addMention={(userMention) =>
+                      this.setState({ mentionsContentEdited: [...this.state.mentionsContentEdited, userMention] })
+                    }
+                    handleSpecialKeys={(e) => this.setState({ edit_post: false })}
+                  ></DraftComposer>
                 )}
               </div>
             </div>

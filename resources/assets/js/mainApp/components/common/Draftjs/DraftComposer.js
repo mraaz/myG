@@ -10,23 +10,36 @@ import HashtagMentionComponent from './Mention/HashtagMentionComponent'
 import UserMentionComponent from './Mention/UserMentionComponent'
 import HashtagEntryComponent from './Entry/HashtagEntryComponent'
 import UserEntryComponent from './Entry/UserEntryComponent'
-import { COMPOSER_TYPE_ENUM, DEBOUNCE_TIME, MENTIONS_THEME, KEYS_ENUM } from './helpers/constants'
-import { Debounce_activation } from '../Utility_Function'
-import {getDefaultKeyBinding, KeyBindingUtil} from 'draft-js'
+import { getDefaultKeyBinding } from 'draft-js'
+import {
+  debounceActivation,
+  DEBOUNCE_TIME,
+  MENTIONS_THEME,
+  KEYS_ENUM,
+  POST_COMPOSER,
+  POST_STATIC,
+  POST_EDIT,
+  REPLY_COMPOSER,
+  REPLY_STATIC,
+  REPLY_EDIT,
+  COMMENT_COMPOSER,
+  COMMENT_STATIC,
+  COMMENT_EDIT
+} from '../../../../common/draftjs'
 
 // import 'draft-js/dist/Draft.css'
-import '../../styles/components/DraftsEditor/DraftsCompose.scss'
+import '../../../styles/components/DraftsEditor/DraftsCompose.scss'
 
 export const DraftComposer = ({
   editorType,
   editorState,
-  setEditorState = (e) => e,
+  setEditorState,
   handleFocus_txtArea,
   placeholder,
   handleReturnKey,
   addHashtag,
   addMention,
-  handleSpecialKeys,
+  handleSpecialKeys
 }) => {
   // Setup plugins
   const { plugins, UserMentionSuggestions, HashtagMentionSuggestions, EmojiSuggestions, EmojiSelect } = useMemo(() => {
@@ -74,7 +87,7 @@ export const DraftComposer = ({
   // http://localhost:3000/api/search/gamers?query=Frok%20&online=false&from=0&size=10
 
   const mentionUserSearchCallback = useCallback(
-    Debounce_activation(
+    debounceActivation(
       (value, callback) =>
         mentionSearch(
           value,
@@ -151,7 +164,7 @@ export const DraftComposer = ({
   }
 
   const mentionHashtagSearchCallback = useCallback(
-    Debounce_activation(
+    debounceActivation(
       (value, callback) =>
         mentionSearch(
           value,
@@ -184,13 +197,12 @@ export const DraftComposer = ({
   }
 
   const handleReturn = (syntheticKeyboardEvent) => {
-    console.log('handleReturn', syntheticKeyboardEvent)
     if (handleReturnKey && !mentionHashtagMenuIsOpen && !mentionUserMenuIsOpen) {
       // 'handled' is a special string, indicating we have handled the event and draft should do nothing.
       // Given a function was provided to handle return, and a mentions isnt open, prevent default
       // See: https://draftjs.org/docs/api-reference-editor/#cancelable-handlers-optional
 
-      if (editorType !== COMPOSER_TYPE_ENUM.POST_COMPOSER && syntheticKeyboardEvent.shiftKey) {
+      if (editorType !== POST_COMPOSER && syntheticKeyboardEvent.shiftKey) {
         // Holding down shift, meaning we want a newline
         return null
       }
@@ -202,24 +214,20 @@ export const DraftComposer = ({
   }
 
   const myKeyBindingFn = (e) => {
-    console.log('keycode', e.keyCode);
     if (e.keyCode === 27 /* `esc` key */) {
-      console.log('memrop',KEYS_ENUM.ESCAPE )
-      return KEYS_ENUM.ESCAPE;
+      return KEYS_ENUM.ESCAPE
     }
-    return getDefaultKeyBinding(e);
+    return getDefaultKeyBinding(e)
   }
 
   const handleKeyCommand = (command) => {
-    console.log('handleKeyCommand', command)
     if (command === KEYS_ENUM.ESCAPE) {
       // Perform a request to save your contents, set
       // a new `editorState`, etc.
-      console.log('escaped')
-      if (handleSpecialKeys) handleSpecialKeys(KEYS_ENUM.ESCAPE);
-      return 'handled';
+      if (handleSpecialKeys) handleSpecialKeys(KEYS_ENUM.ESCAPE)
+      return 'handled'
     }
-    return 'not-handled';
+    return 'not-handled'
   }
 
   return (
@@ -241,15 +249,17 @@ export const DraftComposer = ({
           onChange={setEditorState}
           plugins={plugins}
           placeholder={placeholder}
-          readOnly={editorType === COMPOSER_TYPE_ENUM.INDIVIDUAL_COMMENT_STATIC ? true : false}
+          readOnly={editorType === COMMENT_STATIC || editorType === REPLY_STATIC || editorType === POST_STATIC ? true : false}
           handleReturn={handleReturn}
           handleKeyCommand={handleKeyCommand}
           keyBindingFn={myKeyBindingFn}
         />
-        {(editorType === COMPOSER_TYPE_ENUM.POST_COMPOSER ||
-          editorType === COMPOSER_TYPE_ENUM.INDIVIDUAL_REPLY_COMPOSER ||
-          editorType === COMPOSER_TYPE_ENUM.INDIVIDUAL_EDIT_COMPOSER ||
-          editorType === COMPOSER_TYPE_ENUM.INDIVIDUAL_COMMENT_REPLY_COMPOSER) && (
+        {(editorType === POST_COMPOSER ||
+          editorType === POST_EDIT ||
+          editorType === REPLY_COMPOSER ||
+          editorType === REPLY_EDIT ||
+          editorType === COMMENT_COMPOSER ||
+          editorType === COMMENT_EDIT) && (
           <Fragment>
             <EmojiSuggestions />
             <UserMentionSuggestions
@@ -271,9 +281,9 @@ export const DraftComposer = ({
           </Fragment>
         )}
       </div>
-      {editorType !== COMPOSER_TYPE_ENUM.INDIVIDUAL_COMMENT_STATIC && (
+      {editorType !== POST_STATIC && editorType !== REPLY_STATIC && editorType !== COMMENT_STATIC && (
         <div className={`emojiBox ${editorType}`}>
-          {editorType === COMPOSER_TYPE_ENUM.POST_COMPOSER && <span className='addToBoxLabel'>Add Emoji</span>}
+          {editorType === POST_COMPOSER && <span className='addToBoxLabel'>Add Emoji</span>}
           <EmojiSelect />
         </div>
       )}
