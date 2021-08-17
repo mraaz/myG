@@ -140,20 +140,6 @@
             </div>
           </div>
         </form>
-        <div class="col-3 card-round">
-            <div id="seats-header" class="seats-header">
-                <b>We have currently</b>
-            </div>
-            <div id="seats-desc" class="seats-desc">
-                <div class="card-seats">
-                    <b id="seats-available"> Loading... </b>
-                </div>
-                <b>accounts available</b>
-            </div>
-            <div class="register-message"><b>Register</b> while there's still time!</div>
-            <div id="extra-seats-code-container"></div>
-            <div id="extra-seats-email-container"></div>
-        </div>
     </div>
 </div>
 <script src="https://www.google.com/recaptcha/api.js?render={{ recaptcha_sitekey() }}" ></script>
@@ -309,8 +295,8 @@ function fetchSeatsAvailable() {
     alert('We will be in touch when the next round of accounts are available.')
   }
 
-  setupCheatCode();
-  setSeatsAvailable()
+  //setupCheatCode();
+  //setSeatsAvailable()
 
   function checkKeyPress(ele){
 
