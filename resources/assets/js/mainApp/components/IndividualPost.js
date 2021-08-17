@@ -520,7 +520,6 @@ export default class IndividualPost extends Component {
 
   clickedEdit = async () => {
     this.clickedGamePostExtraOption()
-
     const contentEdited = cloneEditorState(this.state.content)
     this.setState({
       edit_post: true,
@@ -657,7 +656,6 @@ export default class IndividualPost extends Component {
       galleryItems = [],
       hideComments,
       showPostExtraOption,
-      contentEdited,
       pinned_total = 0
     } = this.state
 
@@ -771,7 +769,7 @@ export default class IndividualPost extends Component {
                 {this.state.edit_post && (
                   <DraftComposer
                     editorType={POST_EDIT}
-                    editorState={contentEdited}
+                    editorState={this.state.contentEdited}
                     setEditorState={(state) => this.setState({ contentEdited: state })}
                     handleReturnKey={this.update_post}
                     addHashtag={(hashtagMention) =>

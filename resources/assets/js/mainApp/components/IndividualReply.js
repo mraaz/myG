@@ -285,8 +285,8 @@ export default class IndividualReply extends Component {
                   ></DraftComposer>
                   {media_urls.length > 0 && (
                     <div className='show__comment__image'>
-                      {media_urls.map((img) => {
-                        return <img src={img} />
+                      {media_urls.map((img, index) => {
+                        return <img key={index} src={img} />
                       })}
                     </div>
                   )}
