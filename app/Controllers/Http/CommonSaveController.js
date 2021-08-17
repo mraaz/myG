@@ -108,8 +108,6 @@ class CommonSaveController {
         querystring.stringify({ secret: Env.get('SECRET_KEY'), response: token })
       )
       if (!data_request.data.success) {
-        console.log('Google 1: ' + data_request.data.success)
-        console.log('Google 2: ' + data_request)
         console.log('Google Recaptcha Verification Failed: ' + data_request.data)
         return response.redirect('/?error=google-recaptcha')
       } else {
