@@ -80,9 +80,8 @@ export default class IndividualComment extends Component {
       this.setState({ show_profile_img: true })
     }
 
-    let content = convertToEditorState(this.props.comment.content)
     this.setState({
-      content: this.props.comment.content,
+      content: convertToEditorState(this.props.comment.content),
       pinned_status: this.props.comment.pinned ? true : false
     })
 
