@@ -2,14 +2,14 @@
 @import '../../../../../../../node_modules/@draft-js-plugins/emoji/lib/plugin.css';
 
 .editorWrapper {
+  .postRow {
+    display: flex;
+  }
+
   &.comment-composer,
   &.post-composer,
   &.reply-composer {
     width: 100%;
-  }
-
-  .postRow {
-    display: flex;
   }
 }
 
@@ -28,16 +28,8 @@
     line-height: 14px;
     font-family: Montserrat, sans-serif;
     line-height: unset;
-
     box-sizing: border-box;
-    // border: .5px solid #273137;
-
     cursor: text;
-    // padding: 16px;
-    // border-radius: 2px;
-    // margin-bottom: 2em;
-    // box-shadow: inset 0px 1px 8px -3px #ababab;
-    // background: #fefefe;
 
     &:global(.public-DraftEditor-content) {
       min-height: 140px;
@@ -52,7 +44,7 @@
     border-radius: 4px;
     background: #1d2326 0% 0% no-repeat padding-box;
     resize: none;
-    overflow: auto;
+    overflow: visible;
     color: #657172;
     font-size: 12px;
     padding: 8px 20px;
@@ -89,7 +81,7 @@
   &.comment-edit,
   &.reply-edit {
     // height: 50px;
-    // width: 100%;
+    width: 100%;
     border: 1px solid #e5c746;
     border-radius: 4px;
     background: #1d2326 0 0 no-repeat padding-box;
@@ -98,6 +90,17 @@
     color: #657172;
     font-size: 12px;
     padding: 8px 20px;
+  }
+
+  .esyutjr {
+    background-color: #171a1c;
+    box-shadow: none;
+    border: 1px solid #273137;
+    border-radius: 8px;
+
+    .e1adbvmt {
+      background-color: #273137;
+    }
   }
 }
 

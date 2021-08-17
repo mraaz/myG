@@ -119,3 +119,17 @@ export const prepareDraftsEditorForSave = (editorState, initialHashtagList = [],
  */
 export const cloneEditorState = (editorState) =>
   EditorState.createWithContent(convertFromRaw(convertToRaw(editorState.getCurrentContent())))
+
+/**
+ * Used to determine if the draft editors content state is empty. True if empty, or undefined. False otherwise.
+ *
+ * @param {EditorState} editorState the raw
+ * @returns {Boolean} true if empty, false otherwise.
+ */
+export const isEmptyDraftJs = (editorState) => {
+  if (!editorState) {
+    return true
+  }
+  const contentState = editorState.getCurrentContent()
+  return !(contentState.hasText() && contentState.getPlainText() !== '')
+}
