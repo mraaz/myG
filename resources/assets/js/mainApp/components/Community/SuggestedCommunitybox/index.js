@@ -26,7 +26,7 @@ const SuggestedCommunityBox = (props) => {
   }
 
   const joinGroup = () => {
-    const sendInvite = axios.post('/api/usergroup/create', {
+    axios.post('/api/usergroup/create', {
       group_id: props.data.group_id,
     })
     toast.success(<Toast_style text={'Woot! Request sent'} />)

@@ -14,8 +14,6 @@ const CommonController = use('./CommonController')
 const AchievementsRepository = require('../../Repositories/Achievements')
 const NotificationController_v2 = use('./NotificationController_v2')
 
-const RedisRepository = require('../../Repositories/Redis')
-
 //const { validate } = use('Validator')
 
 const MAX_HASH_TAGS = 21
@@ -31,11 +29,6 @@ class PostController {
       }
 
       if (request.input('video') != undefined && request.input('video').trim() != '') {
-        // const rules = {
-        //   video: 'url',
-        // }
-        //
-        // const validation = await validate(request.input('video'), rules)
         let pattern = new RegExp(
           '^(https?:\\/\\/)?' + // protocol
             '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
@@ -52,6 +45,15 @@ class PostController {
       }
 
       if (auth.user) {
+        let game_names_id = null
+
+        if (request.input('game_names_id') != undefined && String(request.input('game_names_id')).trim().length > 0) {
+          const getGame = await Database.from('game_names').where('id', '=', request.input('game_names_id')).first()
+          if (getGame != undefined) {
+            game_names_id = getGame.id
+          }
+        }
+
         if (arrGroups_id.length == 0) {
           newPost = await Post.create({
             content: request.input('content'),
@@ -60,7 +62,8 @@ class PostController {
             type: 'text',
             group_id: null,
             visibility: request.input('visibility'),
-            media_url: request.input('media_url')
+            media_url: request.input('media_url'),
+            game_names_id
           })
 
           if (request.input('hash_tags') != undefined && request.input('hash_tags') != null && request.input('hash_tags').length > 0) {
@@ -85,19 +88,20 @@ class PostController {
               type: 'text',
               group_id: arrGroups_id[i],
               visibility: request.input('visibility'),
-              media_url: request.input('media_url')
+              media_url: request.input('media_url'),
+              game_names_id
             })
             if (request.input('hash_tags') != undefined && request.input('hash_tags') != null && request.input('hash_tags').length > 0) {
               await this.process_hash_tags({ auth }, request.input('hash_tags'), newPost.id)
             }
           }
         }
-        let tmpArr = request.input('aws_key_id')
+        const tmpArr = request.input('aws_key_id')
 
         if (tmpArr != undefined && tmpArr.length > 0) {
           const apiController = new ApiController()
           for (let i = 0; i < tmpArr.length; i++) {
-            const alicia_key = await apiController.update_aws_keys_entry({ auth }, tmpArr[i], '3', newPost.id)
+            await apiController.update_aws_keys_entry({ auth }, tmpArr[i], '3', newPost.id)
           }
         }
 
@@ -119,26 +123,28 @@ class PostController {
   }
 
   async process_hash_tags({ auth }, hash_tags, post_id) {
-    var arrTags = JSON.parse(hash_tags)
-    let PHController = new PostHashTagTransactionController()
+    if (auth.user) {
+      const arrTags = JSON.parse(hash_tags)
+      const PHController = new PostHashTagTransactionController()
 
-    for (var i = 0; i < MAX_HASH_TAGS && i < arrTags.length; i++) {
-      if (arrTags[i].hash_tag_id == null) {
-        if (/['/.%#$;`\\]/.test(arrTags[i].value)) {
-          continue
+      for (let i = 0; i < MAX_HASH_TAGS && i < arrTags.length; i++) {
+        if (arrTags[i].hash_tag_id == null) {
+          if (/['/.%#$;`\\]/.test(arrTags[i].value)) {
+            continue
+          }
+
+          let hash_tags_Controller = new HashTagController()
+          const hash_tag_id = await hash_tags_Controller.store({ auth }, arrTags[i].value)
+          await PHController.store({ auth }, post_id, hash_tag_id)
+        } else {
+          await PHController.store({ auth }, post_id, arrTags[i].hash_tag_id)
+          await HashTags.query().where({ id: arrTags[i].hash_tag_id }).increment('counter', 1)
         }
-
-        let hash_tags_Controller = new HashTagController()
-        const hash_tag_id = await hash_tags_Controller.store({ auth }, arrTags[i].value)
-        await PHController.store({ auth }, post_id, hash_tag_id)
-      } else {
-        await PHController.store({ auth }, post_id, arrTags[i].hash_tag_id)
-        const update_counter = await HashTags.query().where({ id: arrTags[i].hash_tag_id }).increment('counter', 1)
       }
     }
   }
 
-  async show({ auth, request, response }) {
+  async show({ auth, request }) {
     try {
       let grp_limit = 3
 
@@ -148,7 +154,7 @@ class PostController {
         .where('followers.user_id', '=', auth.user.id)
         .where('posts.visibility', '=', 1)
         .where('posts.group_id', 'is', null)
-        .select('*', 'posts.id', 'posts.updated_at')
+        .select('*', 'posts.id', 'posts.updated_at', 'posts.created_at')
         .orderBy('posts.created_at', 'desc')
         .paginate(request.params.counter, 10)
 
@@ -199,18 +205,20 @@ class PostController {
         .orWhere('groups.user_id', '=', auth.user.id)
         .select('groups.id')
 
-      var today = new Date()
-      var priorDate = new Date().setDate(today.getDate() - 7)
-      const cutOff_date = new Date(priorDate)
+      // *** RAAZ UnDO once we have alot more content on the site ***
+
+      //   var today = new Date()
+      //   var priorDate = new Date().setDate(today.getDate() - 7)
+      //   const cutOff_date = new Date(priorDate)
 
       let groups_im_in_Posts = await Database.from('posts')
         .innerJoin('users', 'users.id', 'posts.user_id')
         .innerJoin('groups', 'groups.id', 'posts.group_id')
         .whereIn('posts.group_id', all_groups_im_in_ish)
         .where('posts.visibility', '=', 1)
-        .where('posts.created_at', '>', cutOff_date)
+        //.where('posts.created_at', '>', cutOff_date)
         .whereNot('posts.user_id', '=', auth.user.id)
-        .select('*', 'posts.id', 'posts.updated_at')
+        .select('*', 'posts.id', 'posts.updated_at', 'posts.created_at')
         .orderBy('posts.created_at', 'desc')
         .paginate(request.params.counter, grp_limit)
 
@@ -226,7 +234,7 @@ class PostController {
           .innerJoin('users', 'users.id', 'posts.user_id')
           .whereBetween('posts.id', [1, 3])
           .orderBy('posts.id', 'asc')
-          .select('*', 'posts.id', 'posts.updated_at')
+          .select('*', 'posts.id', 'posts.updated_at', 'posts.created_at')
 
         _1stpass = [..._1stpass, ...welcome_Posts]
       }
@@ -346,6 +354,26 @@ class PostController {
     }
   }
 
+  async fetchGuestPost({ request }) {
+    try {
+      let posts = await Database.from('posts')
+        .innerJoin('users', 'users.id', 'posts.user_id')
+        .where('posts.id', '=', request.params.id)
+        .select('*', 'posts.id', 'posts.created_at', 'posts.updated_at')
+        .limit(1)
+      posts = await this.get_additional_info({ auth: { user: { id: null } } }, posts)
+      return posts[0]
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error
+      })
+    }
+  }
+
   /**
    * For showing a users own posts, including private posts. Designed to be triggered when looking at your own profile.
    *
@@ -355,6 +383,29 @@ class PostController {
   async showMyPosts({ auth, request, response }) {
     if (!auth.user.id) return 'You are not Logged In!'
     return await this.showPosts(auth, auth.user.id, request.params.paginateNo, [0, 1])
+  }
+
+  async fetchGuestPostsForUser({ request }) {
+    try {
+      let myPosts = await Database.from('posts')
+        .innerJoin('users', 'users.id', 'posts.user_id')
+        .where({ user_id: request.params.profileId })
+        .whereIn('posts.visibility', [1])
+        .select('*', 'posts.id', 'posts.updated_at', 'posts.created_at')
+        .orderBy('posts.created_at', 'desc')
+        .paginate(request.params.paginateNo, 10)
+      myPosts = await this.get_additional_info({ auth: { user: -1 } }, myPosts.data)
+      return { myPosts }
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error
+      })
+      return { myPosts: [] }
+    }
   }
 
   /**
@@ -384,7 +435,7 @@ class PostController {
         .innerJoin('users', 'users.id', 'posts.user_id')
         .where({ user_id })
         .whereIn('posts.visibility', visibility)
-        .select('*', 'posts.id', 'posts.updated_at')
+        .select('*', 'posts.id', 'posts.updated_at', 'posts.created_at')
         .orderBy('posts.created_at', 'desc')
         .paginate(paginateNo, 10)
 
@@ -439,7 +490,7 @@ class PostController {
           groupPosts = await Database.from('posts')
             .innerJoin('users', 'users.id', 'posts.user_id')
             .where({ group_id: request.input('group_id'), visibility: 1 })
-            .select('posts.*', 'posts.id', 'posts.updated_at', 'users.alias', 'users.profile_img')
+            .select('posts.*', 'posts.id', 'posts.created_at', 'posts.updated_at', 'users.alias', 'users.profile_img')
             .orderBy('posts.created_at', 'desc')
             .paginate(request.input('counter'), 10)
 
@@ -448,7 +499,7 @@ class PostController {
           groupPosts = await Database.from('posts')
             .innerJoin('users', 'users.id', 'posts.user_id')
             .where({ group_id: request.input('group_id'), featured: true, visibility: 1 })
-            .select('posts.*', 'posts.id', 'posts.updated_at', 'users.alias', 'users.profile_img')
+            .select('posts.*', 'posts.id', 'posts.created_at', 'posts.updated_at', 'users.alias', 'users.profile_img')
             .orderBy('posts.created_at', 'desc')
             .paginate(request.input('counter'), 10)
 
@@ -457,7 +508,7 @@ class PostController {
           groupPosts = await Database.from('posts')
             .innerJoin('users', 'users.id', 'posts.user_id')
             .where({ group_id: request.input('group_id'), visibility: 1 })
-            .select('posts.*', 'posts.id', 'posts.updated_at', 'users.alias', 'users.profile_img')
+            .select('posts.*', 'posts.id', 'posts.created_at', 'posts.updated_at', 'users.alias', 'users.profile_img')
             .orderBy('posts.created_at', 'desc')
             .paginate(request.input('counter'), 10)
       }
@@ -481,7 +532,7 @@ class PostController {
 
   async get_game_data(groupPosts) {
     try {
-      for (var i = 0; i < groupPosts.length; i++) {
+      for (let i = 0; i < groupPosts.length; i++) {
         if (groupPosts[i].schedule_games_id != null) {
           let getScheduleDetails = await Database.from('schedule_games')
             .innerJoin('users', 'users.id', 'schedule_games.user_id')
@@ -585,11 +636,43 @@ class PostController {
           return
         }
 
-        const updatePost = await Post.query()
+        await Post.query()
           .where({ id: request.params.id })
           .update({ content: request.input('content') })
 
         return 'Saved successfully'
+      } catch (error) {
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error
+        })
+      }
+    }
+  }
+
+  async update_allow_comments({ auth, request }) {
+    if (auth.user) {
+      try {
+        let current_user_permission = -1
+
+        const post_owner = await Database.from('posts')
+          .where({ id: request.input('post_id') })
+          .first()
+        if (post_owner == undefined) return
+
+        const commonController = new CommonController()
+        current_user_permission = await commonController.get_permission({ auth }, post_owner.group_id)
+
+        if (current_user_permission == 0 || current_user_permission == 1 || current_user_permission == 2) {
+          await Post.query()
+            .where({ id: request.input('post_id') })
+            .update({ allow_comments: request.input('allow_comments') })
+        }
+
+        return
       } catch (error) {
         LoggingRepository.log({
           environment: process.env.NODE_ENV,
@@ -617,15 +700,16 @@ class PostController {
         }
 
         let myLikes = await likeController.show({ auth }, post[i].id)
+
         if (myLikes) {
-          post[i].total = myLikes.number_of_likes[0].total
-          post[i].no_of_comments = myLikes.no_of_comments[0].no_of_comments
-          if (myLikes.number_of_likes[0].total != 0) {
+          post[i].total = myLikes.number_of_likes && myLikes.number_of_likes[0].total
+          post[i].no_of_comments = myLikes.no_of_comments && myLikes.no_of_comments[0].no_of_comments
+          if (myLikes.number_of_likes && myLikes.number_of_likes[0].total != 0) {
             post[i].admirer_first_name = myLikes.admirer_UserInfo.alias
           } else {
             post[i].admirer_first_name = ''
           }
-          if (myLikes.do_I_like_it[0].myOpinion != 0) {
+          if (myLikes.do_I_like_it && myLikes.do_I_like_it[0].myOpinion != 0) {
             post[i].do_I_like_it = true
           } else {
             post[i].do_I_like_it = false
@@ -656,7 +740,7 @@ class PostController {
   async featureToggle({ auth, request, response }) {
     if (auth.user) {
       try {
-        const updatePost = await Post.query()
+        await Post.query()
           .where({ id: request.input('post_id') })
           .update({ featured: request.input('featured_enabled') })
 
@@ -728,10 +812,10 @@ class PostController {
 
       const myGroups = this.splitArrayEvenly(arr, 5)
 
-      //Nested for loop OK cause this table will be >~100 records
-      for (var i = 0; i < myGroups.length; i++) {
-        for (var j = 0; j < myGroups[i].length; j++) {
-          const updateSponsoredPost = await SponsoredPost.query()
+      //Nested for loop OK cause this table will be <~100 records
+      for (let i = 0; i < myGroups.length; i++) {
+        for (let j = 0; j < myGroups[i].length; j++) {
+          await SponsoredPost.query()
             .where({ id: myGroups[i][j] })
             .update({ category: i + 1 })
         }
@@ -754,6 +838,100 @@ class PostController {
       result.push(array.splice(0, Math.ceil(array.length / n--)))
     }
     return result
+  }
+
+  async guestShow({ request }) {
+    try {
+      //Find top trending posts:
+      // Posts with most likes n updated recently
+      // Shuffle
+
+      let game_names = null
+      let counterValue = 20
+
+      if (request.input('game_names_ids') != undefined && request.input('game_names_ids') != null) {
+        game_names = JSON.parse(request.input('game_names_ids'))
+        counterValue = 10
+      }
+
+      const trendingPosts_likes = await Database.from('posts')
+        .innerJoin('likes', 'likes.post_id', 'posts.id')
+        .whereIn('posts.visibility', [1])
+        .where((builder) => {
+          if (game_names != null) builder.whereIn('posts.game_names_id', [game_names])
+        })
+        .groupBy('posts.id')
+        .count('* as no_of_likes')
+        .orderBy('no_of_likes', 'desc')
+        .select('posts.id')
+        .paginate(request.input('counter'), counterValue)
+
+      let array_ = []
+
+      trendingPosts_likes.data.map((posts) => {
+        array_.push(posts.id)
+      })
+
+      if (game_names != null) {
+        const trendingPosts_communities = await Database.from('posts')
+          .innerJoin('groups', 'groups.id', 'posts.group_id')
+          .innerJoin('likes', 'likes.post_id', 'posts.id')
+          .whereIn('posts.visibility', [1])
+          .whereIn('groups.game_names_id', [game_names])
+          .groupBy('posts.id')
+          .count('* as no_of_likes')
+          .orderBy('no_of_likes', 'desc')
+          .select('posts.id')
+          .paginate(request.input('counter'), counterValue)
+
+        trendingPosts_communities.data.map((posts) => {
+          array_.push(posts.id)
+        })
+      }
+
+      let myPosts = await this.guestBody(array_)
+      myPosts = myPosts.tmpResults
+
+      return {
+        myPosts
+      }
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error
+      })
+    }
+  }
+
+  async guestBody(superSet) {
+    try {
+      const trendingPosts = await Database.from('posts')
+        .innerJoin('users', 'users.id', 'posts.user_id')
+        .whereIn('posts.id', superSet)
+        .select('users.*', 'posts.*', 'posts.id', 'posts.updated_at', 'posts.created_at')
+        .orderBy('posts.updated_at', 'desc')
+
+      let _1stpass = [...trendingPosts]
+
+      const common_Controller = new CommonController()
+      _1stpass = await common_Controller.shuffle(_1stpass)
+
+      const tmpResults = await this.get_additional_info({ auth: { user: -1 } }, _1stpass)
+      return {
+        tmpResults
+      }
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error
+      })
+    }
   }
 }
 

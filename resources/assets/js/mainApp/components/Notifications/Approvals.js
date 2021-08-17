@@ -16,7 +16,7 @@ import {
   clickedAccept_game,
   clickedDenied_game,
   handleTime,
-  mark_read_status,
+  mark_read_status
 } from './helperFunction'
 import { Toast_style } from './../Utility_Function'
 import { toast } from 'react-toastify'
@@ -26,7 +26,7 @@ const tabObj = {
   0: 0,
   1: 1,
   2: 11,
-  3: 12,
+  3: 12
 }
 
 export default class Approvals extends Component {
@@ -37,7 +37,7 @@ export default class Approvals extends Component {
       approvals: [],
       moreplease: true,
       counter: 1,
-      tab: 0,
+      tab: 0
     }
     this.myRef = React.createRef()
   }
@@ -50,7 +50,7 @@ export default class Approvals extends Component {
     this.setState({ fetching: true })
     const getApprovals = await axios.post('/api/notifications_v2/getApprovals_Dashboard', {
       counter,
-      activity_type: tabObj[tab],
+      activity_type: tabObj[tab]
     })
 
     if (getApprovals.data.length > 0) {
@@ -66,13 +66,13 @@ export default class Approvals extends Component {
     this.setState({ fetching: true })
     const getApprovals = await axios.post('/api/notifications_v2/getApprovals_Dashboard', {
       counter: count,
-      activity_type: tabObj[tab],
+      activity_type: tabObj[tab]
     })
 
     if (getApprovals.data && getApprovals.data.length == 0) {
       this.setState({
         moreplease: false,
-        fetching: false,
+        fetching: false
       })
       return
     }
@@ -92,7 +92,7 @@ export default class Approvals extends Component {
     this.setState({ approvals: [], fetching: true })
     const getApprovals = await axios.post('/api/notifications_v2/getApprovals_Dashboard', {
       counter: 1,
-      activity_type: tabObj[tab],
+      activity_type: tabObj[tab]
     })
 
     if (getApprovals.data.length > 0) {
@@ -216,8 +216,8 @@ export default class Approvals extends Component {
                     approval.read == undefined ? (approval.read_status == 0 ? 'unread' : '') : approval.read == false ? 'unread' : ''
                   }`}
                   key={approval.id}
-                  onClick={(e) => this.handleClickNotiFication(approval.id, index)}>
-                  >
+                  onClick={(e) => this.handleClickNotiFication(approval.id, index)}
+                >
                   <div className='notification-user-avatar'>
                     <Link to={`/profile/${approval.alias}`}>
                       <img onError={this.addDefaultSrc} src={approval.profile_img ? approval.profile_img : defaultUserImage} />
@@ -227,7 +227,8 @@ export default class Approvals extends Component {
                     <div
                       className={`notification-description ${
                         approval.read == undefined ? (approval.read_status == 0 ? 'unread' : '') : approval.read == false ? 'unread' : ''
-                      }`}>
+                      }`}
+                    >
                       <div className='username__link'>
                         <Link to={`/profile/${approval.alias}`}>
                           <div className='notification-username'>
@@ -247,7 +248,8 @@ export default class Approvals extends Component {
                           onClick={(e) => {
                             e.stopPropagation()
                             this.handleActionClick('accept', approval)
-                          }}>
+                          }}
+                        >
                           <img src='https://myG.gg/platform_images/Dashboard/btn_Like_Feed.svg' />
                           {` Accept`}
                         </button>
@@ -256,7 +258,8 @@ export default class Approvals extends Component {
                           onClick={(e) => {
                             e.stopPropagation()
                             this.handleActionClick('decline', approval)
-                          }}>
+                          }}
+                        >
                           <img src='https://myG.gg/platform_images/Dashboard/btn_Like_Feed.svg' />
                           {` Decline`}
                         </button>

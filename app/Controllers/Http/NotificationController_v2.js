@@ -187,7 +187,7 @@ class NotificationController_v2 {
   async destroy({ auth, request, response }) {
     if (auth.user) {
       try {
-        const delete_noti = await Database.table('notifications')
+        await Database.table('notifications')
           .where({
             id: request.params.id
           })
@@ -213,7 +213,7 @@ class NotificationController_v2 {
     if (auth.user) {
       try {
         const getOwner = await Database.from('groups').where({ id: grp_id }).select('user_id').first()
-        const addGroup = await Notification.create({
+        await Notification.create({
           other_user_id: getOwner.user_id,
           user_id: auth.user.id,
           activity_type: 12,
@@ -302,7 +302,6 @@ class NotificationController_v2 {
   }
 
   async add_approved_group_attendee({ auth }, grp_id, other_user_id) {
-    console.log(auth, '<<<AUTH')
     if (auth.user) {
       try {
         await Notification.create({
@@ -727,7 +726,7 @@ class NotificationController_v2 {
   async addGameApproved({ auth }, schedule_games_id, other_user_id) {
     if (auth.user) {
       try {
-        const addGameApproved = await Notification.create({
+        await Notification.create({
           other_user_id: other_user_id,
           user_id: auth.user.id,
           activity_type: 14,
@@ -753,7 +752,7 @@ class NotificationController_v2 {
 
   async markAllNoti({ auth, request, response }) {
     try {
-      const markAllNoti = await Notification.query()
+      await Notification.query()
         .where({ other_user_id: auth.user.id })
         .whereIn('activity_type', [2, 3, 4, 5, 6, 10, 14, 15, 16, 17, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28])
         .update({ read_status: 1 })
@@ -771,7 +770,7 @@ class NotificationController_v2 {
 
   async deleteAllNoti({ auth, request, response }) {
     try {
-      const deleteAllNoti = await Database.table('notifications')
+      await Database.table('notifications')
         .where({
           other_user_id: auth.user.id
         })
@@ -795,7 +794,7 @@ class NotificationController_v2 {
   async addScheduleGame_attendance({ auth }, schedule_games_id, other_user_id, activity_type) {
     if (auth.user) {
       try {
-        const addScheduleGame_attendance = await Notification.create({
+        await Notification.create({
           other_user_id: other_user_id,
           user_id: auth.user.id,
           activity_type: activity_type,
@@ -822,7 +821,7 @@ class NotificationController_v2 {
   async remove_schedule_game_attendees({ auth }, schedule_games_id, activity_type) {
     if (auth.user) {
       try {
-        const remove_schedule_game_attendees = await Database.table('notifications')
+        await Database.table('notifications')
           .where({
             schedule_games_id: schedule_games_id,
             activity_type: activity_type
@@ -848,7 +847,7 @@ class NotificationController_v2 {
   async add_approved_attendee_left({ auth }, schedule_games_id, other_user_id) {
     if (auth.user) {
       try {
-        const add_approved_attendee_left = await Notification.create({
+        await Notification.create({
           other_user_id: other_user_id,
           user_id: auth.user.id,
           activity_type: 16,
@@ -875,7 +874,7 @@ class NotificationController_v2 {
   async addComment({ auth }, post_id, other_user_id, comment_id) {
     if (auth.user) {
       try {
-        const addComment = await Notification.create({
+        await Notification.create({
           other_user_id: other_user_id,
           user_id: auth.user.id,
           activity_type: 5,
@@ -988,7 +987,7 @@ class NotificationController_v2 {
   async addReplyLike({ auth }, post_id, other_user_id, reply_id, schedule_games_id) {
     if (auth.user) {
       try {
-        const addReplyLike = await Notification.create({
+        await Notification.create({
           other_user_id: other_user_id,
           user_id: auth.user.id,
           activity_type: 4,
@@ -1148,7 +1147,7 @@ class NotificationController_v2 {
   async destroy({ auth, request, response }) {
     if (auth.user) {
       try {
-        const delete_noti = await Database.table('notifications')
+        await Database.table('notifications')
           .where({
             id: request.params.id
           })
@@ -1174,13 +1173,13 @@ class NotificationController_v2 {
   async destroy_community({ auth, request, response }) {
     if (auth.user) {
       try {
-        const delete_noti = await Database.table('notifications')
+        await Database.table('notifications')
           .where({
             id: request.params.id
           })
           .delete()
 
-        const deleteMember = await Database.table('usergroups')
+        await Database.table('usergroups')
           .where({
             user_id: request.params.user_id,
             group_id: request.params.group_id,
@@ -1518,8 +1517,6 @@ class NotificationController_v2 {
 
   async getCheck({ auth, request, response }) {
     if (auth.user) {
-      let checking = false
-
       const security_check = await Database.from('admins').where({ user_id: auth.user.id, permission_level: 1 }).first()
 
       let isAdmin = false
@@ -1689,12 +1686,12 @@ class NotificationController_v2 {
         user_id: requestingUserId,
         other_user_id: friendId,
         team_id: teamId,
-        activity_type: 29,
-      });
+        activity_type: 29
+      })
       const userId = friendId
-      const notifications = await this.count({ auth: { user: { id: userId } }, request: null });
-      await ChatRepository.publishNotifications({ userId, notifications });
-      return 'Saved item';
+      const notifications = await this.count({ auth: { user: { id: userId } }, request: null })
+      await ChatRepository.publishNotifications({ userId, notifications })
+      return 'Saved item'
     } catch (error) {
       LoggingRepository.log({
         environment: process.env.NODE_ENV,
@@ -1702,7 +1699,7 @@ class NotificationController_v2 {
         source: 'backend',
         context: __filename,
         message: (error && error.message) || error
-      });
+      })
     }
   }
 

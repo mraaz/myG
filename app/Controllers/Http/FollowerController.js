@@ -21,20 +21,25 @@ class FollowerController {
         await Follower.create({
           follower_id: followerId,
           user_id: auth.user.id,
-          group_id: request.input('group_id'),
+          group_id: request.input('group_id')
         })
 
-        const userStatController = new UserStatTransactionController()
-        userStatController.update_total_number_of(followerId, 'total_number_of_followers')
+        if (followerId != undefined) {
+          const userStatController = new UserStatTransactionController()
+          userStatController.update_total_number_of(followerId, 'total_number_of_followers')
+        }
 
         return 'Saved'
       } catch (error) {
+        if (error.code == 'ER_DUP_ENTRY') {
+          return
+        }
         LoggingRepository.log({
           environment: process.env.NODE_ENV,
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     }
@@ -43,9 +48,9 @@ class FollowerController {
   async store2({ auth }, leader, follower) {
     if (auth.user) {
       try {
-        const newFollower = await Follower.create({
+        await Follower.create({
           follower_id: leader,
-          user_id: follower,
+          user_id: follower
         })
 
         let userStatController = new UserStatTransactionController()
@@ -53,12 +58,15 @@ class FollowerController {
 
         return 'Saved'
       } catch (error) {
+        if (error.code == 'ER_DUP_ENTRY') {
+          return
+        }
         LoggingRepository.log({
           environment: process.env.NODE_ENV,
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     }
@@ -67,10 +75,10 @@ class FollowerController {
   async delete({ auth, request, response }) {
     if (auth.user) {
       try {
-        const deleteFollower = await Database.table('followers')
+        await Database.table('followers')
           .where({
             user_id: auth.user.id,
-            follower_id: request.params.follower_id,
+            follower_id: request.params.follower_id
           })
           .delete()
 
@@ -84,7 +92,7 @@ class FollowerController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -95,10 +103,10 @@ class FollowerController {
   async delete2({ auth }, leader, follower) {
     if (auth.user) {
       try {
-        const deleteFollower = await Database.table('followers')
+        await Database.table('followers')
           .where({
             user_id: leader,
-            follower_id: follower,
+            follower_id: follower
           })
           .delete()
 
@@ -112,7 +120,7 @@ class FollowerController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -120,13 +128,13 @@ class FollowerController {
     }
   }
 
-  async delete_group({ auth, request, response }) {
+  async delete_follower_from_group({ auth, request, response }) {
     if (auth.user) {
       try {
-        const deleteFollower = await Database.table('followers')
+        await Database.table('followers')
           .where({
             user_id: auth.user.id,
-            group_id: request.params.group_id,
+            group_id: request.params.group_id
           })
           .delete()
 
@@ -137,7 +145,7 @@ class FollowerController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {

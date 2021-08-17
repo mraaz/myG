@@ -24,7 +24,7 @@ class GameExperienceController {
       let gameface = new GameNameController()
 
       const mygame = await Database.table('game_names').where({
-        game_name: request.input('game_name'),
+        game_name: request.input('game_name')
       })
 
       if (mygame.length == 0) {
@@ -44,7 +44,7 @@ class GameExperienceController {
       for (var i = 0; i < arrTags.length; i++) {
         var current_tag = await Database.table('tags').where({
           game_names_id: request.params.game_names_id,
-          tag: arrTags[i],
+          tag: arrTags[i]
         })
         if (current_tag.length == 0) {
           request.params.tag = arrTags[i]
@@ -53,7 +53,7 @@ class GameExperienceController {
       }
 
       try {
-        const newGameExp = await GameExperiences.create({
+        await GameExperiences.create({
           game_names_id: request.params.game_names_id,
           user_id: auth.user.id,
           experience: request.input('experience'),
@@ -62,7 +62,7 @@ class GameExperienceController {
           played: request.input('played'),
           link: request.input('link'),
           ratings: request.input('ratings'),
-          tags: request.input('tags'),
+          tags: request.input('tags')
         })
         const requestingUserId = auth.user.id
         const requestedGameId = request.params.game_names_id
@@ -74,25 +74,44 @@ class GameExperienceController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
       return 'Saved item'
     }
   }
 
-  async show({ auth, request, response }) {
-    try {
-      // const allGameExperiences = await GameExperiences.query()
-      //   .where('user_id', '=', request.params.id)
-      //   .fetch()
+  async show({ auth }) {
+    if (auth.user) {
+      try {
+        const allmyGameExperiences = await Database.table('game_experiences')
+          .innerJoin('game_names', 'game_names.id', 'game_experiences.game_names_id')
+          .where('game_experiences.user_id', '=', auth.user.id)
+          .select('game_experiences.*', 'game_names.game_name')
+        return {
+          allmyGameExperiences
+        }
+      } catch (error) {
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error
+        })
+      }
+    }
+  }
 
-      const allGameExperiences = await Database.table('game_experiences')
+  async showGuest() {
+    try {
+      const allfancyGameExperiences = await Database.table('game_experiences')
         .innerJoin('game_names', 'game_names.id', 'game_experiences.game_names_id')
-        .where('game_experiences.user_id', '=', request.params.id)
         .select('game_experiences.*', 'game_names.game_name')
+        .orderBy('game_names.counter', 'desc')
+        .limit(5)
       return {
-        allGameExperiences,
+        allfancyGameExperiences
       }
     } catch (error) {
       LoggingRepository.log({
@@ -100,12 +119,12 @@ class GameExperienceController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
 
-  async show_Game({ auth, request, response }) {
+  async show_Game({ request }) {
     try {
       // const myGameExperience = await GameExperiences.query()
       //   .where({ id: request.params.game_id })
@@ -116,7 +135,7 @@ class GameExperienceController {
         .where('game_experiences.id', '=', request.params.game_id)
         .select('game_experiences.*', 'game_names.game_name')
       return {
-        myGameExperience,
+        myGameExperience
       }
     } catch (error) {
       LoggingRepository.log({
@@ -124,12 +143,12 @@ class GameExperienceController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
 
-  async myShow({ auth, request, response }) {
+  async myShow({ request }) {
     try {
       // const myGameExperience = await GameExperiences.query()
       //   .where({ id: request.params.id })
@@ -140,7 +159,7 @@ class GameExperienceController {
         .where('game_experiences.id', '=', request.params.id)
         .select('game_experiences.*', 'game_names.game_name')
       return {
-        myGameExperience,
+        myGameExperience
       }
     } catch (error) {
       LoggingRepository.log({
@@ -148,7 +167,7 @@ class GameExperienceController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -171,7 +190,7 @@ class GameExperienceController {
         let gameface = new GameNameController()
 
         const mygame = await Database.table('game_names').where({
-          game_name: request.input('game_name'),
+          game_name: request.input('game_name')
         })
 
         if (mygame.length == 0) {
@@ -191,7 +210,7 @@ class GameExperienceController {
         for (var i = 0; i < arrTags.length; i++) {
           var current_tag = await Database.table('tags').where({
             game_names_id: request.params.game_names_id,
-            tag: arrTags[i],
+            tag: arrTags[i]
           })
           if (current_tag.length == 0) {
             request.params.tag = arrTags[i]
@@ -199,7 +218,7 @@ class GameExperienceController {
           }
         }
 
-        const updateGame_Exp = await GameExperiences.query()
+        await GameExperiences.query()
           .where({ id: request.params.game_id })
           .update({
             game_names_id: request.params.game_names_id,
@@ -209,7 +228,7 @@ class GameExperienceController {
             played: request.input('played'),
             link: request.input('link'),
             ratings: request.input('ratings'),
-            tags: request.input('tags'),
+            tags: request.input('tags')
           })
 
         if (game_experiences[0].game_name !== request.input('game_name')) {
@@ -224,7 +243,7 @@ class GameExperienceController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     }
@@ -241,7 +260,7 @@ class GameExperienceController {
 
         const game_experiences_owner = await Database.table('game_experiences')
           .where({
-            id: request.params.game_exp_id,
+            id: request.params.game_exp_id
           })
           .select('user_id')
           .first()
@@ -257,7 +276,7 @@ class GameExperienceController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     }
@@ -269,7 +288,7 @@ class GameExperienceController {
         let gameface = new GameNameController()
 
         const game_experiences = await Database.table('game_experiences').where({
-          id: request.params.game_id,
+          id: request.params.game_id
         })
 
         // const mygame = await Database.table('game_names').where({
@@ -279,9 +298,9 @@ class GameExperienceController {
         // request.params.game_names_id = mygame[0].id
         gameface.decrementGameCounter({ auth }, game_experiences[0].game_names_id)
 
-        const delete_game_exp = await Database.table('game_experiences')
+        await Database.table('game_experiences')
           .where({
-            id: request.params.game_id,
+            id: request.params.game_id
           })
           .delete()
 
@@ -292,7 +311,7 @@ class GameExperienceController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -374,7 +393,7 @@ class GameExperienceController {
         .paginate(parseInt(request.input('counter')), 10)
 
       return {
-        latestGameExperiences,
+        latestGameExperiences
       }
     } catch (error) {
       LoggingRepository.log({
@@ -382,7 +401,7 @@ class GameExperienceController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }

@@ -1,8 +1,10 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef } from 'react'
 import { Upload_to_S3 } from '../AWS_utilities'
 import axios from 'axios'
 import { toast } from 'react-toastify'
-import { Toast_style } from '../Utility_Function'
+import { Toast_style, mobile_Share } from '../Utility_Function'
+import { copyToClipboard } from '../../../common/clipboard'
+import { createShortLink } from '../../../integration/http/links'
 
 const addDefaultSrc = (ev) => {
   ev.target.src = 'https://myG.gg/default_user/universe.jpg'
@@ -14,7 +16,7 @@ const labelMap = {
   1: 'Joined',
   2: 'Joined',
   3: 'Joined',
-  42: 'Pending',
+  42: 'Pending'
 }
 
 const CoverImage = (props) => {
@@ -41,33 +43,32 @@ const CoverImage = (props) => {
       }
     }
   }
-  const handleFollowClick = (id) => {
-    const { user_id } = props
+  const handleFollowClick = async (id) => {
     const f = following == '' ? (props.following == true ? 'Unfollow' : 'Follow') : following
     if (f == 'Unfollow') {
-      const data = axios.delete(`/api/followers/${user_id}/delete_group`, {
-        group_id: id,
-      })
+      axios.delete(`/api/followers/delete_group/${id}`)
+
       toast.success(<Toast_style text={`Cheers mate you're no longer following`} />)
       setFollowing('Follow')
     } else {
-      const data = axios.post('/api/followers/create', {
-        group_id: id,
+      axios.post(`/api/followers/create`, {
+        group_id: id
       })
+
       toast.success(<Toast_style text={`Cheers mate you're following`} />)
       setFollowing('Unfollow')
     }
   }
   const handleLeaveClick = (id) => {
-    const leaverep = axios.delete(`/api/usergroup/${id}`)
+    axios.delete(`/api/usergroup/${id}`)
     toast.success(<Toast_style text={`Time to skedaddle! We're out of ${props.name}!`} />)
     props.routeProps.history.push('/?at=communities')
   }
   const handleJoinButton = async (e, id) => {
     e.preventDefault()
     if (props.current_user_permission == -1 && joinlabel == undefined) {
-      const data = await axios.post('/api/usergroup/create', {
-        group_id: id,
+      await axios.post('/api/usergroup/create', {
+        group_id: id
       })
       toast.success(<Toast_style text={'Join request sent. You need approval, let the waiting game begin'} />)
       setJoinlabel('Pending')
@@ -76,13 +77,23 @@ const CoverImage = (props) => {
     }
   }
 
+  const clickedShare = async () => {
+    try {
+      const value = await createShortLink(window.location.href)
+      mobile_Share(value)
+      copyToClipboard(value)
+    } catch (error) {
+      logToElasticsearch('error', 'CoverImage', 'Failed clickedShare:' + ' ' + error)
+    }
+  }
+
   /**
    * Designed to attach to a elements onClick event and toggle the options
    * dropdown, while preventing the click event on parent elements.
-   * 
+   *
    * Built to attach to the options button to prevent the Join/Leave event
    * firing.
-   * 
+   *
    * @param {MouseEvent} clickEvent The click event of the attached element
    */
   const handleToggleOption = (clickEvent) => {
@@ -139,6 +150,9 @@ const CoverImage = (props) => {
           )}
           <button type='button' className='btnWarning' onClick={(e) => props.handleModalStatus('members')}>
             View Members
+          </button>
+          <button type='button' className='btnWarning' onClick={() => clickedShare()}>
+            Share
           </button>
         </div>
       </div>

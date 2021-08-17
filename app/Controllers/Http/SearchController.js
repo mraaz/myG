@@ -7,10 +7,9 @@ const LoggingRepository = require('../../Repositories/Logging')
 class SearchController {
   async searchGamers({ auth, request, response }) {
     try {
-      const requestingUserId = auth.user.id
-      if (!requestingUserId) throw new Error('Auth Error')
+      const requestingUserId = auth && auth.user && auth.user.id
       const { query, online, from, size } = request.only(['query', 'online', 'from', 'size'])
-      log('PROFILE', `User ${requestingUserId} searching gamer with ${query}`)
+      log('PROFILE', `User ${requestingUserId ? requestingUserId : "Guest"} searching gamer with ${query}`)
       const { gamers, total } = await SearchRepository.searchGamers({ requestingUserId, query, online, from, size })
       return response.send({ gamers, total })
     } catch (error) {

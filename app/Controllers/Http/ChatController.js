@@ -542,7 +542,8 @@ class ChatController {
       if (!requestingUserId) throw new Error('Auth Error')
       const requestedChatId = params.chatId
       const requestedMessageId = params.messageId
-      const { backup, content } = request.only('encryptedContent').encryptedContent
+      const encryptedContent = request.only('encryptedContent').encryptedContent
+      const { backup, content } = encryptedContent
       const reEncrypting = request.only('reEncrypting').reEncrypting
       log(
         'CHAT',
@@ -552,8 +553,8 @@ class ChatController {
         requestingUserId,
         requestedChatId,
         requestedMessageId,
-        backup,
-        content,
+        backup: backup || encryptedContent,
+        content: content || encryptedContent,
         reEncrypting,
       })
       return response.send({ message })

@@ -15,11 +15,9 @@ export default class IndividualReply extends Component {
     super()
     this.state = {
       show_reply_like: false,
-      show_reply_reply: false,
       reply_like: false,
       show_profile_img: false,
       reply_like_total: 0,
-      show_add_reply: false,
       dropdown: false,
       reply_deleted: false,
       show_edit_reply: false,
@@ -48,7 +46,6 @@ export default class IndividualReply extends Component {
     }
 
     const content = convertToEditorState(this.props.reply.content)
-    console.log('reply content', content)
     this.setState({
       content
     })
@@ -63,17 +60,19 @@ export default class IndividualReply extends Component {
       try {
         const myReplyLikes = await axios.get(`/api/likes/reply/${reply.reply.id}`)
 
-        if (myReplyLikes.data.do_I_like_this_reply[0].myOpinion != 0) {
-          self.setState({
-            reply_like: true
-          })
-        }
+        if (myReplyLikes.data != '') {
+          if (myReplyLikes.data.do_I_like_this_reply && myReplyLikes.data.do_I_like_this_reply[0].myOpinion != 0) {
+            self.setState({
+              reply_like: true
+            })
+          }
 
-        if (myReplyLikes.data.no_of_likes[0].no_of_likes != 0) {
-          self.setState({
-            show_reply_like: true,
-            reply_like_total: myReplyLikes.data.no_of_likes[0].no_of_likes
-          })
+          if (myReplyLikes.data.no_of_likes && myReplyLikes.data.no_of_likes[0].no_of_likes != 0) {
+            self.setState({
+              show_reply_like: true,
+              reply_like_total: myReplyLikes.data.no_of_likes[0].no_of_likes
+            })
+          }
         }
       } catch (error) {
         logToElasticsearch('error', 'IndividualReply', 'Failed getCommentReplies:' + ' ' + error)

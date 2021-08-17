@@ -1,7 +1,5 @@
 import React, { Component, Fragment } from 'react'
 import axios from 'axios'
-import { toast } from 'react-toastify'
-import { Toast_style } from '../Utility_Function'
 import YourCommunityBox from './YourCommunityBox'
 import SuggestedCommunityBox from './SuggestedCommunitybox'
 

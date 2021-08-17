@@ -17,9 +17,9 @@ const LoggingRepository = require('../../Repositories/Logging')
 
 const AwsKey = use('App/Models/AwsKey')
 
-const S3_BUCKET_CHAT = 'mygame-media/myG_chat/chat_images'
-const S3_BUCKET = 'mygame-media/user_files'
-const S3_BUCKET_DELETE = 'mygame-media'
+const S3_BUCKET_CHAT = 'myg-media/myG_chat/chat_images'
+const S3_BUCKET = 'myg-media/user_files'
+const S3_BUCKET_DELETE = 'myg-media'
 
 const AWS_ACCESS_KEY_ID = Env.get('AWS_ACCESS_KEY_ID')
 const AWS_SECRET_ACCESS_KEY = Env.get('AWS_SECRET_ACCESS_KEY')
@@ -27,7 +27,7 @@ const AWS_SECRET_ACCESS_KEY = Env.get('AWS_SECRET_ACCESS_KEY')
 // configure the keys for accessing AWS
 AWS.config.update({
   accessKeyId: AWS_ACCESS_KEY_ID,
-  secretAccessKey: AWS_SECRET_ACCESS_KEY,
+  secretAccessKey: AWS_SECRET_ACCESS_KEY
 })
 
 // configure AWS to work with promises
@@ -42,9 +42,10 @@ const uploadFile = (bucket, buffer, name, type) => {
     Body: buffer,
     Bucket: bucket,
     ContentType: type.mime,
-    Key: name,
+    Key: name
   }
-  if (process.env.MOCK_S3_UPLOAD) return Promise.resolve({ Key: 'MockKey', Location: 'https://cdn.mos.cms.futurecdn.net/VSy6kJDNq2pSXsCzb6cvYF.jpg' });
+  if (process.env.MOCK_S3_UPLOAD)
+    return Promise.resolve({ Key: 'MockKey', Location: 'https://cdn.mos.cms.futurecdn.net/VSy6kJDNq2pSXsCzb6cvYF.jpg' })
   return s3.upload(params).promise()
 }
 
@@ -62,13 +63,18 @@ class ApiController {
   async initialApp({ auth }) {
     if (auth.user) {
       const security_check = await Database.from('admins').where({ user_id: auth.user.id, permission_level: 1 }).first()
+
+      //Update Login_timestamp
+      const today = new Date()
+      await Database.from('users_additional_infos').where({ user_id: auth.user.id }).update({ last_logged_in_date: today })
+
       return {
         userInfo: auth.user,
         isAdmin: security_check != undefined ? true : false,
         port: process.env.PORT,
         logsOn: process.env.LOGS_ON,
         preventReload: process.env.PREVENT_RELOAD,
-        featuresOn: process.env.FEATURES_ON,
+        featuresOn: process.env.FEATURES_ON
       }
     } else {
       return {
@@ -76,7 +82,7 @@ class ApiController {
         port: process.env.PORT,
         logsOn: process.env.LOGS_ON,
         preventReload: process.env.PREVENT_RELOAD,
-        featuresOn: process.env.FEATURES_ON,
+        featuresOn: process.env.FEATURES_ON
       }
     }
   }
@@ -113,7 +119,7 @@ class ApiController {
       }
 
       await file.move(Helpers.tmpPath('uploads'), {
-        name: tmpfilename,
+        name: tmpfilename
       })
 
       const isFileInfected = await this.isFileInfected(tmpfilepath)
@@ -136,7 +142,7 @@ class ApiController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
         return response.status(400).json(error)
       }
@@ -162,14 +168,10 @@ class ApiController {
 
         switch (type) {
           case '1':
-            const update_profile_img = await User.query()
-              .where({ id: auth.user.id })
-              .update({ profile_img: location })
+            const update_profile_img = await User.query().where({ id: auth.user.id }).update({ profile_img: location })
             break
           case '2':
-            const update_bg_img = await User.query()
-              .where({ id: auth.user.id })
-              .update({ profile_bg: location })
+            const update_bg_img = await User.query().where({ id: auth.user.id }).update({ profile_bg: location })
             break
           case '3':
             post_id = id
@@ -179,9 +181,7 @@ class ApiController {
             if (id != undefined || id != null) {
               this.internal_deleteFile({ auth }, 4, id)
 
-              const update_img = await Group.query()
-                .where({ id: id })
-                .update({ group_img: location })
+              const update_img = await Group.query().where({ id: id }).update({ group_img: location })
             }
             break
           case '5':
@@ -218,7 +218,7 @@ class ApiController {
           comment_id: comment_id,
           reply_id: reply_id,
           sponsor_id: sponsor_id,
-          type: type,
+          type: type
         })
         return addAwsKey.id
       } catch (error) {
@@ -227,7 +227,7 @@ class ApiController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
         return false
       }
@@ -276,19 +276,17 @@ class ApiController {
             return
         }
 
-        let addAwsKey = await AwsKey.query()
-          .where({ id: aws_key_id })
-          .update({
-            post_id: post_id,
-            group_id: group_id,
-            chat_id: chat_id,
-            chat_message_id: chat_message_id,
-            game_name_id: game_name_id,
-            comment_id: comment_id,
-            reply_id: reply_id,
-            sponsor_id: sponsor_id,
-            type: type,
-          })
+        let addAwsKey = await AwsKey.query().where({ id: aws_key_id }).update({
+          post_id: post_id,
+          group_id: group_id,
+          chat_id: chat_id,
+          chat_message_id: chat_message_id,
+          game_name_id: game_name_id,
+          comment_id: comment_id,
+          reply_id: reply_id,
+          sponsor_id: sponsor_id,
+          type: type
+        })
 
         return true
       } catch (error) {
@@ -297,7 +295,7 @@ class ApiController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     }
@@ -310,16 +308,16 @@ class ApiController {
 
         let delete_aws_entry = await Database.table('aws_keys')
           .where({
-            id: request.input('aws_key_id'),
+            id: request.input('aws_key_id')
           })
           .delete()
 
         s3.deleteObject(
           {
             Bucket: S3_BUCKET_DELETE,
-            Key: key,
+            Key: key
           },
-          function(err, data) {
+          function (err, data) {
             if (data) {
               return response.status(200).json({ success: true })
             } else {
@@ -333,7 +331,7 @@ class ApiController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     }
@@ -344,9 +342,9 @@ class ApiController {
       s3.deleteObject(
         {
           Bucket: S3_BUCKET_DELETE,
-          Key: key,
+          Key: key
         },
-        function(err, data) {
+        function (err, data) {
           if (data) {
             resolve()
           } else {
@@ -362,9 +360,9 @@ class ApiController {
       s3.deleteObject(
         {
           Bucket: S3_BUCKET_DELETE,
-          Key: request.params.key,
+          Key: request.params.key
         },
-        function(err, data) {
+        function (err, data) {
           if (data) {
             return response ? response.status(200).json({ success: true }) : Promise.resolve({ success: true })
           }
@@ -382,9 +380,9 @@ class ApiController {
         s3.deleteObject(
           {
             Bucket: S3_BUCKET_DELETE,
-            Key: files[findex].key,
+            Key: files[findex].key
           },
-          function(err, data) {
+          function (err, data) {
             if (!data) {
               bFailed = true
             }
@@ -463,9 +461,9 @@ class ApiController {
           s3.deleteObject(
             {
               Bucket: S3_BUCKET_DELETE,
-              Key: get_Alicia[i].aws_key,
+              Key: get_Alicia[i].aws_key
             },
-            function(err, data) {
+            function (err, data) {
               if (data) {
                 console.log('done')
               } else {
@@ -476,7 +474,7 @@ class ApiController {
 
           let delete_aws_entry = await Database.table('aws_keys')
             .where({
-              id: get_Alicia[i].id,
+              id: get_Alicia[i].id
             })
             .delete()
         }
@@ -486,7 +484,7 @@ class ApiController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     }
@@ -497,8 +495,8 @@ class ApiController {
       const clamscan = await new NodeClam().init({
         clamdscan: {
           host: Env.get('CLAMAV_HOST'),
-          port: Env.get('CLAMAV_PORT'),
-        },
+          port: Env.get('CLAMAV_PORT')
+        }
       })
       const { is_infected } = await clamscan.is_infected(file)
       return is_infected

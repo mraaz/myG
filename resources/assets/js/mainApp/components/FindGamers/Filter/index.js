@@ -386,7 +386,7 @@ export default class Filter extends React.Component {
 
   render() {
     return(
-      <div id="find-gamers-filter">
+      <div id="find-gamers-filter" style={this.props.guest ? { margin: "24px 8px" } : {}}>
         <div className="label">Filter by</div>
         <div className="filter-container">
           {this.renderFilters()}

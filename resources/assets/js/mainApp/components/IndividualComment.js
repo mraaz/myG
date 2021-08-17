@@ -13,6 +13,8 @@ import SweetAlert from './common/MyGSweetAlert'
 import { Upload_to_S3, Remove_file } from './AWS_utilities'
 const buckectBaseUrl = 'https://myG.gg/platform_images/'
 
+import { Toast_style } from './Utility_Function'
+import { toast } from 'react-toastify'
 import { logToElasticsearch } from '../../integration/http/logger'
 import ReportPost from './common/ReportPost'
 
@@ -50,6 +52,8 @@ export default class IndividualComment extends Component {
       aws_key_id: [],
       hideReplies: false,
       replyShowCount: 1,
+      pinned_status: false,
+      show_reply_button: true,
       content: null,
       commentEdited: EditorState.createEmpty(),
       commentEditedHashtags: [],
@@ -78,40 +82,49 @@ export default class IndividualComment extends Component {
 
     let content = convertToEditorState(this.props.comment.content)
     this.setState({
-      content
+      content: this.props.comment.content,
+      pinned_status: this.props.comment.pinned ? true : false
     })
 
-    var comment_timestamp = moment(this.props.comment.updated_at, 'YYYY-MM-DD HH:mm:ssZ')
+    let comment_timestamp = moment(this.props.comment.updated_at, 'YYYY-MM-DD HH:mm:ssZ')
     this.setState({ comment_time: comment_timestamp.local().fromNow() })
 
     const self = this
     let comment = this.props
 
+    if (this.props.post) {
+      this.setState({
+        show_reply_button: this.props.post.allow_comments == 1 ? true : false
+      })
+    }
+
     const getCommentReplies = async function () {
       try {
         const myCommentReplies = await axios.get(`/api/replies/${comment.comment.id}`)
 
-        self.setState({
-          myReplies: myCommentReplies.data.this_comments_replies
-        })
+        if (myCommentReplies.data != '') {
+          self.setState({
+            myReplies: myCommentReplies.data.this_comments_replies
+          })
 
-        if (myCommentReplies.data.no_of_replies[0].no_of_replies != 0) {
-          self.setState({
-            show_reply: true,
-            reply_total: myCommentReplies.data.no_of_replies[0].no_of_replies
-          })
-        }
+          if (myCommentReplies.data.no_of_replies[0].no_of_replies != 0) {
+            self.setState({
+              show_reply: true,
+              reply_total: myCommentReplies.data.no_of_replies[0].no_of_replies
+            })
+          }
 
-        if (myCommentReplies.data.do_I_like_this_comment[0].myOpinion != 0) {
-          self.setState({
-            like: true
-          })
-        }
-        if (myCommentReplies.data.no_of_likes[0].no_of_likes != 0) {
-          self.setState({
-            show_like: true,
-            total: myCommentReplies.data.no_of_likes[0].no_of_likes
-          })
+          if (myCommentReplies.data.do_I_like_this_comment && myCommentReplies.data.do_I_like_this_comment[0].myOpinion != 0) {
+            self.setState({
+              like: true
+            })
+          }
+          if (myCommentReplies.data.no_of_likes && myCommentReplies.data.no_of_likes[0].no_of_likes != 0) {
+            self.setState({
+              show_like: true,
+              total: myCommentReplies.data.no_of_likes[0].no_of_likes
+            })
+          }
         }
       } catch (error) {
         logToElasticsearch('error', 'IndividualComment', 'Failed getCommentReplies:' + ' ' + error)
@@ -179,7 +192,6 @@ export default class IndividualComment extends Component {
       total: this.state.total - 1
     })
 
-    let { comment } = this.props
     try {
       axios.get(`/api/likes/delete/comment/${comment_id}`)
     } catch (error) {
@@ -411,11 +423,29 @@ export default class IndividualComment extends Component {
     }
   }
 
+  clickedPin_status = async (_status) => {
+    //_status = True for Pinned
+    let comment_id = this.props.comment.id
+
+    try {
+      await axios.get(`/api/comments/pin_status/${comment_id}/${_status}`)
+      if (_status) toast.success(<Toast_style text={'Woot!, Comment pinned!'} />)
+      else toast.success(<Toast_style text={'Roger that!, Comment Unpinned!'} />)
+
+      this.setState({
+        dropdown: false,
+        pinned_status: _status
+      })
+    } catch (error) {
+      logToElasticsearch('error', 'IndividualComment', 'Failed clickedPin:' + ' ' + error)
+    }
+  }
+
   delete_exp = () => {
     let comment_id = this.props.comment.id
 
     try {
-      const myComment_delete = axios.delete(`/api/comments/delete/${comment_id}`)
+      axios.delete(`/api/comments/delete/${comment_id}`)
       this.setState({
         comment_deleted: true
       })
@@ -506,7 +536,7 @@ export default class IndividualComment extends Component {
   }
 
   clearPreviewImage = () => {
-    const delete_file = Remove_file(this.state.file_keys, this.state.aws_key_id[0])
+    Remove_file(this.state.file_keys, this.state.aws_key_id[0])
     // const deleteKeys = axios.post('/api/deleteFile', {
     //   aws_key_id: this.state.aws_key_id[0],
     //   key: this.state.file_keys,
@@ -524,10 +554,16 @@ export default class IndividualComment extends Component {
   }
 
   render() {
-    let { comment, user } = this.props
+    let { comment, user, post } = this.props
     let { profile_img = 'https://myG.gg/default_user/new-user-profile-picture.png', media_url = '' } = comment
     const { myReplies = [], show_more_replies = true, hideReplies = false } = this.state
     const media_urls = media_url && media_url.length > 0 ? JSON.parse(media_url) : ''
+    const comment_pinned = this.state.pinned_status
+
+    let isDisabled = user && user.id ? false : true
+    if (!isDisabled) {
+      if (!post.allow_comments) isDisabled = true
+    }
 
     if (this.state.comment_deleted != true) {
       return (
@@ -535,8 +571,15 @@ export default class IndividualComment extends Component {
           {this.state.alert}
           <div className='comment__section'>
             <div className='comment-info'>
-              <Link to={`/profile/${comment.alias}`}>{`@${comment.alias}`}</Link>
-              {'  '}
+              <div className='comment-pin-group'>
+                <Link to={`/profile/${comment.alias}`}>{`@${comment.alias}`}</Link>
+                {comment_pinned && (
+                  <div className='comment-pin'>
+                    <img className='photo' src='https://myg.gg/platform_images/Profile/thumbtack.png' />
+                  </div>
+                )}
+                {'  '}
+              </div>
               {!this.state.show_edit_comment && this.state.content && (
                 <div className='comment-content'>
                   <DraftComposer
@@ -557,22 +600,34 @@ export default class IndividualComment extends Component {
             <div className='comment__shape'></div>
             {/* comment option start  */}
             <div className='gamePostExtraOption'>
-              <i className='fas fa-ellipsis-h' onClick={this.clickedDropdown}>
-                ...
-              </i>
+              {user && user.id && (
+                <i className='fas fa-ellipsis-h' onClick={this.clickedDropdown}>
+                  ...
+                </i>
+              )}
               <div className={`dropdown ${this.state.dropdown ? 'active' : ''}`}>
                 <nav>
-                  {user.id != comment.user_id && (
+                  {user && user.id != comment.user_id && (
                     <div className='option' onClick={(e) => this.showReportAlert(comment.id)}>
                       Report
                     </div>
                   )}
-                  {user.id == comment.user_id && (
+                  {user && user.id == comment.user_id && (
                     <div className='edit' onClick={this.clickedEdit}>
                       Edit &nbsp;
                     </div>
                   )}
-                  {user.id == comment.user_id && (
+                  {user && user.id == comment.post_user_id && !comment_pinned && (
+                    <div className='edit' onClick={(e) => this.clickedPin_status(true)}>
+                      Pin &nbsp;
+                    </div>
+                  )}
+                  {user && user.id == comment.post_user_id && comment_pinned && (
+                    <div className='edit' onClick={(e) => this.clickedPin_status(false)}>
+                      Unpin &nbsp;
+                    </div>
+                  )}
+                  {user && user.id == comment.user_id && (
                     <div className='delete' onClick={() => this.showAlert()}>
                       Delete
                     </div>
@@ -618,9 +673,11 @@ export default class IndividualComment extends Component {
           </div>
           {/* profile section end  */}
           <div className='reply__comment_section'>
-            <div className='comment-panel-reply' onClick={this.toggleReply}>
-              Reply
-            </div>
+            {this.state.show_reply_button && (
+              <div className='comment-panel-reply' onClick={this.toggleReply}>
+                Reply
+              </div>
+            )}
             {this.state.like && (
               <div className='comment-panel-liked' onClick={() => this.click_unlike_btn(comment.id)}>
                 Unlike
@@ -678,6 +735,7 @@ export default class IndividualComment extends Component {
                     ref={this.fileInputRef}
                     onChange={this.handleSelectFile}
                     name='insert__images'
+                    disabled={isDisabled}
                   />
                   <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Image.svg`} />
                 </div>

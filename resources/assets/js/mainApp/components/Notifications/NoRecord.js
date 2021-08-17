@@ -3,8 +3,7 @@
  * github  : https://github.com/realinit
  * Email : nitin.1992tyagi@gmail.com
  */
-import React, { Fragment, useEffect, useState } from 'react'
-import axios from 'axios'
+import React from 'react'
 import { Link } from 'react-router-dom'
 
 const NoRecordFound = (props) => {

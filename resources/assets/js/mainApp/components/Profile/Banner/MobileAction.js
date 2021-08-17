@@ -1,6 +1,4 @@
 import React, { Fragment } from 'react'
-import Uploader from '../../common/Uploader'
-import get from 'lodash.get'
 import Dossier from '../Dossier'
 import ViewFriends from '../ViewFriends'
 import { ignoreFunctions } from '../../../../common/render'

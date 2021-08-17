@@ -17,13 +17,13 @@ export class Onboarding extends React.Component {
 
   skipOnboarding = () => {
     showMessengerAlert('Mate, are you sure?', () => {
-      this.props.setOnboardingStep(5);
+      this.props.setOnboardingStep(6);
       window.router.push(`/profile/${this.props.alias}`);
     }, null, 'Make it so')
   }
 
   render() {
-    if (this.props.step >= 5) return null;
+    if (this.props.step >= 6) return null;
     return(
       <div id="onboarding">
         <OnboardingStepModal step={this.props.step} setOnboardingStep={this.props.setOnboardingStep} skipOnboarding={this.skipOnboarding}  />

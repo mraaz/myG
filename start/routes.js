@@ -69,6 +69,8 @@ Route.post('/api/post/update/:id', 'PostController.update')
 Route.get('/api/getpost/:id', 'PostController.showpost')
 Route.post('/api/post/featureToggle/', 'PostController.featureToggle')
 Route.post('/api/post/showHashTagPosts/', 'PostController.showHashTagPosts')
+Route.post('/api/post/update_allow_comments', 'PostController.update_allow_comments')
+Route.post('/api/post/guest_feed', 'PostController.guestShow')
 
 Route.post('/api/sponsoredPost/update_clicks/', 'SponsoredPostController.update_clicks')
 
@@ -93,12 +95,13 @@ Route.get('/api/users_additional_infos/', 'UsersAdditionalInfoController.process
 
 Route.post('/api/GameExperiences/commend/:game_exp_id', 'GameExperienceController.updateCommend')
 Route.get('/api/GameExperiences/exp/:id', 'GameExperienceController.myShow')
-Route.get('/api/GameExperiences/:id', 'GameExperienceController.show')
+Route.get('/api/GameExperiences/show', 'GameExperienceController.show')
 Route.post('/api/GameExperiences', 'GameExperienceController.store')
 Route.get('/api/GameExperiences/delete/:game_id', 'GameExperienceController.destroy')
 Route.post('/api/GameExperiences/:id/:game_id', 'GameExperienceController.update')
 Route.get('/api/GameExperiences/:id/:game_id', 'GameExperienceController.show_Game')
 Route.post('/api/GameExperiences/gameExpSearchResults', 'GameExperienceController.gameExpSearchResults')
+Route.get('/api/GameExperiences/showGuest/', 'GameExperienceController.showGuest')
 
 Route.get('/api/ScheduleGame/additional_game_info/:id', 'ScheduleGameController.additional_game_info')
 
@@ -168,6 +171,7 @@ Route.post('/api/comments/update/:id', 'CommentController.update')
 Route.get('/api/comments/scheduled_games/:id', 'CommentController.show_scheduled_games')
 Route.get('/api/comments/scheduled_gamesCount/:id', 'CommentController.show_scheduled_gamesCount')
 Route.get('/api/comments/get_right_card_comment_info/:id', 'CommentController.get_right_card_comment_info')
+Route.get('/api/comments/pin_status/:id/:status', 'CommentController.pin_status')
 
 Route.get('/api/archive_comments/scheduled_gamesCount/:id', 'Archive_CommentController.show_scheduled_gamesCount')
 Route.get('/api/archive_comments/scheduled_games/:id', 'Archive_CommentController.show_scheduled_games')
@@ -321,13 +325,14 @@ Route.get('/api/usergroup/current_member/:group_id', 'UsergroupController.curren
 
 Route.post('/api/followers/create', 'FollowerController.store')
 Route.delete('/api/followers/:follower_id/delete', 'FollowerController.delete')
-Route.delete('/api/followers/:follower_id/delete_group', 'FollowerController.delete_group')
+Route.delete('/api/followers/delete_group/:group_id', 'FollowerController.delete_follower_from_group')
 
 Route.get('/api/email/welcome_email', 'EmailController.welcome_email')
 
 Route.post('/api/connections/gamers_you_might_know', 'ConnectionController.gamers_you_might_know')
 Route.get('/api/connections/i_am_viewing_this_profile/:other_user_id', 'ConnectionController.have_I_viewed_this_profile')
 Route.post('/api/connections/communities_you_might_know', 'ConnectionController.communities_you_might_know')
+Route.get('/api/connections/show_whom_to_follow', 'ConnectionController.these_you_might_want_to_follow')
 
 Route.post('/api/invited_users_for_schedule_games/create', 'InvitedUsersForScheduleGameController.store')
 Route.post('/api/invited_users_for_schedule_games/invite', 'InvitedUsersForScheduleGameController.invite')
@@ -436,11 +441,15 @@ Route.post('/api/guest/privateKey/:guestId/:chatId', 'GuestController.requestGro
 Route.delete('/api/guest/privateKey/:guestId/:chatId', 'GuestController.confirmGroupPrivateKey')
 Route.post('/api/guest/lastRead/:guestId/:chatId', 'GuestController.markLastReadGuest')
 Route.get('/api/guest/game/:gameId', 'ScheduleGameController.fetchGuestGame')
+Route.get('/api/guest/profile/:alias', 'ProfileController.fetchGuestProfile')
+Route.get('/api/guest/post/:id', 'PostController.fetchGuestPost')
+Route.get('/api/guest/user_posts/:profileId/:paginateNo', 'PostController.fetchGuestPostsForUser')
+Route.get('/api/guest/community/:id', 'GroupController.fetchGuestCommunity')
 
 // Seats Available
-Route.get('/api/seats_available', 'SeatsAvailableController.fetchSeatsAvailable')
-Route.get('/api/seats_available/:code', 'SeatsAvailableController.checkExtraSeatsCode')
-Route.get('/api/seats_available_email/:email', 'SeatsAvailableController.storeSeatsAvailableEmail')
+// Route.get('/api/seats_available', 'SeatsAvailableController.fetchSeatsAvailable')
+// Route.get('/api/seats_available/:code', 'SeatsAvailableController.checkExtraSeatsCode')
+// Route.get('/api/seats_available_email/:email', 'SeatsAvailableController.storeSeatsAvailableEmail')
 
 // Profile
 Route.get('/api/profile/:alias', 'ProfileController.fetchProfileInfo')
@@ -492,6 +501,13 @@ Route.post('/api/achievements/monthly', 'AchievementsController.redeemMonthly')
 Route.post('/api/team', 'TeamController.createTeam')
 Route.get('/api/team', 'TeamController.fetchTeams')
 Route.get('/api/team/tags', 'TeamController.fetchTeamTags')
+
+// Analytics
+Route.get('/api/analytics/show', 'AnalyticsController.show')
+
+// Short Links
+Route.get('/api/short_link', 'ShortLinksController.fetchLink')
+Route.post('/api/short_link', 'ShortLinksController.createShortLink')
 
 // Triggering Jobs
 Route.get('/api/schedule/:job', 'SchedulerController.triggerJob')

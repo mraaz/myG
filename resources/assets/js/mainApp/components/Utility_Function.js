@@ -301,3 +301,22 @@ export function Convert_to_comma_delimited_value(array_to_convert) {
 export async function Update_ip_settings() {
   axios.get('/api/users_additional_infos/')
 }
+
+//returns True if mobile
+const detectMob = () => {
+  return window.innerWidth <= 480
+}
+
+export async function mobile_Share(value) {
+  if (detectMob()) {
+    navigator
+      .share({
+        title: "myG - Gamer's platform",
+        text: 'myG share link',
+        url: value
+      })
+      .catch((error) => {
+        logToElasticsearch('error', 'Utility_Function', 'Failed mobile_Share:' + ' ' + error)
+      })
+  }
+}

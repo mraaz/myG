@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment } from 'react'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
 import Select from 'react-select'
@@ -27,12 +27,11 @@ const MobileScheduledGames = (props) => {
     showRightSideInfo,
     commentData,
     showAllComment,
-    showPrefilledFilter = false,
     prefilledFilter,
     handleChangeFilter,
     myGamesMenu = false,
     singleScheduleGamesPayload = {},
-    updateSingleScheduleGamesPayload,
+    updateSingleScheduleGamesPayload
   } = props
 
   const dispatch = useDispatch()
@@ -82,7 +81,7 @@ const MobileScheduledGames = (props) => {
     additional_submit_info_fields = [],
     myStatus = 0,
     latestScheduledGames = [],
-    getAllGamers = [],
+    getAllGamers = []
   } = combineGameData
   const [firstGame = {}] = latestScheduledGames
   const gameData = { ...additional_game_info, ...selectedGame, ...firstGame }
@@ -98,7 +97,7 @@ const MobileScheduledGames = (props) => {
     id = '',
     game_name = '',
     experience = '',
-    tags = [],
+    tags = []
   } = gameData
   const { no_of_gamers = 0 } = getAllGamers[0] || {}
   const { allow_comments = 0 } = additional_game_info
@@ -172,12 +171,7 @@ const MobileScheduledGames = (props) => {
           </div>
           <div className='mGameTimestamp'>
             <img src='https://myG.gg/platform_images/Dashboard/Notifications/clock.svg' />
-            <span>
-              {moment
-                .utc(start_date_time)
-                .local()
-                .format('LLL')}
-            </span>
+            <span>{moment.utc(start_date_time).local().format('LLL')}</span>
           </div>
           <div className='gameLevelWrap'>
             {experience_split.length > 0 &&
@@ -220,8 +214,12 @@ const MobileScheduledGames = (props) => {
                 }
                 return (
                   <Fragment>
-                    <div className='gameTime__label' key={`label-${index}`}>{Obj.label}</div>
-                    <div className='gameTime__value' key={`value-${index}`}>{values.split(',').join(', ')}</div>
+                    <div className='gameTime__label' key={`label-${index}`}>
+                      {Obj.label}
+                    </div>
+                    <div className='gameTime__value' key={`value-${index}`}>
+                      {values.split(',').join(', ')}
+                    </div>
                   </Fragment>
                 )
               })}
@@ -235,7 +233,8 @@ const MobileScheduledGames = (props) => {
                     <WithTooltip
                       position={{ bottom: '24px', left: '-12px' }}
                       style={{ height: '24px', display: 'inline-block', marginBottom: '5px' }}
-                      text={tag.content}>
+                      text={tag.content}
+                    >
                       <p className='singleTags' title={tag.content}>
                         {tag.content}
                       </p>
@@ -373,12 +372,7 @@ const MobileScheduledGames = (props) => {
 
                       <div className='mGameTimestamp'>
                         <img src='https://myG.gg/platform_images/Dashboard/Notifications/clock.svg' />
-                        <span>
-                          {moment
-                            .utc(game.start_date_time)
-                            .local()
-                            .format('LLL')}
-                        </span>
+                        <span>{moment.utc(game.start_date_time).local().format('LLL')}</span>
                       </div>
 
                       {game.tags && game.tags.length > 0 ? (
@@ -388,7 +382,8 @@ const MobileScheduledGames = (props) => {
                               <WithTooltip
                                 position={{ bottom: '24px', left: '-12px' }}
                                 style={{ height: '24px', display: 'inline-block' }}
-                                text={tag.content}>
+                                text={tag.content}
+                              >
                                 <p className='mGameTag'>{tag.content}</p>
                               </WithTooltip>
                             )

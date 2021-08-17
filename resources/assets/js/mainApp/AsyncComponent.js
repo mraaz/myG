@@ -80,6 +80,30 @@ const GuestGame = Loadable({
     return null
   },
 })
+const GuestProfile = Loadable({
+  loader: () => import('./components/Guest/Profile'),
+  loading: function() {
+    return null
+  },
+})
+const GuestPost = Loadable({
+  loader: () => import('./components/Guest/Post'),
+  loading: function() {
+    return null
+  },
+})
+const GuestCommunity = Loadable({
+  loader: () => import('./components/Guest/Community'),
+  loading: function() {
+    return null
+  },
+})
+const GuestFindGamers = Loadable({
+  loader: () => import('./components/Guest/FindGamers'),
+  loading: function() {
+    return null
+  },
+})
 const EncryptionParaphraseRegistration = Loadable({
   loader: () => import('./components/Messenger/EncryptionParaphraseRegistration'),
   loading: function() {
@@ -180,6 +204,10 @@ export {
   ChatUnreadMessages,
   GuestLink,
   GuestGame,
+  GuestProfile,
+  GuestPost,
+  GuestCommunity,
+  GuestFindGamers,
   EncryptionParaphraseRegistration,
   Posts,
   AddScheduleGames,

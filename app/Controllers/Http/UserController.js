@@ -1,6 +1,5 @@
 'use strict'
 
-const cryptico = require('cryptico')
 const Database = use('Database')
 const User = use('App/Models/User')
 const GameName = use('App/Models/GameName')
@@ -9,7 +8,6 @@ const AwsKeyController = use('./AwsKeyController')
 const FollowerController = use('./FollowerController')
 
 const UserStatTransactionController = use('./UserStatTransactionController')
-const UsersAdditionalInfoController = use('./UsersAdditionalInfoController')
 
 const ProfileRepository = require('../../Repositories/Profile')
 const ElasticsearchRepository = require('../../Repositories/Elasticsearch')
@@ -17,7 +15,6 @@ const ChatRepository = require('../../Repositories/Chat')
 const NotificationsRepository = require('../../Repositories/Notifications')
 const LoggingRepository = require('../../Repositories/Logging')
 const EncryptionRepository = require('../../Repositories/Encryption')
-const RedisRepository = require('../../Repositories/Redis')
 
 // const generateRandomString = (length) => {
 //   var result = ''

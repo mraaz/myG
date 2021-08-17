@@ -52,7 +52,7 @@ export default class MyPosts extends Component {
     }
     const getPosts = async () => {
       const { counter = '' } = this.state
-      const self = this
+
       try {
         // const data = await axios.get(`/api/getmypost/${counter}`)
 

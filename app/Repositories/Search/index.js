@@ -17,7 +17,8 @@ class SearchRepository {
   }
 
   buildUsersQuery = ({ input, from, size, requestingUserId }) => {
-    const must_not = [{ match: { profileId: requestingUserId } }];
+    const must_not = [];
+    if (requestingUserId) must_not.push({ match: { profileId: requestingUserId } });
     const sort = [{ level: { order: "desc" } }];
     if (!parseInt(size, 10)) size = 10;
     if (!parseInt(from, 10)) from = 0;

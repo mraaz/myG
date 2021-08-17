@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import Select from 'react-select'
 import { Redirect } from 'react-router'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
@@ -31,7 +30,7 @@ export default class IndividualNotification extends Component {
   clickedAccept = () => {
     let { notification } = this.props
     try {
-      const deleteNoti = axios.get(`/api/notifications/delete/${notification.id}`)
+      axios.get(`/api/notifications/delete/${notification.id}`)
     } catch (error) {
       logToElasticsearch('error', 'IndividualNotification', 'Failed clickedAccept_1:' + ' ' + error)
     }
@@ -39,7 +38,7 @@ export default class IndividualNotification extends Component {
     try {
       setAsFriendRedux(notification.user_id)
       GoogleAnalytics.userFriendMade(notification.user_id)
-      const createFriend = axios.post('/api/friends/create', {
+      axios.post('/api/friends/create', {
         friend_id: notification.user_id
       })
     } catch (error) {
@@ -55,7 +54,7 @@ export default class IndividualNotification extends Component {
   clickedDenied = () => {
     let { notification } = this.props
     try {
-      const deleteNoti = axios.get(`/api/notifications/delete/${notification.id}`)
+      axios.get(`/api/notifications/delete/${notification.id}`)
     } catch (error) {
       logToElasticsearch('error', 'IndividualNotification', 'Failed clickedDenied:' + ' ' + error)
     }
@@ -78,7 +77,6 @@ export default class IndividualNotification extends Component {
     const self = this
     let { notification } = this.props
     var activity_type
-    var tmpStr = ''
 
     const getMoreNoti = async function () {
       try {
@@ -255,7 +253,7 @@ export default class IndividualNotification extends Component {
               self.state.unread = true
             }
 
-            var myStartDateTime2 = moment(notification.start_date_time, 'YYYY-MM-DD HH:mm:ssZ').local()
+            const myStartDateTime2 = moment(notification.start_date_time, 'YYYY-MM-DD HH:mm:ssZ').local()
 
             self.state.notification_str =
               'Woot! A new player joined, you need to accept their invite: ' +
@@ -276,7 +274,7 @@ export default class IndividualNotification extends Component {
             )
 
             const myScheduledGame = await axios.get(`/api/ScheduleGame/${notification.schedule_games_id}`)
-            var myStartDateTime = moment(myScheduledGame.data.getOne[0].start_date_time, 'YYYY-MM-DD HH:mm:ssZ').local()
+            let myStartDateTime = moment(myScheduledGame.data.getOne[0].start_date_time, 'YYYY-MM-DD HH:mm:ssZ').local()
 
             switch (getschedulegameInfo.data.getAllNotiScheduleGamesAttendeesCount[0].no_of_my_notis) {
               case 1:

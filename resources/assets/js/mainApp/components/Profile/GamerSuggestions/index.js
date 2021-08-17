@@ -71,7 +71,7 @@ export class GamerSuggestions extends React.Component {
     return(
       <div className="hover-bar suggestion-bar">
         {!this.props.onboarding && <div className="small-button suggestion-button clickable" onClick={(event) => { event.stopPropagation(); window.router.push(`/profile/${gamer.alias}`)}}>Profile</div>}
-        {this.props.profile && !isFriend && !hasSentRequest && <div className="small-button suggestion-button clickable" onClick={(event) => { event.stopPropagation(); this.sendFriendRequest(gamer.alias, gamer.profileId)}}>Connect</div>}
+        {!isFriend && !hasSentRequest && <div className="small-button suggestion-button clickable" onClick={(event) => { event.stopPropagation(); this.sendFriendRequest(gamer.alias, gamer.profileId)}}>Connect</div>}
         {this.props.profile && !isFriend && hasSentRequest && <div className="small-button suggestion-button clickable" onClick={(event) => { event.stopPropagation(); this.cancelFriendRequest(gamer.alias, gamer.profileId)}}>Requested</div>}
         {!this.props.onboarding && this.props.profile && <div className="small-button suggestion-button clickable" onClick={(event) => { event.stopPropagation(); this.invite(gamer) }}>Invite</div>}
         {!this.props.onboarding && this.props.profile && !isFollower && <div className="small-button suggestion-button clickable" onClick={(event) => { event.stopPropagation(); this.follow(gamer.alias, gamer.profileId)}}>Follow</div>}
@@ -149,7 +149,7 @@ export class GamerSuggestions extends React.Component {
     return (
       <div className="onboarding-buttons">
         <div className="small-button clickable" onClick={(event) => { event.stopPropagation(); this.props.skipOnboarding()}}>Skip</div>
-        <div className="small-button clickable" onClick={(event) => { event.stopPropagation(); this.props.setOnboardingStep(4)}}>Next 2/2</div>
+        <div className="small-button clickable" onClick={(event) => { event.stopPropagation(); this.props.setOnboardingStep(4)}}>Next 2/3</div>
       </div>
     );
   }

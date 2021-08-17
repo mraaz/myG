@@ -1,6 +1,5 @@
 import React, { Component, Fragment } from 'react'
 import axios from 'axios'
-import InfiniteScroll from 'react-infinite-scroll-component'
 import Group_IndividualPost from './Group_IndividualPost'
 import ComposeSection from '../ComposeSection_v2'
 
@@ -17,15 +16,34 @@ export default class Posts extends Component {
       activeTab: 'All',
       fetching: false
     }
-    this.scrollRef = React.createRef()
   }
 
   componentDidMount() {
-    window.scrollTo({
-      top: 500,
-      behavior: 'smooth'
-    })
+    window.scrollTo({ top: 500, behavior: 'smooth' })
     this.fetchMoreData()
+    document.addEventListener('scroll', this.handleScroll, { passive: true })
+    document.addEventListener('wheel', this.handleScroll, { passive: true })
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('scroll', this.handleScroll, false)
+    document.removeEventListener('wheel', this.handleScroll, false)
+  }
+
+  handleScroll = () => {
+    if (!document.getElementById('posts')) return
+    const windowHeight = window.innerHeight
+    const container = document.getElementById('posts')
+    const containerHeight = container.offsetHeight
+    const containerPosition = container.getBoundingClientRect()
+    const containerOffset = containerPosition.y
+    const needsMoreData = windowHeight - (containerHeight + containerOffset) > 0
+    if (needsMoreData && this.state.moreplease && !this.state.fetching) {
+      const { counter = 1 } = this.state
+      this.setState({ counter: counter + 1 }, () => {
+        this.fetchMoreData()
+      })
+    }
   }
 
   showLatestPosts = () => {
@@ -33,7 +51,7 @@ export default class Posts extends Component {
     if (myPosts.length > 0) {
       return myPosts.map((item, index) => {
         try {
-          let media_url = item.media_url.length > 0 ? JSON.parse(item.media_url) : ''
+          item.media_url.length > 0 ? JSON.parse(item.media_url) : ''
         } catch (e) {
           item.media_url = ''
         }
@@ -51,10 +69,6 @@ export default class Posts extends Component {
   }
 
   fetchMoreData = () => {
-    if (this.state.myPosts.length > 0) {
-      window.scrollTo(0, document.documentElement.offsetHeight - 4000)
-    }
-
     const getPosts = async () => {
       try {
         const myPosts = await axios.post('/api/get_group_posts', {
@@ -79,7 +93,6 @@ export default class Posts extends Component {
       }
     }
 
-    var myCounter = this.state.counter
     this.setState(
       {
         counter: this.state.counter + 1,
@@ -116,28 +129,17 @@ export default class Posts extends Component {
         group_id: this.props.group_id,
         type: this.state.activeTab
       })
-      if (myPosts.data.groupPosts.groupPosts.length == 0) {
-        this.setState({
-          myPosts: []
-        })
-        return
-      }
+
+      this.setState({
+        myPosts: []
+      })
+
+      if (myPosts.data.groupPosts.groupPosts.length == 0) return
 
       this.setState({
         myPosts: [...myPosts.data.groupPosts.groupPosts]
       })
     })
-  }
-
-  handleScroll = (event) => {
-    const _event = event.currentTarget,
-      _current = this.scrollRef.current
-    if (_event.scrollTop + (3 / 2) * _current.offsetHeight > _event.scrollHeight && this.state.moreplease && !this.state.fetching) {
-      const { counter = 1 } = this.state
-      this.setState({ counter: counter + 1 }, () => {
-        this.fetchMoreData()
-      })
-    }
   }
 
   render() {
@@ -187,11 +189,7 @@ export default class Posts extends Component {
         <hr />
         {myPosts.length > 0 && !post_submit_loading && (
           <section id='posts' className={isFetching ? '' : `active`}>
-            <div className='GroupMember__post__list' onScroll={this.handleScroll} ref={this.scrollRef}>
-              {/* <InfiniteScroll dataLength={myPosts.length} next={this.fetchMoreData} hasMore={moreplease}> */}
-              {this.showLatestPosts()}
-              {/* </InfiniteScroll> */}
-            </div>
+            {this.showLatestPosts()}
           </section>
         )}
       </Fragment>

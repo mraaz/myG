@@ -121,13 +121,11 @@ export default class ScheduleGames extends Component {
     })
   }
   getScheduleGamesChangeCall = async (data = {}) => {
-    const { counter, scheduleGames = [] } = this.state
     const scheduleGamesRes = await getScheduleGames({ ...this.state, ...data, counter: 1, onlyTeamMatches: this.state.onlyTeamMatches })
-
     if (scheduleGamesRes && scheduleGamesRes.data && scheduleGamesRes.data.latestScheduledGames.length == 0) {
       this.setState({
         moreplease: false,
-        scheduleGames: {}
+        scheduleGames: []
       })
       return
     }
@@ -180,19 +178,17 @@ export default class ScheduleGames extends Component {
           <div className='hint'>Show only team matches</div>
           <ToggleButton
             value={this.state.onlyTeamMatches}
-            onToggle={() => this.setState(previous => ({ onlyTeamMatches: !previous.onlyTeamMatches }), this.getScheduleGamesChangeCall)}
+            onToggle={() => this.setState((previous) => ({ onlyTeamMatches: !previous.onlyTeamMatches }), this.getScheduleGamesChangeCall)}
           />
         </div>
       </FeatureEnabled>
-    );
+    )
   }
 
   render() {
     const { params = {} } = this.props.routeProps.match
     const { id = '' } = params
     const {
-      savedFilter,
-      addFilter,
       scheduleGames = [],
       show_full_games,
       singleScheduleGamesPayload,

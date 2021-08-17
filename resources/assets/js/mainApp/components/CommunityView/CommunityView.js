@@ -7,9 +7,9 @@ import GamePosts from './GamePosts'
 import CoverImage from './CoverImage'
 import Members from './Members'
 import MangeSponsors from './MangeSponsors'
+import Channel from '../Channel'
 
 import { Toast_style } from '../Utility_Function'
-const defaultSponsorImage = 'https://myG.gg/platform_images/Communities/myG_logo.jpg'
 
 const CommunityView = (props) => {
   const [communityDetails, setCommunityDetails] = useState({})
@@ -18,8 +18,6 @@ const CommunityView = (props) => {
   const [showSponsorModal, setShowSponsorModal] = useState(false)
   const [singleSponsor, setSingleSponsor] = useState({})
   const contentAreaRef = useRef()
-
-  //const [feature_on, setFeature_on] = useState(false)
 
   useEffect(() => {
     getcommunityDetails()
@@ -32,8 +30,9 @@ const CommunityView = (props) => {
     const { match } = props.routeProps
     const groupName = decodeURIComponent(match.params.name)
     const {
-      data: { getOne = {} },
+      data: { getOne = {} }
     } = await axios.get(`/api/groups/getGroupDetails/${groupName}`)
+
     if (Object.keys(getOne).length == 0) {
       toast.error(<Toast_style text={`Sorry mate, can't find that`} />)
       props.routeProps.history.push('/?at=communities')
@@ -62,7 +61,7 @@ const CommunityView = (props) => {
       const { match } = props.routeProps
       const groupName = decodeURIComponent(match.params.name)
       const {
-        data: { getOne = {} },
+        data: { getOne = {} }
       } = await axios.get(`/api/groups/getGroupDetails/${groupName}`)
 
       if (Object.keys(getOne).length == 0) {
@@ -75,25 +74,19 @@ const CommunityView = (props) => {
     setSingleSponsor({})
     setShowSponsorModal(false)
   }
-  const addDefaultSrc = (ev) => {
-    ev.target.src = 'https://myG.gg/platform_images/Communities/myG_logo.jpg'
-  }
 
   const handleDeleteSponsor = async (id, index) => {
     await axios.delete(`/api/sponsor/delete/${id}`)
-    // let tmpSponsors = communityDetails.sponsors
-    // delete tmpSponsors[index]
-    //tmpSponsors[index].media_url = 'https://myG.gg/platform_images/Communities/myG_logo.jpg'
-    //setCommunityDetails({ sponsors: tmpSponsors })
     hideSponsorModal(true)
-    // getcommunityDetails()
     toast.success(<Toast_style text={'Yup, yup, yup... deleted successfully!'} />)
   }
 
   const renderSponsors = (Sponsors = []) => {
-    if (props.level < 15) return <p className='locked-sponsors'>Community Sponsors are unlocked at Lvl. 15</p>
-    if (props.level < 25) Sponsors = Sponsors.slice ? Sponsors.slice(0, 1) : []
     const { current_user_permission } = communityDetails
+
+    if ([0, 1].includes(current_user_permission) && props.level < 15)
+      return <p className='locked-sponsors'>Community Sponsors are unlocked at Lvl. 15</p>
+    if (props.level < 25) Sponsors = Sponsors.slice ? Sponsors.slice(0, 1) : []
     return (
       <div className='Sponsors__container'>
         {[0, 1].includes(current_user_permission) && (
@@ -114,7 +107,8 @@ const CommunityView = (props) => {
                   onClick={() => {
                     if (!hasSponsor) return
                     window.open(sponsorLink, '_blank')
-                  }}>
+                  }}
+                >
                   <img src={Sponsor.media_url} style={{ width: '100%', height: '100%' }} />
                 </div>
                 {/* {[0, 1].includes(current_user_permission) && (
@@ -149,7 +143,11 @@ const CommunityView = (props) => {
       {renderSponsors(communityDetails.sponsors)}
       {showSponsorModal && <MangeSponsors sponsors={singleSponsor} handleModalStatus={hideSponsorModal} group_id={communityDetails.id} />}
       {communityDetails.id && (
-        <GamePosts {...props} group_id={communityDetails.id} current_user_permission={communityDetails.current_user_permission} />
+        <React.Fragment>
+          <Channel community title={communityDetails.name} channelId={`community-${communityDetails.id}`} />
+          <div style={{ margin: 32 }} />
+          <GamePosts {...props} group_id={communityDetails.id} current_user_permission={communityDetails.current_user_permission} />
+        </React.Fragment>
       )}
       {modalStatus == true ? (
         <Members
@@ -173,7 +171,7 @@ const CommunityView = (props) => {
 
 function mapStateToProps(state) {
   return {
-    level: (state.user.userTransactionStates || {}).user_level,
+    level: (state.user.userTransactionStates || {}).user_level
   }
 }
 

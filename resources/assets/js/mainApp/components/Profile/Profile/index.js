@@ -10,6 +10,7 @@ import ProfileInfo from '../Info';
 import Sponsors from '../Sponsors';
 import GameExperiences from '../GameExperiences';
 import MobileGameExperiences from '../GameExperiences/mobile';
+import OnboardingSuggestions from '../OnboardingSuggestions';
 import GamerSuggestions from '../GamerSuggestions';
 import MobileGamerSuggestions from '../GamerSuggestions/Mobile';
 import MyPosts from '../../MyPosts'
@@ -70,7 +71,7 @@ export class Profile extends React.Component {
     if (this.props.step === 3) {
       return(
         <div id="profile" ref={this.contentAreaRef}>
-          <GamerSuggestions
+          <OnboardingSuggestions
             onboarding={this.props.onboarding}
             noTitle profile={this.props.profile}
             sendFriendRequest={this.props.sendFriendRequest}

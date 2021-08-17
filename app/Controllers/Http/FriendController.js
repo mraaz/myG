@@ -15,20 +15,20 @@ class FriendController {
   async store({ auth, request, response }) {
     if (auth.user) {
       try {
-        const addFriend = await Friends.create({
+        await Friends.create({
           friend_id: request.input('friend_id'),
-          user_id: auth.user.id,
+          user_id: auth.user.id
         })
-        const addFriendViceVersa = await Friends.create({
+        await Friends.create({
           user_id: request.input('friend_id'),
-          friend_id: auth.user.id,
+          friend_id: auth.user.id
         })
 
-        const deleteRequest = await Database.table('notifications')
+        await Database.table('notifications')
           .where({
             user_id: request.input('friend_id'),
             other_user_id: auth.user.id,
-            activity_type: 1,
+            activity_type: 1
           })
           .delete()
 
@@ -39,22 +39,25 @@ class FriendController {
         const notifications = await NotificationsRepository.count({ auth: { user: { id: userId } }, request: null })
         await ChatRepository.publishNotifications({ userId, notifications })
 
-        let myFollowerController = new FollowerController()
+        const myFollowerController = new FollowerController()
         myFollowerController.store2({ auth }, request.input('friend_id'), auth.user.id)
         myFollowerController.store2({ auth }, auth.user.id, request.input('friend_id'))
 
-        let userStatController = new UserStatTransactionController()
+        const userStatController = new UserStatTransactionController()
         userStatController.update_total_number_of(auth.user.id, 'total_number_of_friends')
         userStatController.update_total_number_of(request.input('friend_id'), 'total_number_of_friends')
 
         return 'Saved item'
       } catch (error) {
+        if (error.code == 'ER_DUP_ENTRY') {
+          return
+        }
         LoggingRepository.log({
           environment: process.env.NODE_ENV,
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -74,7 +77,7 @@ class FriendController {
 
       return {
         showallMyFriends: showallMyFriends,
-        myFriendsLength: showCountallMyFriends,
+        myFriendsLength: showCountallMyFriends
       }
     } catch (error) {
       LoggingRepository.log({
@@ -82,7 +85,7 @@ class FriendController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }

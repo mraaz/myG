@@ -147,6 +147,78 @@ class ProfileRepository {
     }
   }
 
+  async fetchGuestProfile({ alias }) {
+    const profile = await this.fetchProfileByAlias({ alias });
+    const profileId = profile.id;
+    const firstName = await EncryptionRepository.decryptField(profile.first_name);
+    const lastName = await EncryptionRepository.decryptField(profile.last_name);
+    const email = await EncryptionRepository.decryptField(profile.email);
+    const image = profile.profile_img;
+    const background = profile.profile_bg;
+    const team = profile.team;
+    const regional = await EncryptionRepository.decryptField(profile.regional);
+    const country = await EncryptionRepository.decryptField(profile.country);
+    const relationship = profile.relationship_status;
+    const status = profile.status;
+    const level = profile.level;
+    const twitch = profile.twitch;
+    const discord = profile.discord;
+    const steam = profile.steam;
+    const youtube = profile.youtube;
+    const facebook = profile.facebook;
+    const underage = profile.underage;
+    const hasMic = profile.has_mic;
+    const visibilityName = profile.name_visibility;
+    const visibilityEmail = profile.email_visibility;
+    const visibilityCountry = profile.country_visibility;
+    const lookingForWork = profile.looking_for_work;
+    const experience = profile.experience_points;
+    const [
+      languages,
+      mostPlayedGames,
+      gameExperiences,
+      gameBackground,
+    ] = await Promise.all([
+      this.fetchLanguages({ profileId }),
+      this.fetchMostPlayedGames({ profileId }),
+      this.fetchGameExperiences({ profileId }),
+      this.fetchGameBackground({ profileId }),
+    ]);
+    this.insertBackgroundIntoExperiences({ gameExperiences, gameBackground });
+    const profileSchema = new ProfileSchema({
+      profileId,
+      alias: alias || profile.alias,
+      firstName: visibilityName === 'public' ? firstName : '',
+      lastName: visibilityName === 'public' ? lastName : '',
+      email: visibilityEmail === 'public' ? email : '',
+      image,
+      background,
+      languages,
+      team,
+      country: visibilityCountry === 'public' ? regional ? regional + ',' + country : country : '',
+      relationship,
+      status,
+      level,
+      experience,
+      twitch,
+      discord,
+      steam,
+      youtube,
+      facebook,
+      underage,
+      hasMic,
+      visibilityName,
+      visibilityEmail,
+      visibilityCountry,
+      lookingForWork,
+      mostPlayedGames,
+      gameExperiences,
+    });
+    return {
+      profile: profileSchema,
+    }
+  }
+
   async fetchProfileById({ id }) {
     const response = await User.query().where('id', id).fetch();
     const profile = response && response.toJSON()[0];

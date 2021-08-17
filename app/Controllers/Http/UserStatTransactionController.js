@@ -11,7 +11,7 @@ const RedisRepository = require('../../Repositories/Redis')
 const NatsChatRepository = require('../../Repositories/NatsChat')
 const WebsocketChatRepository = require('../../Repositories/WebsocketChat')
 
-const GREAT_COMMUNITY_SIZE = 100
+//const GREAT_COMMUNITY_SIZE = 100
 const CUT_OFF_FOR_ATTENDEES_FOR_GAME = 1 //2 OR MORE
 const CUT_OFF_FOR_ATTENDEES_FOR_GREAT_GAME = 4 //5 OR MORE
 
@@ -137,13 +137,13 @@ class UserStatTransactionController {
       const maxLevel = {
         user_level: 25,
         user_experience: 438739,
-        start_of_level_xp: 438739,
+        start_of_level_xp: 438739
       }
 
       const currentLevel = {
         user_level: getGamerLevels.level,
         user_experience: getGamerLevels.experience_points,
-        start_of_level_xp: start_of_level_xp,
+        start_of_level_xp: start_of_level_xp
       }
 
       const level = process.env.MOCK_MAX_LEVEL == 'true' ? maxLevel : currentLevel
@@ -178,7 +178,7 @@ class UserStatTransactionController {
         last_month_commendations: last_months_total_number_of_commendations,
         user_xp_negative_balance: getGamerLevels.xp_negative_balance,
         level_max_points: getNextLevel.max_points,
-        ...level,
+        ...level
       }
     } else {
       return 'You are not Logged In!'
@@ -186,9 +186,7 @@ class UserStatTransactionController {
   }
 
   async fetchUserId({ alias }) {
-    const response = await User.query()
-      .where('alias', alias)
-      .fetch()
+    const response = await User.query().where('alias', alias).fetch()
     const profile = response && response.toJSON()[0]
     return profile && profile.id
   }
@@ -196,17 +194,12 @@ class UserStatTransactionController {
   async update_total_number_of(my_user_id, criteria) {
     let value_to_be_updated = 0,
       great_value_to_be_updated = 0
-    let mysql_friendly_date = new Date()
-      .toISOString()
-      .slice(0, 19)
-      .replace('T', ' ')
+    let mysql_friendly_date = new Date().toISOString().slice(0, 19).replace('T', ' ')
 
     try {
       switch (criteria) {
         case 'total_number_of_friends':
-          const getCount_total_number_of_friends = await Database.from('friends')
-            .where({ user_id: my_user_id })
-            .count('id as total_count')
+          const getCount_total_number_of_friends = await Database.from('friends').where({ user_id: my_user_id }).count('id as total_count')
 
           if (getCount_total_number_of_friends.length != 0) {
             value_to_be_updated = getCount_total_number_of_friends[0].total_count
@@ -222,9 +215,9 @@ class UserStatTransactionController {
             .union([
               Database.from('groups')
                 .where({
-                  user_id: my_user_id,
+                  user_id: my_user_id
                 })
-                .count('id as total_count'),
+                .count('id as total_count')
             ])
 
           for (let i = 0; i < getCount_total_number_of_communities.length; i++) {
@@ -412,31 +405,31 @@ class UserStatTransactionController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
 
   async process_update(my_user_id, criteria, value_to_be_updated) {
+    const mysql_friendly_date = new Date().toISOString().slice(0, 19).replace('T', ' ')
+
     const getmyStats = await Database.from('user_stat_transactions')
       .innerJoin('user_stats', 'user_stats.id', 'user_stat_transactions.user_stat_id')
       .where({ user_id: my_user_id, criteria: criteria })
       .first()
 
-    const getdetails = await Database.from('user_stats')
-      .where({ criteria: criteria })
-      .first()
+    const getdetails = await Database.from('user_stats').where({ criteria: criteria }).first()
 
     if (getdetails == undefined) {
       return
     }
 
     if (getmyStats == undefined) {
-      const newStat = await UserStatTransaction.create({
+      await UserStatTransaction.create({
         user_id: my_user_id,
         user_stat_id: getdetails.id,
         values: value_to_be_updated,
-        last_month_values: '0',
+        last_month_values: '0'
       })
     } else {
       const date1 = new Date(getmyStats.last_month_updated_at)
@@ -446,19 +439,15 @@ class UserStatTransactionController {
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
 
       if (diffDays >= 30) {
-        const updated_stats = await UserStatTransaction.query()
-          .where({ user_id: my_user_id, user_stat_id: getdetails.id })
-          .update({
-            values: value_to_be_updated,
-            last_month_values: getmyStats.values,
-            last_month_updated_at: mysql_friendly_date,
-          })
+        await UserStatTransaction.query().where({ user_id: my_user_id, user_stat_id: getdetails.id }).update({
+          values: value_to_be_updated,
+          last_month_values: getmyStats.values,
+          last_month_updated_at: mysql_friendly_date
+        })
       } else {
-        const updated_stats = await UserStatTransaction.query()
-          .where({ user_id: my_user_id, user_stat_id: getdetails.id })
-          .update({
-            values: value_to_be_updated,
-          })
+        await UserStatTransaction.query().where({ user_id: my_user_id, user_stat_id: getdetails.id }).update({
+          values: value_to_be_updated
+        })
       }
     }
     this.reCalculate_xp(my_user_id)
@@ -474,9 +463,7 @@ class UserStatTransactionController {
       xp += parseInt(getmyStats[i].values) * getmyStats[i].xp_per_tick
     }
 
-    const achievementsResponse = await UserAchievements.query()
-      .where('user_id', my_user_id)
-      .fetch()
+    const achievementsResponse = await UserAchievements.query().where('user_id', my_user_id).fetch()
     const achievements = (achievementsResponse && achievementsResponse.toJSON()) || []
     const achievementsXp = achievements.map((achievement) => achievement.experience).reduce((a, b) => a + b, 0)
     xp += achievementsXp
@@ -538,11 +525,8 @@ class UserStatTransactionController {
       }
     }
 
-    const currentStats = await Database.from('users')
-      .where({ id: my_user_id })
-      .select('alias', 'level', 'status')
-      .first()
-    const alias = currentStats.alias;
+    const currentStats = await Database.from('users').where({ id: my_user_id }).select('alias', 'level', 'status').first()
+    const alias = currentStats.alias
     const currentLevel = currentStats.level
     const currentStatus = currentStats.status
     const nextLevel = getGamerLevels.level
@@ -551,11 +535,9 @@ class UserStatTransactionController {
 
     const updates = { level: getGamerLevels.level, experience_points: xp, xp_negative_balance: xp_neg_balance }
     if (leveled_up_offline) updates.leveled_up_offline = true
-    if (levelup_up_online) await ChatRepository.publishOnMainChannel(`${alias} is crushing it!! ${alias} leveled up`);
+    if (levelup_up_online) await ChatRepository.publishOnMainChannel(`${alias} is crushing it!! ${alias} leveled up`)
 
-    await User.query()
-      .where({ id: my_user_id })
-      .update(updates)
+    await User.query().where({ id: my_user_id }).update(updates)
 
     await this.publishStats(my_user_id)
   }
@@ -571,23 +553,21 @@ class UserStatTransactionController {
 
   async checkedLevel({ auth }) {
     if (!auth.user.id) return 'You are not logged in!'
-    await User.query()
-      .where({ id: auth.user.id })
-      .update({ leveled_up_offline: false })
+    await User.query().where({ id: auth.user.id }).update({ leveled_up_offline: false })
   }
 
   async getMostImprovedGamer() {
-    const redisMip = await RedisRepository.getMip();
-    if (redisMip) return { alias: redisMip };
-    const mostImprovedGamer = await Database.from('most_improved_gamers').orderBy('created_at', 'desc').limit(1);
-    const alias = (mostImprovedGamer && mostImprovedGamer[0] && mostImprovedGamer[0].alias) || '';
-    await RedisRepository.setMip(alias);
-    return { alias };
+    const redisMip = await RedisRepository.getMip()
+    if (redisMip) return { alias: redisMip }
+    const mostImprovedGamer = await Database.from('most_improved_gamers').orderBy('created_at', 'desc').limit(1)
+    const alias = (mostImprovedGamer && mostImprovedGamer[0] && mostImprovedGamer[0].alias) || ''
+    await RedisRepository.setMip(alias)
+    return { alias }
   }
 
   /**
    * Paginates all users, 10 users at a time.
-   * For every user: 
+   * For every user:
    *   Select the current experience and the experience they had last week.
    *   Calculate the delta, a.k.a. the amount of experience they gained since last week.
    *   Insert the delta back into the last week's experience table.
@@ -595,31 +575,37 @@ class UserStatTransactionController {
    * Insert that user's alias into the mip table, and sets it in Redis.
    */
   async setMostImprovedGamer() {
-    const dates = { created_at: new Date(), updated_at: new Date() };
-    const usersCountResponse = await Database.from('users').count();
-    const usersCount = usersCountResponse[0]['count(*)'];
-    let processedUsers = 0;
-    while(processedUsers < usersCount) {
-      console.log(`MIP: Processing users ${processedUsers} - ${processedUsers + 10} of ${usersCount}`);
-      const page = (processedUsers / 10) + 1;
-      const users = await Database.from('users').select(['id', 'experience_points']).paginate(page, 10);
-      processedUsers += users.data.length;
+    const dates = { created_at: new Date(), updated_at: new Date() }
+    const usersCountResponse = await Database.from('users').count()
+    const usersCount = usersCountResponse[0]['count(*)']
+    let processedUsers = 0
+    while (processedUsers < usersCount) {
+      console.log(`MIP: Processing users ${processedUsers} - ${processedUsers + 10} of ${usersCount}`)
+      const page = processedUsers / 10 + 1
+      const users = await Database.from('users').select(['id', 'experience_points']).paginate(page, 10)
+      processedUsers += users.data.length
       for (const user of users.data) {
-        const lastWeekXpEntry = await Database.from('last_week_experiences').where('user_id', user.id).select(['experience_points']);
-        const hasLastWeekXpEntry = lastWeekXpEntry && lastWeekXpEntry[0];
-        const lastWeekXp = hasLastWeekXpEntry ? (parseInt(lastWeekXpEntry[0].experience_points) || 0) : 0;
-        const gained_experience = (parseInt(user.experience_points) || 0) - lastWeekXp;
-        if (hasLastWeekXpEntry) await Database.from('last_week_experiences').where('user_id', user.id).update({ experience_points: user.experience_points, gained_experience: gained_experience });
-        else await Database.insert({ user_id: user.id, experience_points: user.experience_points, gained_experience, ...dates }).into('last_week_experiences');
+        const lastWeekXpEntry = await Database.from('last_week_experiences').where('user_id', user.id).select(['experience_points'])
+        const hasLastWeekXpEntry = lastWeekXpEntry && lastWeekXpEntry[0]
+        const lastWeekXp = hasLastWeekXpEntry ? parseInt(lastWeekXpEntry[0].experience_points) || 0 : 0
+        const gained_experience = (parseInt(user.experience_points) || 0) - lastWeekXp
+        if (hasLastWeekXpEntry)
+          await Database.from('last_week_experiences')
+            .where('user_id', user.id)
+            .update({ experience_points: user.experience_points, gained_experience: gained_experience })
+        else
+          await Database.insert({ user_id: user.id, experience_points: user.experience_points, gained_experience, ...dates }).into(
+            'last_week_experiences'
+          )
       }
     }
-    const mostImprovedGamer = await Database.from('last_week_experiences').orderBy('gained_experience', 'desc').limit(1);
-    const aliasResponse = await Database.from('users').where('id', mostImprovedGamer[0].user_id).select(['alias']);
-    const alias = aliasResponse[0].alias;
-    const xpDelta = mostImprovedGamer[0].gained_experience;
-    console.log(`MIP: Setting ${alias} as MIP, gained ${xpDelta} experience`);
-    await RedisRepository.setMip(alias);
-    await Database.insert({ alias, ...dates }).into('most_improved_gamers');
+    const mostImprovedGamer = await Database.from('last_week_experiences').orderBy('gained_experience', 'desc').limit(1)
+    const aliasResponse = await Database.from('users').where('id', mostImprovedGamer[0].user_id).select(['alias'])
+    const alias = aliasResponse[0].alias
+    const xpDelta = mostImprovedGamer[0].gained_experience
+    console.log(`MIP: Setting ${alias} as MIP, gained ${xpDelta} experience`)
+    await RedisRepository.setMip(alias)
+    await Database.insert({ alias, ...dates }).into('most_improved_gamers')
   }
 }
 

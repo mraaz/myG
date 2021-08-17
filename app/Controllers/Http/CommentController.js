@@ -9,9 +9,15 @@ const LoggingRepository = require('../../Repositories/Logging')
 const AchievementsRepository = require('../../Repositories/Achievements')
 
 class CommentController {
-  async store({ auth, request, response }) {
+  async store({ auth, request }) {
     if (auth.user) {
       try {
+        const thisPost = await Database.from('posts')
+          .where({ id: request.input('post_id') })
+          .first()
+
+        if (thisPost == undefined || thisPost.allow_comments == false) return
+
         let newComment = await Comment.create({
           content: request.input('content'),
           post_id: request.input('post_id'),
@@ -25,7 +31,7 @@ class CommentController {
         if (tmpArr != undefined && tmpArr.length > 0) {
           const apiController = new ApiController()
           for (let i = 0; i < tmpArr.length; i++) {
-            const alicia_key = await apiController.update_aws_keys_entry({ auth }, tmpArr[i], '7', newComment.id)
+            await apiController.update_aws_keys_entry({ auth }, tmpArr[i], '7', newComment.id)
           }
         }
 
@@ -74,17 +80,29 @@ class CommentController {
     }
   }
 
-  async show({ auth, request, response }) {
+  async show({ request }) {
     try {
-      const allComments = await Database.from('comments')
+      const allPinnedComments = await Database.from('comments')
         .innerJoin('users', 'users.id', 'comments.user_id')
+        .innerJoin('posts', 'posts.id', 'comments.post_id')
         .where({ post_id: request.params.id })
-        .select('*', 'comments.id', 'comments.updated_at')
-        .orderBy('comments.created_at', 'desc')
+        .where({ pinned: true })
+        .select('comments.*', 'users.*', 'posts.user_id as post_user_id', 'comments.id', 'comments.updated_at')
+        .orderBy('comments.pinned_date', 'asc')
+        .limit(50)
 
-      return {
-        allComments
-      }
+      const allNonPinnedComments = await Database.from('comments')
+        .innerJoin('users', 'users.id', 'comments.user_id')
+        .innerJoin('posts', 'posts.id', 'comments.post_id')
+        .where({ post_id: request.params.id, pinned: false })
+        .select('comments.*', 'users.*', 'posts.user_id as post_user_id', 'comments.id', 'comments.updated_at')
+        .orderBy('comments.created_at', 'desc')
+        .limit(50)
+
+      //const newArr = await allPinnedComments.concat(allComments)
+      const allComments = [...allPinnedComments, ...allNonPinnedComments]
+
+      return { allComments, pinned_total: allPinnedComments.length }
     } catch (error) {
       LoggingRepository.log({
         environment: process.env.NODE_ENV,
@@ -96,7 +114,7 @@ class CommentController {
     }
   }
 
-  async comments_count({ auth, request, response }) {
+  async comments_count({ auth, request }) {
     try {
       const no_of_my_comments = await Database.from('comments')
         .where({ id: request.params.id, user_id: auth.user.id })
@@ -217,7 +235,7 @@ class CommentController {
     }
   }
 
-  async update({ auth, request, response }) {
+  async update({ auth, request }) {
     if (auth.user) {
       try {
         const security_check = await Database.from('comments').where({ id: request.params.id }).first()
@@ -226,7 +244,7 @@ class CommentController {
           return
         }
 
-        const updateComment = await Comment.query()
+        await Comment.query()
           .where({ id: request.params.id })
           .update({ content: request.input('content') })
 
@@ -258,6 +276,36 @@ class CommentController {
         context: __filename,
         message: (error && error.message) || error
       })
+    }
+  }
+
+  async pin_status({ auth, request }) {
+    if (auth.user) {
+      try {
+        const security_check = await Database.from('comments')
+          .innerJoin('posts', 'posts.id', 'comments.post_id')
+          .select('posts.user_id')
+          .where('comments.id', '=', request.params.id)
+          .first()
+
+        if (security_check == undefined || security_check.user_id != auth.user.id) {
+          return
+        }
+
+        await Comment.query()
+          .where({ id: request.params.id })
+          .update({ pinned: request.params.status == 'true' ? true : false, pinned_date: new Date() })
+
+        return 'Saved successfully'
+      } catch (error) {
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error
+        })
+      }
     }
   }
 }

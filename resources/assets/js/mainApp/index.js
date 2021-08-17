@@ -11,6 +11,7 @@ window.console = console
 import '@babel/polyfill'
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
+import { Redirect } from 'react-router'
 import { Router, Route, Switch } from 'react-router-dom'
 import { createBrowserHistory } from 'history'
 import axios from 'axios'
@@ -46,6 +47,10 @@ import {
   EncryptionParaphraseRegistration,
   GuestLink,
   GuestGame,
+  GuestProfile,
+  GuestPost,
+  GuestCommunity,
+  GuestFindGamers,
   Posts,
   AddScheduleGames,
   SinglePost,
@@ -59,13 +64,16 @@ import {
   HashTagList,
   CreateTeam,
 } from './AsyncComponent'
+import { fetchShortLink } from '../integration/http/links'
 
 class Layout extends Component {
   constructor() {
     super()
     this.state = {
       name: 'Raaz',
-      once: false
+      once: false,
+      hasLink: false,
+      link: null,
     }
   }
   componentDidMount() {
@@ -77,18 +85,27 @@ class Layout extends Component {
         const initialData = await axios.get('/api/initialApp')
 
         if (!this.state.once)
-          await axios.post('/api/userStatTransaction/login_sync', {
-            login: 'LOGIN',
-          })
-
-        this.setState({ once: true })
+          this.setState({ once: true })
 
         const loggedOut = initialData.data.userInfo == 1981;
-        const notOnLink = !window.location.href.includes('/link')
-        const notOnGame = !window.location.href.includes('/scheduledGames')
-        if (loggedOut && notOnLink && notOnGame) {
+        const guestRoutes = ['/link', '/scheduledGames', '/find-gamers/search', '/profile', '/post', '/community', '/s/'];
+        const isOnGuestRoute = guestRoutes.some((route) => window.location.href.includes(route));
+        if (loggedOut && !isOnGuestRoute) {
           window.location.href = '/logout'
         }
+
+        const shortLinkCode = window.location.href.split('/s/')[1];
+        if (shortLinkCode) {
+          this.setState({ hasLink: true });
+          const link = await fetchShortLink(shortLinkCode);
+          this.setState({ link }, () => {
+            window.location.href = (this.state.link.includes('http') ? this.state.link : `${window.location.protocol}//${this.state.link}`);
+          });
+        }
+
+        await axios.post('/api/userStatTransaction/login_sync', {
+          login: 'LOGIN',
+        })
 
         if (initialData.data.userInfo.has_additional != '1') {
           Update_ip_settings()
@@ -106,8 +123,10 @@ class Layout extends Component {
 
         this.setState({ initialData: initialData.data })
         loadUserInfoToReduxStore({ ...initialData.data.userInfo, isAdmin: initialData.data.isAdmin })
-        fetchNotifications()
-        registerAccess()
+        if (!loggedOut) {
+          fetchNotifications()
+          registerAccess()
+        }
         const needsToRedirectToProfile = ['/profile', '/profile/'].includes(window.location.pathname);
         if (needsToRedirectToProfile) window.router.push(`/profile/${initialData.data.userInfo.alias}`);
       } catch (error) {
@@ -139,6 +158,7 @@ class Layout extends Component {
 
   renderRouter = () => {
     if (!window.router) window.router = createBrowserHistory();
+    if (this.state.hasLink && !this.state.link) return null;
     return (
       <Router history={window.router}>
         <div className='app-container home-page'>
@@ -380,7 +400,7 @@ class Layout extends Component {
                   )}
                 />
 
-                <Route render={() => <h3> Oops! I couldn't find that </h3>} />
+                <Route render={() => {this.state.hasLink ? null : <h3> Oops! I couldn't find that </h3>}} />
               </Switch>
             </section>
             <MessengerLoader
@@ -431,17 +451,54 @@ class Layout extends Component {
     return <GuestGame uuid={uuid} />
   }
 
+  renderGuestProfile = () => {
+    const alias = location.pathname.split('/profile/')[1];
+    return <GuestProfile alias={alias} />;
+  }
+
+  renderGuestPost = () => {
+    const id = location.pathname.split('/post/')[1];
+    return <GuestPost id={id} />;
+  }
+
+  renderGuestCommunity = () => {
+    const id = location.pathname.split('/community/')[1];
+    return <GuestCommunity id={id} />;
+  }
+
+  renderGuestFindGamers = () => {
+    return <GuestFindGamers />;
+  }
+
+  renderGuestRouter = () => {
+    const guestLink = window.location.href.includes('/link');
+    const guestGame = window.location.href.includes('/scheduledGames');
+    const guestProfile = window.location.href.includes('/profile');
+    const guestPost = window.location.href.includes('/post');
+    const guestCommunity = window.location.href.includes('/community');
+    const guestFindGamers = window.location.href.includes('/find-gamers/search');
+    if (this.state.hasLink && !this.state.link) return null;
+    return (
+      <Router history={window.router}>
+        {guestLink && this.renderGuestLink()}
+        {guestGame && this.renderGuestGame()}
+        {guestProfile && this.renderGuestProfile()}
+        {guestPost && this.renderGuestPost()}
+        {guestCommunity && this.renderGuestCommunity()}
+        {guestFindGamers && this.renderGuestFindGamers()}
+      </Router>
+    );
+  }
+
   render() {
-    const guestLink = this.state.initialData && window.location.href.includes('/link') && this.state.initialData.userInfo === 1981
-    const guestGame = this.state.initialData && window.location.href.includes('/scheduledGames') && this.state.initialData.userInfo === 1981
+    const guestRoutes = ['/link', '/scheduledGames', '/find-gamers/search', '/profile', '/post', '/community'];
+    const isGuest = this.state.initialData && this.state.initialData.userInfo === 1981;
+    const isOnGuestRoute = isGuest && guestRoutes.some((route) => window.location.href.includes(route));
     return (
       <ErrorHandler>
         <Provider store={store}>
           <PersistGate persistor={persistor}>
             <LanguageProvider>
-              {!guestLink && !guestGame && <Onboarding />}
-              {!guestLink && !guestGame && <Bubbles />}
-              {!guestLink && !guestGame && <LevelUp />}
               <PopupAlert />
               <ToastContainer
                 autoClose={8000}
@@ -450,9 +507,11 @@ class Layout extends Component {
                 className='toast-container'
                 toastClassName='dark-toast'
               />
-              {!guestLink && !guestGame && this.renderRouter()}
-              {guestLink && this.renderGuestLink()}
-              {guestGame && this.renderGuestGame()}
+              {!isOnGuestRoute && <Onboarding />}
+              {!isOnGuestRoute && <Bubbles />}
+              {!isOnGuestRoute && <LevelUp />}
+              {!isOnGuestRoute && this.renderRouter()}
+              {isOnGuestRoute && this.renderGuestRouter()}
             </LanguageProvider>
           </PersistGate>
         </Provider>

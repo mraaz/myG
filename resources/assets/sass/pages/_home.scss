@@ -1606,6 +1606,16 @@ section#content-container {
                     }
                   }
                 }
+                .comment-pin-group {
+                  display: flex;
+                  padding-bottom: 10px;
+                  .comment-pin {
+                    .photo {
+                      width: 18px;
+                      height: 18px;
+                    }
+                  }
+                }
               }
               // .comment-options {
               //   position: absolute;

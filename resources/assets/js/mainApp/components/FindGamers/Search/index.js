@@ -64,14 +64,15 @@ export default class Search extends React.Component {
   }
 
   render() {
-    return(
+    return (
       <React.Fragment>
-        <div id="find-gamers-search" className='row'>
-          <div className='input-container'>
-            <input 
+        <div id="find-gamers-search" className='row' style={this.props.guest ? { width: '100%' } : {}}>
+          <div className='input-container' style={this.props.guest ? { marginTop: 8, width: '96%' } : {}}>
+            <input
+              style={this.props.guest ? { backgroundColor: '#0d1316' } : {}}
               className='input search-gamers-input'
               placeholder='Search Gamers'
-              value={this.state.search} 
+              value={this.state.search}
               onChange={(event) => this.onChange(event.target.value)}
             ></input>
             {this.helpButton()}
@@ -84,8 +85,8 @@ export default class Search extends React.Component {
             onToggle={this.toggleOnline}
           />
         </div>
-        <Filter onFilter={this.onFilter} />
-        <Results showMore={this.showMore} gamers={this.props.gamers} total={this.props.total} loading={this.props.loading} profile={this.props.profile} sendFriendRequest={this.props.sendFriendRequest} cancelFriendRequest={this.props.cancelFriendRequest} follow={this.props.follow} unfollow={this.props.unfollow}/>
+        <Filter guest={this.props.guest} onFilter={this.onFilter} />
+        <Results guest={this.props.guest} showMore={this.showMore} gamers={this.props.gamers} total={this.props.total} loading={this.props.loading} profile={this.props.profile} sendFriendRequest={this.props.sendFriendRequest} cancelFriendRequest={this.props.cancelFriendRequest} follow={this.props.follow} unfollow={this.props.unfollow} />
       </React.Fragment>
     );
   }

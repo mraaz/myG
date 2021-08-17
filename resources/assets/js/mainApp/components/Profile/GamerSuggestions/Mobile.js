@@ -239,10 +239,10 @@ export class GamerSuggestions extends React.Component {
           className='small-button clickable'
           onClick={(event) => {
             event.stopPropagation()
-            this.props.setOnboardingStep(4)
+            this.props.setOnboardingStep(5)
           }}
         >
-          Next 2/2
+          Next 3/3
         </div>
       </div>
     )

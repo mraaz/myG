@@ -16,7 +16,7 @@ export default class Home extends Component {
     this.state = {
       name: 'Raaz',
       initialData: undefined,
-      tabName: 'home',
+      tabName: 'home'
     }
     this.navRef = React.createRef()
     this.lastScrollY = 0
@@ -25,12 +25,12 @@ export default class Home extends Component {
   componentDidMount() {
     document.title = 'myG - Home'
     this.setState({
-      initialData: this.props.initialData,
+      initialData: this.props.initialData
     })
     let params = new URLSearchParams(window.location.search)
     const activeTab = params.get('at')
     this.setState({
-      tabName: activeTab ? activeTab : 'home',
+      tabName: activeTab ? activeTab : 'home'
     })
     window.addEventListener('scroll', this.stickNavigationBar)
   }
@@ -42,7 +42,7 @@ export default class Home extends Component {
   stickNavigationBar = () => {
     this.lastScrollY = window.scrollY
     window.requestAnimationFrame(() => {
-      if (!this.navRef.current || !this.navRef.current.style) return;
+      if (!this.navRef.current || !this.navRef.current.style) return
       this.navRef.current.removeAttribute('style')
       if (this.lastScrollY > 200) {
         this.navRef.current.style.top = '0'
@@ -59,7 +59,7 @@ export default class Home extends Component {
 
   tabToggle = (tabName) => {
     this.setState({
-      tabName: tabName,
+      tabName: tabName
     })
   }
 
@@ -83,7 +83,9 @@ export default class Home extends Component {
               My Games
             </div>
           </div>
-          {tabName == 'home' && <Posts initialData={!this.props.initialData ? 'loading' : this.props.initialData} key={Math.random()} />}
+          {tabName == 'home' && (
+            <Posts routeProps={this.props} initialData={!this.props.initialData ? 'loading' : this.props.initialData} key={Math.random()} />
+          )}
           {tabName == 'communities' && <GroupMain routeProps={this.props} initialData={this.props.initialData} key={Math.random()} />}
           {tabName == 'notifications' && <Notifications routeProps={this.props} initialData={this.props.initialData} key={Math.random()} />}
           {tabName == 'mygames' && <MyScheduledGames routeProps={this.props} initialData={this.props.initialData} key={Math.random()} />}

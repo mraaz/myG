@@ -15,7 +15,7 @@ class LikeController {
           user_id: auth.user.id,
           post_id: request.input('post_id'),
           comment_id: request.input('comment_id'),
-          reply_id: request.input('reply_id'),
+          reply_id: request.input('reply_id')
         })
         await AchievementsRepository.registerQuestStep({ user_id: auth.user.id, type: 'like' })
 
@@ -87,17 +87,18 @@ class LikeController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     }
   }
 
   async show({ auth }, post_id) {
+    let do_I_like_it = undefined
+    let no_of_comments = undefined
+
     try {
-      const number_of_likes = await Database.from('likes')
-        .where('post_id', '=', post_id)
-        .count('* as total')
+      const number_of_likes = await Database.from('likes').where('post_id', '=', post_id).count('* as total')
 
       const name_of_1st_admirer = await Database.from('likes')
         .innerJoin('users', 'users.id', 'likes.user_id')
@@ -106,20 +107,17 @@ class LikeController {
         .orderBy('likes.id', 'asc')
         .first()
 
-      //const do_I_like_it = await Database.from('likes').where('post_id', '=', request.params.id, 'user_id', '=', auth.user.id )
-      const do_I_like_it = await Database.from('likes')
-        .where({ post_id: post_id, user_id: auth.user.id })
-        .count('* as myOpinion')
+      if (auth.user && auth.user != -1) {
+        do_I_like_it = await Database.from('likes').where({ post_id: post_id, user_id: auth.user.id }).count('* as myOpinion')
 
-      const no_of_comments = await Database.from('comments')
-        .where({ post_id: post_id })
-        .count('* as no_of_comments')
+        no_of_comments = await Database.from('comments').where({ post_id: post_id }).count('* as no_of_comments')
+      }
 
       return {
         number_of_likes,
         admirer_UserInfo: name_of_1st_admirer,
         do_I_like_it: do_I_like_it,
-        no_of_comments: no_of_comments,
+        no_of_comments: no_of_comments
       }
     } catch (error) {
       LoggingRepository.log({
@@ -127,58 +125,62 @@ class LikeController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
 
   async show_comments({ auth, request, response }) {
-    try {
-      const do_I_like_this_comment = await Database.from('likes')
-        .where({ comment_id: request.params.id, user_id: auth.user.id })
-        .count('* as myOpinion')
+    let do_I_like_this_comment = undefined
+    let no_of_likes = undefined
 
-      const no_of_likes = await Database.from('likes')
-        .where({ comment_id: request.params.id })
-        .count('* as no_of_likes')
+    if (auth.user && auth.user != -1) {
+      try {
+        do_I_like_this_comment = await Database.from('likes')
+          .where({ comment_id: request.params.id, user_id: auth.user.id })
+          .count('* as myOpinion')
 
+        no_of_likes = await Database.from('likes').where({ comment_id: request.params.id }).count('* as no_of_likes')
+      } catch (error) {
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error
+        })
+      }
       return {
         do_I_like_this_comment,
-        no_of_likes: no_of_likes,
+        no_of_likes: no_of_likes
       }
-    } catch (error) {
-      LoggingRepository.log({
-        environment: process.env.NODE_ENV,
-        type: 'error',
-        source: 'backend',
-        context: __filename,
-        message: (error && error.message) || error,
-      })
     }
   }
 
   async show_replies({ auth, request, response }) {
-    try {
-      const do_I_like_this_reply = await Database.from('likes')
-        .where({ reply_id: request.params.id, user_id: auth.user.id })
-        .count('* as myOpinion')
+    let do_I_like_this_reply = undefined
+    let no_of_likes = undefined
 
-      const no_of_likes = await Database.from('likes')
-        .where({ reply_id: request.params.id })
-        .count('* as no_of_likes')
+    if (auth.user) {
+      try {
+        do_I_like_this_reply = await Database.from('likes')
+          .where({ reply_id: request.params.id, user_id: auth.user.id })
+          .count('* as myOpinion')
 
-      return {
-        do_I_like_this_reply,
-        no_of_likes: no_of_likes,
+        no_of_likes = await Database.from('likes').where({ reply_id: request.params.id }).count('* as no_of_likes')
+      } catch (error) {
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error
+        })
       }
-    } catch (error) {
-      LoggingRepository.log({
-        environment: process.env.NODE_ENV,
-        type: 'error',
-        source: 'backend',
-        context: __filename,
-        message: (error && error.message) || error,
-      })
+    }
+    return {
+      do_I_like_this_reply,
+      no_of_likes: no_of_likes
     }
   }
 
@@ -188,19 +190,15 @@ class LikeController {
         const delete_like = await Database.table('likes')
           .where({
             post_id: request.params.id,
-            user_id: auth.user.id,
+            user_id: auth.user.id
           })
           .delete()
-
 
         await AchievementsRepository.unregisterQuestStep({ user_id: auth.user.id, type: 'like' })
 
         const userStatController = new UserStatTransactionController()
 
-        const post_owner = await Database.from('posts')
-          .where({ id: request.params.id })
-          .select('user_id')
-          .first()
+        const post_owner = await Database.from('posts').where({ id: request.params.id }).select('user_id').first()
 
         if (post_owner != undefined) {
           userStatController.update_total_number_of(post_owner.user_id, 'total_number_of_likes')
@@ -216,7 +214,7 @@ class LikeController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -230,16 +228,13 @@ class LikeController {
         const delete_like = await Database.table('likes')
           .where({
             comment_id: request.params.id,
-            user_id: auth.user.id,
+            user_id: auth.user.id
           })
           .delete()
 
         const userStatController = new UserStatTransactionController()
 
-        const comment_owner = await Database.from('comments')
-          .where({ id: request.params.id })
-          .select('user_id')
-          .first()
+        const comment_owner = await Database.from('comments').where({ id: request.params.id }).select('user_id').first()
 
         if (comment_owner != undefined) {
           userStatController.update_total_number_of(comment_owner.user_id, 'total_number_of_likes')
@@ -255,7 +250,7 @@ class LikeController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -269,16 +264,13 @@ class LikeController {
         const delete_reply_like = await Database.table('likes')
           .where({
             reply_id: request.params.id,
-            user_id: auth.user.id,
+            user_id: auth.user.id
           })
           .delete()
 
         const userStatController = new UserStatTransactionController()
 
-        const reply_owner = await Database.from('replies')
-          .where({ id: request.params.id })
-          .select('user_id')
-          .first()
+        const reply_owner = await Database.from('replies').where({ id: request.params.id }).select('user_id').first()
 
         if (reply_owner != undefined) {
           userStatController.update_total_number_of(reply_owner.user_id, 'total_number_of_likes')
@@ -294,7 +286,7 @@ class LikeController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -307,7 +299,7 @@ class LikeController {
       const getthisLike = await Database.from('likes').where('id', '=', request.params.id)
 
       return {
-        getthisLike,
+        getthisLike
       }
     } catch (error) {
       LoggingRepository.log({
@@ -315,7 +307,7 @@ class LikeController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }

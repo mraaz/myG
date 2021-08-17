@@ -71,3 +71,41 @@
     }
   }
 }
+
+.onboarding-buttons-followers {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  bottom: 248px;
+  left: 0;
+  right: 0;
+}
+
+@media screen and (max-width: 575px) {
+  .onboarding-buttons-followers {
+    bottom: 64px !important;
+  }
+
+  .onboarding-follower-container {
+    max-height: 80vh !important;
+    overflow-y: scroll !important;
+  }
+  
+  .onboarding-follower-content {
+    display: flex !important;
+    flex-direction: column !important;
+    flex-wrap: nowrap !important;
+  }
+
+  .go-left {
+    left: 0 !important;
+    z-index: 10 !important;
+  }
+
+  .go-right {
+    right: 0 !important;
+    z-index: 10 !important;
+  }
+}

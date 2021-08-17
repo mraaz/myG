@@ -7,11 +7,6 @@ import MobileMenuTop from './MobileMenuTop'
 import { openMobileMenuAction, closeMobileMenuAction, topOfScreenMobileMenuAction } from '../../../redux/actions/mobileMenuAction'
 import { useScrollDirection } from '../../hooks'
 import { logToElasticsearch } from '../../../integration/http/logger'
-import { CreateCommunity, AddScheduleGames } from '../../AsyncComponent'
-import Modal from '../common/Modal'
-import ComposeSection from '../ComposeSection_v2'
-
-import useModal from '../../hooks/useModal'
 
 import axios from 'axios'
 
@@ -41,7 +36,7 @@ const MobileMenu = ({ initialData }) => {
       if (!mobileMenuIsActive) {
         dispatch(openMobileMenuAction())
       }
-    },
+    }
   })
 
   // This effect is used to control the mobile menus based on scroll events.
@@ -80,11 +75,11 @@ const MobileMenu = ({ initialData }) => {
   // Second useEffect is called only once, required so the API is only called once
   useEffect(() => {
     ref(window)
-    const getNotis = async function() {
+    const getNotis = async function () {
       let _chats = 0
       try {
         const getnoti = await axios.post('/api/notifications_v2/getUnread_count', {
-          notification_type: -1,
+          notification_type: -1
         })
 
         const chat_noti = await axios.get('/api/chat/message/unread?count=true')
@@ -100,13 +95,13 @@ const MobileMenu = ({ initialData }) => {
           setNotifications({
             alerts: getUnread_count_Alerts,
             approvals: getUnread_count_Approvals,
-            chats: _chats,
+            chats: _chats
           })
         } else {
           setNotifications({
             alerts: 0,
             approvals: 0,
-            chats: _chats,
+            chats: _chats
           })
         }
       } catch (error) {
@@ -117,12 +112,12 @@ const MobileMenu = ({ initialData }) => {
     getNotis()
   }, [])
 
-  const isInChannel = window.location.pathname.includes('myg-chat');
+  const isInChannel = window.location.pathname.includes('myg-chat')
   return (
     <Fragment>
       <MobileMenuTop initialData={initialData} notifications={{ ...notifications }} />
       <section className='main-mobile-menu'>
-        <div className={(mobileMenuIsActive || isInChannel) ? 'menu-bottom show' : 'menu-bottom hide'}>
+        <div className={mobileMenuIsActive || isInChannel ? 'menu-bottom show' : 'menu-bottom hide'}>
           <div className='mobile-sub-menu'>
             <div className='mobile-feed-img'>
               <Link to='/'>
@@ -140,7 +135,8 @@ const MobileMenu = ({ initialData }) => {
                     onClick={() => {
                       setHideSearch(false)
                       dispatch(closeMobileMenuAction())
-                    }}>
+                    }}
+                  >
                     Looking for <b>Games (LFG)</b>
                   </Link>
                 </div>
@@ -150,7 +146,8 @@ const MobileMenu = ({ initialData }) => {
                     onClick={() => {
                       setHideSearch(false)
                       dispatch(closeMobileMenuAction())
-                    }}>
+                    }}
+                  >
                     Find <b>Gamers</b>
                   </a>
                 </div>
@@ -172,7 +169,8 @@ const MobileMenu = ({ initialData }) => {
                       onClick={() => {
                         setHideSearch(false)
                         dispatch(closeMobileMenuAction())
-                      }}>
+                      }}
+                    >
                       <b>Post</b> on your Feed
                     </Link>
                   </div>
@@ -182,7 +180,8 @@ const MobileMenu = ({ initialData }) => {
                       onClick={() => {
                         setHideSearch(false)
                         dispatch(closeMobileMenuAction())
-                      }}>
+                      }}
+                    >
                       New <b>Matches</b>
                     </Link>
                   </div>
@@ -192,7 +191,8 @@ const MobileMenu = ({ initialData }) => {
                       onClick={() => {
                         setHideSearch(false)
                         dispatch(closeMobileMenuAction())
-                      }}>
+                      }}
+                    >
                       New <b>Community</b>
                     </Link>
                   </div>
