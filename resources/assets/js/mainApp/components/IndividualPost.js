@@ -161,36 +161,33 @@ export default class IndividualPost extends Component {
       }
     }
     let post_timestamp = moment()
-    try {
-      if (this.props.post.created_at) {
-        post_timestamp = moment(this.props.post.created_at, 'YYYY-MM-DD HH:mm:ssZ')
-      }
 
-      if (this.props.post.total == 0) {
-        this.setState({ show_like: false })
-      }
+    if (this.props.post.created_at) {
+      post_timestamp = moment(this.props.post.created_at, 'YYYY-MM-DD HH:mm:ssZ')
+    }
 
+    if (this.props.post.total == 0) {
+      this.setState({ show_like: false })
+    }
+
+    this.setState({
+      like: this.props.post.do_I_like_it,
+      total: this.props.post.total,
+      admirer_first_name: this.props.post.admirer_first_name,
+      post_time: post_timestamp.local().fromNow(),
+      content: this.props.post.content,
+      galleryItems
+    })
+    if (this.props.post.no_of_comments != 0) {
       this.setState({
-        like: this.props.post.do_I_like_it,
-        total: this.props.post.total,
-        admirer_first_name: this.props.post.admirer_first_name,
-        post_time: post_timestamp.local().fromNow(),
-        content: this.props.post.content,
-        galleryItems
+        zero_comments: true,
+        comment_total: this.props.post.no_of_comments
       })
-      if (this.props.post.no_of_comments != 0) {
-        this.setState({
-          zero_comments: true,
-          comment_total: this.props.post.no_of_comments
-        })
-      }
+    }
 
-      if (post.group_id != null && post.group_id != '' && post.name != undefined && post.name != '') {
-        if ((source = 'news_feed')) {
-          this.state.show_group_name = true
-        }
-      }
-    } catch (e) {}
+    if (post.group_id != null && post.group_id != '' && post.name != undefined && post.name.trim() != '') {
+      this.state.show_group_name = true
+    }
 
     this.pullComments()
   }
@@ -642,7 +639,7 @@ export default class IndividualPost extends Component {
                           Delete
                         </div>
                       )}
-                      {user.id == post.user_id && (
+                      {!this.state.show_group_name && user.id == post.user_id && (
                         <div className='option' onClick={this.clickedEdit}>
                           Edit &nbsp;
                         </div>
