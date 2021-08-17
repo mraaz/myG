@@ -398,7 +398,7 @@ export default class ComposeSection extends Component {
       isShowAllGroup = false,
       visibility
     } = this.state
-    const isButtonDisable = isEmptyDraftJs(this.state.postContent) || preview_files.length > 0 ? true : false
+    const isButtonDisable = !isEmptyDraftJs(this.state.postContent) || preview_files.length > 0 ? true : false
     const groups = [...selected_group_data]
     const AllGroups = [...selected_group_data]
     const preview_filesData = [...preview_files]
