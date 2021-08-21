@@ -5,6 +5,12 @@
   z-index: 0 !important;
 }
 
+.messenger-collapsed-container {
+  width: 80px;
+  z-index: 10;
+  background-color: #151b26;
+}
+
 .messenger-collapsed {
   width: 80px;
   height: 100vh;
@@ -15,6 +21,7 @@
   flex-direction: column;
   transition: 0.5s;
   overflow-y: scroll;
+  z-index: 10;
 }
 
 .messenger-collapsed-contact {

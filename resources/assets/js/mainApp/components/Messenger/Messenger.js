@@ -325,12 +325,14 @@ class Messenger extends React.Component {
     if (this.props.mobile) return null;
     return (
       <React.Fragment>
-        <div className="messenger-collapsed">
-          <div className='toggle-menu' style={{ marginBottom: 12 }} onClick={() => this.setState({ collapsed: false })}>
-            <img src='https://myG.gg/platform_images/Dashboard/toggle_menu_collapsed.svg' height='24' width='24' />
+        <section className="messenger-collapsed-container">
+          <div className="messenger-collapsed">
+            <div className='toggle-menu' style={{ marginBottom: 12 }} onClick={() => this.setState({ collapsed: false })}>
+              <img src='https://myG.gg/platform_images/Dashboard/toggle_menu_collapsed.svg' height='24' width='24' />
+            </div>
+            {(this.props.contacts || []).map(this.renderCollapseContact)}
           </div>
-          {(this.props.contacts || []).map(this.renderCollapseContact)}
-        </div>
+        </section>
         <section className='messenger' style={{ width: 0, minWidth: 0 }}>
           {this.renderChats()}
           {this.renderStatusMonitor()}
