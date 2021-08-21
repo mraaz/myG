@@ -293,7 +293,7 @@ class MangeSponsors extends React.Component {
               )}
               <div className='Sponsor__link__input'>
                 <input
-                  type='text'
+                  type='text' autocomplete='off'
                   onChange={(e) => this.handleLinkChange(e, counter)}
                   value={linkValue == '' ? sponsor.link : linkValue}
                   placeholder='Enter link here'
