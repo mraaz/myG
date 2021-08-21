@@ -48,6 +48,16 @@
   margin: 4px;
 }
 
+.messenger-collapsed-contact-name-tooltip {
+  color: white;
+  font-size: 14px;
+  text-align: center;
+  right: 4px;
+  position: fixed;
+  z-index: 100;
+  background-color: #253338;
+}
+
 .messenger-collapsed-contact-name {
   color: white;
   width: 70px;

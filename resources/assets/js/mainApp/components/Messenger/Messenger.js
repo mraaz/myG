@@ -311,7 +311,7 @@ class Messenger extends React.Component {
         >
           <div className={`messenger-contact-online-indicator chat-component-header-status-indicator-${status}`} />
         </div>
-        <WithTooltip text={name} position={{ left: '-32px' }} disabled={name.length <= 6}>
+        <WithTooltip extraClass='messenger-collapsed-contact-name-tooltip' text={name} position={{ left: '-32px' }} disabled={name.length <= 6}>
           <span className="messenger-collapsed-contact-name">
             {name.slice(0, 6) + (name.length > 6 ? '...' : '')}
           </span>
