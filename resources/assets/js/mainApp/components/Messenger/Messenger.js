@@ -330,6 +330,14 @@ class Messenger extends React.Component {
             <div className='toggle-menu' style={{ marginBottom: 12 }} onClick={() => this.setState({ collapsed: false })}>
               <img src='https://myG.gg/platform_images/Dashboard/toggle_menu_collapsed.svg' height='24' width='24' />
             </div>
+            {!(this.props.contacts || []).length && (
+              <div className='no-recent-chats-container'>
+                <span className='no-recent-chats'>no</span>
+                <span className='no-recent-chats'>recent</span>
+                <span className='no-recent-chats'>chats</span>
+                <span className='no-recent-chats'>:(</span>
+              </div>
+            )}
             {(this.props.contacts || []).map(this.renderCollapseContact)}
           </div>
         </section>

@@ -22,6 +22,21 @@
   transition: 0.5s;
   overflow-y: scroll;
   z-index: 10;
+  .no-recent-chats-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    .no-recent-chats {
+      text-align: center;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      display: flex;
+      width: 80px;
+      color: #fff;
+    }
+  }
 }
 
 .messenger-collapsed-contact {
