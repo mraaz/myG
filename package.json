@@ -48,6 +48,7 @@
     "@adonisjs/validator": "^5.0.6",
     "@adonisjs/websocket": "^1.0.12",
     "@adonisjs/websocket-client": "^1.0.9",
+    "@google-cloud/translate": "^6.2.7",
     "@welldone-software/why-did-you-render": "^6.0.4",
     "aws-sdk": "^2.437.0",
     "axios": "^0.21.1",

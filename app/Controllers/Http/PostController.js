@@ -4,6 +4,7 @@ const Post = use('App/Models/Post')
 const HashTags = use('App/Models/HashTag')
 const SponsoredPost = use('App/Models/SponsoredPost')
 const Database = use('Database')
+const Env = use('Env')
 
 const LikeController = use('./LikeController')
 const PostHashTagTransactionController = use('./PostHashTagTransactionController')
@@ -13,12 +14,41 @@ const ApiController = use('./ApiController')
 const CommonController = use('./CommonController')
 const AchievementsRepository = require('../../Repositories/Achievements')
 
-//const { validate } = use('Validator')
+// Imports the Google Cloud client library
+const { Translate } = require('@google-cloud/translate').v2
 
 const MAX_HASH_TAGS = 21
 
 class PostController {
+  // const text = 'The text for which to detect language, e.g. Hello, world!';
+
+  // Detects the language. "text" can be a string for detecting the language of
+  // a single piece of text, or an array of strings for detecting the languages
+  // of multiple texts.
+
+  async detectLanguage(text) {
+    const translate = new Translate({ version: 'v2', key: Env.get('TRANSLATE_KEY') })
+
+    let [detections] = await translate.detect(text)
+    detections = Array.isArray(detections) ? detections : [detections]
+    let value = ''
+    detections.forEach((detection) => {
+      value = String(detection.language)
+    })
+    return value
+  }
+
   async store({ auth, request, response }) {
+    //Language Codes: https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
+
+    if (request.input('content') == undefined && String(request.input('content')).trim().length == 0) {
+      return ''
+    }
+
+    // Creates a client
+    let post_language = await this.detectLanguage(request.input('content').trim())
+    if (post_language == 'und') post_language = 'en'
+
     try {
       let arrGroups_id = [],
         newPost = ''
@@ -55,14 +85,15 @@ class PostController {
 
         if (arrGroups_id.length == 0) {
           newPost = await Post.create({
-            content: request.input('content'),
+            content: request.input('content').trim(),
             video: request.input('video').trim() == '' ? null : request.input('video'),
             user_id: auth.user.id,
             type: 'text',
             group_id: null,
             visibility: request.input('visibility'),
             media_url: request.input('media_url'),
-            game_names_id
+            game_names_id,
+            post_language
           })
 
           if (request.input('hash_tags') != undefined && request.input('hash_tags') != null && request.input('hash_tags').length > 0) {
@@ -108,6 +139,7 @@ class PostController {
         context: __filename,
         message: (error && error.message) || error
       })
+      return ''
     }
   }
 
