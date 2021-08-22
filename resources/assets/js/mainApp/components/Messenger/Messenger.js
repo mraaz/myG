@@ -311,7 +311,7 @@ class Messenger extends React.Component {
         >
           <div className={`messenger-contact-online-indicator chat-component-header-status-indicator-${status}`} />
         </div>
-        <WithTooltip text={name} position={{ left: '-32px' }} disabled={name.length <= 6}>
+        <WithTooltip extraClass='messenger-collapsed-contact-name-tooltip' text={name} position={{ left: '-32px' }} disabled={name.length <= 6}>
           <span className="messenger-collapsed-contact-name">
             {name.slice(0, 6) + (name.length > 6 ? '...' : '')}
           </span>
@@ -325,12 +325,22 @@ class Messenger extends React.Component {
     if (this.props.mobile) return null;
     return (
       <React.Fragment>
-        <div className="messenger-collapsed">
-          <div className='toggle-menu' style={{ marginBottom: 12 }} onClick={() => this.setState({ collapsed: false })}>
-            <img src='https://myG.gg/platform_images/Dashboard/toggle_menu_collapsed.svg' height='24' width='24' />
+        <section className="messenger-collapsed-container">
+          <div className="messenger-collapsed">
+            <div className='toggle-menu' style={{ marginBottom: 12 }} onClick={() => this.setState({ collapsed: false })}>
+              <img src='https://myG.gg/platform_images/Dashboard/toggle_menu_collapsed.svg' height='24' width='24' />
+            </div>
+            {!(this.props.contacts || []).length && (
+              <div className='no-recent-chats-container'>
+                <span className='no-recent-chats'>no</span>
+                <span className='no-recent-chats'>recent</span>
+                <span className='no-recent-chats'>chats</span>
+                <span className='no-recent-chats'>:(</span>
+              </div>
+            )}
+            {(this.props.contacts || []).map(this.renderCollapseContact)}
           </div>
-          {(this.props.contacts || []).map(this.renderCollapseContact)}
-        </div>
+        </section>
         <section className='messenger' style={{ width: 0, minWidth: 0 }}>
           {this.renderChats()}
           {this.renderStatusMonitor()}

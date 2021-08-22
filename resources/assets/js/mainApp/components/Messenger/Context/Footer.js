@@ -65,7 +65,7 @@ export default class Footer extends React.Component {
           <div className='messenger-footer-search-bar'>
             <input
               className='messenger-settings-search-field'
-              type='text'
+              type='text' autocomplete='off'
               placeholder='Search'
               value={this.props.search}
               onChange={(event) => this.props.onSearch(event.target.value)}

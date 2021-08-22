@@ -72,6 +72,7 @@ export default class ChatInput extends React.Component {
   }
 
   sendMessage = () => {
+    if (this.state.disabled) return
     if (!this.state.input.trim()) return
     GoogleAnalytics.chatMessageSent({ chatId: this.props.chatId })
     this.props.sendMessage(convertEmojisToColons(this.state.input.trim()))
@@ -138,8 +139,8 @@ export default class ChatInput extends React.Component {
             rows={1}
             maxLength={2000}
             className='chat-component-input'
-            disabled={disabled || this.state.disabled}
-            placeholder={this.state.disabled ? 'Slowmode - a message every 3s' : placeholderText}
+            disabled={disabled}
+            placeholder={placeholderText}
             value={this.state.input}
             onChange={(event) => this.onTyping(event.target.value)}
             onKeyPress={this.onKeyPressed}
@@ -151,6 +152,7 @@ export default class ChatInput extends React.Component {
             onClick={() => !disabled && this.sendMessage()}
           />
         </div>
+        {this.state.disabled ? <span className="slowmode">Slowmode - a message every 3s</span> : ''}
       </div>
     )
   }

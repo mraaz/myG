@@ -107,7 +107,7 @@ class CommonSaveController {
         'https://www.google.com/recaptcha/api/siteverify',
         querystring.stringify({ secret: Env.get('SECRET_KEY'), response: token })
       )
-      if (!data_request.data.success) {
+      if (!process.env.SKIP_CAPTCHA && !data_request.data.success) {
         console.log('Google Recaptcha Verification Failed: ' + data_request.data)
         return response.redirect('/?error=google-recaptcha')
       } else {

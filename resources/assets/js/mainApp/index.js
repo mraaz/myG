@@ -92,7 +92,7 @@ class Layout extends Component {
           window.location.href = '/logout'
         }
 
-        const shortLinkCode = window.location.href.split('/s/')[1];
+        const shortLinkCode = window.location.pathname.split('/s/')[1];
         if (shortLinkCode) {
           this.setState({ hasLink: true });
           const link = await fetchShortLink(shortLinkCode);
