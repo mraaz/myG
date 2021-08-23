@@ -8,6 +8,18 @@ export default class SignUpModal extends React.Component {
   login = () => {
     window.location.href = '/'
   } 
+  escFunction =(event)=>{
+    if(event.keyCode === 27) {
+      this.props.handleShowModal()
+    }
+  }
+
+  componentDidMount(){
+    document.addEventListener("keydown", this.escFunction, false);
+  }
+  componentWillUnmount(){
+    document.removeEventListener("keydown", this.escFunction, false);
+  }
   
 
   render() {
@@ -24,13 +36,13 @@ export default class SignUpModal extends React.Component {
             </div>
           </div> */}
           <div className="container">
-            <div className="logo-container">
+            {/* <div className="logo-container">
               <img src="https://myG.gg/platform_images/Login+Screen/Logo_FINAL%402x.png" height="90" width="161"/>
-            </div>
+            </div> */}
             <div className="card-container">
                 <div className="logo-on-card">
                   <img src="https://myG.gg/platform_images/Login+Screen/Card_Logo.svg" height="90" width="90" />
-                </div>
+                </div> 
                 <div className=" card-round">
                   <div className="slogan-under-card">
                     <b>The Gamer's Platform</b>

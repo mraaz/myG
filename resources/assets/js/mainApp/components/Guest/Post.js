@@ -29,7 +29,7 @@ export default class GuestPost extends React.Component {
     return (
       <div id='post' className='guest-page active' style={{ backgroundColor: '#000' }}>
         <GuestBanner handleShowModal={this.handleShowModal} />
-        {this.state.showModal && <SignUpModal onClick={() => this.setState({ showModal: false })} />}
+        {this.state.showModal && <SignUpModal  handleShowModal={this.handleShowModal} onClick={() => this.setState({ showModal: false })} />}
         <div id='guest-content' className='app-container home-page'>
           <section id='posts' className='active' onClick={() => this.setState({ showModal: true })}>
             <IndividualPost guest post={this.state.post} user={{}} source={'news_feed'} />

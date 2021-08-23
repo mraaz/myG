@@ -60,7 +60,6 @@
   justify-content: center;
   top: 0;
   bottom: 0;
-  background-color: rgba(0,0,0,0.7);
   z-index: 1000;
 
   .guest-modal-title {
@@ -190,6 +189,12 @@
     margin-bottom: 10px;
     padding: 20px;
     border-radius: 8px;
+    @media only screen and (max-width: 768px) {
+      /* For mobile phones: */
+      width: 100%;
+      font-size: 12px;
+      padding: 10px;
+    }
   }
   .button {
     display: flex;
