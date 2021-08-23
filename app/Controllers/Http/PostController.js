@@ -30,7 +30,7 @@ class PostController {
     let value = 'en'
 
     try {
-      const translate = new Translate({ version: 'v2', key: Env.get('TRANSLATE_2KEY') })
+      const translate = new Translate({ version: 'v2', key: Env.get('TRANSLATE_KEY') })
 
       let [detections] = await translate.detect(text)
       detections = Array.isArray(detections) ? detections : [detections]
@@ -63,7 +63,6 @@ class PostController {
       // Creates a client
       let post_language = await this.detectLanguage(request.input('content').trim())
       if (post_language == 'und') post_language = 'en'
-      console.log(post_language, '<<<post_language')
 
       if (request.input('group_id') != undefined && String(request.input('group_id')).trim().length > 0) {
         arrGroups_id = String(request.input('group_id')).split(',')
@@ -879,12 +878,35 @@ class PostController {
       // Posts with most likes n updated recently
       // Shuffle
 
-      let game_names = null
-      let counterValue = 20
+      let game_names = null,
+        array_ = [],
+        counterValue = 20
 
       if (request.input('game_names_ids') != undefined && request.input('game_names_ids') != null) {
         game_names = JSON.parse(request.input('game_names_ids'))
         counterValue = 10
+      }
+
+      if (request.input('userLang') != undefined && request.input('userLang') != null) {
+        if (request.input('userLang').trim() != 'en') {
+          const trendingPosts_likes_NonEnglish = await Database.from('posts')
+            .innerJoin('likes', 'likes.post_id', 'posts.id')
+            .whereIn('posts.visibility', [1])
+            .where((builder) => {
+              if (game_names != null) builder.whereIn('posts.game_names_id', [game_names])
+            })
+            .where({ post_language: request.input('userLang').trim().substring(0, 2) })
+            .groupBy('posts.id')
+            .count('* as no_of_likes')
+            .orderBy('no_of_likes', 'desc')
+            .select('posts.id')
+            .paginate(request.input('counter'), counterValue)
+
+          trendingPosts_likes_NonEnglish.data.map((posts) => {
+            array_.push(posts.id)
+          })
+          if (array_.length > 10) counterValue = 5
+        }
       }
 
       const trendingPosts_likes = await Database.from('posts')
@@ -893,13 +915,12 @@ class PostController {
         .where((builder) => {
           if (game_names != null) builder.whereIn('posts.game_names_id', [game_names])
         })
+        .where({ post_language: 'en' })
         .groupBy('posts.id')
         .count('* as no_of_likes')
         .orderBy('no_of_likes', 'desc')
         .select('posts.id')
         .paginate(request.input('counter'), counterValue)
-
-      let array_ = []
 
       trendingPosts_likes.data.map((posts) => {
         array_.push(posts.id)

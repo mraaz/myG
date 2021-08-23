@@ -114,8 +114,7 @@ export default class ComposeSection extends Component {
 
   submitForm = async () => {
     const content = this.state.post_content.trim()
-    //const userLang = navigator.language || navigator.userLanguage
-
+    // const userLang = navigator.language || navigator.userLanguage
     let media_url = []
     let aws_key_id = []
 
