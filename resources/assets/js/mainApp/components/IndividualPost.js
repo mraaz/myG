@@ -95,6 +95,7 @@ export default class IndividualPost extends Component {
   click_like_btn = (post_id) => {
     const isGuestUser = this.props.guest ? true : false
     if (isGuestUser) {
+      this.props.handleGuestModal()
       return
     }
     this.setState({
@@ -121,6 +122,7 @@ export default class IndividualPost extends Component {
   click_unlike_btn = (post_id) => {
     const isGuestUser = this.props.guest ? true : false
     if (isGuestUser) {
+      this.props.handleGuestModal()
       return
     }
     this.setState({
@@ -216,10 +218,20 @@ export default class IndividualPost extends Component {
   }
 
   handleChange = (e) => {
+    let isGuestUser = this.props.guest ? true : false
+    if (isGuestUser) {
+      this.props.handleGuestModal()
+      return
+    }
     this.setState({ value: e.target.value })
   }
 
   handleChange2 = (e) => {
+    let isGuestUser = this.props.guest ? true : false
+    if (isGuestUser) {
+      this.props.handleGuestModal()
+      return
+    }
     this.setState({ value2: e.target.value })
   }
 
@@ -257,11 +269,21 @@ export default class IndividualPost extends Component {
     })
   }
   insert_image_comment = () => {
+    let isGuestUser = this.props.guest ? true : false
+    if (isGuestUser) {
+      this.props.handleGuestModal()
+      return
+    }
     if (!this.state.uploading) {
       this.fileInputRef.current.click()
     }
   }
   handleSelectFile = (e) => {
+    let isGuestUser = this.props.guest ? true : false
+    if (isGuestUser) {
+      this.props.handleGuestModal()
+      return
+    }
     const fileList = e.target.files
     if (fileList.length > 0) {
       let type = fileList[0].type.split('/')
@@ -362,7 +384,13 @@ export default class IndividualPost extends Component {
   }
 
   detectKey = (e, key) => {
+    
     if (!key) {
+      let isGuestUser = this.props.guest ? true : false
+    if (isGuestUser) {
+      this.props.handleGuestModal()
+      return
+    }
       e.preventDefault()
       e.stopPropagation()
       if (!this.state.uploading) {
@@ -779,7 +807,7 @@ export default class IndividualPost extends Component {
                 {!show_more_comments && <div className='show-individual-comments'>{this.showMoreComment()}</div>}
               </div>
             )}
-            <div className='compose-comment'>
+            <div className='compose-comment' >
               <textarea
                 name='name'
                 placeholder={post.allow_comments ? 'Write a comment...' : 'Comments disabled'}
@@ -788,7 +816,6 @@ export default class IndividualPost extends Component {
                 maxLength='254'
                 onKeyDown={(e) => this.detectKey(e, true)}
                 ref={this.setTextInputRef}
-                disabled={isGuestUser}
               />
               <div className='insert__images' onClick={this.insert_image_comment}>
                 <input
@@ -797,7 +824,6 @@ export default class IndividualPost extends Component {
                   ref={this.fileInputRef}
                   onChange={this.handleSelectFile}
                   name='insert__images'
-                  disabled={isGuestUser}
                 />
                 <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Image.svg`} className='img-fluid' />
               </div>

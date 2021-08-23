@@ -10,7 +10,7 @@ export default class SignUpModal extends React.Component {
   } 
   escFunction =(event)=>{
     if(event.keyCode === 27) {
-      this.props.handleShowModal()
+      this.props.handleGuestModal()
     }
   }
 
