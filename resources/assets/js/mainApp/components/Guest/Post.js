@@ -20,17 +20,22 @@ export default class GuestPost extends React.Component {
     fetchPost(this.props.id).then((post) => this.setState({ post, loading: false }))
   }
 
+  handleShowModal = ()=>{
+    this.setState({showModal:!this.state.showModal})
+  }
+
   render() {
     if (this.state.loading || !this.state.post) return null
     return (
       <div id='post' className='guest-page active' style={{ backgroundColor: '#000' }}>
-        <GuestBanner />
+        <GuestBanner handleShowModal={this.handleShowModal} />
         {this.state.showModal && <SignUpModal onClick={() => this.setState({ showModal: false })} />}
         <div id='guest-content' className='app-container home-page'>
           <section id='posts' className='active' onClick={() => this.setState({ showModal: true })}>
             <IndividualPost guest post={this.state.post} user={{}} source={'news_feed'} />
           </section>
         </div>
+        {this.state.showModal &&<div className="login__backdrop" onClick={this.handleShowModal}></div>}
       </div>
     )
   }
