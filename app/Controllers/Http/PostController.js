@@ -27,14 +27,25 @@ class PostController {
   // of multiple texts.
 
   async detectLanguage(text) {
-    const translate = new Translate({ version: 'v2', key: Env.get('TRANSLATE_KEY') })
+    let value = 'en'
 
-    let [detections] = await translate.detect(text)
-    detections = Array.isArray(detections) ? detections : [detections]
-    let value = ''
-    detections.forEach((detection) => {
-      value = String(detection.language)
-    })
+    try {
+      const translate = new Translate({ version: 'v2', key: Env.get('TRANSLATE_2KEY') })
+
+      let [detections] = await translate.detect(text)
+      detections = Array.isArray(detections) ? detections : [detections]
+      detections.forEach((detection) => {
+        value = String(detection.language)
+      })
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error
+      })
+    }
     return value
   }
 
@@ -45,13 +56,14 @@ class PostController {
       return ''
     }
 
-    // Creates a client
-    let post_language = await this.detectLanguage(request.input('content').trim())
-    if (post_language == 'und') post_language = 'en'
-
     try {
       let arrGroups_id = [],
         newPost = ''
+
+      // Creates a client
+      let post_language = await this.detectLanguage(request.input('content').trim())
+      if (post_language == 'und') post_language = 'en'
+      console.log(post_language, '<<<post_language')
 
       if (request.input('group_id') != undefined && String(request.input('group_id')).trim().length > 0) {
         arrGroups_id = String(request.input('group_id')).split(',')
