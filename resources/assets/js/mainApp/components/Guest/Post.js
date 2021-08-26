@@ -6,15 +6,18 @@ import SignUpModal from './SignUpModal'
 import IndividualPost from '../IndividualPost'
 
 export default class GuestPost extends React.Component {
+  
+
+
   shouldComponentUpdate(nextProps, nextState) {
     return ignoreFunctions(nextProps, nextState, this.props, this.state)
   }
-
   state = {
     loading: true,
     post: null,
     showModal: false,
   }
+  
 
   componentDidMount() {
     fetchPost(this.props.id).then((post) => this.setState({ post, loading: false }))
@@ -30,9 +33,9 @@ export default class GuestPost extends React.Component {
       <div id='post' className='guest-page active' style={{ backgroundColor: '#000' }}>
         <GuestBanner handleGuestModal={this.handleGuestModal} />
         {this.state.showModal && <SignUpModal  handleGuestModal={this.handleGuestModal} onClick={() => this.setState({ showModal: false })} />}
-        <div id='guest-content' className='app-container home-page'>
+        <div id='guest-content' className='app-container home-page'  >
           <section id='posts' className='active' >
-            <IndividualPost guest post={this.state.post} handleGuestModal={this.handleGuestModal} user={{}} source={'news_feed'} />
+            <IndividualPost refreshme={this.props.refreshme} guest post={this.state.post} handleGuestModal={this.handleGuestModal} user={{}} source={'news_feed'} />
           </section>
         </div>
         {this.state.showModal &&<div className="login__backdrop" onClick={this.handleGuestModal}></div>}

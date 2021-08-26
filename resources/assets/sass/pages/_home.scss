@@ -668,6 +668,7 @@ section#content-container {
           display: flex;
           justify-content: space-between;
           position: relative;
+          z-index: 0;
           textarea {
             position: relative;
             z-index: 2;
@@ -1438,6 +1439,7 @@ section#content-container {
         width: 90%;
         align-items: center;
         margin: 0 auto;
+        z-index: 0;
         textarea {
           position: relative;
           z-index: 2;

@@ -20,10 +20,11 @@
 
 .guest-button-container {
   display: flex;
-  align-items: center;
-  flex: 1;
-  flex-direction: column;
-  padding: 0 8px;
+    align-items: center;
+    flex: 1;
+    flex-direction: row;
+    padding: 0 8px;
+    justify-content: flex-end;
 }
 
 .guest-join-label {
@@ -39,13 +40,15 @@
   padding: 0 8px;
   font-size: 16px;
   font-weight: 900;
-  border-radius: 10px;
+  border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: Montserrat;
   border-width: 0;
   cursor: pointer;
+  margin-right: 10px;
+  width: 92px;
 }
 
 .guest-green {
@@ -60,6 +63,8 @@
   justify-content: center;
   top: 0;
   bottom: 0;
+  left:0;
+  right: 0;
   z-index: 1000;
 
   .guest-modal-title {
@@ -176,6 +181,17 @@
     align-items: center;
     justify-content: center;
     font-family: Montserrat;
+    position: relative;
+    .close-button.clickable{
+      position: absolute;
+      top: 0;
+      right: 0;
+      background: #fff;
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
   }
   .card-container {
     display: flex;

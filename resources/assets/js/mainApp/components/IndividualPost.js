@@ -143,6 +143,12 @@ export default class IndividualPost extends Component {
     }
   }
 
+  handleLinkClick = ()=>{
+    if(this.props.refreshme){
+      this.props.refreshme()
+    }
+  }
+
   componentDidMount() {
     let { post } = this.props
     let media_url = ''
@@ -590,7 +596,7 @@ export default class IndividualPost extends Component {
       return hash_tags.map((tags) => {
         return (
           <strong>
-            <Link to={`/hashtag/${tags.content}`}>{`#${tags.content} `}</Link>
+            <Link to={`/hashtag/${tags.content}`} onClick={this.handleLinkClick}>{`#${tags.content} `}</Link>
           </strong>
         )
       })
@@ -679,7 +685,7 @@ export default class IndividualPost extends Component {
                   </div>
                 </div>
               )}
-              <Link to={`/profile/${post.alias}`} className='user-img'>
+              <Link to={`/profile/${post.alias}`} className='user-img' onClick={this.handleLinkClick}>
                 <div
                   className='profile__image'
                   style={{
@@ -693,13 +699,13 @@ export default class IndividualPost extends Component {
               <div className='user__details'>
                 <div className='author__username'>
                   <div className='username'>
-                    <Link to={`/profile/${post.alias}`}>{`@${post.alias} `}</Link>
+                    <Link to={`/profile/${post.alias}`} onClick={this.handleLinkClick}>{`@${post.alias} `}</Link>
                   </div>
                   {this.state.show_group_name && (
                     <div className='shared__group'>
                       {`shared `}
                       <div className='arrow'></div>
-                      <Link to={`/community/${decodeURI(post.name)}`}>{decodeURI(post.name)}</Link>
+                      <Link to={`/community/${decodeURI(post.name)}`} onClick={this.handleLinkClick}>{decodeURI(post.name)}</Link>
                     </div>
                   )}
                   {post.visibility === 0 && (
@@ -838,7 +844,7 @@ export default class IndividualPost extends Component {
                   backgroundSize: 'cover'
                 }}
               >
-                <Link to={`/profile/${post.alias}`} className='user-img'></Link>
+                <Link to={`/profile/${post.alias}`} className='user-img' onClick={this.handleLinkClick}></Link>
                 <div className='online__status'></div>
               </div>
             </div>
