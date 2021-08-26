@@ -140,7 +140,12 @@ this.setState({refreshGuestLink:true})
     getInitialData();
     window.addEventListener('focus', this.onFocus);
     this.registerServiceWorker();
-
+    window.history.pushState(null, null, window.location.pathname);
+    window.addEventListener('popstate', this.onBackButtonEvent);
+  }
+  onBackButtonEvent = (e) => {
+    e.preventDefault();
+    this.refreshme()
   }
   componentWilUnmount() {
     window.removeEventListener('focus', this.onFocus)
