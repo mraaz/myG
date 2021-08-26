@@ -38,7 +38,6 @@ export default class GuestPost extends React.Component {
             <IndividualPost refreshme={this.props.refreshme} guest post={this.state.post} handleGuestModal={this.handleGuestModal} user={{}} source={'news_feed'} />
           </section>
         </div>
-        {this.state.showModal &&<div className="login__backdrop" onClick={this.handleGuestModal}></div>}
       </div>
     )
   }

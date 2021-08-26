@@ -92,6 +92,7 @@ export default class SignUpModal extends React.Component {
 
           {/* <GuestLink/> */}
         </div>
+       <div className="login__backdrop" onClick={this.props.handleGuestModal}></div>
       </div >
     );
   }

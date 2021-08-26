@@ -40,7 +40,6 @@ export default class GuestProfile extends React.Component {
               <PostsFromUser handleGuestModal={this.handleGuestModal} guest profile={this.state.profile} />
             </div>
           </div>
-          {this.state.showModal &&<div className="login__backdrop" onClick={this.handleGuestModal}></div>}
         </div>
       </React.Fragment>
     )
