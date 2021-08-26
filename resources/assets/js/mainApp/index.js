@@ -61,9 +61,12 @@ import {
   Channel,
   HashTagList,
   CreateTeam,
+  GuestFeeds,
 } from './AsyncComponent'
 import { fetchShortLink } from '../integration/http/links'
 import { Fragment } from 'react'
+
+const guestRoutes = ['/link', '/scheduledGames', '/find-gamers/search', '/profile', '/post', '/community', '/s/','/guest'];
 
 class Layout extends Component {
   constructor() {
@@ -92,7 +95,7 @@ this.setState({refreshGuestLink:true})
           this.setState({ once: true })
 
         const loggedOut = initialData.data.userInfo == 1981;
-        const guestRoutes = ['/link', '/scheduledGames', '/find-gamers/search', '/profile', '/post', '/community', '/s/'];
+        
         const isOnGuestRoute = guestRoutes.some((route) => window.location.href.includes(route));
         if (loggedOut && !isOnGuestRoute) {
           window.location.href = '/logout'
@@ -178,6 +181,17 @@ this.setState({refreshGuestLink:true})
                   path='/'
                   component={(props) => (
                     <Home
+                      routeProps={props}
+                      initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
+                      key={Math.random()}
+                    />
+                  )}
+                />
+                <Route
+                  exact
+                  path='/guest'
+                  component={(props) => (
+                    <GuestFeeds
                       routeProps={props}
                       initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
                       key={Math.random()}
@@ -474,6 +488,9 @@ this.setState({refreshGuestLink:true})
   renderGuestFindGamers = () => {
     return <GuestFindGamers />;
   }
+  renderGuestFeeds = () => {
+    return <GuestFeeds />;
+  }
 
   renderGuestRouter = () => {
     const guestLink = window.location.href.includes('/link');
@@ -482,6 +499,7 @@ this.setState({refreshGuestLink:true})
     const guestPost = window.location.href.includes('/post');
     const guestCommunity = window.location.href.includes('/community');
     const guestFindGamers = window.location.href.includes('/find-gamers/search');
+    const guest = window.location.href.includes('/guest');
     if (!window.router) window.router = createBrowserHistory();
     if (this.state.hasLink && !this.state.link) return null;
     return (
@@ -492,12 +510,12 @@ this.setState({refreshGuestLink:true})
         {guestPost && this.renderGuestPost()}
         {guestCommunity && this.renderGuestCommunity()}
         {guestFindGamers && this.renderGuestFindGamers()}
+        {guest && this.renderGuestFeeds()}
       </Fragment>
     );
   }
 
   render() {
-    const guestRoutes = ['/link', '/scheduledGames', '/find-gamers/search', '/profile', '/post', '/community'];
     const isGuest = this.state.initialData && this.state.initialData.userInfo === 1981;
     const isOnGuestRoute = isGuest && guestRoutes.some((route) => window.location.href.includes(route));
     if (!window.router) window.router = createBrowserHistory();
