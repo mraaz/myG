@@ -15,6 +15,7 @@ pipeline {
         MIX_GOOGLE_MAPS_KEY = credentials('mix_google_maps_key')
         SECRET_KEY = credentials('secret_key')
         SITE_KEY = credentials('site_key')
+        TRANSLATE_KEY = credentials('translate_key')
         TAG = sh(script: "echo `date +'%d.%m.%Y..%H.%M.%S'`", returnStdout: true).trim()
         DISTRIBUTION = credentials('cloud_front_distribution_id_myG')
     }

@@ -21,7 +21,7 @@ import {
   getExtraFilterOprion,
   properCase,
   yes_no_options,
-  language_options,
+  language_options
 } from './option'
 
 const queryMapping = {
@@ -29,7 +29,7 @@ const queryMapping = {
   1: 'two',
   2: 'three',
   3: 'four',
-  4: 'five',
+  4: 'five'
 }
 
 const valueMapping = ['value_one', 'value_two', 'value_three', 'value_four', 'value_five']
@@ -50,7 +50,7 @@ export default class ScheduleGames extends Component {
       showOverlay: false,
       filterValueArray: {},
       options_tags: '',
-      value_tags: '',
+      value_tags: ''
     }
     this.filterGroup = {
       game_name: 'Game Title',
@@ -62,7 +62,7 @@ export default class ScheduleGames extends Component {
       description: 'Description',
       mic: 'Mic required?',
       eighteen_plus: '18+',
-      language: 'Language',
+      language: 'Language'
     }
     this.constantFilterGroup = {
       game_name: 'Game Title',
@@ -74,7 +74,7 @@ export default class ScheduleGames extends Component {
       description: 'Description',
       mic: 'Mic required?',
       eighteen_plus: '18+',
-      language: 'Language',
+      language: 'Language'
     }
     this.constantFilter = [
       'game_name',
@@ -86,7 +86,7 @@ export default class ScheduleGames extends Component {
       'description',
       'mic',
       'eighteen_plus',
-      'language',
+      'language'
     ]
     this.filterNameRef = React.createRef()
   }
@@ -143,7 +143,6 @@ export default class ScheduleGames extends Component {
           this.filterGroup[key] = properCase(key)
         })
     } else {
-      let additional_info_data = {}
       let allKeys = { ...this.filterGroup }
       let keys = {}
       if (Object.keys(allKeys).length > 0) {
@@ -163,14 +162,14 @@ export default class ScheduleGames extends Component {
         games: false,
         filterValueArray,
         additional_info_data,
-        extraFields: {},
+        extraFields: {}
       },
       () => {
         this.props.handleChange(
           {
             game_name: filterValueArray['game_name'],
             default: false,
-            games: false,
+            games: false
           },
           name
         )
@@ -182,7 +181,7 @@ export default class ScheduleGames extends Component {
     if (value_tags == null) value_tags = []
     filterValueArray['tags'] = value_tags
     this.setState({ value_tags, filterValueArray }, () => {
-      const tags = this.getTagsValue([...value_tags])
+      this.getTagsValue([...value_tags])
       this.props.handleChange({ tags: value_tags }, name)
     })
   }
@@ -192,7 +191,7 @@ export default class ScheduleGames extends Component {
     this.setState(
       {
         region,
-        filterValueArray,
+        filterValueArray
       },
       () => {
         this.props.handleChange({ region }, name)
@@ -206,7 +205,7 @@ export default class ScheduleGames extends Component {
     this.setState(
       {
         experience,
-        filterValueArray,
+        filterValueArray
       },
       () => {
         this.props.handleChange({ experience }, name)
@@ -219,7 +218,7 @@ export default class ScheduleGames extends Component {
     this.setState(
       {
         platform,
-        filterValueArray,
+        filterValueArray
       },
       () => {
         this.props.handleChange({ platform }, name)
@@ -232,7 +231,7 @@ export default class ScheduleGames extends Component {
     this.setState(
       {
         start_time,
-        filterValueArray,
+        filterValueArray
       },
       () => {
         this.props.handleChange({ start_time }, name)
@@ -247,7 +246,7 @@ export default class ScheduleGames extends Component {
     this.setState(
       {
         description,
-        filterValueArray,
+        filterValueArray
       },
       () => {
         this.props.handleChange({ description }, name)
@@ -262,7 +261,7 @@ export default class ScheduleGames extends Component {
     this.setState(
       {
         other_box,
-        filterValueArray,
+        filterValueArray
       },
       () => {
         this.props.handleChange({ other_box }, name)
@@ -276,7 +275,7 @@ export default class ScheduleGames extends Component {
     this.setState(
       {
         mic,
-        filterValueArray,
+        filterValueArray
       },
       () => {
         this.props.handleChange({ mic }, name)
@@ -290,7 +289,7 @@ export default class ScheduleGames extends Component {
     this.setState(
       {
         eighteen_plus,
-        filterValueArray,
+        filterValueArray
       },
       () => {
         this.props.handleChange({ eighteen_plus }, name)
@@ -304,7 +303,7 @@ export default class ScheduleGames extends Component {
     this.setState(
       {
         language,
-        filterValueArray,
+        filterValueArray
       },
       () => {
         this.props.handleChange({ language }, name)
@@ -315,7 +314,7 @@ export default class ScheduleGames extends Component {
   handleChange_visibility = (visibility_box, name) => {
     this.setState(
       {
-        visibility_box,
+        visibility_box
       },
       () => {
         this.props.handleChange({ visibility_box }, name)
@@ -384,7 +383,7 @@ export default class ScheduleGames extends Component {
         eighteen_plus: null,
         mic: null,
         language: null,
-        game_name_box: null,
+        game_name_box: null
       },
       () => {
         this.filterGroup = this.constantFilterGroup
@@ -429,7 +428,7 @@ export default class ScheduleGames extends Component {
     try {
       const saveFilter = await axios.post('/api/SavedFiltersScheduleGameController', {
         name: filterName,
-        payload,
+        payload
       })
       if (saveFilter.data == 'ER_DUP_ENTRY') {
         toast.error(<Toast_style text={'Oopsie! This name already exists.'} />)
@@ -570,7 +569,7 @@ export default class ScheduleGames extends Component {
     if (e.key === 'Escape') {
       this.setState({
         showFilterTypeInput: {},
-        inputValue: '',
+        inputValue: ''
       })
     }
 
@@ -591,7 +590,7 @@ export default class ScheduleGames extends Component {
       const saveFilter = await axios.post('/api/SavedFiltersScheduleGameController/updateFilter', {
         id: filterId,
         name: inputValue,
-        payload: JSON.parse(filterPayload),
+        payload: JSON.parse(filterPayload)
       })
       if (saveFilter.data == 'ER_DUP_ENTRY') {
         toast.error(<Toast_style text={'Oopsie! Name already exists.'} />)
@@ -611,7 +610,7 @@ export default class ScheduleGames extends Component {
     e.stopPropagation()
     try {
       const deleteFilter = await axios.post('/api/SavedFiltersScheduleGameController/deleteFilter', {
-        id,
+        id
       })
       if (deleteFilter) {
         this.setState({ showFilters: false, showOverlay: false })
@@ -628,7 +627,7 @@ export default class ScheduleGames extends Component {
       showFilterType: false,
       showFilters: false,
       showSaveFilterInput: false,
-      showOverlay: false,
+      showOverlay: false
     })
   }
 
@@ -640,7 +639,7 @@ export default class ScheduleGames extends Component {
     this.setState(
       {
         extraFields,
-        filterValueArray,
+        filterValueArray
       },
       () => {
         this.props.handleChange({ extraFields }, key)
@@ -650,8 +649,6 @@ export default class ScheduleGames extends Component {
 
   render() {
     const {
-      savedFilter,
-      addFilter,
       filterName = '',
       showSaveFilterInput,
       isRequesting = '',
@@ -665,8 +662,7 @@ export default class ScheduleGames extends Component {
       filterValueArray = {},
       additional_info_data = {},
       extraFields = {},
-      additional_info_data_savedFilter = {},
-      game_name_box,
+      additional_info_data_savedFilter = {}
     } = this.state
 
     if (this.props.initialData == 'loading') {
@@ -971,7 +967,8 @@ export default class ScheduleGames extends Component {
                       type='button'
                       disabled={isRequesting || !filterName}
                       className='filter__save_button'
-                      onClick={this.handleSaveFilterClick}>
+                      onClick={this.handleSaveFilterClick}
+                    >
                       Save
                     </button>
                     <div className='filterInput__close' onClick={this.handleCloseSaveFilterInput}>
@@ -1004,7 +1001,8 @@ export default class ScheduleGames extends Component {
                             <div
                               style={{ padding: '9px', paddingRight: '42px' }}
                               title={k.name}
-                              onClick={(e) => this.handleSavedFilterClick(k, additional_info_data_savedFilter)}>
+                              onClick={(e) => this.handleSavedFilterClick(k, additional_info_data_savedFilter)}
+                            >
                               {k.name}
                             </div>
                           ) : (
@@ -1053,7 +1051,8 @@ export default class ScheduleGames extends Component {
                         className={`filterType__name  ${filterTypeArray.includes(k) ? 'selected' : ''}`}
                         style={{ padding: '9px' }}
                         key={k}
-                        onClick={(e) => this.handleFilterTypeClick(k)}>
+                        onClick={(e) => this.handleFilterTypeClick(k)}
+                      >
                         {this.filterGroup[k]}
                       </div>
                     )
