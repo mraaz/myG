@@ -43,9 +43,9 @@ class GuestFeeds extends Component {
     if (item == null) return
     const { sponsored_post = false } = item
     if (sponsored_post) {
-      return <IndividualSponsoredPost post={item} key={index} source={'news_feed'} />
+      return <IndividualSponsoredPost  handleGuestModal={this.handleGuestModal}  guest post={item} key={index} source={'news_feed'} />
     } else {
-      return <IndividualPost post={item} key={index} user={{}} source={'news_feed'} />
+      return <IndividualPost handleGuestModal={this.handleGuestModal}  guest post={item} key={index} user={{}} source={'news_feed'} />
     }
   }
 
@@ -127,8 +127,11 @@ class GuestFeeds extends Component {
   render() {
     const { myPosts = [], moreplease, isFetching = false } = this.state
     return (
-      <Fragment>
-        <div className='content-area'>
+      <div className=" app-container home-page">
+      <section id='content-container'>
+        
+        <div id='post' className='guest-page active'>
+        <div className="content-area">
         <GuestBanner handleGuestModal={this.handleGuestModal} />
         {this.state.showModal && <SignUpModal  handleGuestModal={this.handleGuestModal} onClick={() => this.setState({ showModal: false })} />}
         <GamerSuggestions />
@@ -140,7 +143,9 @@ class GuestFeeds extends Component {
           </section>
         )}
         </div>
-      </Fragment>
+        </div>
+      </section>
+      </div>
     )
   }
 }
