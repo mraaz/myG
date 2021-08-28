@@ -44,9 +44,9 @@ class GuestFeeds extends Component {
     if (item == null) return
     const { sponsored_post = false } = item
     if (sponsored_post) {
-      return <IndividualSponsoredPost  handleGuestModal={this.handleGuestModal}  guest post={item} key={index} source={'news_feed'} />
+      return <IndividualSponsoredPost refreshme={this.props.refreshme}  handleGuestModal={this.handleGuestModal}  guest post={item} key={index} source={'news_feed'} />
     } else {
-      return <IndividualPost handleGuestModal={this.handleGuestModal}  guest post={item} key={index} user={{}} source={'news_feed'} />
+      return <IndividualPost refreshme={this.props.refreshme} handleGuestModal={this.handleGuestModal}  guest post={item} key={index} user={{}} source={'news_feed'} />
     }
   }
 

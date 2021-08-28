@@ -489,7 +489,7 @@ this.setState({refreshGuestLink:true})
     return <GuestFindGamers />;
   }
   renderGuestFeeds = () => {
-    return <GuestFeeds />;
+    return <GuestFeeds refreshme={this.refreshme} />;
   }
 
   renderGuestRouter = () => {

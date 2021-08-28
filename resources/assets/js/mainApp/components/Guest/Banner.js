@@ -25,6 +25,8 @@ export default class GuestBanner extends React.Component {
       this.navRef.current.removeAttribute('style')
       if (this.lastScrollY > 10) {
         this.navRef.current.style.top = '0'
+        this.navRef.current.style.left = '0'
+        this.navRef.current.style.right = '0'
         this.navRef.current.style.position = 'fixed'
         this.navRef.current.style.zIndex = '1001'
         this.navRef.current.style.backgroundColor= '#181a1c'
