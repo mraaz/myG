@@ -460,19 +460,19 @@ this.setState({refreshGuestLink:true})
     const uuidMatcher = new RegExp(/[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}/)
     const url = window.location.href
     const uuid = Array.isArray(url.match(uuidMatcher)) ? url.match(uuidMatcher)[0] : null
-    return <GuestLink uuid={uuid} />
+    return <GuestLink uuid={uuid} refreshme={this.refreshme}  />
   }
 
   renderGuestGame = () => {
     const uuidMatcher = new RegExp(/[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}/)
     const url = window.location.href
     const uuid = Array.isArray(url.match(uuidMatcher)) ? url.match(uuidMatcher)[0] : null
-    return <GuestGame uuid={uuid} />
+    return <GuestGame uuid={uuid} refreshme={this.refreshme}  />
   }
 
   renderGuestProfile = () => {
     const alias = location.pathname.split('/profile/')[1];
-    return <GuestProfile alias={alias} />;
+    return <GuestProfile alias={alias} refreshme={this.refreshme}  />;
   }
 
   renderGuestPost = () => {
@@ -482,11 +482,11 @@ this.setState({refreshGuestLink:true})
 
   renderGuestCommunity = () => {
     const id = location.pathname.split('/community/')[1];
-    return <GuestCommunity id={id} />;
+    return <GuestCommunity id={id} refreshme={this.refreshme}  />;
   }
 
   renderGuestFindGamers = () => {
-    return <GuestFindGamers />;
+    return <GuestFindGamers refreshme={this.refreshme}  />;
   }
   renderGuestFeeds = () => {
     return <GuestFeeds refreshme={this.refreshme} />;

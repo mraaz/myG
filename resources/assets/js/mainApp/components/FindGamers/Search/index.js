@@ -47,6 +47,11 @@ export default class Search extends React.Component {
   }, 300)
 
   onChange = (search) => {
+    if(this.props.guest){
+      this.props.handleGuestModal();
+      return
+    }
+    
     this.setState({ search, from: 0 }, this.onSearch);
     if (search === ':?') this.showHelp();
   }
@@ -56,6 +61,10 @@ export default class Search extends React.Component {
   }
 
   toggleOnline = () => {
+    if(this.props.guest){
+      this.props.handleGuestModal();
+      return
+    }
     this.setState((previous) => ({ online: !previous.online }), this.onSearch);
   }
 
