@@ -3,9 +3,10 @@ import axios from 'axios'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import IndividualPost from './IndividualPost'
 import IndividualSponsoredPost from './IndividualSponsoredPost'
-import GamerSuggestions from './Profile/GamerSuggestions'
 import GuestBanner from './Guest/Banner'
 import SignUpModal from './Guest/SignUpModal'
+import GameExperiences from './Profile/GameExperiences';
+import MobileGameExperiences from './Profile/GameExperiences/mobile';
 
 
 import { logToElasticsearch } from '../../integration/http/logger'
@@ -133,8 +134,33 @@ class GuestFeeds extends Component {
         <div id='post' className='guest-page active'>
         <div className="content-area">
         <GuestBanner handleGuestModal={this.handleGuestModal} />
-        {this.state.showModal && <SignUpModal  handleGuestModal={this.handleGuestModal} onClick={() => this.setState({ showModal: false })} />}
-        <GamerSuggestions />
+        {this.state.showModal && <SignUpModal  handleGuestModal={this.handleGuestModal} />}
+       <div id="profile"> 
+        <div className="desktopShow"> 
+            <GameExperiences 
+                guest 
+                userId={''} 
+                selectedGame={''} 
+                commendUser={this.commendUser} 
+                deleteExperience={this.deleteExperience} 
+                alias={this.props.alias} 
+                profile={this.props.profile} 
+                updateGame={this.props.updateGame} 
+            />
+          </div>
+          <div className="mobileShow">  
+            <MobileGameExperiences 
+                guest 
+                userId={''} 
+                selectedGame={''} 
+                commendUser={this.commendUser} 
+                deleteExperience={this.deleteExperience} 
+                alias={this.props.alias} 
+                profile={this.props.profile} 
+                updateGame={this.props.updateGame}
+            />
+          </div>
+        </div>
         {myPosts.length > 0 && (
           <section id='posts' className={isFetching ? '' : `active`}>
             <InfiniteScroll dataLength={myPosts.length} next={this.fetchMoreData} hasMore={moreplease}>

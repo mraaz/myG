@@ -394,6 +394,7 @@ export default class IndividualPost extends Component {
     if (!key) {
       let isGuestUser = this.props.guest ? true : false
     if (isGuestUser) {
+      this.setTextInputRef.current.blur();
       this.props.handleGuestModal()
       return
     }
