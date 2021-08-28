@@ -152,6 +152,13 @@ export default class IndividualComment extends Component {
   }
 
   click_like_btn = (comment_id) => {
+    let isGuestUser = this.props.guest ? true : false;
+    console.log('isGuestUser  ',isGuestUser);
+
+    if (isGuestUser) {
+      this.props.handleGuestModal()
+      return
+    }
     this.setState({
       total: this.state.total + 1
     })
@@ -171,6 +178,11 @@ export default class IndividualComment extends Component {
   }
 
   click_unlike_btn = (comment_id) => {
+    let isGuestUser = this.props.guest ? true : false
+    if (isGuestUser) {
+      this.props.handleGuestModal()
+      return
+    }
     this.setState({
       total: this.state.total - 1
     })
@@ -193,14 +205,29 @@ export default class IndividualComment extends Component {
   }
 
   handleChange = (e) => {
+    let isGuestUser = this.props.guest ? true : false
+    if (isGuestUser) {
+      this.props.handleGuestModal()
+      return
+    }
     this.setState({ value: e.target.value })
   }
 
   handleChange2 = (e) => {
+    let isGuestUser = this.props.guest ? true : false
+    if (isGuestUser) {
+      this.props.handleGuestModal()
+      return
+    }
     this.setState({ value2: e.target.value })
   }
 
   toggleReply = () => {
+    let isGuestUser = this.props.guest ? true : false
+    if (isGuestUser) {
+      this.props.handleGuestModal()
+      return
+    }
     this.setState({
       show_add_reply: !this.state.show_add_reply
     })
@@ -216,6 +243,11 @@ export default class IndividualComment extends Component {
     }
   }
   show_more_replies = () => {
+    let isGuestUser = this.props.guest ? true : false
+    if (isGuestUser) {
+      this.props.handleGuestModal()
+      return
+    }
     this.setState({ show_more_replies: !this.state.show_more_replies, hideReplies: false })
   }
 
@@ -383,6 +415,11 @@ export default class IndividualComment extends Component {
   }
 
   clickedDropdown = () => {
+    let isGuestUser = this.props.guest ? true : false
+    if (isGuestUser) {
+      this.props.handleGuestModal()
+      return
+    }
     this.setState({
       dropdown: !this.state.dropdown
     })
@@ -534,6 +571,12 @@ export default class IndividualComment extends Component {
     this.setState({ hideReplies: true, show_more_replies: !show_more_replies, replyShowCount: myReplies.length })
   }
 
+  handleLinkClick = ()=>{
+    if(this.props.refreshme){
+      this.props.refreshme()
+    }
+  }
+
   render() {
     let { comment, user, post } = this.props
     let { profile_img = 'https://myG.gg/default_user/new-user-profile-picture.png', media_url = '' } = comment
@@ -553,7 +596,7 @@ export default class IndividualComment extends Component {
           <div className='comment__section'>
             <div className='comment-info'>
               <div className='comment-pin-group'>
-                <Link to={`/profile/${comment.alias}`}>{`@${comment.alias}`}</Link>
+                <Link to={`/profile/${comment.alias}`} onClick={this.handleLinkClick}>{`@${comment.alias}`}</Link>
                 {comment_pinned && (
                   <div className='comment-pin'>
                     <img className='photo' src='https://myg.gg/platform_images/Profile/thumbtack.png' />
@@ -628,7 +671,7 @@ export default class IndividualComment extends Component {
               </div>
             )}
             {/* profile section start  */}
-            <Link to={`/profile/${comment.alias}`} className='user-img'>
+            <Link to={`/profile/${comment.alias}`} className='user-img' onClick={this.handleLinkClick}>
               <div
                 className='profile__image'
                 style={{

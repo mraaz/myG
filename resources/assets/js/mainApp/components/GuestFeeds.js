@@ -138,7 +138,7 @@ class GuestFeeds extends Component {
        <div id="profile"> 
         <div className="desktopShow"> 
             <GameExperiences 
-                guest 
+                guest={true} 
                 userId={''} 
                 selectedGame={''} 
                 commendUser={this.commendUser} 
@@ -150,7 +150,7 @@ class GuestFeeds extends Component {
           </div>
           <div className="mobileShow">  
             <MobileGameExperiences 
-                guest 
+                guest={true} 
                 userId={''} 
                 selectedGame={''} 
                 commendUser={this.commendUser} 

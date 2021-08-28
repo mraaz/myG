@@ -144,6 +144,11 @@ export default class IndividualPost extends Component {
   }
 
   handleLinkClick = ()=>{
+    const isGuestUser = this.props.guest ? true : false
+    if (isGuestUser) {
+      this.props.handleGuestModal()
+      return
+    }
     if(this.props.refreshme){
       this.props.refreshme()
     }
@@ -457,6 +462,9 @@ export default class IndividualPost extends Component {
                 myComments: previous.myComments.filter((comment) => comment.id !== deleted)
               }))
             }}
+            guest={this.props.guest}
+            handleGuestModal={this.props.handleGuestModal}
+            refreshme={this.props.refreshme}
           />
         )
       })
@@ -481,6 +489,9 @@ export default class IndividualPost extends Component {
                 myComments: previous.myComments.filter((comment) => comment.id !== deleted)
               }))
             }}
+            guest={this.props.guest}
+            handleGuestModal={this.props.handleGuestModal}
+            refreshme={this.props.refreshme}
           />
         )
       })
@@ -593,8 +604,17 @@ export default class IndividualPost extends Component {
   }
 
   renderHashTags = (hash_tags) => {
+    const isGuestUser = this.props.guest ? true : false
+    
     if (hash_tags.length > 0) {
       return hash_tags.map((tags) => {
+        if (isGuestUser) {
+          return (
+            <strong>
+              <span  onClick={this.handleLinkClick}>{`#${tags.content} `}</span>
+            </strong>
+          )
+        }
         return (
           <strong>
             <Link to={`/hashtag/${tags.content}`} onClick={this.handleLinkClick}>{`#${tags.content} `}</Link>
