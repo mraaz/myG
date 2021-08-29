@@ -5,9 +5,8 @@ import IndividualPost from './IndividualPost'
 import IndividualSponsoredPost from './IndividualSponsoredPost'
 import GuestBanner from './Guest/Banner'
 import SignUpModal from './Guest/SignUpModal'
-import GameExperiences from './Profile/GameExperiences';
-import MobileGameExperiences from './Profile/GameExperiences/mobile';
-
+import GameExperiences from './Profile/GameExperiences'
+import MobileGameExperiences from './Profile/GameExperiences/mobile'
 
 import { logToElasticsearch } from '../../integration/http/logger'
 
@@ -20,19 +19,22 @@ class GuestFeeds extends Component {
       moreplease: true,
       post_submit_loading: false,
       showEvents: false,
-      showModal:false
+      showModal: false
     }
   }
 
   componentDidMount() {
     document.title = 'myG - Home'
 
-    window.scrollTo({
-      top: 500,
-      behavior: 'smooth'
-    })
-    //window.history.pushState('myG', 'myG', '/')
+    window.scrollTo({ top: 500, behavior: 'smooth' })
     this.fetchMoreData()
+    document.addEventListener('scroll', this.handleScroll, { passive: true })
+    document.addEventListener('wheel', this.handleScroll, { passive: true })
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('scroll', this.handleScroll, false)
+    document.removeEventListener('wheel', this.handleScroll, false)
   }
 
   showLatestPosts = () => {
@@ -40,13 +42,48 @@ class GuestFeeds extends Component {
     return myPosts.map(this.showthis_Post)
   }
 
+  handleScroll = () => {
+    if (!document.getElementById('posts')) return
+    const windowHeight = window.innerHeight
+    const container = document.getElementById('posts')
+    const containerHeight = container.offsetHeight
+    const containerPosition = container.getBoundingClientRect()
+    const containerOffset = containerPosition.y
+    const needsMoreData = windowHeight - (containerHeight + containerOffset) > 0
+    if (needsMoreData && this.state.moreplease && !this.state.fetching) {
+      const { counter = 1 } = this.state
+      this.setState({ counter: counter + 1 }, () => {
+        this.fetchMoreData()
+      })
+    }
+  }
+
   showthis_Post = (item, index) => {
     if (item == null) return
     const { sponsored_post = false } = item
     if (sponsored_post) {
-      return <IndividualSponsoredPost refreshme={this.props.refreshme}  handleGuestModal={this.handleGuestModal}  guest post={item} key={index} source={'news_feed'} />
+      return (
+        <IndividualSponsoredPost
+          refreshme={this.props.refreshme}
+          handleGuestModal={this.handleGuestModal}
+          guest
+          post={item}
+          key={index}
+          source={'news_feed'}
+        />
+      )
     } else {
-      return <IndividualPost refreshme={this.props.refreshme} handleGuestModal={this.handleGuestModal}  guest post={item} key={index} user={{}} source={'news_feed'} />
+      return (
+        <IndividualPost
+          refreshme={this.props.refreshme}
+          handleGuestModal={this.handleGuestModal}
+          guest
+          post={item}
+          key={index}
+          user={{}}
+          source={'news_feed'}
+        />
+      )
     }
   }
 
@@ -61,10 +98,11 @@ class GuestFeeds extends Component {
         const myPosts = await axios({
           method: 'POST',
           url: `/api/post/guest_feed`,
-          body:{
-            counter:`${self.state.counter}`
+          body: {
+            counter: `${self.state.counter}`
           }
         })
+        //console.log(self.state.counter, '<<<length')
 
         if (myPosts.data == '' || myPosts.data == {} || (myPosts.data.myPosts && myPosts.data.myPosts.length == 0)) {
           self.setState({
@@ -122,59 +160,55 @@ class GuestFeeds extends Component {
     )
   }
 
-  handleGuestModal = ()=>{
-    this.setState({showModal:!this.state.showModal})
+  handleGuestModal = () => {
+    this.setState({ showModal: !this.state.showModal })
   }
   render() {
     const { myPosts = [], moreplease, isFetching = false } = this.state
     return (
-      <div className=" app-container home-page">
-      <section id='content-container'>
-        
-        <div id='post' className='guest-page active'>
-        <div className="content-area">
-        <GuestBanner handleGuestModal={this.handleGuestModal} />
-        {this.state.showModal && <SignUpModal  handleGuestModal={this.handleGuestModal} />}
-       <div id="profile"> 
-        <div className="desktopShow"> 
-            <GameExperiences 
-                guest={true} 
-                userId={''} 
-                selectedGame={''} 
-                commendUser={this.commendUser} 
-                deleteExperience={this.deleteExperience} 
-                alias={this.props.alias} 
-                profile={this.props.profile} 
-                updateGame={this.props.updateGame} 
-            />
+      <div className=' app-container home-page'>
+        <section id='content-container'>
+          <div id='post' className='guest-page active'>
+            <div className='content-area'>
+              <GuestBanner handleGuestModal={this.handleGuestModal} />
+              {this.state.showModal && <SignUpModal handleGuestModal={this.handleGuestModal} />}
+              <div id='profile'>
+                <div className='desktopShow'>
+                  <GameExperiences
+                    guest={true}
+                    userId={''}
+                    selectedGame={''}
+                    commendUser={this.commendUser}
+                    deleteExperience={this.deleteExperience}
+                    alias={this.props.alias}
+                    profile={this.props.profile}
+                    updateGame={this.props.updateGame}
+                  />
+                </div>
+                <div className='mobileShow'>
+                  <MobileGameExperiences
+                    guest={true}
+                    userId={''}
+                    selectedGame={''}
+                    commendUser={this.commendUser}
+                    deleteExperience={this.deleteExperience}
+                    alias={this.props.alias}
+                    profile={this.props.profile}
+                    updateGame={this.props.updateGame}
+                  />
+                </div>
+              </div>
+              {myPosts.length > 0 && (
+                <section id='posts' className={isFetching ? '' : `active`}>
+                  {this.showLatestPosts()}
+                </section>
+              )}
+            </div>
           </div>
-          <div className="mobileShow">  
-            <MobileGameExperiences 
-                guest={true} 
-                userId={''} 
-                selectedGame={''} 
-                commendUser={this.commendUser} 
-                deleteExperience={this.deleteExperience} 
-                alias={this.props.alias} 
-                profile={this.props.profile} 
-                updateGame={this.props.updateGame}
-            />
-          </div>
-        </div>
-        {myPosts.length > 0 && (
-          <section id='posts' className={isFetching ? '' : `active`}>
-            <InfiniteScroll dataLength={myPosts.length} next={this.fetchMoreData} hasMore={moreplease}>
-              {this.showLatestPosts()}
-            </InfiniteScroll>
-          </section>
-        )}
-        </div>
-        </div>
-      </section>
+        </section>
       </div>
     )
   }
 }
-
 
 export default GuestFeeds
