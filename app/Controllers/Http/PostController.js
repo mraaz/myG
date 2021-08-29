@@ -830,7 +830,6 @@ class PostController {
   }
 
   async guestShow({ request }) {
-    console.log('GOing in')
     try {
       //Find top trending posts:
       // Posts with most likes n updated recently
@@ -854,30 +853,14 @@ class PostController {
         .count('* as no_of_likes')
         .orderBy('no_of_likes', 'desc')
         .select('posts.id')
-        .paginate(request.input('counter'), 70)
+        .paginate(request.input('counter'), counterValue)
 
       let array_ = []
-      console.log(trendingPosts_likes.data.length, '<<<length')
-
       trendingPosts_likes.data.map((posts) => {
         array_.push(posts.id)
       })
 
-      const trendingPosts_likes2 = await Database.from('posts')
-        .innerJoin('likes', 'likes.post_id', 'posts.id')
-        .whereIn('posts.visibility', [1])
-        .where((builder) => {
-          if (game_names != null) builder.whereIn('posts.game_names_id', [game_names])
-        })
-        .groupBy('posts.id')
-        .count('* as no_of_likes')
-        .orderBy('no_of_likes', 'desc')
-        .select('posts.id')
-      //.paginate(request.input('counter'), counterValue)
-      //console.log(trendingPosts_likes2.length, '<<trendingPosts_likes2')
-
       if (game_names != null) {
-        console.log('EMPYD')
         const trendingPosts_communities = await Database.from('posts')
           .innerJoin('groups', 'groups.id', 'posts.group_id')
           .innerJoin('likes', 'likes.post_id', 'posts.id')
@@ -893,7 +876,6 @@ class PostController {
           array_.push(posts.id)
         })
       }
-      //console.log(array_.length, '<<array_')
 
       let myPosts = await this.guestBody(array_)
       myPosts = myPosts.tmpResults

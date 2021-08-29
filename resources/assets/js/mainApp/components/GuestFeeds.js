@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import axios from 'axios'
-import InfiniteScroll from 'react-infinite-scroll-component'
+
 import IndividualPost from './IndividualPost'
 import IndividualSponsoredPost from './IndividualSponsoredPost'
 import GuestBanner from './Guest/Banner'
@@ -95,14 +95,9 @@ class GuestFeeds extends Component {
 
     const getPosts = async function () {
       try {
-        const myPosts = await axios({
-          method: 'POST',
-          url: `/api/post/guest_feed`,
-          body: {
-            counter: `${self.state.counter}`
-          }
+        const myPosts = await axios.post('/api/post/guest_feed', {
+          counter: self.state.counter
         })
-        //console.log(self.state.counter, '<<<length')
 
         if (myPosts.data == '' || myPosts.data == {} || (myPosts.data.myPosts && myPosts.data.myPosts.length == 0)) {
           self.setState({
@@ -164,7 +159,7 @@ class GuestFeeds extends Component {
     this.setState({ showModal: !this.state.showModal })
   }
   render() {
-    const { myPosts = [], moreplease, isFetching = false } = this.state
+    const { myPosts = [], isFetching = false } = this.state
     return (
       <div className=' app-container home-page'>
         <section id='content-container'>
