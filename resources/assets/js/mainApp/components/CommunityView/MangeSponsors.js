@@ -287,7 +287,7 @@ export default class MangeSponsors extends React.Component {
                     )}
                     <div className='Sponsor__link__input'>
                       <input
-                        type='text'
+                        type='text' autocomplete='off'
                         onChange={(e) => this.handleLinkChange(e, counter)}
                         value={sponsor.link}
                         placeholder='Enter link here'
