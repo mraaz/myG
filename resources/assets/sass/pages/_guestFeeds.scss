@@ -84,10 +84,12 @@ section#content-container {
       min-height: 400px; // For mobile, ensures filter dropdown is not cut off when no games appear in search
       scrollbar-width: none; /* Firefox */
       -ms-overflow-style: none; /* IE and Edge */
+      width: 100%;
 
       @media (min-width: 575px) {
         max-height: unset;
         min-height: unset; // remove min-height as not needed for desktop
+        width: 100%;
       }
     }
     .search-header {
@@ -3001,9 +3003,25 @@ section#content-container {
 @media screen and (max-width: 480px) {
   #guest-banner {
     width: 95% !important;
+    .input {
+      font-size: 12px;
+      padding: 8px 13px;
+      width: 70px;
+    }
+    .logo-container{
+      height: 100px;
+    }
   }
   #guest-content {
     width: 95% !important;
+  }
+  .guest-button-container{
+    width: 150px;
+    padding: 0;
+    .guest-button{
+      padding: 0px 0px;
+    font-size: 12px;
+    }
   }
 }
 

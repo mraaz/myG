@@ -271,6 +271,7 @@ export default class IndividualComment extends Component {
                 myReplies: previous.myReplies.filter((reply) => reply.id !== deleted)
               }))
             }}
+            handleLinkClick={this.handleLinkClick}
           />
         )
       })
@@ -293,6 +294,7 @@ export default class IndividualComment extends Component {
                 myReplies: previous.myReplies.filter((reply) => reply.id !== deleted)
               }))
             }}
+            handleLinkClick={this.handleLinkClick}
           />
         )
       })
