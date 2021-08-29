@@ -20,9 +20,10 @@ export const translationMessages = {
 
 const LanguageProvider = ({ selectedLanguage, children }) => {
   const locale = selectedLanguage || navigator.language;
-  const localeMessages = translationMessages[locale] || translationMessages[locale.split('-')[0]];
+  const validLocale = translationMessages[locale] ? locale : locale.split('-')[0];
+  const localeMessages = translationMessages[validLocale];
   return (
-    <IntlProvider key={locale} locale={locale} messages={localeMessages}>
+    <IntlProvider key={validLocale} locale={validLocale} messages={localeMessages}>
       {children}
     </IntlProvider>
   );

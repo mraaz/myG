@@ -38,6 +38,7 @@ const CoverImage = (props) => {
       if (file.size < 10485760) {
         const post = await Upload_to_S3(file, file.name, 4, props.id)
         setCoverImage(post.data.Location)
+        toast.success(<Toast_style text={'All done boss!'} />)
       } else {
         toast.error(<Toast_style text={'Opps, file size can not be excced more than 10MB '} />)
       }

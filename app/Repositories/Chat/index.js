@@ -163,6 +163,11 @@ class ChatRepository {
     return { chat: chatSchema };
   }
 
+  async fetchChannels() {
+    const channels = await Database.from('chats').select('id').whereNotNull('channel_id');
+    return channels.map((channel) => channel.id);
+  }
+
   async fetchMessages({ requestedChatId, requestedMessageIds, requestedPage }) {
     let query = ChatMessage.query()
     if (requestedMessageIds) {
@@ -1259,8 +1264,15 @@ class ChatRepository {
   async clearChannelHistory() {
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
-    const { chat } = await this.fetchChannel({ requestedChannelId: 'main' });
-    await ChatMessage.query().where('chat_id', chat.chatId).andWhere('created_at', '<=', yesterday).delete();
+    const channelIds = await this.fetchChannels();
+    const requests = channelIds.map((id) => ChatMessage.query().where('chat_id', id).andWhere('created_at', '<=', yesterday).delete());
+    await Promise.all(requests);
+  }
+
+  async clearAllChannelHistory() {
+    const channelIds = await this.fetchChannels();
+    const requests = channelIds.map((id) => ChatMessage.query().where('chat_id', id).delete());
+    await Promise.all(requests);
   }
 
   async handleGameMessages() {

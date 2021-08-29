@@ -114,7 +114,7 @@ export default class ComposeSection extends Component {
 
   submitForm = async () => {
     const content = this.state.post_content.trim()
-
+    // const userLang = navigator.language || navigator.userLanguage
     let media_url = []
     let aws_key_id = []
 
@@ -156,7 +156,6 @@ export default class ComposeSection extends Component {
         toast.success(<Toast_style text={`Strewth mate! Invalid video link`} />)
         return
       }
-
       this.setState(
         {
           bFileModalOpen: false,
@@ -176,7 +175,7 @@ export default class ComposeSection extends Component {
         () => {
           media_url = []
           aws_key_id = []
-          this.props.successCallback(post)
+          if (post.data != '') this.props.successCallback(post)
         }
       )
     } catch (error) {

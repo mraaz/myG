@@ -59,6 +59,13 @@ const getJobs = (runEveryJobOnStart) => [
     enabled: true,
   },
   {
+    name: 'Channel_History_All',
+    action: require('./tasks/channel-history-all'),
+    schedule: '0 * * * *',
+    runOnStart: true,
+    enabled: true,
+  },
+  {
     name: 'Profile_Sync_To_Elasticsearch',
     action: require('./tasks/profile-syncToElasticsearch'),
     schedule: '0 0 * * *',

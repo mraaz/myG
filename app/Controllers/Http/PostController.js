@@ -856,7 +856,6 @@ class PostController {
         .paginate(request.input('counter'), counterValue)
 
       let array_ = []
-
       trendingPosts_likes.data.map((posts) => {
         array_.push(posts.id)
       })

@@ -662,7 +662,7 @@ export default class IndividualComment extends Component {
             {this.state.show_edit_comment && (
               <div className='edit__comment__input'>
                 <input
-                  type='text'
+                  type='text' autocomplete='off'
                   id='reply_name_box'
                   className='reply-name-box'
                   onKeyDown={this.detectKey2}
@@ -723,7 +723,7 @@ export default class IndividualComment extends Component {
             {this.state.show_add_reply && (
               <div className='add-reply'>
                 <input
-                  type='text'
+                  type='text' autocomplete='off'
                   id='reply_name_box'
                   className='reply-name-box'
                   placeholder='Add a reply...'
