@@ -63,8 +63,9 @@ class CommentController {
 
         newComment = await Database.from('comments')
           .innerJoin('users', 'users.id', 'comments.user_id')
+          .innerJoin('posts', 'posts.id', 'comments.post_id')
           .where('comments.id', '=', newComment.id)
-          .select('comments.*', 'users.alias', 'users.profile_img')
+          .select('comments.*', 'users.alias', 'users.profile_img', 'posts.user_id as post_user_id', 'comments.id', 'comments.updated_at')
 
         await AchievementsRepository.registerQuestStep({ user_id: auth.user.id, type: 'post' })
         return newComment
@@ -102,7 +103,6 @@ class CommentController {
         .orderBy('no_of_likes', 'desc')
         .orderBy('comments.updated_at', 'desc')
         .limit(50)
-
 
       //const newArr = await allPinnedComments.concat(allComments)
       const allComments = [...allPinnedComments, ...allNonPinnedComments]

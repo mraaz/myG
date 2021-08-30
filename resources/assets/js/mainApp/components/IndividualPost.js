@@ -143,13 +143,13 @@ export default class IndividualPost extends Component {
     }
   }
 
-  handleLinkClick = ()=>{
+  handleLinkClick = () => {
     const isGuestUser = this.props.guest ? true : false
     if (isGuestUser) {
       this.props.handleGuestModal()
       return
     }
-    if(this.props.refreshme){
+    if (this.props.refreshme) {
       this.props.refreshme()
     }
   }
@@ -322,10 +322,6 @@ export default class IndividualPost extends Component {
     this.setState({
       uploading: false
     })
-
-    this.setState({
-      uploading: false
-    })
   }
 
   insert_comment = () => {
@@ -395,14 +391,13 @@ export default class IndividualPost extends Component {
   }
 
   detectKey = (e, key) => {
-    
     if (!key) {
       let isGuestUser = this.props.guest ? true : false
-    if (isGuestUser) {
-      this.setTextInputRef.current.blur();
-      this.props.handleGuestModal()
-      return
-    }
+      if (isGuestUser) {
+        this.setTextInputRef.current.blur()
+        this.props.handleGuestModal()
+        return
+      }
       e.preventDefault()
       e.stopPropagation()
       if (!this.state.uploading) {
@@ -605,13 +600,13 @@ export default class IndividualPost extends Component {
 
   renderHashTags = (hash_tags) => {
     const isGuestUser = this.props.guest ? true : false
-    
+
     if (hash_tags.length > 0) {
       return hash_tags.map((tags) => {
         if (isGuestUser) {
           return (
             <strong>
-              <span  onClick={this.handleLinkClick}>{`#${tags.content} `}</span>
+              <span onClick={this.handleLinkClick}>{`#${tags.content} `}</span>
             </strong>
           )
         }
@@ -726,7 +721,9 @@ export default class IndividualPost extends Component {
                     <div className='shared__group'>
                       {`shared `}
                       <div className='arrow'></div>
-                      <Link to={`/community/${decodeURI(post.name)}`} onClick={this.handleLinkClick}>{decodeURI(post.name)}</Link>
+                      <Link to={`/community/${decodeURI(post.name)}`} onClick={this.handleLinkClick}>
+                        {decodeURI(post.name)}
+                      </Link>
                     </div>
                   )}
                   {post.visibility === 0 && (
@@ -834,7 +831,7 @@ export default class IndividualPost extends Component {
                 {!show_more_comments && <div className='show-individual-comments'>{this.showMoreComment()}</div>}
               </div>
             )}
-            <div className='compose-comment' >
+            <div className='compose-comment'>
               <textarea
                 name='name'
                 placeholder={post.allow_comments ? 'Write a comment...' : 'Comments disabled'}
