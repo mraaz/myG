@@ -152,8 +152,7 @@ export default class IndividualComment extends Component {
   }
 
   click_like_btn = (comment_id) => {
-    let isGuestUser = this.props.guest ? true : false;
-    console.log('isGuestUser  ',isGuestUser);
+    let isGuestUser = this.props.guest ? true : false
 
     if (isGuestUser) {
       this.props.handleGuestModal()
@@ -573,8 +572,8 @@ export default class IndividualComment extends Component {
     this.setState({ hideReplies: true, show_more_replies: !show_more_replies, replyShowCount: myReplies.length })
   }
 
-  handleLinkClick = ()=>{
-    if(this.props.refreshme){
+  handleLinkClick = () => {
+    if (this.props.refreshme) {
       this.props.refreshme()
     }
   }
@@ -662,7 +661,8 @@ export default class IndividualComment extends Component {
             {this.state.show_edit_comment && (
               <div className='edit__comment__input'>
                 <input
-                  type='text' autocomplete='off'
+                  type='text'
+                  autocomplete='off'
                   id='reply_name_box'
                   className='reply-name-box'
                   onKeyDown={this.detectKey2}
@@ -723,7 +723,8 @@ export default class IndividualComment extends Component {
             {this.state.show_add_reply && (
               <div className='add-reply'>
                 <input
-                  type='text' autocomplete='off'
+                  type='text'
+                  autocomplete='off'
                   id='reply_name_box'
                   className='reply-name-box'
                   placeholder='Add a reply...'
