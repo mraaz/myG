@@ -4,7 +4,6 @@ const Post = use('App/Models/Post')
 const HashTags = use('App/Models/HashTag')
 const SponsoredPost = use('App/Models/SponsoredPost')
 const Database = use('Database')
-const Env = use('Env')
 
 const LikeController = use('./LikeController')
 const PostHashTagTransactionController = use('./PostHashTagTransactionController')
@@ -14,55 +13,15 @@ const ApiController = use('./ApiController')
 const CommonController = use('./CommonController')
 const AchievementsRepository = require('../../Repositories/Achievements')
 
-// Imports the Google Cloud client library
-const { Translate } = require('@google-cloud/translate').v2
+//const { validate } = use('Validator')
 
 const MAX_HASH_TAGS = 21
 
 class PostController {
-  // const text = 'The text for which to detect language, e.g. Hello, world!';
-
-  // Detects the language. "text" can be a string for detecting the language of
-  // a single piece of text, or an array of strings for detecting the languages
-  // of multiple texts.
-
-  async detectLanguage(text) {
-    let value = 'en'
-
-    try {
-      const translate = new Translate({ version: 'v2', key: Env.get('TRANSLATE_KEY') })
-
-      let [detections] = await translate.detect(text)
-      detections = Array.isArray(detections) ? detections : [detections]
-      detections.forEach((detection) => {
-        value = String(detection.language)
-      })
-    } catch (error) {
-      LoggingRepository.log({
-        environment: process.env.NODE_ENV,
-        type: 'error',
-        source: 'backend',
-        context: __filename,
-        message: (error && error.message) || error
-      })
-    }
-    return value
-  }
-
   async store({ auth, request, response }) {
-    //Language Codes: https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
-
-    if (request.input('content') == undefined && String(request.input('content')).trim().length == 0) {
-      return ''
-    }
-
     try {
       let arrGroups_id = [],
         newPost = ''
-
-      // Creates a client
-      let post_language = await this.detectLanguage(request.input('content').trim())
-      if (post_language == 'und') post_language = 'en'
 
       if (request.input('group_id') != undefined && String(request.input('group_id')).trim().length > 0) {
         arrGroups_id = String(request.input('group_id')).split(',')
@@ -96,15 +55,14 @@ class PostController {
 
         if (arrGroups_id.length == 0) {
           newPost = await Post.create({
-            content: request.input('content').trim(),
+            content: request.input('content'),
             video: request.input('video').trim() == '' ? null : request.input('video'),
             user_id: auth.user.id,
             type: 'text',
             group_id: null,
             visibility: request.input('visibility'),
             media_url: request.input('media_url'),
-            game_names_id,
-            post_language
+            game_names_id
           })
 
           if (request.input('hash_tags') != undefined && request.input('hash_tags') != null && request.input('hash_tags').length > 0) {
@@ -150,7 +108,6 @@ class PostController {
         context: __filename,
         message: (error && error.message) || error
       })
-      return ''
     }
   }
 
@@ -878,35 +835,12 @@ class PostController {
       // Posts with most likes n updated recently
       // Shuffle
 
-      let game_names = null,
-        array_ = [],
-        counterValue = 20
+      let game_names = null
+      let counterValue = 20
 
       if (request.input('game_names_ids') != undefined && request.input('game_names_ids') != null) {
         game_names = JSON.parse(request.input('game_names_ids'))
         counterValue = 10
-      }
-
-      if (request.input('userLang') != undefined && request.input('userLang') != null) {
-        if (request.input('userLang').trim() != 'en') {
-          const trendingPosts_likes_NonEnglish = await Database.from('posts')
-            .innerJoin('likes', 'likes.post_id', 'posts.id')
-            .whereIn('posts.visibility', [1])
-            .where((builder) => {
-              if (game_names != null) builder.whereIn('posts.game_names_id', [game_names])
-            })
-            .where({ post_language: request.input('userLang').trim().substring(0, 2) })
-            .groupBy('posts.id')
-            .count('* as no_of_likes')
-            .orderBy('no_of_likes', 'desc')
-            .select('posts.id')
-            .paginate(request.input('counter'), counterValue)
-
-          trendingPosts_likes_NonEnglish.data.map((posts) => {
-            array_.push(posts.id)
-          })
-          if (array_.length > 10) counterValue = 5
-        }
       }
 
       const trendingPosts_likes = await Database.from('posts')
@@ -915,13 +849,13 @@ class PostController {
         .where((builder) => {
           if (game_names != null) builder.whereIn('posts.game_names_id', [game_names])
         })
-        .where({ post_language: 'en' })
         .groupBy('posts.id')
         .count('* as no_of_likes')
         .orderBy('no_of_likes', 'desc')
         .select('posts.id')
         .paginate(request.input('counter'), counterValue)
 
+      let array_ = []
       trendingPosts_likes.data.map((posts) => {
         array_.push(posts.id)
       })

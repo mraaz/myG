@@ -95,6 +95,7 @@ export default class IndividualPost extends Component {
   click_like_btn = (post_id) => {
     const isGuestUser = this.props.guest ? true : false
     if (isGuestUser) {
+      this.props.handleGuestModal()
       return
     }
     this.setState({
@@ -121,6 +122,7 @@ export default class IndividualPost extends Component {
   click_unlike_btn = (post_id) => {
     const isGuestUser = this.props.guest ? true : false
     if (isGuestUser) {
+      this.props.handleGuestModal()
       return
     }
     this.setState({
@@ -138,6 +140,17 @@ export default class IndividualPost extends Component {
       axios.get(`/api/likes/delete/${post_id}`)
     } catch (error) {
       logToElasticsearch('error', 'IndividualPost', 'Failed click_unlike_btn:' + ' ' + error)
+    }
+  }
+
+  handleLinkClick = ()=>{
+    const isGuestUser = this.props.guest ? true : false
+    if (isGuestUser) {
+      this.props.handleGuestModal()
+      return
+    }
+    if(this.props.refreshme){
+      this.props.refreshme()
     }
   }
 
@@ -216,10 +229,20 @@ export default class IndividualPost extends Component {
   }
 
   handleChange = (e) => {
+    let isGuestUser = this.props.guest ? true : false
+    if (isGuestUser) {
+      this.props.handleGuestModal()
+      return
+    }
     this.setState({ value: e.target.value })
   }
 
   handleChange2 = (e) => {
+    let isGuestUser = this.props.guest ? true : false
+    if (isGuestUser) {
+      this.props.handleGuestModal()
+      return
+    }
     this.setState({ value2: e.target.value })
   }
 
@@ -257,11 +280,21 @@ export default class IndividualPost extends Component {
     })
   }
   insert_image_comment = () => {
+    let isGuestUser = this.props.guest ? true : false
+    if (isGuestUser) {
+      this.props.handleGuestModal()
+      return
+    }
     if (!this.state.uploading) {
       this.fileInputRef.current.click()
     }
   }
   handleSelectFile = (e) => {
+    let isGuestUser = this.props.guest ? true : false
+    if (isGuestUser) {
+      this.props.handleGuestModal()
+      return
+    }
     const fileList = e.target.files
     if (fileList.length > 0) {
       let type = fileList[0].type.split('/')
@@ -362,7 +395,14 @@ export default class IndividualPost extends Component {
   }
 
   detectKey = (e, key) => {
+    
     if (!key) {
+      let isGuestUser = this.props.guest ? true : false
+    if (isGuestUser) {
+      this.setTextInputRef.current.blur();
+      this.props.handleGuestModal()
+      return
+    }
       e.preventDefault()
       e.stopPropagation()
       if (!this.state.uploading) {
@@ -422,6 +462,9 @@ export default class IndividualPost extends Component {
                 myComments: previous.myComments.filter((comment) => comment.id !== deleted)
               }))
             }}
+            guest={this.props.guest}
+            handleGuestModal={this.props.handleGuestModal}
+            refreshme={this.props.refreshme}
           />
         )
       })
@@ -446,6 +489,9 @@ export default class IndividualPost extends Component {
                 myComments: previous.myComments.filter((comment) => comment.id !== deleted)
               }))
             }}
+            guest={this.props.guest}
+            handleGuestModal={this.props.handleGuestModal}
+            refreshme={this.props.refreshme}
           />
         )
       })
@@ -558,11 +604,20 @@ export default class IndividualPost extends Component {
   }
 
   renderHashTags = (hash_tags) => {
+    const isGuestUser = this.props.guest ? true : false
+    
     if (hash_tags.length > 0) {
       return hash_tags.map((tags) => {
+        if (isGuestUser) {
+          return (
+            <strong>
+              <span  onClick={this.handleLinkClick}>{`#${tags.content} `}</span>
+            </strong>
+          )
+        }
         return (
           <strong>
-            <Link to={`/hashtag/${tags.content}`}>{`#${tags.content} `}</Link>
+            <Link to={`/hashtag/${tags.content}`} onClick={this.handleLinkClick}>{`#${tags.content} `}</Link>
           </strong>
         )
       })
@@ -651,7 +706,7 @@ export default class IndividualPost extends Component {
                   </div>
                 </div>
               )}
-              <Link to={`/profile/${post.alias}`} className='user-img'>
+              <Link to={`/profile/${post.alias}`} className='user-img' onClick={this.handleLinkClick}>
                 <div
                   className='profile__image'
                   style={{
@@ -665,13 +720,13 @@ export default class IndividualPost extends Component {
               <div className='user__details'>
                 <div className='author__username'>
                   <div className='username'>
-                    <Link to={`/profile/${post.alias}`}>{`@${post.alias} `}</Link>
+                    <Link to={`/profile/${post.alias}`} onClick={this.handleLinkClick}>{`@${post.alias} `}</Link>
                   </div>
                   {this.state.show_group_name && (
                     <div className='shared__group'>
                       {`shared `}
                       <div className='arrow'></div>
-                      <Link to={`/community/${decodeURI(post.name)}`}>{decodeURI(post.name)}</Link>
+                      <Link to={`/community/${decodeURI(post.name)}`} onClick={this.handleLinkClick}>{decodeURI(post.name)}</Link>
                     </div>
                   )}
                   {post.visibility === 0 && (
@@ -779,7 +834,7 @@ export default class IndividualPost extends Component {
                 {!show_more_comments && <div className='show-individual-comments'>{this.showMoreComment()}</div>}
               </div>
             )}
-            <div className='compose-comment'>
+            <div className='compose-comment' >
               <textarea
                 name='name'
                 placeholder={post.allow_comments ? 'Write a comment...' : 'Comments disabled'}
@@ -788,7 +843,6 @@ export default class IndividualPost extends Component {
                 maxLength='254'
                 onKeyDown={(e) => this.detectKey(e, true)}
                 ref={this.setTextInputRef}
-                disabled={isGuestUser}
               />
               <div className='insert__images' onClick={this.insert_image_comment}>
                 <input
@@ -797,7 +851,6 @@ export default class IndividualPost extends Component {
                   ref={this.fileInputRef}
                   onChange={this.handleSelectFile}
                   name='insert__images'
-                  disabled={isGuestUser}
                 />
                 <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Image.svg`} className='img-fluid' />
               </div>
@@ -812,7 +865,7 @@ export default class IndividualPost extends Component {
                   backgroundSize: 'cover'
                 }}
               >
-                <Link to={`/profile/${post.alias}`} className='user-img'></Link>
+                <Link to={`/profile/${post.alias}`} className='user-img' onClick={this.handleLinkClick}></Link>
                 <div className='online__status'></div>
               </div>
             </div>
