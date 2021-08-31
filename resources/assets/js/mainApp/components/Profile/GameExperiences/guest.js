@@ -1,11 +1,7 @@
 import React from 'react';
 import { getAssetUrl } from '../../../../common/assets';
-import { copyToClipboard } from '../../../../common/clipboard';
-import notifyToast from '../../../../common/toast';
 import { ignoreFunctions } from '../../../../common/render'
-import EditGameExperience from './edit';
 import { WithTooltip } from '../../Tooltip';
-import { createShortLink } from '../../../../integration/http/links';
 import axios from 'axios'
 
 export default class GameExperiences extends React.Component {
@@ -28,32 +24,22 @@ export default class GameExperiences extends React.Component {
     this.setState({ gameExperiences:allfancyGameExperiences });
   }
 
-  deleteExperience = (id) => {
-    this.setState({ page: 0 });
-    this.props.deleteExperience(id);
-  }
-
   changePage = (direction) => {
     const page = this.state.page;
     const newPage = direction === 'left' ? (page - 1) < 0 ? page : page - 1 : (page + 1) > this.filterGameExperiences().length - this.getGamesPerPage() ? page : page + 1;
     this.setState({ changingPage: true }, () => setTimeout(() => this.setState({ page: newPage, changingPage: false }), 100));
   }
 
-  onClose = () => {
-    this.setState({ selected: false })
-    window.history.pushState("", "", `/profile/${this.props.alias}`)
-  }
-
-  copyLink = async (gameId) => {
-    const shortLink = await createShortLink(`${window.location.host}/profile/${this.props.alias}/game/${gameId}`);
-    copyToClipboard(shortLink);
-    notifyToast('Roger that. Link copied. Over.')
-  }
-
   getGamesPerPage = () => {
     const selfSize = 3;
     const othersSize = 4;
     return this.state.isSelf ? selfSize : othersSize;
+  }
+
+  handleGameClick = () =>{
+    if(this.props.handleGuestModal){
+      this.props.handleGuestModal()
+    }
   }
 
   renderHeaders = () => {
@@ -109,7 +95,8 @@ export default class GameExperiences extends React.Component {
       <div key={`${id}_${game_name}_${key}`} className="game-experience clickable" style={{ opacity: this.state.changingPage ? 0.3 : 1 }}
         onMouseEnter={() => this.setState({ hovering: id })}
         onMouseLeave={() => this.setState({ hovering: null })}
-        onClick={() => this.setState({ selected: id })}>
+        onClick={() => this.handleGameClick()}>
+        {game_img && <div className="image game-image" style={{ backgroundImage: `url(${game_img})` }} />}
         {game_name.length > 17 ?
           (
             <WithTooltip text={game_name} position={{ bottom: '36px', left: '-2vw' }}>
@@ -117,52 +104,12 @@ export default class GameExperiences extends React.Component {
             </WithTooltip>
           ): <span className="name">{game_name}</span>
         }
-        {game_img && <div className="image game-image" style={{ backgroundImage: `url(${game_img})` }} />}
-        <div
-          className={`link clickable`}
-          onClick={(event) => { event.stopPropagation(); this.copyLink(id); }}
-          style={{ backgroundImage: `url(${getAssetUrl('ic_profile_link_gray')})` }}
-        />
       </div>
     );
   }
-
-  renderAddGameExperience = () => {
-    if (!this.state.isSelf) return null;
-    return(
-      <div className="add-game-experience clickable" onClick={() => this.setState({ selected: 'edit' })}>
-        <div
-          className="icon"
-          style={{ backgroundImage: `url(${getAssetUrl('ic_profile_add')})` }}
-        />
-        <span className="title">Add New</span>
-        <span className="subtitle">Game</span>
-      </div>
-    ); 
-  }
-  renderAddGameExperience_mobile = () => {
-    if (!this.state.isSelf) return null;
-    return(
-      <div className="add-game-experience mobile clickable" onClick={() => this.setState({ selected: 'edit' })}>
-        <div className="mobile_col">
-        <div
-          className="icon"
-          style={{ backgroundImage: `url(${getAssetUrl('ic_profile_add')})` }}
-        />
-        </div> 
-        <div className="mobile_col"> 
-        <div className="title">Add New</div>
-        <div className="subtitle">Game</div>
-        </div>
-      </div>
-    );
-  } 
 
   filterGameExperiences = () => {
-    return this.state.gameExperiences.filter((experience) => {
-      if (this.state.filter === 'All') return true;
-      return experience.level === this.state.filter;
-    });
+    return this.state.gameExperiences;
   }
 
   render() {
@@ -171,17 +118,9 @@ export default class GameExperiences extends React.Component {
       <div id="profile-game-experiences">
         {this.props.guest && <div className='headers'></div>}
         {!this.props.guest && this.renderHeaders()}
-        
         <div className="scroll">
           {this.renderPageButtons()}
-          
           {gameExperiences.slice(this.state.page, this.state.page + this.getGamesPerPage()).map(this.renderGameExperience)}
-          <div className="desktopShow game-experience clickable"> 
-            {this.renderAddGameExperience()}
-          </div>
-          <div className="mobileShow game-experience clickable">  
-          {this.renderAddGameExperience_mobile()}
-        </div>
           {!gameExperiences.length && !this.state.isSelf && this.renderEmptyState()}
         </div>
       </div>

@@ -6,7 +6,7 @@ import IndividualSponsoredPost from './IndividualSponsoredPost'
 import GuestBanner from './Guest/Banner'
 import SignUpModal from './Guest/SignUpModal'
 import GameExperiences from './Profile/GameExperiences/guest'
-import MobileGameExperiences from './Profile/GameExperiences/mobile'
+import MobileGameExperiences from './Profile/GameExperiences/guestMobile'
 
 import { logToElasticsearch } from '../../integration/http/logger'
 
@@ -178,6 +178,7 @@ class GuestFeeds extends Component {
                     alias={this.props.alias}
                     profile={this.props.profile}
                     updateGame={this.props.updateGame}
+                    handleGuestModal={this.handleGuestModal}
                   />
                 </div>
                 <div className='mobileShow'>
@@ -190,6 +191,7 @@ class GuestFeeds extends Component {
                     alias={this.props.alias}
                     profile={this.props.profile}
                     updateGame={this.props.updateGame}
+                    handleGuestModal={this.handleGuestModal}
                   />
                 </div>
               </div>
