@@ -64,7 +64,9 @@ export default class Home extends Component {
   }
 
   render() {
-    const { tabName, initialData } = this.state
+    const { tabName, initialData={} } = this.state
+    const {userInfo={}}= initialData
+    const {alias=''}= userInfo
     if (initialData) {
       return (
         <div className='content-area' ref={this.contentAreaRef}>
@@ -84,7 +86,7 @@ export default class Home extends Component {
             </div>
           </div>
           {tabName == 'home' && (
-            <Posts routeProps={this.props} initialData={!this.props.initialData ? 'loading' : this.props.initialData} key={Math.random()} />
+            <Posts  alias={alias}  routeProps={this.props} initialData={!this.props.initialData ? 'loading' : this.props.initialData} key={Math.random()} />
           )}
           {tabName == 'communities' && <GroupMain routeProps={this.props} initialData={this.props.initialData} key={Math.random()} />}
           {tabName == 'notifications' && <Notifications routeProps={this.props} initialData={this.props.initialData} key={Math.random()} />}

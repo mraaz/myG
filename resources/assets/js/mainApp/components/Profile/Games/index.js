@@ -1,5 +1,6 @@
 import React from 'react';
 import axios from 'axios'
+import get from 'lodash.get';
 import { getAssetUrl } from '../../../../common/assets';
 import { copyToClipboard } from '../../../../common/clipboard';
 import notifyToast from '../../../../common/toast';
@@ -25,8 +26,13 @@ export default class Games extends React.Component {
 
   async componentDidMount() {
     const {data={}} = await axios.get(`/api/GameExperiences/show`);
-    const {allfancyGameExperiences=[]} = data;
-    this.setState({ gameExperiences:allfancyGameExperiences });
+    const {allmyGameExperiences=[]} = data;
+    this.setState({ gameExperiences:allmyGameExperiences });
+  }
+
+  static getDerivedStateFromProps(props) {
+    const isSelf = get(props, 'profile.isSelf') || false;
+    return {  isSelf };
   }
 
   deleteExperience = (id) => {
@@ -57,16 +63,6 @@ export default class Games extends React.Component {
     return this.state.isSelf ? selfSize : othersSize;
   }
 
-  renderHeaders = () => {
-    return(
-      <div className='headers'>
-        <div className={`header clickable ${this.state.filter === 'All' && 'selected'}`} onClick={() => this.setState({ page: 0,  filter: 'All' })}>All</div>
-        <div className={`header clickable ${this.state.filter === 'Pro Gamer' && 'selected'}`} onClick={() => this.setState({ page: 0,  filter: 'Pro Gamer' })}>Pro Career</div>
-        <div className={`header clickable ${this.state.filter === 'Semi Pro' && 'selected'}`} onClick={() => this.setState({ page: 0,  filter: 'Semi Pro' })}>Semi Pro</div>
-        <div className={`header clickable ${this.state.filter === 'Casual' && 'selected'}`} onClick={() => this.setState({ page: 0,  filter: 'Casual' })}>Casual</div>
-      </div>
-    );
-  }
 
   renderEmptyState = () => {
     return(
@@ -102,8 +98,7 @@ export default class Games extends React.Component {
   }
 
   renderGameExperience = (game) => {
-    const { id, gameName, gameImage, mainFields } = game;
-    const fields = mainFields
+    const { id, game_name, game_img } = game;
     const commended = this.props.profile && this.props.profile.commended || [];
     const hasCommended = commended.find((commendation) => commendation.gameExperienceId === id && commendation.commenderId === this.props.userId);
     return(
@@ -111,53 +106,21 @@ export default class Games extends React.Component {
         onMouseEnter={() => this.setState({ hovering: id })}
         onMouseLeave={() => this.setState({ hovering: null })}
         onClick={() => this.setState({ selected: id })}>
-        {gameName.length > 17 ?
+        
+        {game_img && <div className="image game-image" style={{ backgroundImage: `url(${game_img})` }} />}
+        {game_name.length > 17 ?
           (
-            <WithTooltip text={gameName} position={{ bottom: '36px', left: '-2vw' }}>
-              <span className="name">{gameName.slice(0, 17) + '...'}</span>
+            <WithTooltip text={game_name} position={{ bottom: '36px', left: '-2vw' }}>
+              <span className="name">{game_name.slice(0, 17) + '...'}</span>
             </WithTooltip>
-          ): <span className="name">{gameName}</span>
+          ): <span className="name">{game_name}</span>
         }
-        {gameImage && <div className="image game-image" style={{ backgroundImage: `url(${gameImage})` }} />}
-        <div
-          className={`link clickable`}
-          onClick={(event) => { event.stopPropagation(); this.copyLink(id); }}
-          style={{ backgroundImage: `url(${getAssetUrl('ic_profile_link_gray')})` }}
-        />
-        {fields.map((field) => (
-          <div className="field">
-            <span className="field-title">{field.replace('Level', 'Career').charAt(0).toUpperCase() + field.replace('Level', 'Career').slice(1)}</span>
-            <span className="field-value">{game[field.toLowerCase()] || 'N/A'}</span>
-          </div>
-        ))}
-        {this.state.hovering === id && (
-          <div className="hover-box">
-            <div className="hover-button clickable" onClick={() => this.setState({ selected: id })}>
-              {this.state.isSelf ? 'Edit' : 'Show'}
-            </div>
-            {this.state.isSelf && (
-              <div className="hover-button clickable" onClick={() => 
-                showMessengerAlert(`Are you sure you want to delete your game experience for ${gameName}?`,
-                () => this.deleteExperience(id),
-                null,
-                'Make it so',
-              )}>
-                Delete
-              </div>
-            )}
-            {!!this.props.profile && !!this.props.profile.isFriend && !hasCommended && (
-              <div className="hover-button clickable" onClick={(event) => { event.stopPropagation(); this.props.commendUser(id); }}>
-                  Commend Me
-              </div>
-            )}
-          </div>
-        )}
       </div>
     );
   }
 
   renderAddGameExperience = () => {
-    if (!this.state.isSelf) return null;
+    // if (!this.state.isSelf) return null;
     return(
       <div className="add-game-experience clickable" onClick={() => this.setState({ selected: 'edit' })}>
         <div
@@ -165,27 +128,11 @@ export default class Games extends React.Component {
           style={{ backgroundImage: `url(${getAssetUrl('ic_profile_add')})` }}
         />
         <span className="title">Add New</span>
-        <span className="subtitle">Game Experience</span>
+        <span className="subtitle">Game</span>
       </div>
     ); 
   }
-  renderAddGameExperience_mobile = () => {
-    if (!this.state.isSelf) return null;
-    return(
-      <div className="add-game-experience mobile clickable" onClick={() => this.setState({ selected: 'edit' })}>
-        <div className="mobile_col">
-        <div
-          className="icon"
-          style={{ backgroundImage: `url(${getAssetUrl('ic_profile_add')})` }}
-        />
-        </div> 
-        <div className="mobile_col"> 
-        <div className="title">Add New</div>
-        <div className="subtitle">Game Experience</div>
-        </div>
-      </div>
-    );
-  } 
+  
 
   renderEditGameExperienceModal = () => {
     if (!this.state.selected) return null;
@@ -217,9 +164,6 @@ export default class Games extends React.Component {
           <div className="desktopShow"> 
             {this.renderAddGameExperience()}
           </div>
-        </div>
-        <div className="mobileShow">  
-          {this.renderAddGameExperience_mobile()}
         </div>
       </div>
     );

@@ -1,6 +1,9 @@
 import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import axios from 'axios'
+import get from 'lodash.get';
+import { 
+  fetchProfileInfoAction, updateProfileInfoAction, updateProfileGameAction } from '../../redux/actions/profileAction';
 import InfiniteScroll from 'react-infinite-scroll-component'
 import IndividualPost from './IndividualPost'
 import IndividualSponsoredPost from './IndividualSponsoredPost'
@@ -8,6 +11,8 @@ import ComposeSection from './ComposeSection_v2'
 import GamerSuggestions from './Profile/GamerSuggestions'
 import Channel from './Channel'
 import Events from './Events/main'
+import Games from './Profile/Games';
+import MobileGames from './Profile/Games/mobile';
 
 import { logToElasticsearch } from '../../integration/http/logger'
 
@@ -32,6 +37,8 @@ class Posts extends Component {
     })
     //window.history.pushState('myG', 'myG', '/')
     this.fetchMoreData()
+    console.log('this.props.alias ',this.props.alias);
+    this.props.fetchProfile(this.props.alias);
   }
 
   showLatestPosts = () => {
@@ -141,6 +148,15 @@ class Posts extends Component {
             </div>
           </div>
         )}
+        <div id="profile" >
+          <div className="desktopShow"> 
+            <Games 
+              userId={this.props.userId} selectedGame={this.props.gameId} commendUser={this.commendUser} deleteExperience={this.deleteExperience} alias={this.props.alias} profile={this.props.profile} updateGame={this.props.updateGame} />
+          </div>
+          <div className="mobileShow">  
+            <MobileGames userId={this.props.userId} selectedGame={this.props.gameId} commendUser={this.commendUser} deleteExperience={this.deleteExperience} alias={this.props.alias} profile={this.props.profile} updateGame={this.props.updateGame} />
+          </div>
+        </div>
         <GamerSuggestions />
         {!!this.props.mainChannelEnabled && <Channel channelId='main' />}
         {this.state.showEvents && <Events props={this.props} />}
@@ -161,10 +177,26 @@ class Posts extends Component {
   }
 }
 
-function mapStateToProps(state) {
+
+
+function mapStateToProps(state, props) {
+  const profile = get(state, `profile.profiles[${props.alias}]`, {});
   return {
+    userId: state.user.userId,
+    level: (state.user.userTransactionStates || {}).user_level,
+    profile,
+    foundProfile: !!Object.keys(profile).length,
     mainChannelEnabled: state.user.mainChannelEnabled
   }
 }
 
-export default connect(mapStateToProps)(Posts)
+function mapDispatchToProps(dispatch) {
+  return {
+    fetchProfile: (alias) => dispatch(fetchProfileInfoAction(alias)),
+    updateProfile: (alias, updates) => dispatch(updateProfileInfoAction(alias, updates)),
+    updateGame: (alias, updates) => dispatch(updateProfileGameAction(alias, updates)),
+    commendUser: (alias, gameExperienceId) => dispatch(commendUserAction(alias, gameExperienceId)),
+  }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(Posts)
