@@ -1,5 +1,5 @@
 import React from 'react';
-import get from 'lodash.get';
+import axios from 'axios'
 import { getAssetUrl } from '../../../../common/assets';
 import { copyToClipboard } from '../../../../common/clipboard';
 import notifyToast from '../../../../common/toast';
@@ -9,7 +9,7 @@ import { showMessengerAlert } from '../../../../common/alert';
 import { WithTooltip } from '../../Tooltip';
 import { createShortLink } from '../../../../integration/http/links';
 
-export default class GameExperiences extends React.Component {
+export default class Games extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     return ignoreFunctions(nextProps, nextState, this.props, this.state)
   }
@@ -20,17 +20,13 @@ export default class GameExperiences extends React.Component {
     hovering: null,
     changingPage: false,
     filter: 'All',
+    gameExperiences:[]
   }
 
-  componentDidMount() {
-    const selected = get(this.props, 'selectedGame', false);
-    if (selected) this.setState({ selected });
-  }
-
-  static getDerivedStateFromProps(props) {
-    const isSelf = get(props, 'profile.isSelf') || false;
-    const gameExperiences = get(props, 'profile.gameExperiences') || [];
-    return { gameExperiences, isSelf };
+  async componentDidMount() {
+    const {data={}} = await axios.get(`/api/GameExperiences/show`);
+    const {allfancyGameExperiences=[]} = data;
+    this.setState({ gameExperiences:allfancyGameExperiences });
   }
 
   deleteExperience = (id) => {
@@ -206,29 +202,24 @@ export default class GameExperiences extends React.Component {
   }
 
   filterGameExperiences = () => {
-    return this.state.gameExperiences.filter((experience) => {
-      if (this.state.filter === 'All') return true;
-      return experience.level === this.state.filter;
-    });
+    return this.state.gameExperiences;
   }
 
   render() {
     const gameExperiences = this.filterGameExperiences();
     return(
       <div id="profile-game-experiences">
-        {this.props.guest && <div className='headers'></div>}
-        {!this.props.guest && this.renderHeaders()}
-        <div className="mobileShow">  
-          {this.renderAddGameExperience_mobile()}
-        </div>
         <div className="scroll">
           {this.renderPageButtons()}
-          <div className="desktopShow"> 
-            {this.renderAddGameExperience()}
-          </div>
           {gameExperiences.slice(this.state.page, this.state.page + this.getGamesPerPage()).map(this.renderGameExperience)}
           {!gameExperiences.length && !this.state.isSelf && this.renderEmptyState()}
           {this.renderEditGameExperienceModal()}
+          <div className="desktopShow"> 
+            {this.renderAddGameExperience()}
+          </div>
+        </div>
+        <div className="mobileShow">  
+          {this.renderAddGameExperience_mobile()}
         </div>
       </div>
     );

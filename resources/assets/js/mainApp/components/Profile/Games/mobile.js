@@ -1,5 +1,5 @@
 import React from 'react'
-import get from 'lodash.get'
+import axios from 'axios'
 import { getAssetUrl } from '../../../../common/assets'
 import { copyToClipboard } from '../../../../common/clipboard'
 import notifyToast from '../../../../common/toast'
@@ -8,7 +8,7 @@ import EditGameExperience from './edit'
 import { showMessengerAlert } from '../../../../common/alert'
 import { WithTooltip } from '../../Tooltip'
 
-export default class GameExperiences extends React.Component {
+export default class MobileGames extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     return ignoreFunctions(nextProps, nextState, this.props, this.state)
   }
@@ -18,18 +18,14 @@ export default class GameExperiences extends React.Component {
     selected: false,
     hovering: null,
     changingPage: false,
-    filter: 'All'
+    filter: 'All',
+    gameExperiences:[]
   }
 
-  componentDidMount() {
-    const selected = get(this.props, 'selectedGame', false)
-    if (selected) this.setState({ selected })
-  }
-
-  static getDerivedStateFromProps(props) {
-    const isSelf = get(props, 'profile.isSelf') || false
-    const gameExperiences = get(props, 'profile.gameExperiences') || []
-    return { gameExperiences, isSelf }
+  async componentDidMount() {
+    const {data={}} = await axios.get(`/api/GameExperiences/show`);
+    const {allfancyGameExperiences=[]} = data;
+    this.setState({ gameExperiences:allfancyGameExperiences });
   }
 
   deleteExperience = (id) => {
@@ -63,44 +59,15 @@ export default class GameExperiences extends React.Component {
   getGamesPerPage = () => {
     const selfSize = 1
     const othersSize = 3
-    return this.state.isSelf ? selfSize : othersSize
+    return selfSize
   }
-
-  renderHeaders = () => {
-    return (
-      <div className='headers'>
-        <div
-          className={`header clickable ${this.state.filter === 'All' && 'selected'}`}
-          onClick={() => this.setState({ page: 0, filter: 'All' })}
-        >
-          All
-        </div>
-        <div
-          className={`header clickable ${this.state.filter === 'Pro Gamer' && 'selected'}`}
-          onClick={() => this.setState({ page: 0, filter: 'Pro Gamer' })}
-        >
-          Pro Career
-        </div>
-        <div
-          className={`header clickable ${this.state.filter === 'Semi Pro' && 'selected'}`}
-          onClick={() => this.setState({ page: 0, filter: 'Semi Pro' })}
-        >
-          Semi Pro
-        </div>
-        <div
-          className={`header clickable ${this.state.filter === 'Casual' && 'selected'}`}
-          onClick={() => this.setState({ page: 0, filter: 'Casual' })}
-        >
-          Casual
-        </div>
-      </div>
-    )
-  }
-
   renderEmptyState = () => {
     return <div className='empty'>No games found here mate!</div>
   }
 
+  handleGameClick = (id)=> {
+console.log("game Clicked :::::  ",id)
+  }
   renderPageButtons = () => {
     const gameExperiences = this.filterGameExperiences()
     const fitsAllInScreen = gameExperiences.length <= this.getGamesPerPage()
@@ -140,7 +107,7 @@ export default class GameExperiences extends React.Component {
         style={{ opacity: this.state.changingPage ? 0.3 : 1 }}
         onMouseEnter={() => this.setState({ hovering: id })}
         onMouseLeave={() => this.setState({ hovering: null })}
-        onClick={() => this.setState({ selected: id })}
+        onClick={() => this.handleGameClick(id)}
       >
         {gameName.length > 17 ? (
           <WithTooltip text={gameName} position={{ bottom: '36px', left: '-2vw' }}>
@@ -247,26 +214,21 @@ export default class GameExperiences extends React.Component {
   }
 
   filterGameExperiences = () => {
-    return this.state.gameExperiences.filter((experience) => {
-      if (this.state.filter === 'All') return true
-      return experience.level === this.state.filter
-    })
+    return this.state.gameExperiences;
   }
 
   render() {
     const gameExperiences = this.filterGameExperiences()
     return (
       <div id='profile-game-experiences'>
-        {this.props.guest && <div className='headers'></div>}
-        {!this.props.guest && this.renderHeaders()}
-        <div className='mobileShow'>{this.renderAddGameExperience_mobile()}</div>
         <div className='scroll'>
           {this.renderPageButtons()}
-          <div className='desktopShow'>{this.renderAddGameExperience()}</div>
           {gameExperiences.slice(this.state.page, this.state.page + this.getGamesPerPage()).map(this.renderGameExperience)}
           {!gameExperiences.length && !this.state.isSelf && this.renderEmptyState()}
           {this.renderEditGameExperienceModal()}
+          <div className='desktopShow'>{this.renderAddGameExperience()}</div>
         </div>
+        <div className='mobileShow'>{this.renderAddGameExperience_mobile()}</div>
       </div>
     )
   }
