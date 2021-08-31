@@ -37,7 +37,6 @@ class Posts extends Component {
     })
     //window.history.pushState('myG', 'myG', '/')
     this.fetchMoreData()
-    console.log('this.props.alias ',this.props.alias);
     this.props.fetchProfile(this.props.alias);
   }
 
