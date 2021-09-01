@@ -5,8 +5,8 @@ import IndividualPost from './IndividualPost'
 import IndividualSponsoredPost from './IndividualSponsoredPost'
 import GuestBanner from './Guest/Banner'
 import SignUpModal from './Guest/SignUpModal'
-import GameExperiences from './Profile/Games/guest'
-import MobileGameExperiences from './Profile/Games/guestMobile'
+import GameExperiences from './Games/guest'
+import MobileGameExperiences from './Games/guestMobile'
 
 import { logToElasticsearch } from '../../integration/http/logger'
 

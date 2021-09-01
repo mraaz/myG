@@ -1,11 +1,11 @@
 import React from 'react'
 import axios from 'axios'
 import get from 'lodash.get';
-import { getAssetUrl } from '../../../../common/assets'
-import { copyToClipboard } from '../../../../common/clipboard'
-import notifyToast from '../../../../common/toast'
-import { ignoreFunctions } from '../../../../common/render'
-import { WithTooltip } from '../../Tooltip'
+import { getAssetUrl } from '../../../common/assets'
+import { copyToClipboard } from '../../../common/clipboard'
+import notifyToast from '../../../common/toast'
+import { ignoreFunctions } from '../../../common/render'
+import { WithTooltip } from '../Tooltip'
 
 export default class MobileGames extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {

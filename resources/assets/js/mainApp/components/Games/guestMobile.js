@@ -1,7 +1,7 @@
 import React from 'react'
 import axios from 'axios'
-import { getAssetUrl } from '../../../../common/assets'
-import { ignoreFunctions } from '../../../../common/render'
+import { getAssetUrl } from '../../../common/assets'
+import { ignoreFunctions } from '../../../common/render'
 import { WithTooltip } from '../../Tooltip'
 
 export default class GameExperiences extends React.Component {

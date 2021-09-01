@@ -9,8 +9,8 @@ import ComposeSection from './ComposeSection_v2'
 import GamerSuggestions from './Profile/GamerSuggestions'
 import Channel from './Channel'
 import Events from './Events/main'
-import Games from './Profile/Games';
-import MobileGames from './Profile/Games/mobile';
+import Games from './Games';
+import MobileGames from './Games/mobile';
 
 import { logToElasticsearch } from '../../integration/http/logger'
 
