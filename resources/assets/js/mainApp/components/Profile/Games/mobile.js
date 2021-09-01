@@ -99,10 +99,6 @@ console.log("game Clicked :::::  ",id)
 
   renderGameExperience = (game) => {
     const { id, game_name, game_img } = game;
-    const commended = (this.props.profile && this.props.profile.commended) || []
-    const hasCommended = commended.find(
-      (commendation) => commendation.gameExperienceId === id && commendation.commenderId === this.props.userId
-    )
     return (
       <div
         key={id}

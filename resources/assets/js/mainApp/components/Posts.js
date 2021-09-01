@@ -2,8 +2,6 @@ import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import get from 'lodash.get';
-import { 
-  fetchProfileInfoAction, updateProfileInfoAction, updateProfileGameAction } from '../../redux/actions/profileAction';
 import InfiniteScroll from 'react-infinite-scroll-component'
 import IndividualPost from './IndividualPost'
 import IndividualSponsoredPost from './IndividualSponsoredPost'
@@ -37,7 +35,6 @@ class Posts extends Component {
     })
     //window.history.pushState('myG', 'myG', '/')
     this.fetchMoreData()
-    this.props.fetchProfile(this.props.alias);
   }
 
   showLatestPosts = () => {
@@ -150,10 +147,10 @@ class Posts extends Component {
         <div id="profile" >
           <div className="desktopShow"> 
             <Games 
-              userId={this.props.userId} selectedGame={this.props.gameId} commendUser={this.commendUser} deleteExperience={this.deleteExperience} alias={this.props.alias} profile={this.props.profile} updateGame={this.props.updateGame} />
+              userId={this.props.userId} selectedGame={this.props.gameId} commendUser={this.commendUser} deleteExperience={this.deleteExperience} alias={this.props.alias}  updateGame={this.props.updateGame} />
           </div>
           <div className="mobileShow">  
-            <MobileGames userId={this.props.userId} selectedGame={this.props.gameId} commendUser={this.commendUser} deleteExperience={this.deleteExperience} alias={this.props.alias} profile={this.props.profile} updateGame={this.props.updateGame} />
+            <MobileGames userId={this.props.userId} selectedGame={this.props.gameId} commendUser={this.commendUser} deleteExperience={this.deleteExperience} alias={this.props.alias}  updateGame={this.props.updateGame} />
           </div>
         </div>
         <GamerSuggestions />
@@ -179,23 +176,10 @@ class Posts extends Component {
 
 
 function mapStateToProps(state, props) {
-  const profile = get(state, `profile.profiles[${props.alias}]`, {});
   return {
     userId: state.user.userId,
-    level: (state.user.userTransactionStates || {}).user_level,
-    profile,
-    foundProfile: !!Object.keys(profile).length,
     mainChannelEnabled: state.user.mainChannelEnabled
   }
 }
 
-function mapDispatchToProps(dispatch) {
-  return {
-    fetchProfile: (alias) => dispatch(fetchProfileInfoAction(alias)),
-    updateProfile: (alias, updates) => dispatch(updateProfileInfoAction(alias, updates)),
-    updateGame: (alias, updates) => dispatch(updateProfileGameAction(alias, updates)),
-    commendUser: (alias, gameExperienceId) => dispatch(commendUserAction(alias, gameExperienceId)),
-  }
-}
-
-export default connect(mapStateToProps,mapDispatchToProps)(Posts)
+export default connect(mapStateToProps)(Posts)

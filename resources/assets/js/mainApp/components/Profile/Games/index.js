@@ -97,8 +97,6 @@ export default class Games extends React.Component {
 
   renderGameExperience = (game) => {
     const { id, game_name, game_img } = game;
-    const commended = this.props.profile && this.props.profile.commended || [];
-    const hasCommended = commended.find((commendation) => commendation.gameExperienceId === id && commendation.commenderId === this.props.userId);
     return(
       <div key={id} className="game-experience clickable" style={{ opacity: this.state.changingPage ? 0.3 : 1 }}
         onMouseEnter={() => this.setState({ hovering: id })}
