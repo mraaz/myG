@@ -2,7 +2,6 @@ import React from 'react'
 import axios from 'axios'
 import { getAssetUrl } from '../../../../common/assets'
 import { ignoreFunctions } from '../../../../common/render'
-import EditGameExperience from './edit'
 import { WithTooltip } from '../../Tooltip'
 
 export default class GameExperiences extends React.Component {
@@ -128,23 +127,6 @@ export default class GameExperiences extends React.Component {
     )
   }
 
-  renderEditGameExperienceModal = () => {
-    if (!this.state.selected) return null
-    const gameExperience = this.state.gameExperiences.find(
-      (experience) => parseInt(experience.id, 10) === parseInt(this.state.selected, 10)
-    )
-    if (this.state.selected != 'edit' && !gameExperience) return null
-    return (
-      <EditGameExperience
-        alias={this.props.alias}
-        profile={this.props.profile}
-        isSelf={this.state.isSelf}
-        gameExperience={gameExperience}
-        onClose={this.onClose}
-        updateGame={this.props.updateGame}
-      />
-    )
-  }
 
   filterGameExperiences = () => {
     return this.state.gameExperiences;
@@ -161,7 +143,6 @@ export default class GameExperiences extends React.Component {
           <div className='desktopShow'>{this.renderAddGameExperience()}</div>
           {gameExperiences.slice(this.state.page, this.state.page + this.getGamesPerPage()).map(this.renderGameExperience)}
           {!gameExperiences.length && !this.state.isSelf && this.renderEmptyState()}
-          {this.renderEditGameExperienceModal()}
         </div>
       </div>
     )

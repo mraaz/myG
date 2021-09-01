@@ -5,7 +5,6 @@ import { getAssetUrl } from '../../../../common/assets'
 import { copyToClipboard } from '../../../../common/clipboard'
 import notifyToast from '../../../../common/toast'
 import { ignoreFunctions } from '../../../../common/render'
-import EditGameExperience from './edit'
 import { WithTooltip } from '../../Tooltip'
 
 export default class MobileGames extends React.Component {
@@ -141,24 +140,6 @@ console.log("game Clicked :::::  ",id)
     )
   }
 
-  renderEditGameExperienceModal = () => {
-    if (!this.state.selected) return null
-    const gameExperience = this.state.gameExperiences.find(
-      (experience) => parseInt(experience.id, 10) === parseInt(this.state.selected, 10)
-    )
-    if (this.state.selected != 'edit' && !gameExperience) return null
-    return (
-      <EditGameExperience
-        alias={this.props.alias}
-        profile={this.props.profile}
-        isSelf={this.state.isSelf}
-        gameExperience={gameExperience}
-        onClose={this.onClose}
-        updateGame={this.props.updateGame}
-      />
-    )
-  }
-
   filterGameExperiences = () => {
     return this.state.gameExperiences;
   }
@@ -171,7 +152,6 @@ console.log("game Clicked :::::  ",id)
           {this.renderPageButtons()}
           {gameExperiences.slice(this.state.page, this.state.page + this.getGamesPerPage()).map(this.renderGameExperience)}
           {!gameExperiences.length && !this.state.isSelf && this.renderEmptyState()}
-          {this.renderEditGameExperienceModal()}
         </div>
         <div className='mobileShow'>{this.renderAddGameExperience_mobile()}</div>
       </div>
