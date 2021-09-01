@@ -22,19 +22,15 @@ export default class MobileGames extends React.Component {
   }
 
   async componentDidMount() {
-    const {data={}} = await axios.get(`/api/GameExperiences/show`);
-    const {allmyGameExperiences=[]} = data;
-    this.setState({ gameExperiences:allmyGameExperiences });
-  }
-
-  static getDerivedStateFromProps(props) {
-    const isSelf = get(props, 'profile.isSelf') || false;
-    return {  isSelf };
-  }
-
-  deleteExperience = (id) => {
-    this.setState({ page: 0 })
-    this.props.deleteExperience(id)
+    if(this.props.guest==true){
+      const {data={}} = await axios.get(`/api/GameExperiences/showGuest/`);
+      const {allfancyGameExperiences=[]} = data;
+      this.setState({ gameExperiences:allfancyGameExperiences });
+    } else {
+      const {data={}} = await axios.get(`/api/GameExperiences/show`);
+      const {allmyGameExperiences=[]} = data;
+      this.setState({ gameExperiences:allmyGameExperiences });
+    }
   }
 
   changePage = (direction) => {
@@ -50,16 +46,6 @@ export default class MobileGames extends React.Component {
     this.setState({ changingPage: true }, () => setTimeout(() => this.setState({ page: newPage, changingPage: false }), 100))
   }
 
-  onClose = () => {
-    this.setState({ selected: false })
-    window.history.pushState('', '', `/profile/${this.props.alias}`)
-  }
-
-  copyLink = (gameId) => {
-    copyToClipboard(`${window.location.host}/profile/${this.props.alias}/game/${gameId}`)
-    notifyToast('Roger that. Link copied. Over.')
-  }
-
   getGamesPerPage = () => {
     const selfSize = 1
     const othersSize = 3
@@ -70,7 +56,11 @@ export default class MobileGames extends React.Component {
   }
 
   handleGameClick = (id)=> {
-console.log("game Clicked :::::  ",id)
+    if(this.props.handleGuestModal && this.props.guest==true){
+      this.props.handleGuestModal()
+    } else {
+      console.log("game Clicked :::::  ",id)
+    }
   }
   renderPageButtons = () => {
     const gameExperiences = this.filterGameExperiences()
@@ -150,7 +140,7 @@ console.log("game Clicked :::::  ",id)
           {gameExperiences.slice(this.state.page, this.state.page + this.getGamesPerPage()).map(this.renderGameExperience)}
           {!gameExperiences.length && !this.state.isSelf && this.renderEmptyState()}
         </div>
-        <div className='mobileShow'>{this.renderAddGameExperience_mobile()}</div>
+        {!this.props.guest &&<div className='mobileShow'>{this.renderAddGameExperience_mobile()}</div>}
       </div>
     )
   }

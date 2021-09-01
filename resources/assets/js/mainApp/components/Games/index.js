@@ -23,36 +23,21 @@ export default class Games extends React.Component {
   }
 
   async componentDidMount() {
-    const {data={}} = await axios.get(`/api/GameExperiences/show`);
-    const {allmyGameExperiences=[]} = data;
-    this.setState({ gameExperiences:allmyGameExperiences });
-  }
-
-  static getDerivedStateFromProps(props) {
-    const isSelf = get(props, 'profile.isSelf') || false;
-    return {  isSelf };
-  }
-
-  deleteExperience = (id) => {
-    this.setState({ page: 0 });
-    this.props.deleteExperience(id);
+    if(this.props.guest==true){
+      const {data={}} = await axios.get(`/api/GameExperiences/showGuest/`);
+      const {allfancyGameExperiences=[]} = data;
+      this.setState({ gameExperiences:allfancyGameExperiences });
+    } else {
+      const {data={}} = await axios.get(`/api/GameExperiences/show`);
+      const {allmyGameExperiences=[]} = data;
+      this.setState({ gameExperiences:allmyGameExperiences });
+    }
   }
 
   changePage = (direction) => {
     const page = this.state.page;
     const newPage = direction === 'left' ? (page - 1) < 0 ? page : page - 1 : (page + 1) > this.filterGameExperiences().length - this.getGamesPerPage() ? page : page + 1;
     this.setState({ changingPage: true }, () => setTimeout(() => this.setState({ page: newPage, changingPage: false }), 100));
-  }
-
-  onClose = () => {
-    this.setState({ selected: false })
-    window.history.pushState("", "", `/profile/${this.props.alias}`)
-  }
-
-  copyLink = async (gameId) => {
-    const shortLink = await createShortLink(`${window.location.host}/profile/${this.props.alias}/game/${gameId}`);
-    copyToClipboard(shortLink);
-    notifyToast('Roger that. Link copied. Over.')
   }
 
   getGamesPerPage = () => {
@@ -95,13 +80,21 @@ export default class Games extends React.Component {
     );
   }
 
+  handleGameClick = (id)=> {
+    if(this.props.handleGuestModal && this.props.guest==true){
+      this.props.handleGuestModal()
+    } else {
+      console.log("game Clicked :::::  ",id)
+    }
+  }
+
   renderGameExperience = (game) => {
     const { id, game_name, game_img } = game;
     return(
       <div key={id} className="game-experience clickable" style={{ opacity: this.state.changingPage ? 0.3 : 1 }}
         onMouseEnter={() => this.setState({ hovering: id })}
         onMouseLeave={() => this.setState({ hovering: null })}
-        onClick={() => this.setState({ selected: id })}>
+        onClick={() => this.handleGameClick(id)}>
         
         {game_img && <div className="image game-image" style={{ backgroundImage: `url(${game_img})` }} />}
         {game_name.length > 17 ?
@@ -142,9 +135,10 @@ export default class Games extends React.Component {
           {this.renderPageButtons()}
           {gameExperiences.slice(this.state.page, this.state.page + this.getGamesPerPage()).map(this.renderGameExperience)}
           {!gameExperiences.length && !this.state.isSelf && this.renderEmptyState()}
-          <div className="desktopShow"> 
+          {!this.props.guest && <div className="desktopShow"> 
             {this.renderAddGameExperience()}
           </div>
+          }
         </div>
       </div>
     );
