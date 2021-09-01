@@ -42,17 +42,6 @@ export default class GameExperiences extends React.Component {
     }
   }
 
-  renderHeaders = () => {
-    return(
-      <div className='headers'>
-        <div className={`header clickable ${this.state.filter === 'All' && 'selected'}`} onClick={() => this.setState({ page: 0,  filter: 'All' })}>All</div>
-        <div className={`header clickable ${this.state.filter === 'Pro Gamer' && 'selected'}`} onClick={() => this.setState({ page: 0,  filter: 'Pro Gamer' })}>Pro Career</div>
-        <div className={`header clickable ${this.state.filter === 'Semi Pro' && 'selected'}`} onClick={() => this.setState({ page: 0,  filter: 'Semi Pro' })}>Semi Pro</div>
-        <div className={`header clickable ${this.state.filter === 'Casual' && 'selected'}`} onClick={() => this.setState({ page: 0,  filter: 'Casual' })}>Casual</div>
-      </div>
-    );
-  }
-
   renderEmptyState = () => {
     return(
       <div className="empty">
@@ -114,7 +103,6 @@ export default class GameExperiences extends React.Component {
     return(
       <div id="profile-game-experiences">
         <div className='headers'>Games</div>
-        {!this.props.guest && this.renderHeaders()}
         <div className="scroll">
           {this.renderPageButtons()}
           {gameExperiences.slice(this.state.page, this.state.page + this.getGamesPerPage()).map(this.renderGameExperience)}
