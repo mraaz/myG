@@ -2,7 +2,7 @@ import React from 'react'
 import axios from 'axios'
 import { getAssetUrl } from '../../../common/assets'
 import { ignoreFunctions } from '../../../common/render'
-import { WithTooltip } from '../../Tooltip'
+import { WithTooltip } from '../Tooltip'
 
 export default class GameExperiences extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
@@ -78,8 +78,7 @@ export default class GameExperiences extends React.Component {
   }
 
   renderGameExperience = (game) => {
-    const { id, game_name, game_img, mainFields } = game;
-    const fields = mainFields
+    const { id, game_name, game_img } = game;
     return (
       <div
         key={id}
@@ -102,32 +101,6 @@ export default class GameExperiences extends React.Component {
     )
   }
 
-  renderAddGameExperience = () => {
-    if (!this.state.isSelf) return null
-    return (
-      <div className='add-game-experience clickable' onClick={() => this.setState({ selected: 'edit' })}>
-        <div className='icon' style={{ backgroundImage: `url(${getAssetUrl('ic_profile_add')})` }} />
-        <span className='title'>Add New</span>
-        <span className='subtitle'>Game Experience</span>
-      </div>
-    )
-  }
-  renderAddGameExperience_mobile = () => {
-    if (!this.state.isSelf) return null
-    return (
-      <div className='add-game-experience mobile clickable' onClick={() => this.setState({ selected: 'edit' })}>
-        <div className='mobile_col'>
-          <div className='icon' style={{ backgroundImage: `url(${getAssetUrl('ic_profile_add')})` }} />
-        </div>
-        <div className='mobile_col'>
-          <div className='title'>Add New</div>
-          <div className='subtitle'>Game Experience</div>
-        </div>
-      </div>
-    )
-  }
-
-
   filterGameExperiences = () => {
     return this.state.gameExperiences;
   }
@@ -136,11 +109,9 @@ export default class GameExperiences extends React.Component {
     const gameExperiences = this.filterGameExperiences()
     return (
       <div id='profile-game-experiences'>
-        {this.props.guest && <div className='headers'></div>}
-        <div className='mobileShow'>{this.renderAddGameExperience_mobile()}</div>
+        <div className='headers'>Games</div>
         <div className='scroll'>
           {this.renderPageButtons()}
-          <div className='desktopShow'>{this.renderAddGameExperience()}</div>
           {gameExperiences.slice(this.state.page, this.state.page + this.getGamesPerPage()).map(this.renderGameExperience)}
           {!gameExperiences.length && !this.state.isSelf && this.renderEmptyState()}
         </div>

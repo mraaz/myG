@@ -144,6 +144,7 @@ console.log("game Clicked :::::  ",id)
     const gameExperiences = this.filterGameExperiences()
     return (
       <div id='profile-game-experiences'>
+        <div className='headers'>Games</div>
         <div className='scroll'>
           {this.renderPageButtons()}
           {gameExperiences.slice(this.state.page, this.state.page + this.getGamesPerPage()).map(this.renderGameExperience)}

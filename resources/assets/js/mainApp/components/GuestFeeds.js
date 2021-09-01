@@ -5,8 +5,8 @@ import IndividualPost from './IndividualPost'
 import IndividualSponsoredPost from './IndividualSponsoredPost'
 import GuestBanner from './Guest/Banner'
 import SignUpModal from './Guest/SignUpModal'
-import GameExperiences from './Games/guest'
-import MobileGameExperiences from './Games/guestMobile'
+import Games from './Games/guest'
+import MobileGames from './Games/guestMobile'
 
 import { logToElasticsearch } from '../../integration/http/logger'
 
@@ -169,12 +169,10 @@ class GuestFeeds extends Component {
               {this.state.showModal && <SignUpModal handleGuestModal={this.handleGuestModal} />}
               <div id='profile'>
                 <div className='desktopShow'>
-                  <GameExperiences
+                  <Games
                     guest={true}
                     userId={''}
                     selectedGame={''}
-                    commendUser={this.commendUser}
-                    deleteExperience={this.deleteExperience}
                     alias={this.props.alias}
                     profile={this.props.profile}
                     updateGame={this.props.updateGame}
@@ -182,12 +180,10 @@ class GuestFeeds extends Component {
                   />
                 </div>
                 <div className='mobileShow'>
-                  <MobileGameExperiences
+                  <MobileGames
                     guest={true}
                     userId={''}
                     selectedGame={''}
-                    commendUser={this.commendUser}
-                    deleteExperience={this.deleteExperience}
                     alias={this.props.alias}
                     profile={this.props.profile}
                     updateGame={this.props.updateGame}

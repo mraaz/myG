@@ -1,10 +1,10 @@
 import React from 'react';
 import axios from 'axios'
 import get from 'lodash.get';
-import { getAssetUrl } from '../../../ommon/assets';
-import { copyToClipboard } from '../../../ommon/clipboard';
-import notifyToast from '../../../ommon/toast';
-import { ignoreFunctions } from '../../../ommon/render'
+import { getAssetUrl } from '../../../common/assets';
+import { copyToClipboard } from '../../../common/clipboard';
+import notifyToast from '../../../common/toast';
+import { ignoreFunctions } from '../../../common/render'
 import { WithTooltip } from '../Tooltip';
 import { createShortLink } from '../../../integration/http/links';
 
@@ -137,6 +137,7 @@ export default class Games extends React.Component {
     const gameExperiences = this.filterGameExperiences();
     return(
       <div id="profile-game-experiences">
+        <div className='headers'>Games</div>
         <div className="scroll">
           {this.renderPageButtons()}
           {gameExperiences.slice(this.state.page, this.state.page + this.getGamesPerPage()).map(this.renderGameExperience)}

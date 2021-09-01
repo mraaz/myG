@@ -87,10 +87,7 @@ export default class GameExperiences extends React.Component {
   }
 
   renderGameExperience = (game,key) => {
-    const { id, game_name, game_img, mainFields } = game;
-    const fields = mainFields
-    const commended = this.props.profile && this.props.profile.commended || [];
-    const hasCommended = commended.find((commendation) => commendation.gameExperienceId === id && commendation.commenderId === this.props.userId);
+    const { id, game_name, game_img } = game;
     return(
       <div key={`${id}_${game_name}_${key}`} className="game-experience clickable" style={{ opacity: this.state.changingPage ? 0.3 : 1 }}
         onMouseEnter={() => this.setState({ hovering: id })}
@@ -116,7 +113,7 @@ export default class GameExperiences extends React.Component {
     const gameExperiences = this.filterGameExperiences();
     return(
       <div id="profile-game-experiences">
-        {this.props.guest && <div className='headers'></div>}
+        <div className='headers'>Games</div>
         {!this.props.guest && this.renderHeaders()}
         <div className="scroll">
           {this.renderPageButtons()}
