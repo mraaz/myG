@@ -84,6 +84,7 @@ export default class Games extends React.Component {
     if(this.props.handleGuestModal && this.props.guest==true){
       this.props.handleGuestModal()
     } else {
+      this.props.handleGameClick(id)
       console.log("game Clicked :::::  ",id)
     }
   }

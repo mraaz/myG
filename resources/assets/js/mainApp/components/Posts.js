@@ -12,6 +12,7 @@ import Games from './Games';
 import MobileGames from './Games/mobile';
 
 import { logToElasticsearch } from '../../integration/http/logger'
+import { ids } from 'webpack'
 
 class Posts extends Component {
   constructor() {
@@ -104,6 +105,33 @@ class Posts extends Component {
     )
   }
 
+  gameClieked = async (id) => {
+    try {
+      const myPosts = await axios.post('/api/post/guest_feed', {
+        counter: this.state.counter,
+        game_names_ids: [id]
+      })
+      if (myPosts.data == '' || myPosts.data == {}) {
+        this.setState({
+          moreplease: false
+        })
+        return
+      } 
+      if (myPosts.data.myPosts) {
+        this.setState({
+          myPosts: [...myPosts.data.myPosts]
+        })
+      } else {
+        this.setState({
+          moreplease: false
+        })
+        return
+      }
+    } catch (error) {
+      logToElasticsearch('error', 'Posts', 'Failed at myPosts' + ' ' + error)
+    }
+  }
+
   composeSuccess = async (data) => {
     this.setState(
       {
@@ -146,10 +174,19 @@ class Posts extends Component {
         <div id="profile" >
           <div className="desktopShow"> 
             <Games 
-              userId={this.props.userId} selectedGame={this.props.gameId} commendUser={this.commendUser} deleteExperience={this.deleteExperience} alias={this.props.alias}  updateGame={this.props.updateGame} />
+                userId={this.props.userId} 
+                selectedGame={this.props.gameId} 
+                alias={this.props.alias}
+                handleGameClick={this.gameClieked}  
+              />
           </div>
           <div className="mobileShow">  
-            <MobileGames userId={this.props.userId} selectedGame={this.props.gameId} commendUser={this.commendUser} deleteExperience={this.deleteExperience} alias={this.props.alias}  updateGame={this.props.updateGame} />
+            <MobileGames 
+            userId={this.props.userId} 
+            selectedGame={this.props.gameId} 
+            alias={this.props.alias} 
+            handleGameClick={this.gameClieked}   
+            />
           </div>
         </div>
         <GamerSuggestions />
