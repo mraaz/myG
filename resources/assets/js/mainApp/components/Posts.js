@@ -1,7 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import axios from 'axios'
-import get from 'lodash.get';
 import InfiniteScroll from 'react-infinite-scroll-component'
 import IndividualPost from './IndividualPost'
 import IndividualSponsoredPost from './IndividualSponsoredPost'
@@ -177,7 +176,6 @@ class Posts extends Component {
 
 function mapStateToProps(state, props) {
   return {
-    userId: state.user.userId,
     mainChannelEnabled: state.user.mainChannelEnabled
   }
 }
