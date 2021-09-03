@@ -85,17 +85,16 @@ export default class Games extends React.Component {
       this.props.handleGuestModal()
     } else {
       this.props.handleGameClick(id)
-      console.log("game Clicked :::::  ",id)
     }
   }
 
   renderGameExperience = (game) => {
-    const { id, game_name, game_img } = game;
+    const { game_names_id,id, game_name, game_img } = game;
     return(
       <div key={id} className="game-experience clickable" style={{ opacity: this.state.changingPage ? 0.3 : 1 }}
         onMouseEnter={() => this.setState({ hovering: id })}
         onMouseLeave={() => this.setState({ hovering: null })}
-        onClick={() => this.handleGameClick(id)}>
+        onClick={() => this.handleGameClick(game_names_id)}>
         
         {game_img && <div className="image game-image" style={{ backgroundImage: `url(${game_img})` }} />}
         {game_name.length > 17 ?

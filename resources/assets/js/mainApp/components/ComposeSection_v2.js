@@ -5,7 +5,7 @@ import Dropzone from 'react-dropzone'
 import TextareaAutosize from 'react-textarea-autosize'
 
 const buckectBaseUrl = 'https://myG.gg/platform_images/'
-import { MyGCreateableSelect } from './common'
+import { MyGCreateableSelect ,MyGSelect} from './common'
 import { Disable_keys, Hash_Tags } from './Utility_Function'
 import { Upload_to_S3, Remove_file } from './AWS_utilities'
 
@@ -45,7 +45,9 @@ export default class ComposeSection extends Component {
       group_id: [],
       options_tags: '',
       value_tags: [],
-      isShowAllGroup: false
+      isShowAllGroup: false,
+      game_names_id:'',
+      games:[]
     }
 
     this.openPhotoPost = this.openPhotoPost.bind(this)
@@ -108,7 +110,8 @@ export default class ComposeSection extends Component {
       group_id: [],
       value_tags: [],
       visibility: 1,
-      video: ''
+      video: '',
+      game_names_id:''
     })
   }
 
@@ -150,7 +153,8 @@ export default class ComposeSection extends Component {
         group_id: this.props.group_id ? this.props.group_id : this.state.group_id.toString(),
         media_url: media_url.length > 0 ? JSON.stringify(media_url) : '',
         aws_key_id: aws_key_id.length > 0 ? aws_key_id : '',
-        hash_tags: hash_tags
+        hash_tags: hash_tags,
+        game_names_id: this.state.game_names_id ?this.state.game_names_id.value :''
       })
       if (post.data == 'video_link_failed') {
         toast.success(<Toast_style text={`Strewth mate! Invalid video link`} />)
@@ -244,7 +248,26 @@ export default class ComposeSection extends Component {
         logToElasticsearch('error', 'ComposeSection_v2', 'Failed getGamers_you_might_know:' + ' ' + error)
       }
     }
+    const getGames = async function () {
+      try {
+        //const gamers_you_might_know = await axios.get('/api/user/gamers_you_might_know')
+
+        let results = await axios.get('/api/GameExperiences/show');
+        if(results.data && results.data.allmyGameExperiences && results.data.allmyGameExperiences.length > 0 ){
+          const gameData = results.data.allmyGameExperiences.map(d=>{
+            return {
+              label:d.game_name,
+              value:d.game_names_id
+            }
+          });
+          self.setState({ games: gameData })
+        }
+      } catch (error) {
+        logToElasticsearch('error', 'ComposeSection_v2', 'Failed get Games list:' + ' ' + error)
+      }
+    }
     getHash_tags()
+    getGames()
   }
 
   togglePostTypeTab = (label) => {
@@ -347,6 +370,9 @@ export default class ComposeSection extends Component {
 
   handleChange_Hash_tags = (value_tags) => {
     this.setState({ value_tags })
+  }
+  handleGameChange = (value) => {
+    this.setState({ game_names_id:value })
   }
 
   handlePreviewRemove = (e, src, key, id) => {
@@ -525,6 +551,21 @@ export default class ComposeSection extends Component {
                   classNamePrefix='filter'
                   className='hash_tag_name_box'
                   placeholder='Search, Select or create Hash Tags'
+                />
+              </div>
+            </div>
+          )}
+          {open_compose_textTab && (
+            <div className='hashTag_section'>
+              <div className='hashtag_label'>Add Game</div>
+              <div className='hashtag_input'>
+                <MyGSelect
+                  options={this.state.games}
+                  onChange={(value) => {
+                    this.handleGameChange(value)
+                  }}
+                  value={this.state.game_names_id }
+                  placeholder='Select Game'
                 />
               </div>
             </div>
