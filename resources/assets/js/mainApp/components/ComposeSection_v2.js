@@ -116,7 +116,7 @@ export default class ComposeSection extends Component {
   }
 
   submitForm = async () => {
-    const content = this.state.post_content.trim()
+    //const content = this.state.post_content.trim()
     // const userLang = navigator.language || navigator.userLanguage
 
     let media_url = []
@@ -133,7 +133,7 @@ export default class ComposeSection extends Component {
     let data = null
 
     const { content, hashtags, mentions } = prepareDraftsEditorForSave(
-      this.state.postContent,
+      this.state.postContent.trim(),
       this.state.postContentHashtags,
       this.state.postContentMentions
     )
