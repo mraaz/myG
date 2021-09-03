@@ -32,6 +32,8 @@ import { loadUserInfoToReduxStore } from '../common/user'
 import { fetchNotifications } from '../common/notifications'
 import { registerAccess } from '../integration/http/quests';
 import 'bootstrap/dist/css/bootstrap.min.css'
+import '@draft-js-plugins/mention/lib/plugin.css'
+import '@draft-js-plugins/emoji/lib/plugin.css'
 
 import {
   Home,

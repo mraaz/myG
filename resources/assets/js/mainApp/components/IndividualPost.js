@@ -12,20 +12,30 @@ import { FormattedMessage } from 'react-intl'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 import moment from 'moment'
+import { toast } from 'react-toastify'
+import { EditorState } from 'draft-js'
 
 import IndividualComment from './IndividualComment'
 import SweetAlert from './common/MyGSweetAlert'
 import { Toast_style, mobile_Share } from './Utility_Function'
 import { Upload_to_S3, Remove_file } from './AWS_utilities'
-
-import { toast } from 'react-toastify'
 import { logToElasticsearch } from '../../integration/http/logger'
-
-const buckectBaseUrl = 'https://myG.gg/platform_images/'
-
 import ImageGallery from './common/ImageGallery/ImageGallery'
 import ReportPost from './common/ReportPost'
 import { WithTooltip } from './Tooltip'
+import { DraftComposer } from './common/Draftjs'
+import {
+  convertToEditorState,
+  cloneEditorState,
+  prepareDraftsEditorForSave,
+  isEmptyDraftJs,
+  MAX_HASH_TAGS,
+  POST_STATIC,
+  POST_EDIT,
+  COMMENT_COMPOSER
+} from '../../common/draftjs'
+
+const buckectBaseUrl = 'https://myG.gg/platform_images/'
 import { copyToClipboard } from '../../common/clipboard'
 import { createShortLink } from '../../integration/http/links'
 
@@ -41,14 +51,11 @@ export default class IndividualPost extends Component {
       show_comments: false,
       admirer_first_name: '',
       pull_once: true,
-      value: '',
-      value2: '',
       zero_comments: false,
       dropdown: false,
       show_post_options: false,
       post_deleted: false,
       edit_post: false,
-      content: '',
       post_time: '',
       alert: null,
       media_urls: [],
@@ -62,7 +69,14 @@ export default class IndividualPost extends Component {
       hideComments: false,
       commentShowCount: 2,
       showPostExtraOption: false,
-      show_group_name: false
+      show_group_name: false,
+      content: null, // Initially set it to null, so that when we set it in `componentDidMount`, the UI updates the mentions list correctly
+      comment: EditorState.createEmpty(),
+      commentHashtags: [],
+      commentMentions: [],
+      contentEdited: EditorState.createEmpty(),
+      contentEditedHashtags: [],
+      contentEditedMentions: []
     }
     // this.imageFileType = ['jpeg', 'jpg', 'png', 'gif']
     // this.videoFileType = ['mov', 'webm', 'mpg', 'mp4', 'avi', 'ogg']
@@ -183,19 +197,21 @@ export default class IndividualPost extends Component {
       this.setState({ show_like: false })
     }
 
+    let content = convertToEditorState(this.props.post.content)
     this.setState({
+      content,
       like: this.props.post.do_I_like_it,
       total: this.props.post.total,
       admirer_first_name: this.props.post.admirer_first_name,
       post_time: post_timestamp.local().fromNow(),
-      content: this.props.post.content,
       galleryItems
     })
+
     if (this.props.post.no_of_comments != 0) {
-      this.setState({
-        zero_comments: true,
-        comment_total: this.props.post.no_of_comments
-      })
+    this.setState({
+      zero_comments: true,
+      comment_total: this.props.post.no_of_comments
+    })
     }
 
     if (post.group_id != null && post.group_id != '' && post.name != undefined && post.name.trim() != '') {
@@ -217,7 +233,7 @@ export default class IndividualPost extends Component {
         const myComments = await axios.get(`/api/comments/${post_id}`)
         self.setState({
           myComments: myComments.data.allComments,
-          value: '',
+          comment: EditorState.createEmpty(),
           comment_total: myComments.data.allComments.length,
           pinned_total: myComments.data.pinned_total
         })
@@ -227,7 +243,6 @@ export default class IndividualPost extends Component {
     }
     if (post_id != '') getComments()
   }
-
   handleChange = (e) => {
     let isGuestUser = this.props.guest ? true : false
     if (isGuestUser) {
@@ -245,7 +260,6 @@ export default class IndividualPost extends Component {
     }
     this.setState({ value2: e.target.value })
   }
-
   show_more_comments = () => {
     const { show_comments, show_more_comments } = this.state
     this.setState({
@@ -325,31 +339,61 @@ export default class IndividualPost extends Component {
   }
 
   insert_comment = () => {
-    const { value = '', preview_file = [], aws_key_id = [] } = this.state
-
-    if (value.trim() == '' && preview_file.length == 0) {
+    const { preview_file = [], aws_key_id = [] } = this.state
+    if (isEmptyDraftJs(this.state.comment) && preview_file.length == 0) {
       return
     }
     this.onFocus()
     const saveComment = async () => {
       const { myComments = [] } = this.state
+
+      let data = null
+
+      const { content, hashtags, mentions } = prepareDraftsEditorForSave(
+        this.state.comment,
+        this.state.commentHashtags,
+        this.state.commentMentions
+      )
+
+      if (hashtags !== null && hashtags.length !== 0) {
+        // Verify all tags are valid, if any found early return
+        if (hashtags.some((hashtag) => /['/.%#$,;`\\]/.test(hashtag.tag))) {
+          toast.success(<Toast_style text={'Sorry mate! Hash tags can not have invalid characters'} />)
+          return
+        }
+
+        if (hashtags.length >= MAX_HASH_TAGS) {
+          toast.success(<Toast_style text={"Crikey, mate! That's alot of tags. I'll only grab 20 and dump the rest."} />)
+          hashtags = hashtags.slice(0, 20)
+        }
+      }
+
+      const hash_tags = JSON.stringify(
+        hashtags.map((hashtag) => ({
+          value: hashtag.tag,
+          hash_tag_id: hashtag.id
+        }))
+      )
+      data = {
+        content,
+        post_id: this.props.post.id,
+        media_url: this.state.preview_file.length > 0 ? JSON.stringify(this.state.preview_file) : '',
+        aws_key_id: aws_key_id.length > 0 ? aws_key_id : '',
+        hash_tags,
+        mentionsList: JSON.stringify(mentions)
+      }
+
       try {
-        const postComment = await axios.post('/api/comments', {
-          content: this.state.value.trim(),
-          post_id: this.props.post.id,
-          media_url: this.state.preview_file.length > 0 ? JSON.stringify(this.state.preview_file) : '',
-          aws_key_id: aws_key_id.length > 0 ? aws_key_id : ''
-        })
+        const postComment = await axios.post('/api/comments', data)
 
         this.setState({
           myComments: [...myComments, ...postComment.data],
           preview_file: '',
           file_keys: '',
-          value: '',
-          aws_key_id: []
-        })
-
-        this.setState({
+          aws_key_id: [],
+          comment: EditorState.createEmpty(),
+          commentHashtags: [],
+          commentMentions: [],
           comment_total: this.state.comment_total + 1,
           zero_comments: true
         })
@@ -361,33 +405,71 @@ export default class IndividualPost extends Component {
   }
 
   update_post = (e) => {
-    if (this.state.value2 == '') {
+    if (isEmptyDraftJs(this.state.contentEdited)) {
       return
     }
-    if (this.state.value2.trim() == '') {
-      this.setState({
-        value: ''
-      })
-      return
-    }
+
     const self = this
     var post_id = this.props.post.id
 
+    let data = null
+
+    const { content, hashtags, mentions } = prepareDraftsEditorForSave(
+      this.state.contentEdited,
+      this.state.contentEditedHashtags,
+      this.state.contentEditedMentions
+    )
+
+    if (hashtags !== null && hashtags.length !== 0) {
+      // Verify all tags are valid, if any found early return
+      if (hashtags.some((hashtag) => /['/.%#$,;`\\]/.test(hashtag.tag))) {
+        toast.success(<Toast_style text={'Sorry mate! Hash tags can not have invalid characters'} />)
+        return
+      }
+
+      if (hashtags.length >= MAX_HASH_TAGS) {
+        toast.success(<Toast_style text={"Crikey, mate! That's alot of tags. I'll only grab 20 and dump the rest."} />)
+        hashtags = hashtags.slice(0, 20)
+      }
+    }
+
+    const hash_tags = JSON.stringify(
+      hashtags.map((hashtag) => ({
+        value: hashtag.tag,
+        hash_tag_id: hashtag.id
+      }))
+    )
+
+    data = {
+      content,
+      hash_tags,
+      mentionsList: JSON.stringify(mentions)
+    }
+
     const editPost = async function () {
       try {
-        await axios.post(`/api/post/update/${post_id}`, {
-          content: self.state.value2
-        })
+        await axios.post(`/api/post/update/${post_id}`, data)
+        const content = cloneEditorState(self.state.contentEdited)
         self.setState({
-          content: self.state.value2,
+          content,
           edit_post: false,
-          value2: ''
+          contentEdited: EditorState.createEmpty(),
+          contentEditedHashtags: [],
+          contentEditedMentions: []
         })
       } catch (error) {
         logToElasticsearch('error', 'IndividualPost', 'Failed editPost:' + ' ' + error)
       }
     }
     editPost()
+  }
+
+  submitComposeComment = () => {
+    if (!this.state.uploading) {
+      this.insert_comment()
+    } else {
+      toast.warn(<Toast_style text={'Opps,Image is uploading Please Wait...'} />)
+    }
   }
 
   detectKey = (e, key) => {
@@ -418,25 +500,6 @@ export default class IndividualPost extends Component {
       } else {
         toast.warn(<Toast_style text={'Opps,Image is uploading Please Wait...'} />)
       }
-    }
-  }
-
-  detectKey2 = (e) => {
-    if (e.key === 'Enter' && e.shiftKey) {
-      return
-    }
-
-    if (e.key === 'Escape') {
-      this.setState({
-        edit_post: false,
-        value2: ''
-      })
-    }
-
-    if (e.key === 'Enter') {
-      event.preventDefault()
-      event.stopPropagation()
-      this.update_post()
     }
   }
 
@@ -501,11 +564,13 @@ export default class IndividualPost extends Component {
 
   clickedEdit = async () => {
     this.clickedGamePostExtraOption()
+    const contentEdited = cloneEditorState(this.state.content)
     this.setState({
       edit_post: true,
-      value2: this.state.content.trim(),
-      dropdown: false
+      dropdown: false,
+      contentEdited
     })
+
     setTimeout(
       function () {
         //Start the timer
@@ -741,36 +806,35 @@ export default class IndividualPost extends Component {
                 <div className='post__time'>{this.state.post_time}</div>
               </div>
               <div className='post__content'>
-                {!this.state.edit_post && this.state.showmore && (
-                  <Fragment>
-                    <p style={{ whiteSpace: 'pre-line' }}>
-                      {`${this.state.content}  `}
-                      {this.renderHashTags(hash_tags)}
-                      <strong onClick={this.toggleShowmore}>{' ... '}See less</strong>
-                    </p>
-                  </Fragment>
+                {/* TODO: Create a function to generate a load more snippet of text for posts */}
+                {!this.state.edit_post && this.state.showmore && this.state.content && (
+                  <DraftComposer
+                    editorType={POST_STATIC}
+                    editorState={this.state.content}
+                    setEditorState={(state) => this.setState({ content: state })}
+                  ></DraftComposer>
                 )}
-                {!this.state.edit_post && !this.state.showmore && (
-                  <Fragment>
-                    <p style={{ whiteSpace: 'pre-line' }}>
-                      {`${this.state.content.slice(0, 254)}  `} {this.renderHashTags(hash_tags)}
-                      {this.state.content.length > 254 && <strong onClick={this.toggleShowmore}> {' ... '} See more</strong>}
-                    </p>
-                  </Fragment>
+                {!this.state.edit_post && !this.state.showmore && this.state.content && (
+                  <DraftComposer
+                    editorType={POST_STATIC}
+                    editorState={this.state.content}
+                    setEditorState={(state) => this.setState({ content: state })}
+                  ></DraftComposer>
                 )}
                 {this.state.edit_post && (
-                  <div className='post_content_editbox'>
-                    <textarea
-                      name='name2'
-                      rows={8}
-                      cols={80}
-                      value={this.state.value2}
-                      onChange={this.handleChange2}
-                      maxLength='254'
-                      onKeyDown={this.detectKey2}
-                      ref={this.setTextInputRef2}
-                    />
-                  </div>
+                  <DraftComposer
+                    editorType={POST_EDIT}
+                    editorState={this.state.contentEdited}
+                    setEditorState={(state) => this.setState({ contentEdited: state })}
+                    handleReturnKey={this.update_post}
+                    addHashtag={(hashtagMention) =>
+                      this.setState({ contentEditedHashtags: [...this.state.contentEditedHashtags, hashtagMention] })
+                    }
+                    addMention={(userMention) =>
+                      this.setState({ contentEditedMentions: [...this.state.contentEditedMentions, userMention] })
+                    }
+                    handleSpecialKeys={(e) => this.setState({ edit_post: false })}
+                  ></DraftComposer>
                 )}
               </div>
             </div>
@@ -832,15 +896,15 @@ export default class IndividualPost extends Component {
               </div>
             )}
             <div className='compose-comment'>
-              <textarea
-                name='name'
-                placeholder={post.allow_comments ? 'Write a comment...' : 'Comments disabled'}
-                value={this.state.value}
-                onChange={this.handleChange}
-                maxLength='254'
-                onKeyDown={(e) => this.detectKey(e, true)}
-                ref={this.setTextInputRef}
-              />
+              <DraftComposer
+                editorType={COMMENT_COMPOSER}
+                editorState={this.state.comment}
+                setEditorState={(state) => this.setState({ comment: state })}
+                placeholder={'Write a comment...'}
+                handleReturnKey={this.submitComposeComment}
+                addHashtag={(hashtagMention) => this.setState({ commentHashtags: [...this.state.contentEditedMentions, hashtagMention] })}
+                addMention={(userMention) => this.setState({ commentMentions: [...this.state.commentMentions, userMention] })}
+              ></DraftComposer>
               <div className='insert__images' onClick={this.insert_image_comment}>
                 <input
                   type='file'
