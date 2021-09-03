@@ -136,6 +136,11 @@ spec:
                 secretKeyRef:
                   name:  {{ template "mygame.fullname" . }}
                   key: googlesecret
+            - name: TRANSLATE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name:  {{ template "mygame.fullname" . }}
+                  key: translatekey
             - name: SECRET_KEY
               valueFrom:
                 secretKeyRef:

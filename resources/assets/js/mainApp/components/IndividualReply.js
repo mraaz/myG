@@ -263,6 +263,12 @@ export default class IndividualReply extends Component {
     }
   }
 
+  handleLinkClick = ()=>{
+    if(this.props.handleLinkClick){
+      this.props.handleLinkClick()
+    }
+  }
+
   render() {
     let { reply, user } = this.props
     let { profile_img = 'https://image.flaticon.com/icons/svg/149/149071.svg', media_url = '' } = reply
@@ -274,7 +280,7 @@ export default class IndividualReply extends Component {
           {this.state.alert}
           <div className='comment__section'>
             <div className='comment-info'>
-              <Link to={`/profile/${reply.alias}`}>{`@${reply.alias}`}</Link>
+              <Link to={`/profile/${reply.alias}`} onClick={this.handleLinkClick}>{`@${reply.alias}`}</Link>
               {'  '}
               {!this.state.show_edit_reply && this.state.content && (
                 <div className='comment-content'>
@@ -339,7 +345,7 @@ export default class IndividualReply extends Component {
               ></DraftComposer>
             )}
             {/* profile section start  */}
-            <Link to={`/profile/${reply.alias}`} className='user-img'>
+            <Link to={`/profile/${reply.alias}`} className='user-img' onClick={this.handleLinkClick}>
               <div
                 className='profile__image'
                 style={{

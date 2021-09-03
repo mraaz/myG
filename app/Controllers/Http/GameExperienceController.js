@@ -107,7 +107,7 @@ class GameExperienceController {
     try {
       const allfancyGameExperiences = await Database.table('game_experiences')
         .innerJoin('game_names', 'game_names.id', 'game_experiences.game_names_id')
-        .select('game_experiences.*', 'game_names.game_name')
+        .select('game_names.*')
         .orderBy('game_names.counter', 'desc')
         .limit(5)
       return {
@@ -130,12 +130,12 @@ class GameExperienceController {
       //   .where({ id: request.params.game_id })
       //   .fetch()
 
-      const myGameExperience = await Database.table('game_experiences')
+      const myGameExperienceList = await Database.table('game_experiences')
         .innerJoin('game_names', 'game_names.id', 'game_experiences.game_names_id')
         .where('game_experiences.id', '=', request.params.game_id)
-        .select('game_experiences.*', 'game_names.game_name')
+        .select('game_names.*')
       return {
-        myGameExperience
+        myGameExperienceList
       }
     } catch (error) {
       LoggingRepository.log({

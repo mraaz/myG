@@ -109,6 +109,7 @@ export default class IndividualPost extends Component {
   click_like_btn = (post_id) => {
     const isGuestUser = this.props.guest ? true : false
     if (isGuestUser) {
+      this.props.handleGuestModal()
       return
     }
     this.setState({
@@ -135,6 +136,7 @@ export default class IndividualPost extends Component {
   click_unlike_btn = (post_id) => {
     const isGuestUser = this.props.guest ? true : false
     if (isGuestUser) {
+      this.props.handleGuestModal()
       return
     }
     this.setState({
@@ -152,6 +154,17 @@ export default class IndividualPost extends Component {
       axios.get(`/api/likes/delete/${post_id}`)
     } catch (error) {
       logToElasticsearch('error', 'IndividualPost', 'Failed click_unlike_btn:' + ' ' + error)
+    }
+  }
+
+  handleLinkClick = () => {
+    const isGuestUser = this.props.guest ? true : false
+    if (isGuestUser) {
+      this.props.handleGuestModal()
+      return
+    }
+    if (this.props.refreshme) {
+      this.props.refreshme()
     }
   }
 
@@ -175,38 +188,35 @@ export default class IndividualPost extends Component {
       }
     }
     let post_timestamp = moment()
-    try {
-      if (this.props.post.created_at) {
-        post_timestamp = moment(this.props.post.created_at, 'YYYY-MM-DD HH:mm:ssZ')
-      }
 
-      if (this.props.post.total == 0) {
-        this.setState({ show_like: false })
-      }
+    if (this.props.post.created_at) {
+      post_timestamp = moment(this.props.post.created_at, 'YYYY-MM-DD HH:mm:ssZ')
+    }
 
-      let content = convertToEditorState(this.props.post.content)
-      this.setState({
-        content,
-        like: this.props.post.do_I_like_it,
-        total: this.props.post.total,
-        admirer_first_name: this.props.post.admirer_first_name,
-        post_time: post_timestamp.local().fromNow(),
-        galleryItems
-      })
+    if (this.props.post.total == 0) {
+      this.setState({ show_like: false })
+    }
 
-      if (this.props.post.no_of_comments != 0) {
-        this.setState({
-          zero_comments: true,
-          comment_total: this.props.post.no_of_comments
-        })
-      }
+    let content = convertToEditorState(this.props.post.content)
+    this.setState({
+      content,
+      like: this.props.post.do_I_like_it,
+      total: this.props.post.total,
+      admirer_first_name: this.props.post.admirer_first_name,
+      post_time: post_timestamp.local().fromNow(),
+      galleryItems
+    })
 
-      if (post.group_id != null && post.group_id != '' && post.name != undefined && post.name != '') {
-        if ((source = 'news_feed')) {
-          this.state.show_group_name = true
-        }
-      }
-    } catch (e) {}
+    if (this.props.post.no_of_comments != 0) {
+    this.setState({
+      zero_comments: true,
+      comment_total: this.props.post.no_of_comments
+    })
+    }
+
+    if (post.group_id != null && post.group_id != '' && post.name != undefined && post.name.trim() != '') {
+      this.state.show_group_name = true
+    }
 
     this.pullComments()
   }
@@ -233,7 +243,23 @@ export default class IndividualPost extends Component {
     }
     if (post_id != '') getComments()
   }
+  handleChange = (e) => {
+    let isGuestUser = this.props.guest ? true : false
+    if (isGuestUser) {
+      this.props.handleGuestModal()
+      return
+    }
+    this.setState({ value: e.target.value })
+  }
 
+  handleChange2 = (e) => {
+    let isGuestUser = this.props.guest ? true : false
+    if (isGuestUser) {
+      this.props.handleGuestModal()
+      return
+    }
+    this.setState({ value2: e.target.value })
+  }
   show_more_comments = () => {
     const { show_comments, show_more_comments } = this.state
     this.setState({
@@ -268,11 +294,21 @@ export default class IndividualPost extends Component {
     })
   }
   insert_image_comment = () => {
+    let isGuestUser = this.props.guest ? true : false
+    if (isGuestUser) {
+      this.props.handleGuestModal()
+      return
+    }
     if (!this.state.uploading) {
       this.fileInputRef.current.click()
     }
   }
   handleSelectFile = (e) => {
+    let isGuestUser = this.props.guest ? true : false
+    if (isGuestUser) {
+      this.props.handleGuestModal()
+      return
+    }
     const fileList = e.target.files
     if (fileList.length > 0) {
       let type = fileList[0].type.split('/')
@@ -297,10 +333,6 @@ export default class IndividualPost extends Component {
     } catch (error) {
       toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file.'} />)
     }
-    this.setState({
-      uploading: false
-    })
-
     this.setState({
       uploading: false
     })
@@ -442,6 +474,12 @@ export default class IndividualPost extends Component {
 
   detectKey = (e, key) => {
     if (!key) {
+      let isGuestUser = this.props.guest ? true : false
+      if (isGuestUser) {
+        this.setTextInputRef.current.blur()
+        this.props.handleGuestModal()
+        return
+      }
       e.preventDefault()
       e.stopPropagation()
       if (!this.state.uploading) {
@@ -482,6 +520,9 @@ export default class IndividualPost extends Component {
                 myComments: previous.myComments.filter((comment) => comment.id !== deleted)
               }))
             }}
+            guest={this.props.guest}
+            handleGuestModal={this.props.handleGuestModal}
+            refreshme={this.props.refreshme}
           />
         )
       })
@@ -506,6 +547,9 @@ export default class IndividualPost extends Component {
                 myComments: previous.myComments.filter((comment) => comment.id !== deleted)
               }))
             }}
+            guest={this.props.guest}
+            handleGuestModal={this.props.handleGuestModal}
+            refreshme={this.props.refreshme}
           />
         )
       })
@@ -620,11 +664,20 @@ export default class IndividualPost extends Component {
   }
 
   renderHashTags = (hash_tags) => {
+    const isGuestUser = this.props.guest ? true : false
+
     if (hash_tags.length > 0) {
       return hash_tags.map((tags) => {
+        if (isGuestUser) {
+          return (
+            <strong>
+              <span onClick={this.handleLinkClick}>{`#${tags.content} `}</span>
+            </strong>
+          )
+        }
         return (
           <strong>
-            <Link to={`/hashtag/${tags.content}`}>{`#${tags.content} `}</Link>
+            <Link to={`/hashtag/${tags.content}`} onClick={this.handleLinkClick}>{`#${tags.content} `}</Link>
           </strong>
         )
       })
@@ -701,7 +754,7 @@ export default class IndividualPost extends Component {
                           Delete
                         </div>
                       )}
-                      {user.id == post.user_id && (
+                      {!this.state.show_group_name && user.id == post.user_id && (
                         <div className='option' onClick={this.clickedEdit}>
                           Edit &nbsp;
                         </div>
@@ -713,7 +766,7 @@ export default class IndividualPost extends Component {
                   </div>
                 </div>
               )}
-              <Link to={`/profile/${post.alias}`} className='user-img'>
+              <Link to={`/profile/${post.alias}`} className='user-img' onClick={this.handleLinkClick}>
                 <div
                   className='profile__image'
                   style={{
@@ -727,13 +780,15 @@ export default class IndividualPost extends Component {
               <div className='user__details'>
                 <div className='author__username'>
                   <div className='username'>
-                    <Link to={`/profile/${post.alias}`}>{`@${post.alias} `}</Link>
+                    <Link to={`/profile/${post.alias}`} onClick={this.handleLinkClick}>{`@${post.alias} `}</Link>
                   </div>
                   {this.state.show_group_name && (
                     <div className='shared__group'>
                       {`shared `}
                       <div className='arrow'></div>
-                      <Link to={`/community/${decodeURI(post.name)}`}>{decodeURI(post.name)}</Link>
+                      <Link to={`/community/${decodeURI(post.name)}`} onClick={this.handleLinkClick}>
+                        {decodeURI(post.name)}
+                      </Link>
                     </div>
                   )}
                   {post.visibility === 0 && (
@@ -850,7 +905,6 @@ export default class IndividualPost extends Component {
                 addHashtag={(hashtagMention) => this.setState({ commentHashtags: [...this.state.contentEditedMentions, hashtagMention] })}
                 addMention={(userMention) => this.setState({ commentMentions: [...this.state.commentMentions, userMention] })}
               ></DraftComposer>
-
               <div className='insert__images' onClick={this.insert_image_comment}>
                 <input
                   type='file'
@@ -858,7 +912,6 @@ export default class IndividualPost extends Component {
                   ref={this.fileInputRef}
                   onChange={this.handleSelectFile}
                   name='insert__images'
-                  disabled={isGuestUser}
                 />
                 <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Image.svg`} className='img-fluid' />
               </div>
@@ -873,7 +926,7 @@ export default class IndividualPost extends Component {
                   backgroundSize: 'cover'
                 }}
               >
-                <Link to={`/profile/${post.alias}`} className='user-img'></Link>
+                <Link to={`/profile/${post.alias}`} className='user-img' onClick={this.handleLinkClick}></Link>
                 <div className='online__status'></div>
               </div>
             </div>

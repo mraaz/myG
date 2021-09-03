@@ -380,7 +380,7 @@ export default class Members extends React.Component {
           </div>
           {isActive != 'setting' && (
             <div className='manage__searchBar'>
-              <input type='text' value={searchMemberValue} onChange={(e) => this.handleMemberSearch(e)} placeholder='Search members here' />
+              <input type='text' autocomplete='off' value={searchMemberValue} onChange={(e) => this.handleMemberSearch(e)} placeholder='Search members here' />
             </div>
           )}
           <div className='modal__body'>{isActive == 'setting' ? this.renderSettingComponent() : this.renderGroupMember()}</div>

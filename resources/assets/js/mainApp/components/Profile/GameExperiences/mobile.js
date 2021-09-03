@@ -257,7 +257,8 @@ export default class GameExperiences extends React.Component {
     const gameExperiences = this.filterGameExperiences()
     return (
       <div id='profile-game-experiences'>
-        {this.renderHeaders()}
+        {this.props.guest && <div className='headers'></div>}
+        {!this.props.guest && this.renderHeaders()}
         <div className='mobileShow'>{this.renderAddGameExperience_mobile()}</div>
         <div className='scroll'>
           {this.renderPageButtons()}

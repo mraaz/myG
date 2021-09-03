@@ -193,6 +193,13 @@ const CreateTeam = Loadable({
   },
 })
 
+const GuestFeeds = Loadable({
+  loader: () => import('./components/GuestFeeds'),
+  loading: function() {
+    return null
+  },
+})
+
 export {
   Home,
   ProfileContainer,
@@ -223,4 +230,5 @@ export {
   Channel,
   HashTagList,
   CreateTeam,
+  GuestFeeds
 }

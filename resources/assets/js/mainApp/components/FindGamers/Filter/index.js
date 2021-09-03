@@ -208,7 +208,7 @@ export default class Filter extends React.Component {
           <div className='filter-label'>{filterOptions[filter]}</div>
           <input
             autoFocus
-            type='text'
+            type='text' autocomplete='off'
             className='filter-text'
             onChange={(event) => this.setState({ [filter]: event.target.value })}
             value={this.state[filter]}
