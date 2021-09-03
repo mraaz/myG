@@ -26,6 +26,18 @@
       })(window,document,'script','dataLayer','GTM-MLH7QTB');
     }
   </script>
+
+  <script type="text/javascript">
+    if ('serviceWorker' in navigator) {
+       console.log("Will the service worker register?");
+       navigator.serviceWorker.register('service-worker.js')
+         .then(function(reg){
+           console.log("Yes, it did.");
+        }).catch(function(err) {
+           console.log("No it didn't. This happened:", err)
+       });
+    }
+   </script>
   <!-- End Google Tag Manager -->
 
   <!-- Start Hot Jar
@@ -51,6 +63,11 @@
   <meta property="og:site_name" content="myG: Gamer's Platform"/>
   <meta property="og:description" content="myG! A better tool for Gamers to connect, share & improve!"/>
   <meta name="SKYPE_TOOLBAR" content="SKYPE_TOOLBAR_PARSER_COMPATIBLE"/>
+
+  <link rel="manifest" href="/manifest.json">     
+  <meta name="msapplication-TileColor" content="#ffffff">
+  <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+  <meta name="theme-color" content="#ffffff"> 
   <title>
     @section('title')
     @endsection
