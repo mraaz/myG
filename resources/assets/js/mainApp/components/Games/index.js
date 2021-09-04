@@ -89,7 +89,7 @@ export default class Games extends React.Component {
   }
 
   renderGameExperience = (game) => {
-    const { game_names_id,id, game_name, game_img } = game;
+    const { game_names_id,id, game_name, game_img='https://myg.gg/platform_images/Profile/Silver-Stamping-Logo-MockUp.jpg' } = game;
     return(
       <div key={id} className="game-experience clickable" style={{ opacity: this.state.changingPage ? 0.3 : 1 }}
         onMouseEnter={() => this.setState({ hovering: id })}

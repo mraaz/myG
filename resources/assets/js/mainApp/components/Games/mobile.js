@@ -47,7 +47,7 @@ export default class MobileGames extends React.Component {
   }
 
   getGamesPerPage = () => {
-    const selfSize = 1
+    const selfSize = 2
     const othersSize = 3
     return selfSize
   }
@@ -59,7 +59,7 @@ export default class MobileGames extends React.Component {
     if(this.props.handleGuestModal && this.props.guest==true){
       this.props.handleGuestModal()
     } else {
-      console.log("game Clicked :::::  ",id)
+      this.props.handleGameClick(id)
     }
   }
   renderPageButtons = () => {
@@ -88,7 +88,7 @@ export default class MobileGames extends React.Component {
   }
 
   renderGameExperience = (game) => {
-    const { id, game_name, game_img } = game;
+    const { id, game_name, game_img='https://myg.gg/platform_images/Profile/Silver-Stamping-Logo-MockUp.jpg' } = game;
     return (
       <div
         key={id}
@@ -98,6 +98,12 @@ export default class MobileGames extends React.Component {
         onMouseLeave={() => this.setState({ hovering: null })}
         onClick={() => this.handleGameClick(id)}
       >
+        
+        {game_img && (
+        <div className='image game-image'>
+          <img src={game_img} />
+          </div>
+        )}
         {game_name.length > 17 ? (
           <WithTooltip text={game_name} position={{ bottom: '36px', left: '-2vw' }}>
             <span className='name'>{game_name.slice(0, 17) + '...'}</span>
@@ -105,7 +111,6 @@ export default class MobileGames extends React.Component {
         ) : (
           <span className='name'>{game_name}</span>
         )}
-        {game_img && <div className='image game-image' style={{ backgroundImage: `url(${game_img})` }} />}
       </div>
     )
   }
@@ -133,7 +138,7 @@ export default class MobileGames extends React.Component {
   render() {
     const gameExperiences = this.filterGameExperiences()
     return (
-      <div id='profile-game-experiences'>
+      <div id='profile-game-experiences' className='mobile-profile-game-experiences'>
         <div className='headers'>Games</div>
         <div className='scroll'>
           {this.renderPageButtons()}

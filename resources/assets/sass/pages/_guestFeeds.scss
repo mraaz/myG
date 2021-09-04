@@ -4375,6 +4375,13 @@ section#content-container {
       border: none;
       box-shadow: 0 0 0 2px #e5c746;
     }
+    .game-experience {
+      &.selected{
+        border: none;
+        box-shadow: 0 0 0 2px #e5c746;
+      }
+      
+    }
 
     .game-experience {
       position: relative;
@@ -4943,6 +4950,27 @@ section#content-container {
     }
     #profile-game-experiences .scroll {
       margin: 8px 4px;
+      border: none;
+      flex-direction: row !important;
+      background-color: transparent;
+    }
+    .mobile-profile-game-experiences {
+       .game-experience {
+            width: 45% !important;
+            padding-top: 0 !important;
+            margin: 5px !important;
+            background-color:transparent !important;
+            .game-image{
+              img{
+                width: 100px;
+                border-radius: 51%;
+                height: 100px;
+              }
+            }
+            .name{
+              font-size: 14px !important;
+            }
+        }
     }
     #profile-game-experiences .game-experience {
       width: 90%;
