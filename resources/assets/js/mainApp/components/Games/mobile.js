@@ -89,10 +89,11 @@ export default class MobileGames extends React.Component {
 
   renderGameExperience = (game) => {
     const { id, game_name, game_img='https://myg.gg/platform_images/Profile/Silver-Stamping-Logo-MockUp.jpg' } = game;
+    const {selectedGame =[]} = this.props;
     return (
       <div
         key={id}
-        className='game-experience clickable'
+        className={`game-experience clickable ${selectedGame.includes(id) ? 'selected' : ''}`}
         style={{ opacity: this.state.changingPage ? 0.3 : 1 }}
         onMouseEnter={() => this.setState({ hovering: id })}
         onMouseLeave={() => this.setState({ hovering: null })}

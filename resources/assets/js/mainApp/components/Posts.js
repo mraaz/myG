@@ -34,7 +34,12 @@ class Posts extends Component {
       behavior: 'smooth'
     })
     //window.history.pushState('myG', 'myG', '/')
-    this.fetchMoreData()
+    const selectedGame = window.localStorage.getItem('slectedGame');
+    if(selectedGame == null){
+      this.fetchMoreData()
+    } else {
+      this.gameClieked()
+    } 
   }
 
   showLatestPosts = () => {
@@ -105,17 +110,19 @@ class Posts extends Component {
     )
   }
 
-  gameClieked = async (id) => {
+  gameClieked = async (id = '') => {
     const selectedGame = window.localStorage.getItem('slectedGame');
-    if(selectedGame === null){
-      const d = [];
-      d.push(id);
-      window.localStorage.setItem('slectedGame', JSON.stringify(d));
-    } else {
-      const p =  JSON.parse(selectedGame);
-      if(!p.includes(id)){
-        p.push(id);
-        window.localStorage.setItem('slectedGame', JSON.stringify(p));
+    if(id){
+      if(selectedGame === null){
+        const d = [];
+        d.push(id);
+        window.localStorage.setItem('slectedGame', JSON.stringify(d));
+      } else {
+        const p =  JSON.parse(selectedGame);
+        if(!p.includes(id)){
+          p.push(id);
+          window.localStorage.setItem('slectedGame', JSON.stringify(p));
+        }
       }
     }
     
@@ -162,7 +169,8 @@ class Posts extends Component {
   }
 
   render() {
-    const { myPosts = [], moreplease, isFetching = false, post_submit_loading = false } = this.state
+    const { myPosts = [], moreplease, isFetching = false, post_submit_loading = false } = this.state;
+    const sg = window.localStorage.getItem('slectedGame');
     return (
       <Fragment>
         {post_submit_loading && (
@@ -188,7 +196,7 @@ class Posts extends Component {
           <div className="desktopShow"> 
             <Games 
                 userId={this.props.userId} 
-                selectedGame={this.props.gameId} 
+                selectedGame={sg ? JSON.parse(sg) : []} 
                 alias={this.props.alias}
                 handleGameClick={this.gameClieked}  
               />
@@ -196,7 +204,7 @@ class Posts extends Component {
           <div className="mobileShow">  
             <MobileGames 
             userId={this.props.userId} 
-            selectedGame={this.props.gameId} 
+            selectedGame={sg ? JSON.parse(sg) : []} 
             alias={this.props.alias} 
             handleGameClick={this.gameClieked}   
             />
