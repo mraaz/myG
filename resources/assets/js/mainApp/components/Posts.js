@@ -106,10 +106,23 @@ class Posts extends Component {
   }
 
   gameClieked = async (id) => {
+    const selectedGame = window.localStorage.getItem('slectedGame');
+    if(selectedGame === null){
+      const d = [];
+      d.push(id);
+      window.localStorage.setItem('slectedGame', JSON.stringify(d));
+    } else {
+      const p =  JSON.parse(selectedGame);
+      if(!p.includes(id)){
+        p.push(id);
+        window.localStorage.setItem('slectedGame', JSON.stringify(p));
+      }
+    }
+    
     try {
       const myPosts = await axios.post('/api/post/guest_feed', {
         counter: this.state.counter,
-        game_names_ids: [id]
+        game_names_ids: typeof selectedGame == 'string' ?JSON.parse(selectedGame) : selectedGame
       })
       if (myPosts.data == '' || myPosts.data == {}) {
         this.setState({
