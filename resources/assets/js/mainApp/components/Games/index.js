@@ -1,13 +1,8 @@
 import React from 'react';
 import axios from 'axios'
-import get from 'lodash.get';
 import { getAssetUrl } from '../../../common/assets';
-import { copyToClipboard } from '../../../common/clipboard';
-import notifyToast from '../../../common/toast';
 import { ignoreFunctions } from '../../../common/render'
 import { WithTooltip } from '../Tooltip';
-import { createShortLink } from '../../../integration/http/links';
-
 export default class Games extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     return ignoreFunctions(nextProps, nextState, this.props, this.state)
@@ -91,7 +86,6 @@ export default class Games extends React.Component {
   renderGameExperience = (game) => {
     const { game_names_id,id, game_name, game_img='https://myg.gg/platform_images/Profile/Silver-Stamping-Logo-MockUp.jpg' } = game;
     const {selectedGame =[]} = this.props;
-    console.log('selectedGame   ',selectedGame);
     return (
       <div
         key={id}
@@ -135,7 +129,7 @@ export default class Games extends React.Component {
     const gameExperiences = this.filterGameExperiences();
     return(
       <div id="profile-game-experiences">
-        <div className='headers'>Games</div>
+        <div className='headers'>Filter posts by Game</div>
         <div className="scroll">
           {this.renderPageButtons()}
           {gameExperiences.slice(this.state.page, this.state.page + this.getGamesPerPage()).map(this.renderGameExperience)}

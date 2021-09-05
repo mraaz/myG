@@ -106,7 +106,8 @@ class PostController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error
+        message: (error && error.message) || error,
+        method: 'store'
       })
     }
   }
@@ -289,7 +290,8 @@ class PostController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error
+        message: (error && error.message) || error,
+        method: 'show'
       })
     }
   }
@@ -315,7 +317,8 @@ class PostController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error
+        message: (error && error.message) || error,
+        method: 'myshow'
       })
     }
   }
@@ -338,7 +341,8 @@ class PostController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error
+        message: (error && error.message) || error,
+        method: 'showpost'
       })
     }
   }
@@ -358,7 +362,8 @@ class PostController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error
+        message: (error && error.message) || error,
+        method: 'fetchGuestPost'
       })
     }
   }
@@ -391,7 +396,8 @@ class PostController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error
+        message: (error && error.message) || error,
+        method: 'fetchGuestPostsForUser'
       })
       return { myPosts: [] }
     }
@@ -439,7 +445,8 @@ class PostController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error
+        message: (error && error.message) || error,
+        method: 'showPosts'
       })
     }
   }
@@ -465,7 +472,8 @@ class PostController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error
+        message: (error && error.message) || error,
+        method: 'get_group_posts_internal'
       })
     }
   }
@@ -514,7 +522,8 @@ class PostController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error
+        message: (error && error.message) || error,
+        method: 'get_group_posts'
       })
     }
   }
@@ -557,7 +566,8 @@ class PostController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error
+        message: (error && error.message) || error,
+        method: 'get_game_data'
       })
     }
   }
@@ -577,7 +587,8 @@ class PostController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error
+        message: (error && error.message) || error,
+        method: 'posts_count'
       })
     }
   }
@@ -594,7 +605,7 @@ class PostController {
         const apiController = new ApiController()
         await apiController.internal_deleteFile({ auth }, '3', request.params.id)
 
-        const delete_post = await Database.table('posts')
+        await Database.table('posts')
           .where({
             id: request.params.id
           })
@@ -608,7 +619,8 @@ class PostController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error
+          message: (error && error.message) || error,
+          method: 'destroy'
         })
       }
     } else {
@@ -636,7 +648,8 @@ class PostController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error
+          message: (error && error.message) || error,
+          method: 'update'
         })
       }
     }
@@ -668,7 +681,8 @@ class PostController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error
+          message: (error && error.message) || error,
+          method: 'update_allow_comments'
         })
       }
     }
@@ -720,7 +734,8 @@ class PostController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error
+        message: (error && error.message) || error,
+        method: 'get_additional_info'
       })
       return post
     }
@@ -740,7 +755,8 @@ class PostController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error
+          message: (error && error.message) || error,
+          method: 'featureToggle'
         })
       }
     }
@@ -774,7 +790,8 @@ class PostController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error
+        message: (error && error.message) || error,
+        method: 'showHashTagPosts'
       })
     }
   }
@@ -815,7 +832,8 @@ class PostController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error
+        message: (error && error.message) || error,
+        method: 'shuffle_sponsored_posts'
       })
     }
   }
@@ -889,7 +907,8 @@ class PostController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error
+        message: (error && error.message) || error,
+        method: 'guestShow'
       })
     }
   }
@@ -917,7 +936,8 @@ class PostController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error
+        message: (error && error.message) || error,
+        method: 'guestBody'
       })
     }
   }

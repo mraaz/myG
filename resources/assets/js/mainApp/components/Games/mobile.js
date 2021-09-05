@@ -1,9 +1,6 @@
 import React from 'react'
 import axios from 'axios'
-import get from 'lodash.get';
 import { getAssetUrl } from '../../../common/assets'
-import { copyToClipboard } from '../../../common/clipboard'
-import notifyToast from '../../../common/toast'
 import { ignoreFunctions } from '../../../common/render'
 import { WithTooltip } from '../Tooltip'
 
@@ -18,18 +15,18 @@ export default class MobileGames extends React.Component {
     hovering: null,
     changingPage: false,
     filter: 'All',
-    gameExperiences:[]
+    gameExperiences: []
   }
 
   async componentDidMount() {
-    if(this.props.guest==true){
-      const {data={}} = await axios.get(`/api/GameExperiences/showGuest/`);
-      const {allfancyGameExperiences=[]} = data;
-      this.setState({ gameExperiences:allfancyGameExperiences });
+    if (this.props.guest == true) {
+      const { data = {} } = await axios.get(`/api/GameExperiences/showGuest/`)
+      const { allfancyGameExperiences = [] } = data
+      this.setState({ gameExperiences: allfancyGameExperiences })
     } else {
-      const {data={}} = await axios.get(`/api/GameExperiences/show`);
-      const {allmyGameExperiences=[]} = data;
-      this.setState({ gameExperiences:allmyGameExperiences });
+      const { data = {} } = await axios.get(`/api/GameExperiences/show`)
+      const { allmyGameExperiences = [] } = data
+      this.setState({ gameExperiences: allmyGameExperiences })
     }
   }
 
@@ -48,15 +45,14 @@ export default class MobileGames extends React.Component {
 
   getGamesPerPage = () => {
     const selfSize = 2
-    const othersSize = 3
     return selfSize
   }
   renderEmptyState = () => {
     return <div className='empty'>No games found here mate!</div>
   }
 
-  handleGameClick = (id)=> {
-    if(this.props.handleGuestModal && this.props.guest==true){
+  handleGameClick = (id) => {
+    if (this.props.handleGuestModal && this.props.guest == true) {
       this.props.handleGuestModal()
     } else {
       this.props.handleGameClick(id)
@@ -88,8 +84,8 @@ export default class MobileGames extends React.Component {
   }
 
   renderGameExperience = (game) => {
-    const { id, game_name, game_img='https://myg.gg/platform_images/Profile/Silver-Stamping-Logo-MockUp.jpg' } = game;
-    const {selectedGame =[]} = this.props;
+    const { id, game_name, game_img = 'https://myg.gg/platform_images/Profile/Silver-Stamping-Logo-MockUp.jpg' } = game
+    const { selectedGame = [] } = this.props
     return (
       <div
         key={id}
@@ -99,10 +95,9 @@ export default class MobileGames extends React.Component {
         onMouseLeave={() => this.setState({ hovering: null })}
         onClick={() => this.handleGameClick(id)}
       >
-        
         {game_img && (
-        <div className='image game-image'>
-          <img src={game_img} />
+          <div className='image game-image'>
+            <img src={game_img} />
           </div>
         )}
         {game_name.length > 17 ? (
@@ -116,7 +111,6 @@ export default class MobileGames extends React.Component {
     )
   }
 
-  
   renderAddGameExperience_mobile = () => {
     if (!this.state.isSelf) return null
     return (
@@ -126,27 +120,27 @@ export default class MobileGames extends React.Component {
         </div>
         <div className='mobile_col'>
           <div className='title'>Add New</div>
-          <div className='subtitle'>Game</div>
+          <div className='subtitle'>Filter posts by Game</div>
         </div>
       </div>
     )
   }
 
   filterGameExperiences = () => {
-    return this.state.gameExperiences;
+    return this.state.gameExperiences
   }
 
   render() {
     const gameExperiences = this.filterGameExperiences()
     return (
       <div id='profile-game-experiences' className='mobile-profile-game-experiences'>
-        <div className='headers'>Games</div>
+        <div className='headers'>Filter posts by Game</div>
         <div className='scroll'>
           {this.renderPageButtons()}
           {gameExperiences.slice(this.state.page, this.state.page + this.getGamesPerPage()).map(this.renderGameExperience)}
           {!gameExperiences.length && !this.state.isSelf && this.renderEmptyState()}
         </div>
-        {!this.props.guest &&<div className='mobileShow'>{this.renderAddGameExperience_mobile()}</div>}
+        {!this.props.guest && <div className='mobileShow'>{this.renderAddGameExperience_mobile()}</div>}
       </div>
     )
   }
