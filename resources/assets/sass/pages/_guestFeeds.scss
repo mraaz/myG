@@ -4972,9 +4972,18 @@ section#content-container {
             }
         }
     }
-    #profile-game-experiences .game-experience {
-      width: 90%;
-    }
+    #profile-game-experiences {
+      .game-experience {
+          width: 90%;
+          .game-image{
+            img{
+              width: 100px;
+              border-radius: 51%;
+              height: 100px;
+            }
+          }
+        }
+      }
     #profile-info .row {
       margin: 4px 12px;
     }

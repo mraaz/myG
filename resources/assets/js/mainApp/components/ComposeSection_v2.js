@@ -10,7 +10,7 @@ import { Disable_keys, Hash_Tags } from './Utility_Function'
 import { Upload_to_S3, Remove_file } from './AWS_utilities'
 
 import { toast } from 'react-toastify'
-import { Toast_style } from './Utility_Function'
+import { Toast_style,Game_name_values } from './Utility_Function'
 import ImageGallery from './common/ImageGallery/ImageGallery.js'
 import { logToElasticsearch } from '../../integration/http/logger'
 
@@ -400,6 +400,44 @@ export default class ComposeSection extends Component {
     this.setState({ isShowAllGroup: !this.state.isShowAllGroup })
   }
 
+  handleCreateGame = (inputValue) => {
+    if (inputValue.length > 88) {
+      toast.success(<Toast_style text={'Sorry mate! Game Title is too long.'} />)
+      return
+    }
+
+    let { games } = this.state
+    if (games == null) games = ''
+
+    const newOption = this.createGameOption(inputValue, null)
+    this.setState({ games: [...games, newOption], game_names_id: newOption })
+  }
+
+  getOptionsGames = (inputValue) => {
+    const getInitialData = async function (inputValue) {
+      try {
+        const results = await Game_name_values(inputValue)
+        this.setState({ games: results })
+      } catch (error) {
+        // Error get option tags
+      }
+    }
+
+    if (inputValue.length > 88) {
+      toast.success(<Toast_style text={'Sorry mate! Game Title is too long.'} />)
+      return
+    }
+    getInitialData(inputValue)
+  }
+
+
+  createGameOption = (label, game_names_id) => ({
+    label,
+    value: label,
+    game_names_id
+  })
+
+
   render() {
     const {
       open_compose_textTab,
@@ -559,13 +597,20 @@ export default class ComposeSection extends Component {
             <div className='hashTag_section'>
               <div className='hashtag_label'>Add Game</div>
               <div className='hashtag_input'>
-                <MyGSelect
-                  options={this.state.games}
+                <MyGCreateableSelect
+                  isClearable
+                  onCreateOption={this.handleCreateGame}
+                  onInputChange={this.getOptionsGames}
                   onChange={(value) => {
                     this.handleGameChange(value)
                   }}
+                  getNewOptionData={this.getNewOptionData}
                   value={this.state.game_names_id }
-                  placeholder='Select Game'
+                  placeholder='Search, Select or create Game Title'
+                  options={this.state.games}
+                  onKeyDown={Disable_keys}
+                  classNamePrefix='filter'
+                  className='viewGame__name'
                 />
               </div>
             </div>

@@ -91,7 +91,6 @@ export default class Games extends React.Component {
   renderGameExperience = (game) => {
     const { game_names_id,id, game_name, game_img='https://myg.gg/platform_images/Profile/Silver-Stamping-Logo-MockUp.jpg' } = game;
     const {selectedGame =[]} = this.props;
-    console.log('selectedGame   ',selectedGame);
     return (
       <div
         key={id}
@@ -101,7 +100,9 @@ export default class Games extends React.Component {
         onMouseLeave={() => this.setState({ hovering: null })}
         onClick={() => this.handleGameClick(game_names_id)}>
         
-        {game_img && <div className="image game-image" style={{ backgroundImage: `url(${game_img})` }} />}
+        {game_img && <div className="image game-image" >
+          <img src={game_img} />
+        </div>}
         {game_name.length > 17 ?
           (
             <WithTooltip text={game_name} position={{ bottom: '36px', left: '-2vw' }}>
