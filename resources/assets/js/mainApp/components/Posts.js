@@ -8,17 +8,16 @@ import ComposeSection from './ComposeSection_v2'
 import GamerSuggestions from './Profile/GamerSuggestions'
 import Channel from './Channel'
 import Events from './Events/main'
-import Games from './Games';
-import MobileGames from './Games/mobile';
+import Games from './Games'
+import MobileGames from './Games/mobile'
 
 import { logToElasticsearch } from '../../integration/http/logger'
-import { ids } from 'webpack'
 
 class Posts extends Component {
   constructor() {
     super()
     this.state = {
-      counter: 0,
+      counter: 1,
       myPosts: [],
       moreplease: true,
       post_submit_loading: false,
@@ -34,12 +33,12 @@ class Posts extends Component {
       behavior: 'smooth'
     })
     //window.history.pushState('myG', 'myG', '/')
-    const selectedGame = window.localStorage.getItem('slectedGame');
-    if(selectedGame == null){
+    const selectedGame = window.localStorage.getItem('selectedGame')
+    if (selectedGame == null) {
       this.fetchMoreData()
     } else {
-      this.gameClieked()
-    } 
+      this.gameClicked()
+    }
   }
 
   showLatestPosts = () => {
@@ -110,33 +109,33 @@ class Posts extends Component {
     )
   }
 
-  gameClieked = async (id = '') => {
-    const selectedGame = window.localStorage.getItem('slectedGame');
-    if(id){
-      if(selectedGame === null){
-        const d = [];
-        d.push(id);
-        window.localStorage.setItem('slectedGame', JSON.stringify(d));
+  gameClicked = async (id = '') => {
+    const selectedGame = window.localStorage.getItem('selectedGame')
+    if (id) {
+      if (selectedGame === null) {
+        const d = []
+        d.push(id)
+        window.localStorage.setItem('selectedGame', JSON.stringify(d))
       } else {
-        const p =  JSON.parse(selectedGame);
-        if(!p.includes(id)){
-          p.push(id);
-          window.localStorage.setItem('slectedGame', JSON.stringify(p));
+        const p = JSON.parse(selectedGame)
+        if (!p.includes(id)) {
+          p.push(id)
+          window.localStorage.setItem('selectedGame', JSON.stringify(p))
         }
       }
     }
-    
+
     try {
       const myPosts = await axios.post('/api/post/guest_feed', {
         counter: this.state.counter,
-        game_names_ids: typeof selectedGame == 'string' ?JSON.parse(selectedGame) : selectedGame
+        game_names_ids: typeof selectedGame == 'string' ? JSON.parse(selectedGame) : selectedGame
       })
       if (myPosts.data == '' || myPosts.data == {}) {
         this.setState({
           moreplease: false
         })
         return
-      } 
+      }
       if (myPosts.data.myPosts) {
         this.setState({
           myPosts: [...myPosts.data.myPosts]
@@ -169,8 +168,8 @@ class Posts extends Component {
   }
 
   render() {
-    const { myPosts = [], moreplease, isFetching = false, post_submit_loading = false } = this.state;
-    const sg = window.localStorage.getItem('slectedGame');
+    const { myPosts = [], moreplease, isFetching = false, post_submit_loading = false } = this.state
+    const sg = window.localStorage.getItem('selectedGame')
     return (
       <Fragment>
         {post_submit_loading && (
@@ -192,24 +191,6 @@ class Posts extends Component {
             </div>
           </div>
         )}
-        <div id="profile" >
-          <div className="desktopShow"> 
-            <Games 
-                userId={this.props.userId} 
-                selectedGame={sg ? JSON.parse(sg) : []} 
-                alias={this.props.alias}
-                handleGameClick={this.gameClieked}  
-              />
-          </div>
-          <div className="mobileShow">  
-            <MobileGames 
-            userId={this.props.userId} 
-            selectedGame={sg ? JSON.parse(sg) : []} 
-            alias={this.props.alias} 
-            handleGameClick={this.gameClieked}   
-            />
-          </div>
-        </div>
         <GamerSuggestions />
         {!!this.props.mainChannelEnabled && <Channel channelId='main' />}
         {this.state.showEvents && <Events props={this.props} />}
@@ -217,7 +198,24 @@ class Posts extends Component {
           successCallback={this.composeSuccess}
           initialData={this.props.initialData == undefined ? 'loading' : this.props.initialData}
         />
-
+        <div id='profile'>
+          <div className='desktopShow'>
+            <Games
+              userId={this.props.userId}
+              selectedGame={sg ? JSON.parse(sg) : []}
+              alias={this.props.alias}
+              handleGameClick={this.gameClicked}
+            />
+          </div>
+          <div className='mobileShow'>
+            <MobileGames
+              userId={this.props.userId}
+              selectedGame={sg ? JSON.parse(sg) : []}
+              alias={this.props.alias}
+              handleGameClick={this.gameClicked}
+            />
+          </div>
+        </div>
         {myPosts.length > 0 && !post_submit_loading && (
           <section id='posts' className={isFetching ? '' : `active`}>
             <InfiniteScroll dataLength={myPosts.length} next={this.fetchMoreData} hasMore={moreplease}>
@@ -229,8 +227,6 @@ class Posts extends Component {
     )
   }
 }
-
-
 
 function mapStateToProps(state, props) {
   return {
