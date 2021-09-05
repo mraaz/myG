@@ -4375,6 +4375,35 @@ section#content-container {
       border: none;
       box-shadow: 0 0 0 2px #e5c746;
     }
+    &.game-profile-game-experiences{
+      .game-experience {
+        &.selected{
+          border: none !important;;
+          box-shadow: 0 0 0 2px #e5c746 !important;
+        }
+        .game-image{
+          img{
+            width: 100% !important;
+            height: 100px !important;
+          }
+        }
+        .name{
+          margin-top: 50px !important;
+        }
+        .selectedGame_image{
+          position: absolute;
+          top: 0;
+          right: 0;
+          z-index: 1;
+          width: 20px;
+          height: 20px;
+          border-radius: 50%;
+          img{width: 100%;}
+          
+        }
+      }
+
+    }
     .game-experience {
       &.selected{
         border: none;
@@ -4969,6 +4998,17 @@ section#content-container {
             }
             .name{
               font-size: 14px !important;
+            }
+            .selectedGame_image{
+              position: absolute;
+              top: 0;
+              right: 0;
+              z-index: 1;
+              width: 20px;
+              height: 20px;
+              border-radius: 50%;
+              img{width: 100%;}
+              
             }
         }
     }

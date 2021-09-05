@@ -121,14 +121,22 @@ class Posts extends Component {
         if (!p.includes(id)) {
           p.push(id)
           window.localStorage.setItem('selectedGame', JSON.stringify(p))
+        } else {
+          const d = p.filter(item =>item !=id)
+          window.localStorage.setItem('selectedGame', JSON.stringify(d))
         }
       }
     }
-
+    const data = window.localStorage.getItem('selectedGame');
+    const gamePayload = typeof data == 'string' ? JSON.parse(data) : data;
+    if(!gamePayload.length){
+      this.fetchMoreData()
+      return;
+    }
     try {
       const myPosts = await axios.post('/api/post/guest_feed', {
         counter: this.state.counter,
-        game_names_ids: typeof selectedGame == 'string' ? JSON.parse(selectedGame) : selectedGame
+        game_names_ids: gamePayload
       })
       if (myPosts.data == '' || myPosts.data == {}) {
         this.setState({

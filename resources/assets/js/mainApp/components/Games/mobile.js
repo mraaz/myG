@@ -84,16 +84,16 @@ export default class MobileGames extends React.Component {
   }
 
   renderGameExperience = (game) => {
-    const { id, game_name, game_img = 'https://myg.gg/platform_images/Profile/Silver-Stamping-Logo-MockUp.jpg' } = game
+    const { game_names_id,id, game_name, game_img = 'https://myg.gg/platform_images/Profile/Silver-Stamping-Logo-MockUp.jpg' } = game
     const { selectedGame = [] } = this.props
     return (
       <div
-        key={id}
-        className={`game-experience clickable ${selectedGame.includes(id) ? 'selected' : ''}`}
+        key={game_names_id}
+        className={`game-experience clickable ${selectedGame.includes(game_names_id) ? 'selected' : ''}`}
         style={{ opacity: this.state.changingPage ? 0.3 : 1 }}
-        onMouseEnter={() => this.setState({ hovering: id })}
+        onMouseEnter={() => this.setState({ hovering: game_names_id })}
         onMouseLeave={() => this.setState({ hovering: null })}
-        onClick={() => this.handleGameClick(id)}
+        onClick={() => this.handleGameClick(game_names_id)}
       >
         {game_img && (
           <div className='image game-image'>
@@ -107,6 +107,10 @@ export default class MobileGames extends React.Component {
         ) : (
           <span className='name'>{game_name}</span>
         )}
+        {selectedGame.includes(game_names_id)  && 
+          <div className='selectedGame_image'>
+            <img src={'https://myg.gg/platform_images/Dashboard/tick.png'} />
+          </div>}
       </div>
     )
   }

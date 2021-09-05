@@ -89,13 +89,13 @@ export default class Games extends React.Component {
     return (
       <div
         key={id}
-        className={`game-experience clickable ${selectedGame.includes(id) ? 'selected' : ''}`}
+        className={`game-experience clickable ${selectedGame.includes(game_names_id) ? 'selected' : ''}`}
         style={{ opacity: this.state.changingPage ? 0.3 : 1 }}
-        onMouseEnter={() => this.setState({ hovering: id })}
+        onMouseEnter={() => this.setState({ hovering: game_names_id })}
         onMouseLeave={() => this.setState({ hovering: null })}
         onClick={() => this.handleGameClick(game_names_id)}>
         
-        {game_img && <div className="image game-image" >
+        {game_img && <div className="image game-image absolute-top" >
           <img src={game_img} />
         </div>}
         {game_name.length > 17 ?
@@ -105,6 +105,10 @@ export default class Games extends React.Component {
             </WithTooltip>
           ): <span className="name">{game_name}</span>
         }
+        {selectedGame.includes(game_names_id)  && 
+          <div className='selectedGame_image'>
+            <img src={'https://myg.gg/platform_images/Dashboard/tick.png'} />
+          </div>}
       </div>
     );
   }
@@ -130,7 +134,7 @@ export default class Games extends React.Component {
   render() {
     const gameExperiences = this.filterGameExperiences();
     return(
-      <div id="profile-game-experiences">
+      <div id="profile-game-experiences" className='game-profile-game-experiences'>
         <div className='headers'>Filter posts by Game</div>
         <div className="scroll">
           {this.renderPageButtons()}
