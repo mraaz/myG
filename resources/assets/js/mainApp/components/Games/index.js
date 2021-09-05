@@ -75,11 +75,11 @@ export default class Games extends React.Component {
     );
   }
 
-  handleGameClick = (id)=> {
+  handleGameClick = (id,game_name)=> {
     if(this.props.handleGuestModal && this.props.guest==true){
       this.props.handleGuestModal()
     } else {
-      this.props.handleGameClick(id)
+      this.props.handleGameClick(id,game_name)
     }
   }
 
@@ -93,7 +93,7 @@ export default class Games extends React.Component {
         style={{ opacity: this.state.changingPage ? 0.3 : 1 }}
         onMouseEnter={() => this.setState({ hovering: game_names_id })}
         onMouseLeave={() => this.setState({ hovering: null })}
-        onClick={() => this.handleGameClick(game_names_id)}>
+        onClick={() => this.handleGameClick(game_names_id,game_name)}>
         
         {game_img && <div className="image game-image absolute-top" >
           <img src={game_img} />

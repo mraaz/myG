@@ -51,11 +51,11 @@ export default class MobileGames extends React.Component {
     return <div className='empty'>No games found here mate!</div>
   }
 
-  handleGameClick = (id) => {
+  handleGameClick = (id,game_name) => {
     if (this.props.handleGuestModal && this.props.guest == true) {
       this.props.handleGuestModal()
     } else {
-      this.props.handleGameClick(id)
+      this.props.handleGameClick(id,game_name)
     }
   }
   renderPageButtons = () => {
@@ -93,7 +93,7 @@ export default class MobileGames extends React.Component {
         style={{ opacity: this.state.changingPage ? 0.3 : 1 }}
         onMouseEnter={() => this.setState({ hovering: game_names_id })}
         onMouseLeave={() => this.setState({ hovering: null })}
-        onClick={() => this.handleGameClick(game_names_id)}
+        onClick={() => this.handleGameClick(game_names_id,game_name)}
       >
         {game_img && (
           <div className='image game-image'>

@@ -10,6 +10,7 @@ import Channel from './Channel'
 import Events from './Events/main'
 import Games from './Games'
 import MobileGames from './Games/mobile'
+import notifyToast from '../../common/toast';
 
 import { logToElasticsearch } from '../../integration/http/logger'
 
@@ -109,7 +110,7 @@ class Posts extends Component {
     )
   }
 
-  gameClicked = async (id = '') => {
+  gameClicked = async (id = '',game_name='') => {
     const selectedGame = window.localStorage.getItem('selectedGame')
     if (id) {
       if (selectedGame === null) {
@@ -121,9 +122,11 @@ class Posts extends Component {
         if (!p.includes(id)) {
           p.push(id)
           window.localStorage.setItem('selectedGame', JSON.stringify(p))
+          notifyToast(`Got it! ${game_name} selected`)
         } else {
           const d = p.filter(item =>item !=id)
           window.localStorage.setItem('selectedGame', JSON.stringify(d))
+          notifyToast(`Got it! ${game_name} Un selected`)
         }
       }
     }
