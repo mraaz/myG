@@ -4383,8 +4383,8 @@ section#content-container {
         }
         .game-image{
           img{
-            width: 100% !important;
-            height: 100% !important;
+            max-width: 100% !important;
+            max-height: 100% !important;
           }
         }
         .name{
@@ -4444,6 +4444,8 @@ section#content-container {
 
       .game-image {
         background-size: contain !important;
+        text-align: center !important;
+
       }
 
       .absolute-top {
