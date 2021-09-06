@@ -58,9 +58,9 @@ class Posts extends Component {
   }
 
   fetchMoreData = () => {
-    if (this.state.myPosts.length > 0) {
-      window.scrollTo(0, document.documentElement.offsetHeight - 4000)
-    }
+    // if (this.state.myPosts.length > 0) {
+    //   // window.scrollTo(0, document.documentElement.offsetHeight - 4000)
+    // }
     const self = this
 
     const getPosts = async function () {
@@ -126,7 +126,6 @@ class Posts extends Component {
         } else {
           const d = p.filter(item =>item !=id)
           window.localStorage.setItem('selectedGame', JSON.stringify(d))
-          notifyToast(`Got it! ${game_name} Un selected`)
         }
       }
     }
