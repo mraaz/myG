@@ -3,7 +3,8 @@ import axios from 'axios'
 import { getAssetUrl } from '../../../common/assets';
 import { ignoreFunctions } from '../../../common/render'
 import { WithTooltip } from '../Tooltip';
-export default class Games extends React.Component {
+import { injectIntl } from 'react-intl'
+class Games extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     return ignoreFunctions(nextProps, nextState, this.props, this.state)
   }
@@ -135,7 +136,7 @@ export default class Games extends React.Component {
     const gameExperiences = this.filterGameExperiences();
     return(
       <div id="profile-game-experiences" className='game-profile-game-experiences'>
-        <div className='headers'>Filter posts by Game</div>
+        <div className='headers'>{this.props.intl.formatMessage({ id: 'myg.post.gameHeader', defaultValue: 'Filter posts by Game' })}</div>
         <div className="scroll">
           {this.renderPageButtons()}
           {gameExperiences.slice(this.state.page, this.state.page + this.getGamesPerPage()).map(this.renderGameExperience)}
@@ -149,3 +150,5 @@ export default class Games extends React.Component {
     );
   }
 }
+
+export default injectIntl(Games)

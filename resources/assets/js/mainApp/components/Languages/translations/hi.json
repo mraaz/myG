@@ -46,5 +46,6 @@
   "myg.cancel": "रद्द करें",
   "myg.create": "बनाएं",
   "myg.select.hint": "चुनें...",
-  "myg.team-select.hint": "चुनें कि कौन सी टीम यह मैच खेलेगी"
+  "myg.team-select.hint": "चुनें कि कौन सी टीम यह मैच खेलेगी",
+  "myg.post.gameHeader": "गेम द्वारा पोस्ट फ़िल्टर करें"
 }
