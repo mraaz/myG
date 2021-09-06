@@ -106,8 +106,7 @@ class GameExperienceController {
 
   async showGuest() {
     try {
-      const allfancyGameExperiences = await Database.table('game_experiences')
-        .innerJoin('game_names', 'game_names.id', 'game_experiences.game_names_id')
+      const allfancyGameExperiences = await Database.table('game_names')
         .select('game_names.*')
         .orderBy('game_names.counter', 'desc')
         .limit(5)
