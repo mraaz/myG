@@ -865,7 +865,7 @@ class PostController {
         .innerJoin('likes', 'likes.post_id', 'posts.id')
         .whereIn('posts.visibility', [1])
         .where((builder) => {
-          if (game_names != null) builder.whereIn('posts.game_names_id', [game_names])
+          if (game_names != null) builder.whereIn('posts.game_names_id', game_names)
         })
         .groupBy('posts.id')
         .count('* as no_of_likes')
@@ -883,7 +883,7 @@ class PostController {
           .innerJoin('groups', 'groups.id', 'posts.group_id')
           .innerJoin('likes', 'likes.post_id', 'posts.id')
           .whereIn('posts.visibility', [1])
-          .whereIn('groups.game_names_id', [game_names])
+          .whereIn('groups.game_names_id', game_names)
           .groupBy('posts.id')
           .count('* as no_of_likes')
           .orderBy('no_of_likes', 'desc')

@@ -151,7 +151,7 @@ class Posts extends Component {
         try {
           const myPosts = await axios.post('/api/post/guest_feed', {
             counter: 1,
-            game_names_ids: gamePayload
+            game_names_ids: JSON.stringify(gamePayload)
           })
           if (myPosts.data == '' || myPosts.data == {}) {
             this.setState({
