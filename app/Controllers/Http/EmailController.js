@@ -34,9 +34,9 @@ class EmailController {
     var fortnightAway = new Date(Date.now() + 12096e5)
 
     for (let i = 0; i < tmp_code.length; i++) {
-      const newCodes = await ExtraSeatsCodes.create({
+      ExtraSeatsCodes.create({
         code: tmp_code[i],
-        expiry: fortnightAway,
+        expiry: fortnightAway
       })
     }
 
@@ -47,20 +47,16 @@ class EmailController {
   }
 
   async dailyEmails() {
-    const userList = await Database.from('settings')
-      .select('user_id')
-      .where('email_notification', '=', 2)
+    const userList = await Database.from('settings').select('user_id').where('email_notification', '=', 2)
     for (let i = 0; i < userList.length; i++) {
-      await this.summary_email(userList[i].user_id)
+      this.summary_email(userList[i].user_id)
     }
   }
 
   async weeklyEmails() {
-    const userList = await Database.from('settings')
-      .select('user_id')
-      .where('email_notification', '=', 1)
+    const userList = await Database.from('settings').select('user_id').where('email_notification', '=', 1)
     for (let i = 0; i < userList.length; i++) {
-      await this.summary_email(userList[i].user_id)
+      this.summary_email(userList[i].user_id)
     }
   }
 
@@ -73,10 +69,7 @@ class EmailController {
       return
     }
 
-    const user = await Database.from('users')
-      .where('id', '=', user_id)
-      .select('email', 'alias')
-      .first()
+    const user = await Database.from('users').where('id', '=', user_id).select('email', 'alias').first()
 
     const email_summary_email = new Email_body()
     const email = new AWSEmailController()
