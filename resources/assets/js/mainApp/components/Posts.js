@@ -114,7 +114,8 @@ class Posts extends Component {
 
     this.setState(
       {
-        counter: 1
+        counter: 1,
+        myPosts: []
       },
       async () => {
         if (id) {
@@ -139,8 +140,7 @@ class Posts extends Component {
         if (!gamePayload.length) {
           this.setState(
             {
-              counter: 0,
-              myPosts: []
+              counter: 0
             },
             () => {
               this.fetchMoreData()
@@ -150,7 +150,7 @@ class Posts extends Component {
         }
         try {
           const myPosts = await axios.post('/api/post/guest_feed', {
-            counter: this.state.counter,
+            counter: 1,
             game_names_ids: gamePayload
           })
           if (myPosts.data == '' || myPosts.data == {}) {
