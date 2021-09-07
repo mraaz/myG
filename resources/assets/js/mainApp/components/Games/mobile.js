@@ -139,7 +139,7 @@ import { injectIntl } from 'react-intl'
     const gameExperiences = this.filterGameExperiences()
     return (
       <div id='profile-game-experiences' className='mobile-profile-game-experiences'>
-        <div className='headers'>{this.props.intl.formatMessage({ id: 'myg.post.gameHeader', defaultValue: 'Filter posts by Game' })}</div>
+        <div className='headers'>{this.props.intl.formatMessage({ id: 'myg.post.gameHeader', defaultMessage: 'Filter posts by Game' })}</div>
         <div className='scroll'>
           {this.renderPageButtons()}
           {gameExperiences.slice(this.state.page, this.state.page + this.getGamesPerPage()).map(this.renderGameExperience)}
