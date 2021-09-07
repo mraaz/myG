@@ -10,7 +10,7 @@ import Channel from './Channel'
 import Events from './Events/main'
 import Games from './Games'
 import MobileGames from './Games/mobile'
-import notifyToast from '../../common/toast';
+import notifyToast from '../../common/toast'
 
 import { logToElasticsearch } from '../../integration/http/logger'
 
@@ -18,7 +18,7 @@ class Posts extends Component {
   constructor() {
     super()
     this.state = {
-      counter: 1,
+      counter: 0,
       myPosts: [],
       moreplease: true,
       post_submit_loading: false,
@@ -99,7 +99,6 @@ class Posts extends Component {
         logToElasticsearch('error', 'Posts', 'Failed at myPosts' + ' ' + error)
       }
     }
-
     this.setState(
       {
         counter: this.state.counter + 1
@@ -110,55 +109,71 @@ class Posts extends Component {
     )
   }
 
-  gameClicked = async (id = '',game_name='') => {
+  gameClicked = (id = '', game_name = '') => {
     const selectedGame = window.localStorage.getItem('selectedGame')
-    if (id) {
-      if (selectedGame === null) {
-        const d = []
-        d.push(id)
-        window.localStorage.setItem('selectedGame', JSON.stringify(d))
-      } else {
-        const p = JSON.parse(selectedGame)
-        if (!p.includes(id)) {
-          p.push(id)
-          window.localStorage.setItem('selectedGame', JSON.stringify(p))
-          notifyToast(`Got it! ${game_name} selected`)
-        } else {
-          const d = p.filter(item =>item !=id)
-          window.localStorage.setItem('selectedGame', JSON.stringify(d))
+
+    this.setState(
+      {
+        counter: 1
+      },
+      async () => {
+        if (id) {
+          if (selectedGame == null) {
+            const d = []
+            d.push(id)
+            window.localStorage.setItem('selectedGame', JSON.stringify(d))
+          } else {
+            const p = JSON.parse(selectedGame)
+            if (!p.includes(id)) {
+              p.push(id)
+              window.localStorage.setItem('selectedGame', JSON.stringify(p))
+              notifyToast(`Got it! ${game_name} selected`)
+            } else {
+              const d = p.filter((item) => item != id)
+              window.localStorage.setItem('selectedGame', JSON.stringify(d))
+            }
+          }
+        }
+        const data = window.localStorage.getItem('selectedGame')
+        const gamePayload = typeof data == 'string' ? JSON.parse(data) : data
+        if (!gamePayload.length) {
+          this.setState(
+            {
+              counter: 0,
+              myPosts: []
+            },
+            () => {
+              this.fetchMoreData()
+            }
+          )
+          return
+        }
+        try {
+          const myPosts = await axios.post('/api/post/guest_feed', {
+            counter: this.state.counter,
+            game_names_ids: gamePayload
+          })
+          if (myPosts.data == '' || myPosts.data == {}) {
+            this.setState({
+              moreplease: false
+            })
+            return
+          }
+          if (myPosts.data.myPosts) {
+            this.setState({
+              myPosts: [...myPosts.data.myPosts]
+            })
+          } else {
+            this.setState({
+              moreplease: false
+            })
+            return
+          }
+        } catch (error) {
+          logToElasticsearch('error', 'Posts', 'Failed at myPosts' + ' ' + error)
         }
       }
-    }
-    const data = window.localStorage.getItem('selectedGame');
-    const gamePayload = typeof data == 'string' ? JSON.parse(data) : data;
-    if(!gamePayload.length){
-      this.fetchMoreData()
-      return;
-    }
-    try {
-      const myPosts = await axios.post('/api/post/guest_feed', {
-        counter: this.state.counter,
-        game_names_ids: gamePayload
-      })
-      if (myPosts.data == '' || myPosts.data == {}) {
-        this.setState({
-          moreplease: false
-        })
-        return
-      }
-      if (myPosts.data.myPosts) {
-        this.setState({
-          myPosts: [...myPosts.data.myPosts]
-        })
-      } else {
-        this.setState({
-          moreplease: false
-        })
-        return
-      }
-    } catch (error) {
-      logToElasticsearch('error', 'Posts', 'Failed at myPosts' + ' ' + error)
-    }
+    )
   }
 
   composeSuccess = async (data) => {
