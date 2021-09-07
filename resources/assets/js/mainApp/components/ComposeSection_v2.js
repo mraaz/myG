@@ -5,7 +5,7 @@ import Dropzone from 'react-dropzone'
 import TextareaAutosize from 'react-textarea-autosize'
 
 const buckectBaseUrl = 'https://myG.gg/platform_images/'
-import { MyGCreateableSelect ,MyGSelect} from './common'
+import { MyGCreateableSelect ,MyGGameSelect} from './common'
 import { Disable_keys, Hash_Tags } from './Utility_Function'
 import { Upload_to_S3, Remove_file } from './AWS_utilities'
 
@@ -256,6 +256,7 @@ export default class ComposeSection extends Component {
         if(results.data && results.data.allmyGameExperiences && results.data.allmyGameExperiences.length > 0 ){
           const gameData = results.data.allmyGameExperiences.map(d=>{
             return {
+              ...d,
               label:d.game_name,
               value:d.game_names_id
             }
