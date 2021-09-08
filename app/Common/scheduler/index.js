@@ -179,4 +179,39 @@ const getJobs = (runEveryJobOnStart) => [
   },
 ];
 
+//Code from AWS Event Bridge
+// const https = require('https');
+
+// exports.handler = (event, context, callback) => {
+//     const job = event.job;
+//     if (!job) throw new Error('Missing required parameter {job}');
+//     const options = {
+//       hostname: 'myg.gg',
+//       port: 443,
+//       path: '/api/schedule/' + job,
+//       method: 'GET',
+//       body: '',
+//       headers: { authorization: 'debug' }
+//     };
+//     console.log('Executing Job ' + JSON.stringify(options, null, 2));
+//     const req = https.request(options, (res) => {
+//         let body = '';
+//         console.log('Status:', res.statusCode);
+//         console.log('Headers:', JSON.stringify(res.headers));
+//         res.setEncoding('utf8');
+//         res.on('data', (chunk) => body += chunk);
+//         res.on('end', () => {
+//             console.log('Successfully processed HTTPS response');
+//             // If we know it's JSON, parse it
+//             if (res.headers['content-type'] === 'application/json') {
+//                 body = JSON.parse(body);
+//             }
+//             console.log(body);
+//             callback(null, body);
+//         });
+//     });
+//     req.on('error', callback);
+//     req.end();
+// };
+
 module.exports = { setupScheduler, getJobs };
