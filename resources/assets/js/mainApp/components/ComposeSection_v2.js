@@ -252,17 +252,17 @@ export default class ComposeSection extends Component {
       try {
         //const gamers_you_might_know = await axios.get('/api/user/gamers_you_might_know')
 
-        let results = await axios.get('/api/GameExperiences/show');
-        if(results.data && results.data.allmyGameExperiences && results.data.allmyGameExperiences.length > 0 ){
-          const gameData = results.data.allmyGameExperiences.map(d=>{
-            return {
-              ...d,
-              label:d.game_name,
-              value:d.game_names_id
-            }
-          });
-          self.setState({ games: gameData })
-        }
+        let results = await Game_name_values()
+        // if(results.data && results.data.allmyGameExperiences && results.data.allmyGameExperiences.length > 0 ){
+        //   const gameData = results.data.allmyGameExperiences.map(d=>{
+        //     return {
+        //       ...d,
+        //       label:d.game_name,
+        //       value:d.game_names_id
+        //     }
+        //   });
+          self.setState({ games: results })
+        // }
       } catch (error) {
         logToElasticsearch('error', 'ComposeSection_v2', 'Failed get Games list:' + ' ' + error)
       }
@@ -596,23 +596,23 @@ export default class ComposeSection extends Component {
           )}
           {open_compose_textTab && (
             <div className='hashTag_section'>
-              <div className='hashtag_label'>Add Game</div>
+              <div className='hashtag_label'>Game Title</div>
               <div className='hashtag_input'>
-                <MyGCreateableSelect
-                  isClearable
-                  onCreateOption={this.handleCreateGame}
-                  onInputChange={this.getOptionsGames}
-                  onChange={(value) => {
-                    this.handleGameChange(value)
-                  }}
-                  getNewOptionData={this.getNewOptionData}
-                  value={this.state.game_names_id }
-                  placeholder='Search, Select or create Game Title'
-                  options={this.state.games}
-                  onKeyDown={Disable_keys}
-                  classNamePrefix='filter'
-                  className='viewGame__name'
-                />
+            <MyGCreateableSelect
+              isClearable
+              onCreateOption={this.handleCreateGame}
+              onInputChange={this.getOptionsGames}
+              onChange={(value) => {
+                this.handleGameChange(value)
+              }}
+              getNewOptionData={this.getNewOptionData}
+              value={this.state.game_names_id }
+              placeholder='Search, Select or create Game Title'
+              options={this.state.games}
+              onKeyDown={Disable_keys}
+              classNamePrefix='filter'
+              className='viewGame__name'
+            />
               </div>
             </div>
           )}
