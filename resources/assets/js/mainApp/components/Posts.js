@@ -115,7 +115,6 @@ class Posts extends Component {
     this.setState(
       {
         counter: 1,
-        myPosts: []
       },
       async () => {
         if (id) {
@@ -246,6 +245,11 @@ class Posts extends Component {
             <InfiniteScroll dataLength={myPosts.length} next={this.fetchMoreData} hasMore={moreplease}>
               {this.showLatestPosts()}
             </InfiniteScroll>
+          </section>
+        )}
+        {myPosts.length == 0 && !post_submit_loading && (
+          <section id='posts' className={isFetching ? '' : `active`}>
+            <h1>No Data found !</h1>
           </section>
         )}
       </Fragment>
