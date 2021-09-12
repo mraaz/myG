@@ -5003,8 +5003,8 @@ section#content-container {
             }
             .selectedGame_image{
               position: absolute;
-              top: 0;
-              right: 0;
+              bottom: 0;
+             left: 45%;
               z-index: 1;
               width: 20px;
               height: 20px;
