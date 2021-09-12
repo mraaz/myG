@@ -21,8 +21,6 @@ class AWSEmailController {
   }
 
   async createEmailnSend(toAddress, subject, body, user_id) {
-    console.log(user_id, '<<<user_id')
-    return
     const env_variable = Env.get('NODE_ENV')
 
     if (env_variable != 'production') return

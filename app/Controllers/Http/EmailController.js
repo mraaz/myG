@@ -47,35 +47,51 @@ class EmailController {
   }
 
   async dailyEmails() {
+    //ToDo: Doesnt scale for millions of records, we can chunk the update
+
+    //Only EMAIL if we have NOT sent you an email in the last 24 hours
+    let today = new Date()
+    let priorDate = new Date(new Date(today).getTime() - 60 * 60 * 23 * 1000)
+    const cutOff_date = new Date(priorDate)
+
     const userList = await Database.from('settings')
       .innerJoin('users', 'users.id', 'settings.user_id')
       .select('users.id', 'users.email', 'users.alias')
       .where('settings.email_notification', '=', 2)
+      .where('email_notification_last_runtime', '<', cutOff_date)
 
-    let mySet = new Set()
+    let myArr = []
 
     for (let i = 0; i < userList.length; i++) {
-      if (!mySet.has(userList[i].email)) {
-        mySet.add(userList[i].email)
-        this.summary_email(userList[i].id, userList[i].email, userList[i].alias)
-      }
+      myArr.push(userList[i].id)
+      this.summary_email(userList[i].id, userList[i].email, userList[i].alias)
     }
+
+    await Database.from('settings').whereIn('user_id', myArr).update({ email_notification_last_runtime: today })
   }
 
   async weeklyEmails() {
+    //ToDo: Doesnt scale for millions of records, we can chunk the update
+
+    //Only EMAIL if we have NOT sent you an email in the last six day
+    let today = new Date()
+    let priorDate = new Date().setDate(today.getDate() - 6)
+    const cutOff_date = new Date(priorDate)
+
     const userList = await Database.from('settings')
       .innerJoin('users', 'users.id', 'settings.user_id')
       .select('users.id', 'users.email', 'users.alias')
       .where('settings.email_notification', '=', 1)
+      .where('email_notification_last_runtime', '<', cutOff_date)
 
-    let mySet = new Set()
+    let myArr = []
 
     for (let i = 0; i < userList.length; i++) {
-      if (!mySet.has(userList[i].email)) {
-        mySet.add(userList[i].email)
-        this.summary_email(userList[i].id, userList[i].email, userList[i].alias)
-      }
+      myArr.push(userList[i].id)
+      this.summary_email(userList[i].id, userList[i].email, userList[i].alias)
     }
+
+    await Database.from('settings').whereIn('user_id', myArr).update({ email_notification_last_runtime: today })
   }
 
   async summary_email(user_id, user_email, user_alias) {
@@ -86,8 +102,6 @@ class EmailController {
     if (parseInt(myRequests.approvals) == 0 && parseInt(myRequests.alerts) == 0 && parseInt(myRequests.chats) == 0) {
       return
     }
-
-    //const user = await Database.from('users').where('id', '=', user_id).select('email', 'alias').first()
 
     const email_summary_email = new Email_body()
     const email = new AWSEmailController()
