@@ -6,7 +6,7 @@ const MyGTextarea = ({ placeholder, value, onChange, maxLength, ...props }) => {
       backgroundColor: '#2D363A',
       width: '100%',
       borderRadius: '4px',
-      padding: '10px 10px',
+      padding: '10px 10px'
     },
     inputContainer: {
       width: '100%',
@@ -16,13 +16,20 @@ const MyGTextarea = ({ placeholder, value, onChange, maxLength, ...props }) => {
       color: '#fff',
       fontSize: '15px',
       resize: 'none',
-      outline: 'none',
-    },
+      outline: 'none'
+    }
   }
 
   return (
     <div style={styles.container}>
-      <textarea maxLength={maxLength || Number.MAX_SAFE_INTEGER} style={styles.inputContainer} placeholder={placeholder} onChange={onChange} value={value} {...props} />
+      <textarea
+        maxLength={maxLength || Number.MAX_SAFE_INTEGER}
+        style={styles.inputContainer}
+        placeholder={placeholder}
+        onChange={onChange}
+        value={value}
+        {...props}
+      />
     </div>
   )
 }

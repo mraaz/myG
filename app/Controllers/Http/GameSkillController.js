@@ -11,7 +11,7 @@ class GameSkillController {
       try {
         const newGameSkill = await GameSkills.create({
           content: content.trim(),
-          user_id: auth.user.id,
+          user_id: auth.user.id
         })
         return newGameSkill.id
       } catch (error) {
@@ -24,7 +24,7 @@ class GameSkillController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     }
@@ -42,7 +42,7 @@ class GameSkillController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -57,7 +57,7 @@ class GameSkillController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }

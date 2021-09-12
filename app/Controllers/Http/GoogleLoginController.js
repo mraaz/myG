@@ -8,10 +8,7 @@ const LoggingRepository = require('../../Repositories/Logging')
 
 class LoginController {
   async redirect({ ally }) {
-    await ally
-      .driver('google')
-      .stateless()
-      .redirect()
+    await ally.driver('google').stateless().redirect()
   }
 
   async callback({ ally, auth, response, view, session }) {
@@ -25,7 +22,7 @@ class LoginController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
       return response.redirect('/')
     }
@@ -34,16 +31,16 @@ class LoginController {
       const authUser = await User.query()
         .where({
           provider: provider,
-          provider_id: userData.getId(),
+          provider_id: userData.getId()
         })
         .first()
       if (!(authUser === null)) {
         await auth.loginViaId(authUser.id)
         const connections = new ConnectionController()
         connections.master_controller({ auth })
-        const onlineQueryResponse = await Database.from('users').where('status', 'online').count();
-        const onlineUsers = onlineQueryResponse[0]['count(*)'];
-        if (onlineUsers < 10) await ChatRepository.publishOnMainChannel(`Welcome ${authUser.alias} !!`);
+        const onlineQueryResponse = await Database.from('users').where('status', 'online').count()
+        const onlineUsers = onlineQueryResponse[0]['count(*)']
+        if (onlineUsers < 10) await ChatRepository.publishOnMainChannel(`Welcome ${authUser.alias} !!`)
         return response.redirect('/')
       } else {
         session.put('provider', 'google')
@@ -61,7 +58,7 @@ class LoginController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
       return response.redirect('/auth/' + provider)
     }

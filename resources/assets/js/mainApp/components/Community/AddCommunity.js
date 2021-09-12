@@ -307,7 +307,8 @@ const AddCommunity = ({
           <div className='game-title-select'>
             <MyGInput
               value={mainSettingsState.community_name}
-              type='text' autocomplete='off'
+              type='text'
+              autocomplete='off'
               maxLength={75}
               className={'community-input'}
               minLength={3}

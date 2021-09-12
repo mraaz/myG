@@ -13,14 +13,20 @@ class SavedFiltersScheduleGameController {
         const newSavedFilter = await SavedFiltersScheduleGame.create({
           user_id: auth.user.id,
           name: request.input('name').trim(),
-          payload: JSON.stringify(request.input('payload')),
+          payload: JSON.stringify(request.input('payload'))
         })
         return newSavedFilter
       } catch (error) {
         if (error.code == 'ER_DUP_ENTRY') {
           return 'ER_DUP_ENTRY'
         }
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error
+        })
       }
     }
   }
@@ -46,7 +52,7 @@ class SavedFiltersScheduleGameController {
             start_time: false,
             platform: false,
             description: false,
-            tags: false,
+            tags: false
           }
           let mysql_sort_fail = JSON.parse(allFilters[i].payload)
           for (var attributename in mysql_sort_fail) {
@@ -95,7 +101,7 @@ class SavedFiltersScheduleGameController {
                   label: obj4[obj[key]],
                   type: obj3[obj[key]],
                   placeholder: obj2[obj[key]],
-                  value: obj5[obj[key]],
+                  value: obj5[obj[key]]
                 }
               }
             }
@@ -110,16 +116,22 @@ class SavedFiltersScheduleGameController {
         return {
           allFilters,
           additional_info,
-          additional_info_data,
+          additional_info_data
         }
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error
+        })
         allFilters = []
         additional_info = false
         if (insurance_policy) {
           const byebyebye = await Database.table('saved_filters_schedule_games')
             .where({
-              user_id: auth.user.id,
+              user_id: auth.user.id
             })
             .delete()
         }
@@ -127,7 +139,7 @@ class SavedFiltersScheduleGameController {
         return {
           allFilters,
           additional_info,
-          additional_info_data,
+          additional_info_data
         }
       }
     }
@@ -143,14 +155,20 @@ class SavedFiltersScheduleGameController {
           .where({ id: request.input('id') })
           .update({
             name: request.input('name'),
-            payload: JSON.stringify(request.input('payload')),
+            payload: JSON.stringify(request.input('payload'))
           })
         return 'Saved successfully'
       } catch (error) {
         if (error.code == 'ER_DUP_ENTRY') {
           return 'ER_DUP_ENTRY'
         }
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error
+        })
       }
     } else {
       return 'You are not Logged In!'
@@ -162,13 +180,19 @@ class SavedFiltersScheduleGameController {
       try {
         const byebyebye = await Database.table('saved_filters_schedule_games')
           .where({
-            id: request.input('id'),
+            id: request.input('id')
           })
           .delete()
 
         return 'Deleted successfully'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error
+        })
       }
     } else {
       return 'You are not Logged In!'

@@ -2,202 +2,202 @@ import Loadable from 'react-loadable'
 
 const Home = Loadable({
   loader: () => import('./components/Home'),
-  loading: function() {
+  loading: function () {
     return null
-  },
+  }
 })
 
 const ProfileContainer = Loadable({
   loader: () => import('./components/Profile/Container'),
-  loading: function() {
+  loading: function () {
     return null
-  },
+  }
 })
 
 const ChatLinkContainer = Loadable({
   loader: () => import('./components/ChatLinkContainer'),
-  loading: function() {
+  loading: function () {
     return null
-  },
+  }
 })
 
 const FindGamersContainer = Loadable({
   loader: () => import('./components/FindGamers/Container'),
-  loading: function() {
+  loading: function () {
     return null
-  },
+  }
 })
 
 const ScheduleGamesView = Loadable({
   loader: () => import('./components/scheduledGames/ScheduleGames'),
-  loading: function() {
+  loading: function () {
     return null
-  },
+  }
 })
 
 const AddScheduleGames = Loadable({
   loader: () => import('./components/AddGame/AddGameContainer'),
-  loading: function() {
+  loading: function () {
     return null
-  },
+  }
 })
 
 const CreateCommunity = Loadable({
   loader: () => import('./components/Community/AddCommunityContainer'),
-  loading: function() {
+  loading: function () {
     return null
-  },
+  }
 })
 
 const LeftMenu = Loadable({
   loader: () => import('./components/LeftMenu'),
-  loading: function() {
+  loading: function () {
     return null
-  },
+  }
 })
 const MessengerLoader = Loadable({
   loader: () => import('./components/Messenger/MessengerLoader'),
-  loading: function() {
+  loading: function () {
     return null
-  },
+  }
 })
 
 const ChatUnreadMessages = Loadable({
   loader: () => import('./components/Messenger/ChatUnreadMessages'),
-  loading: function() {
+  loading: function () {
     return null
-  },
+  }
 })
 const GuestLink = Loadable({
   loader: () => import('./components/Guest/Link'),
-  loading: function() {
+  loading: function () {
     return null
-  },
+  }
 })
 const GuestGame = Loadable({
   loader: () => import('./components/Guest/Game'),
-  loading: function() {
+  loading: function () {
     return null
-  },
+  }
 })
 const GuestProfile = Loadable({
   loader: () => import('./components/Guest/Profile'),
-  loading: function() {
+  loading: function () {
     return null
-  },
+  }
 })
 const GuestPost = Loadable({
   loader: () => import('./components/Guest/Post'),
-  loading: function() {
+  loading: function () {
     return null
-  },
+  }
 })
 const GuestCommunity = Loadable({
   loader: () => import('./components/Guest/Community'),
-  loading: function() {
+  loading: function () {
     return null
-  },
+  }
 })
 const GuestFindGamers = Loadable({
   loader: () => import('./components/Guest/FindGamers'),
-  loading: function() {
+  loading: function () {
     return null
-  },
+  }
 })
 const EncryptionParaphraseRegistration = Loadable({
   loader: () => import('./components/Messenger/EncryptionParaphraseRegistration'),
-  loading: function() {
+  loading: function () {
     return null
-  },
+  }
 })
 const AchievementsContainer = Loadable({
   loader: () => import('./components/Achievements/Container'),
-  loading: function() {
+  loading: function () {
     return null
-  },
+  }
 })
 const Posts = Loadable({
   loader: () => import('./components/Posts'),
-  loading: function() {
+  loading: function () {
     return null
-  },
+  }
 })
 
 const IndividualPost = Loadable({
   loader: () => import('./components/IndividualPost'),
-  loading: function() {
+  loading: function () {
     return null
-  },
+  }
 })
 
 const MyPosts = Loadable({
   loader: () => import('./components/MyPosts'),
-  loading: function() {
+  loading: function () {
     return null
-  },
+  }
 })
 
 const SinglePost = Loadable({
   loader: () => import('./components/SinglePost'),
-  loading: function() {
+  loading: function () {
     return null
-  },
+  }
 })
 
 const HashTagList = Loadable({
   loader: () => import('./components/HashTagList'),
-  loading: function() {
+  loading: function () {
     return null
-  },
+  }
 })
 
 const MobileMenu = Loadable({
   loader: () => import('./components/MobileView/MobileMenu'),
-  loading: function() {
+  loading: function () {
     return null
-  },
+  }
 })
 
 const EditScheduleGames = Loadable({
   loader: () => import('./components/EditGame/EditGameContainer'),
-  loading: function() {
+  loading: function () {
     return null
-  },
+  }
 })
 
 const CommunityView = Loadable({
   loader: () => import('./components/CommunityView/CommunityView'),
-  loading: function() {
+  loading: function () {
     return null
-  },
+  }
 })
 
 const Onboarding = Loadable({
   loader: () => import('./components/Onboarding'),
-  loading: function() {
+  loading: function () {
     return null
-  },
+  }
 })
 
 const Channel = Loadable({
   loader: () => import('./components/Channel'),
-  loading: function() {
+  loading: function () {
     return null
-  },
+  }
 })
 
 const CreateTeam = Loadable({
   loader: () => import('./components/Teams/Create'),
-  loading: function() {
+  loading: function () {
     return null
-  },
+  }
 })
 
 const GuestFeeds = Loadable({
   loader: () => import('./components/GuestFeeds'),
-  loading: function() {
+  loading: function () {
     return null
-  },
+  }
 })
 
 export {

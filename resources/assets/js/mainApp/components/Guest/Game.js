@@ -14,7 +14,7 @@ export default class GuestGame extends React.Component {
 
   state = {
     loading: true,
-    scheduleGames: null,
+    scheduleGames: null
   }
 
   componentDidMount() {
@@ -22,16 +22,29 @@ export default class GuestGame extends React.Component {
   }
 
   render() {
-    if (this.state.loading || !this.state.scheduleGames) return null;
+    if (this.state.loading || !this.state.scheduleGames) return null
     const { latestScheduledGames, approved_gamers = [], additional_submit_info_fields = [], getAllGamers = [] } = this.state.scheduleGames
     const [scheduleGames_data = {}] = latestScheduledGames
-    const { game_name = '', experience = '', tags = [], start_date_time = '', end_date_time = '', limit, description = '', platform = '', region = '', id = '', marked_as_deleted = 0, reason_for_deletion = null } = scheduleGames_data
+    const {
+      game_name = '',
+      experience = '',
+      tags = [],
+      start_date_time = '',
+      end_date_time = '',
+      limit,
+      description = '',
+      platform = '',
+      region = '',
+      id = '',
+      marked_as_deleted = 0,
+      reason_for_deletion = null
+    } = scheduleGames_data
     const { no_of_gamers } = getAllGamers[0] || {}
     const experience_split = experience ? experience.split(',') : []
     return (
       <div id='guest-container' style={{ backgroundImage: `url(${getAssetUrl('background_guest')})` }}>
-        <div className="viewGame__container desktopView" style={{ display: 'block', width: '100%', height: '100%', overflowY: 'scroll' }}>
-          <div className="gameList__section singleGameView__container" style={{ flex: 1 }}>
+        <div className='viewGame__container desktopView' style={{ display: 'block', width: '100%', height: '100%', overflowY: 'scroll' }}>
+          <div className='gameList__section singleGameView__container' style={{ flex: 1 }}>
             <div className='gameDetails singleGameDetail'>
               <React.Fragment>
                 <div className='gameDetails__header'>
@@ -41,7 +54,7 @@ export default class GuestGame extends React.Component {
                       <img src='https://myG.gg/platform_images/Dashboard/Notifications/little_green_man.svg' />
                       <span>
                         {no_of_gamers} / {limit == 0 ? <span>&#8734;</span> : limit} Gamers
-                  </span>
+                      </span>
                     </div>
                     <div className='game__timestamp'>
                       <img src='https://myG.gg/platform_images/Dashboard/Notifications/clock.svg' />
@@ -56,8 +69,16 @@ export default class GuestGame extends React.Component {
                             </div>
                           )
                         })}
-                        <a className="clickable share-copy" onClick={() => copyToClipboard(`Checkout this game -> ${window.location.href}`)}>Share</a>
-                        <a className="clickable share-facebook" target="_blank" href={`https://www.facebook.com/sharer/sharer.php?u=${window.location.href}`}>Facebook</a>
+                      <a className='clickable share-copy' onClick={() => copyToClipboard(`Checkout this game -> ${window.location.href}`)}>
+                        Share
+                      </a>
+                      <a
+                        className='clickable share-facebook'
+                        target='_blank'
+                        href={`https://www.facebook.com/sharer/sharer.php?u=${window.location.href}`}
+                      >
+                        Facebook
+                      </a>
                     </div>
                   </div>
                 </div>
@@ -105,7 +126,8 @@ export default class GuestGame extends React.Component {
                           <WithTooltip
                             position={{ bottom: '24px', left: '-12px' }}
                             style={{ height: '24px', display: 'inline-block', marginBottom: '10px' }}
-                            text={tag.content}>
+                            text={tag.content}
+                          >
                             <p className='singleTags' title={tag.content}>
                               {tag.content}
                             </p>
@@ -118,7 +140,7 @@ export default class GuestGame extends React.Component {
             </div>
           </div>
         </div>
-      </div >
+      </div>
     )
   }
 }

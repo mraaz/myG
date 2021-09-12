@@ -1,6 +1,6 @@
 const SETTINGS_ENUMS = {
   MAIN: 'MAIN',
-  ADVANCED: 'ADVANCED',
+  ADVANCED: 'ADVANCED'
 }
 
 const styles = {
@@ -34,13 +34,13 @@ const styles = {
   sideBall: 'add-game__side-ball',
   sideLine: 'add-game__side-line',
   sideLineContainer: 'add-game__side-line-container',
-  m: 'add-game__',
+  m: 'add-game__'
 }
 
 const EXPERIENCE_OPTIONS = [
   { value: 'Casual', label: 'Casual' },
   { value: 'Semi Pro', label: 'Semi Pro' },
-  { value: 'Professional', label: 'Professional' },
+  { value: 'Professional', label: 'Professional' }
 ]
 
 const REGION_OPTIONS = [
@@ -52,7 +52,7 @@ const REGION_OPTIONS = [
   { value: 'Oceania', label: 'Oceania' },
   { value: 'Middle East', label: 'Middle East' },
   { value: 'Africa', label: 'Africa' },
-  { value: 'Central America', label: 'Central America' },
+  { value: 'Central America', label: 'Central America' }
 ]
 
 const PLATFORM_OPTIONS = [
@@ -61,12 +61,12 @@ const PLATFORM_OPTIONS = [
   { value: 'PS', label: 'PS' },
   { value: 'Nintendo', label: 'Nintendo' },
   { value: 'Mobile', label: 'Mobile' },
-  { value: 'Tabletop', label: 'Tabletop' },
+  { value: 'Tabletop', label: 'Tabletop' }
 ]
 
 const VISIBILITY_OPTIONS = [
   { value: 1, label: 'Public' },
-  { value: 4, label: 'Private' },
+  { value: 4, label: 'Private' }
 ]
 const LIMIT_OPTIONS = [
   { value: 5, label: '5' },
@@ -77,7 +77,7 @@ const LIMIT_OPTIONS = [
   { value: 40, label: '40' },
   { value: 50, label: '50' },
   { value: 100, label: '100' },
-  { value: 42, label: 'Unlimited' },
+  { value: 42, label: 'Unlimited' }
 ]
 
 const CLASH_ROYAL_TROPHY = [
@@ -86,7 +86,7 @@ const CLASH_ROYAL_TROPHY = [
   { value: '3000', label: '> 3000' },
   { value: '4000', label: '> 4000' },
   { value: '5000', label: '> 5000' },
-  { value: 'competitive', label: 'Competitive' },
+  { value: 'competitive', label: 'Competitive' }
 ]
 
 const DOTA2_MEDAL_RANKS = [
@@ -97,7 +97,7 @@ const DOTA2_MEDAL_RANKS = [
   { value: 'Legend', label: 'Legend' },
   { value: 'Ancient', label: 'Ancient' },
   { value: 'Divine', label: 'Divine' },
-  { value: 'Immortal', label: 'Immortal' },
+  { value: 'Immortal', label: 'Immortal' }
 ]
 
 const DOTA2_ROLES = [
@@ -105,7 +105,7 @@ const DOTA2_ROLES = [
   { value: 'Position 2', label: 'Position 2' },
   { value: 'Position 3', label: 'Position 3' },
   { value: 'Position 4', label: 'Position 4' },
-  { value: 'Position 5', label: 'Position 5' },
+  { value: 'Position 5', label: 'Position 5' }
 ]
 
 const DOTA2_SERVER_REGIONS = [
@@ -135,7 +135,7 @@ const DOTA2_SERVER_REGIONS = [
   { value: 'China TC Zhejiang', label: 'China TC Zhejiang' },
   { value: 'China UC', label: 'China UC' },
   { value: 'China UC 2', label: 'China UC 2' },
-  { value: 'China TC Wuhan', label: 'China TC Wuhan' },
+  { value: 'China TC Wuhan', label: 'China TC Wuhan' }
 ]
 
 export {
@@ -149,5 +149,5 @@ export {
   CLASH_ROYAL_TROPHY,
   DOTA2_MEDAL_RANKS,
   DOTA2_ROLES,
-  DOTA2_SERVER_REGIONS,
+  DOTA2_SERVER_REGIONS
 }

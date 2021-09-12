@@ -16,7 +16,7 @@ export default class Group extends React.Component {
   }
 
   state = {
-    messages: [],
+    messages: []
   }
 
   decryptMessage = (message, userPrivateKey, chatPrivateKey) => {

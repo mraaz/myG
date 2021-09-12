@@ -21,7 +21,7 @@ class SteamLoginController {
         const res = await fetch(
           `https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=D79F9A74D6438202D12060A9819ED956&steamids=` + all_data_arr[2],
           {
-            method: 'GET',
+            method: 'GET'
           }
         )
         const json = await res.json()
@@ -29,16 +29,16 @@ class SteamLoginController {
           const authUser = await User.query()
             .where({
               provider: 'steam',
-              provider_id: json.response.players[0].steamid,
+              provider_id: json.response.players[0].steamid
             })
             .first()
           if (!(authUser === null)) {
             await auth.loginViaId(authUser.id)
             const connections = new ConnectionController()
             connections.master_controller({ auth })
-            const onlineQueryResponse = await Database.from('users').where('status', 'online').count();
-            const onlineUsers = onlineQueryResponse[0]['count(*)'];
-            if (onlineUsers < 10) await ChatRepository.publishOnMainChannel(`Welcome ${authUser.alias} !!`);
+            const onlineQueryResponse = await Database.from('users').where('status', 'online').count()
+            const onlineUsers = onlineQueryResponse[0]['count(*)']
+            if (onlineUsers < 10) await ChatRepository.publishOnMainChannel(`Welcome ${authUser.alias} !!`)
             return response.redirect('/')
           } else {
             session.put('provider', 'steam')

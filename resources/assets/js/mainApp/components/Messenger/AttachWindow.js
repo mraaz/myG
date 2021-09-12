@@ -12,14 +12,14 @@ export default class AttachWindow extends React.Component {
 
   state = {
     choosingEmoji: false,
-    choosingAttachment: false,
+    choosingAttachment: false
   }
 
   static getDerivedStateFromProps(props) {
     if (!props.show) {
       return {
         choosingEmoji: false,
-        choosingAttachment: false,
+        choosingAttachment: false
       }
     }
     return null
@@ -39,7 +39,7 @@ export default class AttachWindow extends React.Component {
           position: 'fixed',
           bottom: '-70px',
           marginLeft: ' 20px',
-          zIndex: 10,
+          zIndex: 10
         }}
         theme='dark'
         onSelect={this.props.onEmoji}

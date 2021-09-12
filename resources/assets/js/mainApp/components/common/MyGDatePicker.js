@@ -17,14 +17,14 @@ const MyGDatePicker = ({
   shouldCloseOnSelect,
   children,
   minDate,
-  maxDate,
+  maxDate
 }) => {
   const styles = {
     container: {
       display: 'flex',
       alignItems: 'center',
-      width: '100%',
-    },
+      width: '100%'
+    }
   }
 
   return (
@@ -57,7 +57,7 @@ MyGDatePicker.defaultProps = {
   className: 'start-date-box',
   todayButton: 'Today',
   shouldCloseOnSelect: true,
-  minDate: moment(),
+  minDate: moment()
 }
 
 export default MyGDatePicker

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 
 /**
  * useScrollDirection
- * 
+ *
  * Custom React hook to detect the direction of the user scroll. Reports 'up' or 'down'.
  */
 export const useScrollDirection = (elementRef) => {
@@ -15,7 +15,7 @@ export const useScrollDirection = (elementRef) => {
 
   const toggleScrollDirection = () => {
     const scrollY = ref.scrollY
-    
+
     if (scrollY === 0) {
       setScrollDirection('top')
     } else if (scrollY > prevOffset) {

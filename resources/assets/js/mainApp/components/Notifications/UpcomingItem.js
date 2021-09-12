@@ -106,7 +106,8 @@ export default class UpcomingItem extends Component {
         <div
           className={`time ${
             (countdown_label == 'Minutes' || countdown_label == 'Seconds') && isExpired && countdown < 60 ? 'start-soon' : ''
-          }`}>
+          }`}
+        >
           <div className='time-align'>
             {!isExpired ? `Starting in` : `Expire in `}
             <div className='time-info'>{countdown}</div>

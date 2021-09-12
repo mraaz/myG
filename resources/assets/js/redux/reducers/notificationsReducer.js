@@ -3,7 +3,7 @@ import logger from '../../common/logger'
 const initialState = {
   approvals: 0,
   alerts: 0,
-  chats: 0,
+  chats: 0
 }
 
 export default function reducer(state = initialState, action) {

@@ -18,7 +18,7 @@ class ChatController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -37,7 +37,7 @@ class ChatController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -56,7 +56,7 @@ class ChatController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -75,7 +75,7 @@ class ChatController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -94,7 +94,7 @@ class ChatController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -115,7 +115,7 @@ class ChatController {
         publicKey,
         isGroup,
         individualGameId,
-        gameId,
+        gameId
       })
       return response.send({ chat })
     } catch (error) {
@@ -124,7 +124,7 @@ class ChatController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -143,7 +143,7 @@ class ChatController {
         'moderators',
         'markAsRead',
         'selfDestruct',
-        'publicKey',
+        'publicKey'
       ])
       log(
         'CHAT',
@@ -156,7 +156,7 @@ class ChatController {
           moderators,
           markAsRead,
           selfDestruct,
-          publicKey,
+          publicKey
         })}`
       )
       const result = await ChatRepository.updateChat({
@@ -170,7 +170,7 @@ class ChatController {
         moderators,
         markAsRead,
         selfDestruct,
-        publicKey,
+        publicKey
       })
       return response.send(result)
     } catch (error) {
@@ -179,7 +179,7 @@ class ChatController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -198,7 +198,7 @@ class ChatController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -217,7 +217,7 @@ class ChatController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -236,7 +236,7 @@ class ChatController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -255,7 +255,7 @@ class ChatController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -275,7 +275,7 @@ class ChatController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -295,7 +295,7 @@ class ChatController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -314,7 +314,7 @@ class ChatController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -332,7 +332,7 @@ class ChatController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -351,7 +351,7 @@ class ChatController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -371,7 +371,7 @@ class ChatController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -390,7 +390,7 @@ class ChatController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -407,7 +407,7 @@ class ChatController {
         requestingUserId,
         requestedChatId,
         contacts: requestedContacts,
-        fromLink,
+        fromLink
       })
       return response.send({ contacts, error })
     } catch (error) {
@@ -416,7 +416,7 @@ class ChatController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -436,7 +436,7 @@ class ChatController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -454,7 +454,7 @@ class ChatController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -473,7 +473,7 @@ class ChatController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -492,7 +492,7 @@ class ChatController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -522,7 +522,7 @@ class ChatController {
         replyContent,
         replyBackup,
         uuid,
-        forceSelfDestruct,
+        forceSelfDestruct
       })
       return response.send({ message })
     } catch (error) {
@@ -531,7 +531,7 @@ class ChatController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -555,7 +555,7 @@ class ChatController {
         requestedMessageId,
         backup: backup || encryptedContent,
         content: content || encryptedContent,
-        reEncrypting,
+        reEncrypting
       })
       return response.send({ message })
     } catch (error) {
@@ -564,7 +564,7 @@ class ChatController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -584,7 +584,7 @@ class ChatController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -605,7 +605,7 @@ class ChatController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -626,7 +626,7 @@ class ChatController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -646,7 +646,7 @@ class ChatController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -665,7 +665,7 @@ class ChatController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -683,7 +683,7 @@ class ChatController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -702,7 +702,7 @@ class ChatController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -721,7 +721,7 @@ class ChatController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -740,7 +740,7 @@ class ChatController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -759,7 +759,7 @@ class ChatController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -780,7 +780,7 @@ class ChatController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -799,7 +799,7 @@ class ChatController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -819,7 +819,7 @@ class ChatController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -843,7 +843,7 @@ class ChatController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -864,7 +864,7 @@ class ChatController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -884,7 +884,7 @@ class ChatController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -904,7 +904,7 @@ class ChatController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -923,7 +923,7 @@ class ChatController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -943,7 +943,7 @@ class ChatController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -962,7 +962,7 @@ class ChatController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -981,7 +981,7 @@ class ChatController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }

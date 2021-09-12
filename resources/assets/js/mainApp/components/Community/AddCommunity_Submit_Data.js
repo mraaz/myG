@@ -49,7 +49,7 @@ export async function SubmitDataFunction(myG) {
       co_hosts: co_hosts,
       type: myG.type,
       group_img: group_img,
-      aws_key_id: aws_key_id,
+      aws_key_id: aws_key_id
     })
     return post
   } catch (error) {

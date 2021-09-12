@@ -4,47 +4,47 @@ import {
   fetchMonthlyQuests,
   redeemDailyQuests,
   redeemWeeklyQuests,
-  redeemMonthlyQuests,
+  redeemMonthlyQuests
 } from '../../integration/http/quests'
 
 export function fetchDailyQuestsAction() {
   return {
     type: 'FETCH_DAILY_QUESTS',
-    payload: fetchDailyQuests(),
+    payload: fetchDailyQuests()
   }
 }
 
 export function fetchWeeklyQuestsAction() {
   return {
     type: 'FETCH_WEEKLY_QUESTS',
-    payload: fetchWeeklyQuests(),
+    payload: fetchWeeklyQuests()
   }
 }
 
 export function fetchMonthlyQuestsAction() {
   return {
     type: 'FETCH_MONTHLY_QUESTS',
-    payload: fetchMonthlyQuests(),
+    payload: fetchMonthlyQuests()
   }
 }
 
 export function redeemDailyQuestsAction() {
   return {
     type: 'FETCH_DAILY_QUESTS',
-    payload: redeemDailyQuests(),
+    payload: redeemDailyQuests()
   }
 }
 
 export function redeemWeeklyQuestsAction() {
   return {
     type: 'FETCH_WEEKLY_QUESTS',
-    payload: redeemWeeklyQuests(),
+    payload: redeemWeeklyQuests()
   }
 }
 
 export function redeemMonthlyQuestsAction() {
   return {
     type: 'FETCH_MONTHLY_QUESTS',
-    payload: redeemMonthlyQuests(),
+    payload: redeemMonthlyQuests()
   }
 }

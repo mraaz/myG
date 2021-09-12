@@ -21,7 +21,7 @@ export function withDatesAndLogsAndLastReads(messages, entryLogs, contactsMap, l
         lastReadContacts[messageId].push({
           contactId,
           icon: getAssetUrl('ic_guest_icon'),
-          name: contactId,
+          name: contactId
         })
       }
     }
@@ -35,7 +35,7 @@ export function withDatesAndLogsAndLastReads(messages, entryLogs, contactsMap, l
         messageId: lastDate.getTime(),
         date: lastDate,
         isDateDivisor: true,
-        isYesterday: isYesterday(lastDate),
+        isYesterday: isYesterday(lastDate)
       })
     }
     const entryLog = reversedEntryLogs[0]
@@ -74,15 +74,15 @@ export function openChatById(chatId) {
 }
 
 export function openChatByContact(contactId) {
-  const userId = store.getState().user.userId;
-  store.dispatch(createChatAction([parseInt(contactId)], parseInt(userId)));
+  const userId = store.getState().user.userId
+  store.dispatch(createChatAction([parseInt(contactId)], parseInt(userId)))
 }
 
 export function unencryptMessage(message) {
-  const privateKey = deserializeKey(store.getState().chat.privateKey);
-  return decryptMessage(message, privateKey);
+  const privateKey = deserializeKey(store.getState().chat.privateKey)
+  return decryptMessage(message, privateKey)
 }
 
 export function dismissNotification(notificationId) {
-  store.dispatch(dismissNotificationAction(notificationId));
+  store.dispatch(dismissNotificationAction(notificationId))
 }

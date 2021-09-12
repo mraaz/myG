@@ -263,8 +263,8 @@ export default class IndividualReply extends Component {
     }
   }
 
-  handleLinkClick = ()=>{
-    if(this.props.handleLinkClick){
+  handleLinkClick = () => {
+    if (this.props.handleLinkClick) {
       this.props.handleLinkClick()
     }
   }

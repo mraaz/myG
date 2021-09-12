@@ -11,7 +11,7 @@ class GroupConnectionController {
         const newGroupConnection = await GroupConnection.create({
           user_id: auth.user.id,
           group_id: group_id,
-          group_size: group_size,
+          group_size: group_size
         })
       } catch (error) {
         if (error.code == 'ER_DUP_ENTRY') {
@@ -22,7 +22,7 @@ class GroupConnectionController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     }
@@ -34,7 +34,7 @@ class GroupConnectionController {
         const deleteRegistration = await Database.table('group_connections')
           .where({
             group_id: group_id,
-            user_id: auth.user.id,
+            user_id: auth.user.id
           })
           .delete()
 
@@ -45,7 +45,7 @@ class GroupConnectionController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {

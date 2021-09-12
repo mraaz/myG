@@ -15,8 +15,8 @@ class General extends React.Component {
     dividerExpanded: {
       recents: true,
       friends: false,
-      groups: false,
-    },
+      groups: false
+    }
   }
 
   renderRecents = () => {
@@ -65,29 +65,28 @@ class General extends React.Component {
 
   render() {
     const unreadMessages = (this.props.chats || [])
-      .map((chat) => (chat.messages || []))
+      .map((chat) => chat.messages || [])
       .reduce((prev, acc) => [...prev, ...acc], [])
-      .filter((message) => (message || {}).unread);
+      .filter((message) => (message || {}).unread)
     if (this.props.search) return null
     return (
       <div key={'general'} className='messenger-body-section' style={{ backgroundColor: '#40494C' }}>
         <div
           className='messenger-body-section-header clickable'
           style={{ backgroundColor: '#40494C' }}
-          onClick={() => this.props.onExpand(this.props.expanded)}>
+          onClick={() => this.props.onExpand(this.props.expanded)}
+        >
           <div className='messenger-body-game-section' style={{ backgroundColor: '#40494C' }}>
             <div
               className='messenger-game-icon'
               style={{
                 backgroundImage: `url('https://myG.gg/platform_images/Dashboard/logo.svg')`,
                 backgroundSize: 'inherit',
-                backgroundColor: '#000',
+                backgroundColor: '#000'
               }}
             />
             <p className='messenger-body-section-header-name'>General</p>
-            {!!unreadMessages.length && (
-              <div className="messenger-body-section-header-counter">{unreadMessages.length}</div>
-            )}
+            {!!unreadMessages.length && <div className='messenger-body-section-header-counter'>{unreadMessages.length}</div>}
           </div>
           <div className='messenger-body-section-header-info'>
             <div
@@ -111,7 +110,7 @@ class General extends React.Component {
 
 export function mapStateToProps(state) {
   return {
-    chats: state.chat.chats,
+    chats: state.chat.chats
   }
 }
 

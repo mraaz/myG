@@ -27,7 +27,7 @@ class ReportedController {
       await Reported.create({
         user_id: userId,
         first_offence: report_description,
-        first_offence_date: new Date(),
+        first_offence_date: new Date()
       })
     } catch (error) {
       LoggingRepository.log({
@@ -35,7 +35,7 @@ class ReportedController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -74,7 +74,7 @@ class ReportedController {
           third_offence: offenceInfo.third_offence,
           first_offence_date: offenceInfo.first_offence_date,
           second_offence_date: offenceInfo.second_offence_date,
-          third_offence_date: offenceInfo.third_offence_date,
+          third_offence_date: offenceInfo.third_offence_date
         })
         .increment('counter', 1)
     } catch (error) {
@@ -83,7 +83,7 @@ class ReportedController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -109,7 +109,7 @@ class ReportedController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -124,10 +124,10 @@ class ReportedController {
         }
         const byebyebye = await Database.table('users')
           .where({
-            id: request.params.id,
+            id: request.params.id
           })
           .delete()
-          await ElasticsearchRepository.removeUser({ id: request.params.id })
+        await ElasticsearchRepository.removeUser({ id: request.params.id })
         return 'Deleted successfully'
       } catch (error) {
         LoggingRepository.log({
@@ -135,7 +135,7 @@ class ReportedController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -144,9 +144,7 @@ class ReportedController {
   }
 
   async security_check({ auth }) {
-    const security_check = await Database.from('admins')
-      .where({ user_id: auth.user.id, permission_level: 1 })
-      .first()
+    const security_check = await Database.from('admins').where({ user_id: auth.user.id, permission_level: 1 }).first()
 
     if (security_check == undefined) {
       return false

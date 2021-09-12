@@ -198,7 +198,14 @@ export default class PostFileModal extends Component {
                 <h1>Add communities feed</h1>
                 <div style={{ display: 'flex', width: '100%' }}>
                   <label htmlFor='searchInput'>Search</label>
-                  <input type='text' autocomplete='off' id='searchInput' onChange={this.getSearchGroup} value={searchText} placeholder='Search here ...' />
+                  <input
+                    type='text'
+                    autocomplete='off'
+                    id='searchInput'
+                    onChange={this.getSearchGroup}
+                    value={searchText}
+                    placeholder='Search here ...'
+                  />
                 </div>
               </div>
               <div className='people_group_list_box'>

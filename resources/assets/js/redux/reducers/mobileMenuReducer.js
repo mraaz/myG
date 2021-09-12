@@ -2,18 +2,19 @@ import logger from '../../common/logger'
 
 const initialState = {
   mobileMenuIsActive: false,
-  mobileMenuIsTop: true,
+  mobileMenuIsTop: true
 }
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
-    case 'REACT_ERROR': return initialState
+    case 'REACT_ERROR':
+      return initialState
 
     case 'SHOW_MOBILE_MENU': {
       logger.log('Mobile Menu', `Redux -> Show the mobile menu `, action.meta)
       return {
         ...state,
-        mobileMenuIsActive: true,
+        mobileMenuIsActive: true
       }
     }
 
@@ -21,7 +22,7 @@ export default function reducer(state = initialState, action) {
       logger.log('Mobile Menu', `Redux -> Hide the mobile menu `, action.meta)
       return {
         ...state,
-        mobileMenuIsActive: false,
+        mobileMenuIsActive: false
       }
     }
 
@@ -29,7 +30,7 @@ export default function reducer(state = initialState, action) {
       logger.log('Mobile Menu', `Redux -> Indicates if ScrollY is position 0 `, action.payload, action.meta)
       return {
         ...state,
-        mobileMenuIsTop: action.payload,
+        mobileMenuIsTop: action.payload
       }
     }
 

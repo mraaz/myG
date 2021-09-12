@@ -13,15 +13,15 @@ class MessengerLoader extends React.Component {
   }
 
   state = {
-    loaded: false,
+    loaded: false
   }
 
   componentDidMount() {
-    this.prepareMessenger();
+    this.prepareMessenger()
   }
 
   componentDidUpdate() {
-    this.prepareMessenger();
+    this.prepareMessenger()
   }
 
   prepareMessenger = () => {
@@ -61,14 +61,14 @@ function mapStateToProps(state) {
   return {
     preparingMessenger: state.chat.preparingMessenger,
     pin: state.encryption.pin,
-    privateKey: state.encryption.privateKey,
+    privateKey: state.encryption.privateKey
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
     prepareMessenger: (userId, alias, pin, privateKey, publicKey) =>
-      dispatch(prepareMessengerAction(userId, alias, pin, privateKey, publicKey)),
+      dispatch(prepareMessengerAction(userId, alias, pin, privateKey, publicKey))
   }
 }
 

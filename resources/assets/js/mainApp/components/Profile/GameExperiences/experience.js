@@ -20,7 +20,8 @@ export default class Experience extends React.Component {
             className='input'
             value={this.props.experience.team}
             disabled={!this.props.isSelf}
-            onChange={(event) => this.props.storeExperience(this.props.experience.id, { team: event.target.value })}></input>
+            onChange={(event) => this.props.storeExperience(this.props.experience.id, { team: event.target.value })}
+          ></input>
         </div>
       </div>
     )
@@ -35,7 +36,8 @@ export default class Experience extends React.Component {
             className='input'
             value={this.props.experience.role}
             disabled={!this.props.isSelf}
-            onChange={(event) => this.props.storeExperience(this.props.experience.id, { role: event.target.value })}></input>
+            onChange={(event) => this.props.storeExperience(this.props.experience.id, { role: event.target.value })}
+          ></input>
         </div>
       </div>
     )

@@ -48,7 +48,7 @@ class NotificationController {
           other_user_id: request.input('other_user_id'),
           user_id: auth.user.id,
           activity_type: 12,
-          group_id: request.input('group_id'),
+          group_id: request.input('group_id')
         })
         const userId = request.input('other_user_id')
         const notifications = await NotificationsRepository.count({ auth: { user: { id: userId } }, request: null })
@@ -60,7 +60,7 @@ class NotificationController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -75,7 +75,7 @@ class NotificationController {
           other_user_id: request.params.other_user_id,
           user_id: auth.user.id,
           activity_type: 17,
-          group_id: request.params.group_id,
+          group_id: request.params.group_id
         })
         const userId = request.params.other_user_id
         const notifications = await NotificationsRepository.count({ auth: { user: { id: userId } }, request: null })
@@ -87,7 +87,7 @@ class NotificationController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -102,7 +102,7 @@ class NotificationController {
           other_user_id: request.input('userId'),
           user_id: auth.user.id,
           activity_type: 18,
-          chat_id: request.input('chatId'),
+          chat_id: request.input('chatId')
         })
         const userId = request.input('userId')
         const notifications = await NotificationsRepository.count({ auth: { user: { id: userId } }, request: null })
@@ -114,7 +114,7 @@ class NotificationController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
         return error
       }
@@ -218,14 +218,14 @@ class NotificationController {
         ...group_member_approved,
         ...group_invite,
         ...group_member_kicked,
-        ...user_ding,
+        ...user_ding
       ]
       const number_of_notis = singleArr.length
       // 10,11,14,16 = schedule_games
       // 12,17 = group_post
       // 2,3,4,5,6 = post_id
       return {
-        number_of_notis,
+        number_of_notis
         // allMylike_posts: allMylike_posts,
         // allMylike_comments: allMylike_comments,
         // allMylike_replies: allMylike_replies,
@@ -244,7 +244,7 @@ class NotificationController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -464,7 +464,7 @@ class NotificationController {
         ...group_member_approved.data,
         ...group_member_kicked.data,
         ...chat_group_invite.data,
-        ...user_ding.data,
+        ...user_ding.data
       ]
 
       if (singleArr.length == 0) {
@@ -478,7 +478,7 @@ class NotificationController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -506,7 +506,7 @@ class NotificationController {
       return {
         getAllNotiLike_post: getAllNotiLike_post,
         getAllNotiLike_postCount: getAllNotiLike_postCount,
-        getAllNotiLike_unreadCount: getAllNotiLike_unreadCount,
+        getAllNotiLike_unreadCount: getAllNotiLike_unreadCount
       }
     } catch (error) {
       LoggingRepository.log({
@@ -514,7 +514,7 @@ class NotificationController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -542,7 +542,7 @@ class NotificationController {
       return {
         getAllNotiLike_comment: getAllNotiLike_comment,
         getAllNotiLike_commentCount: getAllNotiLike_commentCount,
-        getAllNotiLike_unreadCount: getAllNotiLike_unreadCount,
+        getAllNotiLike_unreadCount: getAllNotiLike_unreadCount
       }
     } catch (error) {
       LoggingRepository.log({
@@ -550,7 +550,7 @@ class NotificationController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -578,7 +578,7 @@ class NotificationController {
       return {
         getAllNotiLike_reply: getAllNotiLike_reply,
         getAllNotiLike_replyCount: getAllNotiLike_replyCount,
-        getAllNotiLike_unreadCount: getAllNotiLike_unreadCount,
+        getAllNotiLike_unreadCount: getAllNotiLike_unreadCount
       }
     } catch (error) {
       LoggingRepository.log({
@@ -586,7 +586,7 @@ class NotificationController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -614,7 +614,7 @@ class NotificationController {
       return {
         getAllNotiComment: getAllNotiComment,
         getAllNotiCommentCount: getAllNotiCommentCount,
-        getAllNotiCommentCount_unreadCount: getAllNotiCommentCount_unreadCount,
+        getAllNotiCommentCount_unreadCount: getAllNotiCommentCount_unreadCount
       }
     } catch (error) {
       LoggingRepository.log({
@@ -622,7 +622,7 @@ class NotificationController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -650,7 +650,7 @@ class NotificationController {
       return {
         getAllNotiReply: getAllNotiReply,
         getAllNotiReplyCount: getAllNotiReplyCount,
-        getAllNotiReplyCount_unreadCount: getAllNotiReplyCount_unreadCount,
+        getAllNotiReplyCount_unreadCount: getAllNotiReplyCount_unreadCount
       }
     } catch (error) {
       LoggingRepository.log({
@@ -658,7 +658,7 @@ class NotificationController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -669,7 +669,7 @@ class NotificationController {
         .innerJoin('users', 'users.id', 'notifications.other_user_id')
         .where({
           schedule_games_id: request.params.schedule_games_id,
-          activity_type: 16,
+          activity_type: 16
         })
         .select('notifications.schedule_games_id', 'notifications.activity_type', 'users.alias', 'users.profile_img', 'users.id')
         .orderBy('notifications.created_at', 'desc')
@@ -677,13 +677,13 @@ class NotificationController {
       const getAllNotiScheduleGamesAttendeesCount = await Database.from('notifications')
         .where({
           schedule_games_id: request.params.schedule_games_id,
-          activity_type: 16,
+          activity_type: 16
         })
         .count('* as no_of_my_notis')
 
       return {
         getAllNotiScheduleGamesAttendees: getAllNotiScheduleGamesAttendees,
-        getAllNotiScheduleGamesAttendeesCount: getAllNotiScheduleGamesAttendeesCount,
+        getAllNotiScheduleGamesAttendeesCount: getAllNotiScheduleGamesAttendeesCount
       }
     } catch (error) {
       LoggingRepository.log({
@@ -691,7 +691,7 @@ class NotificationController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -703,7 +703,7 @@ class NotificationController {
           .where({
             other_user_id: auth.user.id,
             post_id: request.params.post_id,
-            activity_type: request.params.activity_type,
+            activity_type: request.params.activity_type
           })
           .update({ read_status: 1 })
         return 'Saved successfully'
@@ -713,7 +713,7 @@ class NotificationController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     }
@@ -726,7 +726,7 @@ class NotificationController {
           .where({
             other_user_id: auth.user.id,
             schedule_games_id: request.params.schedule_game_id,
-            activity_type: request.params.activity_type,
+            activity_type: request.params.activity_type
           })
           .update({ read_status: 1 })
         return 'Saved successfully'
@@ -736,7 +736,7 @@ class NotificationController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     }
@@ -750,7 +750,7 @@ class NotificationController {
             other_user_id: auth.user.id,
             group_id: request.params.group_id,
             activity_type: request.params.activity_type,
-            user_id: request.params.user_id,
+            user_id: request.params.user_id
           })
           .update({ read_status: 1 })
         return 'Saved successfully'
@@ -760,7 +760,7 @@ class NotificationController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     }
@@ -772,7 +772,7 @@ class NotificationController {
         const updateRead_Status_ding = await Notification.query()
           .where({
             other_user_id: auth.user.id,
-            activity_type: 20,
+            activity_type: 20
           })
           .update({ read_status: 1 })
         return 'Saved successfully'
@@ -782,7 +782,7 @@ class NotificationController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     }
@@ -801,7 +801,7 @@ class NotificationController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -810,7 +810,7 @@ class NotificationController {
     try {
       const deleteAllNoti = await Database.table('notifications')
         .where({
-          other_user_id: auth.user.id,
+          other_user_id: auth.user.id
         })
         .whereIn('activity_type', [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19, 20])
         .delete()
@@ -824,7 +824,7 @@ class NotificationController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -836,12 +836,12 @@ class NotificationController {
         .where({
           post_id: request.params.post_id,
           activity_type: request.params.activity_type,
-          read_status: 0,
+          read_status: 0
         })
         .count('* as no_of_my_unread')
 
       return {
-        getAllNotiReplyCount_unreadCount: getAllNotiReplyCount_unreadCount,
+        getAllNotiReplyCount_unreadCount: getAllNotiReplyCount_unreadCount
       }
     } catch (error) {
       LoggingRepository.log({
@@ -849,7 +849,7 @@ class NotificationController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -861,12 +861,12 @@ class NotificationController {
         .where({
           schedule_games_id: request.params.schedule_game_id,
           activity_type: request.params.activity_type,
-          read_status: 0,
+          read_status: 0
         })
         .count('* as no_of_my_unread')
 
       return {
-        getAllNotiReplyCount_unreadCount: getAllNotiReplyCount_unreadCount,
+        getAllNotiReplyCount_unreadCount: getAllNotiReplyCount_unreadCount
       }
     } catch (error) {
       LoggingRepository.log({
@@ -874,7 +874,7 @@ class NotificationController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -886,12 +886,12 @@ class NotificationController {
         .where({
           group_id: request.params.id,
           activity_type: request.params.activity_type,
-          read_status: 0,
+          read_status: 0
         })
         .count('* as no_of_my_unread')
 
       return {
-        getAllNotiReplyCount_unreadCount: getAllNotiReplyCount_unreadCount,
+        getAllNotiReplyCount_unreadCount: getAllNotiReplyCount_unreadCount
       }
     } catch (error) {
       LoggingRepository.log({
@@ -899,7 +899,7 @@ class NotificationController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -910,12 +910,12 @@ class NotificationController {
         .where({ other_user_id: auth.user.id })
         .where({
           activity_type: 20,
-          read_status: 0,
+          read_status: 0
         })
         .count('* as no_of_my_unread')
 
       return {
-        getAllNotiReplyCount_unreadCount: getAllNotiReplyCount_unreadCount,
+        getAllNotiReplyCount_unreadCount: getAllNotiReplyCount_unreadCount
       }
     } catch (error) {
       LoggingRepository.log({
@@ -923,7 +923,7 @@ class NotificationController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -935,7 +935,7 @@ class NotificationController {
           other_user_id: request.params.other_user_id,
           user_id: auth.user.id,
           activity_type: 10,
-          schedule_games_id: request.params.schedule_games_id,
+          schedule_games_id: request.params.schedule_games_id
         })
         const userId = request.params.other_user_id
         const notifications = await NotificationsRepository.count({ auth: { user: { id: userId } }, request: null })
@@ -947,7 +947,7 @@ class NotificationController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -966,7 +966,7 @@ class NotificationController {
             other_user_id: mygroups[i].user_id,
             user_id: auth.user.id,
             activity_type: 12,
-            group_id: request.input('group_id'),
+            group_id: request.input('group_id')
           })
           const userId = mygroups[i].user_id
           const notifications = await NotificationsRepository.count({ auth: { user: { id: userId } }, request: null })
@@ -980,7 +980,7 @@ class NotificationController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -999,7 +999,7 @@ class NotificationController {
             other_user_id: mygroups[i].user_id,
             user_id: auth.user.id,
             activity_type: 12,
-            group_id: request.input('group_id'),
+            group_id: request.input('group_id')
           })
           const userId = mygroups[i].user_id
           const notifications = await NotificationsRepository.count({ auth: { user: { id: userId } }, request: null })
@@ -1013,7 +1013,7 @@ class NotificationController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -1028,7 +1028,7 @@ class NotificationController {
           .where({
             group_id: request.params.id,
             user_id: auth.user.id,
-            activity_type: 12,
+            activity_type: 12
           })
           .delete()
         const userId = auth.user.id
@@ -1041,7 +1041,7 @@ class NotificationController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -1056,7 +1056,7 @@ class NotificationController {
           other_user_id: request.input('other_user_id'),
           user_id: auth.user.id,
           activity_type: 14,
-          schedule_games_id: request.input('schedule_games_id'),
+          schedule_games_id: request.input('schedule_games_id')
         })
         const userId = request.input('other_user_id')
         const notifications = await NotificationsRepository.count({ auth: { user: { id: userId } }, request: null })
@@ -1068,7 +1068,7 @@ class NotificationController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -1089,7 +1089,7 @@ class NotificationController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -1101,7 +1101,7 @@ class NotificationController {
           other_user_id: request.params.other_user_id,
           user_id: auth.user.id,
           activity_type: 19,
-          group_id: request.params.group_id,
+          group_id: request.params.group_id
         })
         const userId = request.params.other_user_id
         const notifications = await NotificationsRepository.count({ auth: { user: { id: userId } }, request: null })
@@ -1113,7 +1113,7 @@ class NotificationController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -1126,7 +1126,7 @@ class NotificationController {
       const ding = await Notification.create({
         other_user_id: my_user_id,
         user_id: my_user_id,
-        activity_type: 20,
+        activity_type: 20
       })
       const userId = my_user_id
       const notifications = await NotificationsRepository.count({ auth: { user: { id: userId } }, request: null })
@@ -1138,7 +1138,7 @@ class NotificationController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -1210,7 +1210,7 @@ class NotificationController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }

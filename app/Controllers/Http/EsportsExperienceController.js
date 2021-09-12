@@ -23,7 +23,7 @@ class EsportsExperienceController {
       let gameface = new GameNameController()
 
       const mygame = await Database.table('game_names').where({
-        game_name: request.input('game_name'),
+        game_name: request.input('game_name')
       })
 
       if (mygame.length == 0) {
@@ -43,7 +43,7 @@ class EsportsExperienceController {
       for (var i = 0; i < arrTags.length; i++) {
         var current_tag = await Database.table('tags').where({
           game_names_id: request.params.game_names_id,
-          tag: arrTags[i],
+          tag: arrTags[i]
         })
         if (current_tag.length == 0) {
           request.params.tag = arrTags[i]
@@ -59,7 +59,7 @@ class EsportsExperienceController {
           team_name: request.input('team_name'),
           duration: request.input('duration'),
           achievements: request.input('achievements'),
-          skills: request.input('skills'),
+          skills: request.input('skills')
         })
         // let gameface = new GameNameController()
         //
@@ -80,7 +80,7 @@ class EsportsExperienceController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     }
@@ -98,7 +98,7 @@ class EsportsExperienceController {
         .select('esports_experiences.*', 'game_names.game_name')
 
       return {
-        myesportsExperience,
+        myesportsExperience
       }
     } catch (error) {
       LoggingRepository.log({
@@ -106,7 +106,7 @@ class EsportsExperienceController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -129,7 +129,7 @@ class EsportsExperienceController {
         let gameface = new GameNameController()
 
         const mygame = await Database.table('game_names').where({
-          game_name: request.input('game_name'),
+          game_name: request.input('game_name')
         })
 
         if (mygame.length == 0) {
@@ -149,7 +149,7 @@ class EsportsExperienceController {
         for (var i = 0; i < arrTags.length; i++) {
           var current_tag = await Database.table('tags').where({
             game_names_id: request.params.game_names_id,
-            tag: arrTags[i],
+            tag: arrTags[i]
           })
           if (current_tag.length == 0) {
             request.params.tag = arrTags[i]
@@ -165,7 +165,7 @@ class EsportsExperienceController {
             team_name: request.input('team_name'),
             duration: request.input('duration'),
             achievements: request.input('achievements'),
-            skills: request.input('skills'),
+            skills: request.input('skills')
           })
 
         if (game_experiences[0].game_name != request.input('game_name')) {
@@ -182,7 +182,7 @@ class EsportsExperienceController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     }
@@ -194,7 +194,7 @@ class EsportsExperienceController {
         let gameface = new GameNameController()
 
         const game_experiences = await Database.table('esports_experiences').where({
-          id: request.params.id,
+          id: request.params.id
         })
 
         // const mygame = await Database.table('game_names').where({
@@ -205,7 +205,7 @@ class EsportsExperienceController {
 
         const delete_esport_exp = await Database.table('esports_experiences')
           .where({
-            id: request.params.id,
+            id: request.params.id
           })
           .delete()
 
@@ -216,7 +216,7 @@ class EsportsExperienceController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -236,7 +236,7 @@ class EsportsExperienceController {
         .select('esports_experiences.*', 'game_names.game_name')
 
       return {
-        esportsExperience,
+        esportsExperience
       }
     } catch (error) {
       LoggingRepository.log({
@@ -244,7 +244,7 @@ class EsportsExperienceController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -319,7 +319,7 @@ class EsportsExperienceController {
         .paginate(parseInt(request.input('counter')), 10)
 
       return {
-        latestGameExperiences,
+        latestGameExperiences
       }
     } catch (error) {
       LoggingRepository.log({
@@ -327,7 +327,7 @@ class EsportsExperienceController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }

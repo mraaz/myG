@@ -20,7 +20,8 @@ class ChatUnreadMessages extends React.Component {
       <div
         key={message.messageId}
         className='unread-message clickable'
-        onClick={() => this.props.openChat(message.chatId || message.chat_id)}>
+        onClick={() => this.props.openChat(message.chatId || message.chat_id)}
+      >
         <div className='title'>
           <p className='sender-name'>From {message.senderName || message.sender_name}</p>
           <p className='date'>{formatAMPM(new Date(message.createdAt || message.created_at))}</p>
@@ -46,14 +47,14 @@ export function mapStateToProps(state) {
   return {
     chats: state.chat.chats,
     privateKey: state.encryption.privateKey,
-    unreadMessages: state.chat.unreadMessages || [],
+    unreadMessages: state.chat.unreadMessages || []
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
     clearUnreadIndicator: () => dispatch(clearUnreadIndicatorAction()),
-    openChat: (chatId) => dispatch(openChatAction(chatId)),
+    openChat: (chatId) => dispatch(openChatAction(chatId))
   }
 }
 

@@ -20,8 +20,8 @@ class ExceptionHandler extends BaseExceptionHandler {
    *
    * @return {void}
    */
-  async handle (error, { request, response }) {
-    if (error.code == 'E_INVALID_SESSION'){
+  async handle(error, { request, response }) {
+    if (error.code == 'E_INVALID_SESSION') {
       return response.redirect('/login')
     }
     return super.handle(...arguments)
@@ -37,8 +37,7 @@ class ExceptionHandler extends BaseExceptionHandler {
    *
    * @return {void}
    */
-  async report (error, { request }) {
-  }
+  async report(error, { request }) {}
 }
 
 module.exports = ExceptionHandler

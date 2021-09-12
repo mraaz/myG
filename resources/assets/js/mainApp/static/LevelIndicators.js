@@ -46,5 +46,5 @@ export default [
     maxValue: 80,
     label: 'Dragon',
     subtitle: '70+'
-  },
+  }
 ]

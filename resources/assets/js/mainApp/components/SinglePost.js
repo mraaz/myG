@@ -6,7 +6,7 @@ export default class SinglePost extends Component {
   constructor() {
     super()
     this.state = {
-      myPost: [],
+      myPost: []
     }
   }
 
@@ -14,12 +14,12 @@ export default class SinglePost extends Component {
     const self = this
     const { match } = this.props.routeProps
 
-    const getPost = async function() {
+    const getPost = async function () {
       try {
         const myPost = await axios.get(`/api/getpost/${match.params.id}`)
 
         self.setState({
-          myPost: self.state.myPost.concat(myPost.data.myPost),
+          myPost: self.state.myPost.concat(myPost.data.myPost)
         })
       } catch (error) {
         console.log(error)

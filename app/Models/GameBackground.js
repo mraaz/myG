@@ -4,7 +4,7 @@
 const Model = use('Model')
 
 class GameBackground extends Model {
-  static get table () {
+  static get table() {
     return 'game_background'
   }
 }

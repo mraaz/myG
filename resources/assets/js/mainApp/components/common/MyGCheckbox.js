@@ -4,12 +4,12 @@ const MyGCheckbox = ({ checked, onClick, labelText, containerStyles }) => {
   const styles = {
     container: {
       marginBottom: '10px',
-      cursor: 'pointer',
+      cursor: 'pointer'
     },
     labelText: {
       marginLeft: '10px',
-      fontWeight: 'bold',
-    },
+      fontWeight: 'bold'
+    }
   }
   const checked_svg = 'https://myG.gg/platform_images/Dashboard/checkbox_checked.svg'
   const unchecked_svg = 'https://myG.gg/platform_images/Dashboard/checkbox_uncheked.svg'

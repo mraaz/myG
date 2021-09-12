@@ -42,8 +42,8 @@ function forceStatus(value) {
 }
 
 function forceObject(value) {
-  if (value && Object.keys(value).length) return value;
-  return {};
+  if (value && Object.keys(value).length) return value
+  return {}
 }
 
 module.exports = {
@@ -55,5 +55,5 @@ module.exports = {
   forceBoolean,
   forceDate,
   forceStatus,
-  forceObject,
+  forceObject
 }

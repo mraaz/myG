@@ -10,7 +10,7 @@ export default function reducer(state = initialState, action) {
       logger.log('GAME', `Redux -> Found Games: `, action.payload)
       return {
         ...state,
-        foundGames: action.payload.games,
+        foundGames: action.payload.games
       }
     }
 

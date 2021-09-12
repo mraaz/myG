@@ -12,40 +12,54 @@ class EsportsBioController {
           status: request.input('status'),
           email_visibility: request.input('email_visibility'),
           games_of_ardour: request.input('games_of_ardour'),
-          career_highlights: request.input('career_highlights'),
+          career_highlights: request.input('career_highlights')
         })
         return 'Saved item'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error
+        })
       }
     }
   }
 
   async show({ auth, request, response }) {
     try {
-      const myProfile = await EsportsBio.query()
-        .where('user_id', '=', auth.user.id)
-        .fetch()
+      const myProfile = await EsportsBio.query().where('user_id', '=', auth.user.id).fetch()
 
       return {
-        myProfile,
+        myProfile
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error
+      })
     }
   }
 
   async show_bio({ auth, request, response }) {
     try {
-      const myProfile = await EsportsBio.query()
-        .where('user_id', '=', request.params.id)
-        .fetch()
+      const myProfile = await EsportsBio.query().where('user_id', '=', request.params.id).fetch()
 
       return {
-        myProfile,
+        myProfile
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error
+      })
     }
   }
 
@@ -57,11 +71,17 @@ class EsportsBioController {
           status: request.input('status'),
           email_visibility: request.input('email_visibility'),
           games_of_ardour: request.input('games_of_ardour'),
-          career_highlights: request.input('career_highlights'),
+          career_highlights: request.input('career_highlights')
         })
       return 'Saved successfully'
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error
+      })
     }
   }
 }

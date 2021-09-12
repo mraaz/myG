@@ -15,7 +15,7 @@ const tabObj = {
   0: 0,
   1: -1,
   2: 10,
-  3: -2,
+  3: -2
 }
 
 import NoRecord from './NoRecord'
@@ -28,7 +28,7 @@ export default class Alerts extends Component {
       notification: [],
       fetching: false,
       moreplease: true,
-      tab: 0,
+      tab: 0
     }
     this.myRef = React.createRef()
   }
@@ -40,12 +40,12 @@ export default class Alerts extends Component {
     window.scrollTo(0, 0)
     const getnoti = await axios.post('/api/notifications_v2/getAllNoti', {
       counter,
-      activity_type: 0,
+      activity_type: 0
     })
     if (getnoti.data.length > 0) {
       this.setState(
         {
-          notification: getnoti.data,
+          notification: getnoti.data
         },
         () => {
           this.props.setNotificationsCount(this.state.notification.length)
@@ -57,7 +57,7 @@ export default class Alerts extends Component {
     this.setState({ notification: [], fetching: true })
     const getnoti = await axios.post('/api/notifications_v2/getAllNoti', {
       counter: 1,
-      activity_type: tabObj[tab],
+      activity_type: tabObj[tab]
     })
     if (getnoti.data.length > 0) {
       this.setState({ notification: getnoti.data, fetching: false, moreplease: true, tab }, () => {
@@ -72,13 +72,13 @@ export default class Alerts extends Component {
     this.setState({ fetching: true })
     const getnoti = await axios.post('/api/notifications_v2/getAllNoti', {
       counter: count,
-      activity_type: tabObj[tab],
+      activity_type: tabObj[tab]
     })
 
     if (getnoti.data && getnoti.data.length == 0) {
       this.setState({
         moreplease: false,
-        fetching: false,
+        fetching: false
       })
       return
     }
@@ -120,7 +120,7 @@ export default class Alerts extends Component {
     }
     return {
       countdown,
-      countdown_label,
+      countdown_label
     }
   }
 
@@ -287,18 +287,10 @@ export default class Alerts extends Component {
         )
         break
       case 29:
-        return (
-          <div className='notification__text'>
-            {`${props.alias} has invited you to join the team ${props.name}`}
-          </div>
-        )
+        return <div className='notification__text'>{`${props.alias} has invited you to join the team ${props.name}`}</div>
         break
       case 30:
-        return (
-          <div className='notification__text'>
-          {`A game of ${props.game_name} has been scheduled for team ${props.name}`}
-          </div>
-        )
+        return <div className='notification__text'>{`A game of ${props.game_name} has been scheduled for team ${props.name}`}</div>
         break
 
       default:
@@ -341,7 +333,7 @@ export default class Alerts extends Component {
     const notify = notification.map((noti) => {
       return {
         ...noti,
-        read: true,
+        read: true
       }
     })
     mark_all()
@@ -388,21 +380,26 @@ export default class Alerts extends Component {
               const time = this.handleTime(noti.created_at)
               return (
                 <div
-                  className={`notification alert ${noti.read == undefined ? (noti.read_status == 0 ? 'unread' : '') : noti.read == false ? 'unread' : ''
-                    }`}
+                  className={`notification alert ${
+                    noti.read == undefined ? (noti.read_status == 0 ? 'unread' : '') : noti.read == false ? 'unread' : ''
+                  }`}
                   key={`${noti.id}`}
-                  onClick={(e) => this.handleClickNotiFication(noti.id, index, noti.activity_type)}>
+                  onClick={(e) => this.handleClickNotiFication(noti.id, index, noti.activity_type)}
+                >
                   <div
                     className='notification-user-avatar'
-                    onClick={(e) => this.handleClickNotiFication(noti.id, index, noti.activity_type)}>
+                    onClick={(e) => this.handleClickNotiFication(noti.id, index, noti.activity_type)}
+                  >
                     <Link to={`/profile/${noti.alias}`}>
                       <img onError={this.addDefaultSrc} src={noti.profile_img ? noti.profile_img : defaultUserImage} />
                     </Link>
                   </div>
                   <div className='notification-content'>
                     <div
-                      className={`notification-description ${noti.read == undefined ? (noti.read_status == 0 ? 'unread' : '') : noti.read == false ? 'unread' : ''
-                        }`}>
+                      className={`notification-description ${
+                        noti.read == undefined ? (noti.read_status == 0 ? 'unread' : '') : noti.read == false ? 'unread' : ''
+                      }`}
+                    >
                       <span className='username__link' onClick={(e) => this.handleClickNotiFication(noti.id, index, noti.activity_type)}>
                         <Link to={`/profile/${noti.first_user_alias || noti.alias}`}>
                           <span className='notification-username'>

@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from 'uuid'
 import { generateKeysSync } from '../../integration/encryption'
 import {
   register,
@@ -14,24 +14,24 @@ import {
   removeReaction,
   fetchEntryLogs,
   fetchChatContacts,
-  markLastReadGuest,
+  markLastReadGuest
 } from '../../integration/http/guest'
 
 export function setGuestLinkAction(guestLink) {
   return {
     type: 'SET_GUEST_LINK',
-    payload: guestLink,
+    payload: guestLink
   }
 }
 
 export function registerGuestAction(chatId, alias, uuid) {
   const {
-    encryption: { publicKey, privateKey },
+    encryption: { publicKey, privateKey }
   } = generateKeysSync()
   return {
     type: 'REGISTER_GUEST',
     payload: register(publicKey, chatId, alias, uuid),
-    meta: { publicKey, privateKey, chatId, alias, uuid },
+    meta: { publicKey, privateKey, chatId, alias, uuid }
   }
 }
 
@@ -39,7 +39,7 @@ export function unregisterGuestAction(guestId, chatId) {
   return {
     type: 'UNREGISTER_GUEST',
     payload: unregister(guestId, chatId),
-    meta: { guestId, chatId },
+    meta: { guestId, chatId }
   }
 }
 
@@ -59,9 +59,9 @@ export function prepareChatAction(chatId, userId) {
       ...encryptionMessages,
       ...privateKeyRequests,
       ...entryLogs,
-      ...contacts,
+      ...contacts
     })),
-    meta: { chatId, userId },
+    meta: { chatId, userId }
   }
 }
 
@@ -69,7 +69,7 @@ export function fetchMessagesAction(chatId, page) {
   return {
     type: 'FETCH_CHAT_MESSAGES',
     payload: fetchMessages(chatId, page),
-    meta: { chatId, page },
+    meta: { chatId, page }
   }
 }
 
@@ -78,7 +78,7 @@ export function sendMessageAction(chatId, userId, alias, encrypted, attachment, 
   return {
     type: 'SEND_MESSAGE',
     payload: sendMessage(chatId, userId, alias, encrypted, null, attachment, replyId, replyContent, replyBackup, uuid),
-    meta: { chatId, userId, alias, encrypted, attachment, replyId, replyContent, replyBackup, uuid, unencryptedContent },
+    meta: { chatId, userId, alias, encrypted, attachment, replyId, replyContent, replyBackup, uuid, unencryptedContent }
   }
 }
 
@@ -86,7 +86,7 @@ export function editMessageAction(chatId, userId, messageId, encrypted) {
   return {
     type: 'EDIT_MESSAGE',
     payload: editMessage(chatId, userId, messageId, encrypted),
-    meta: { chatId, userId },
+    meta: { chatId, userId }
   }
 }
 
@@ -94,7 +94,7 @@ export function deleteMessageAction(chatId, userId, messageId, origin) {
   return {
     type: 'DELETE_MESSAGE',
     payload: deleteMessage(chatId, userId, messageId),
-    meta: { chatId, userId, messageId, origin },
+    meta: { chatId, userId, messageId, origin }
   }
 }
 
@@ -102,7 +102,7 @@ export function addReactionAction(chatId, userId, messageId, reactionId, senderN
   return {
     type: 'ADD_REACTION',
     payload: addReaction(chatId, userId, messageId, reactionId, senderName),
-    meta: { chatId, userId, messageId, reactionId, senderName },
+    meta: { chatId, userId, messageId, reactionId, senderName }
   }
 }
 
@@ -110,7 +110,7 @@ export function removeReactionAction(chatId, userId, messageId, reactionId) {
   return {
     type: 'REMOVE_REACTION',
     payload: removeReaction(chatId, userId, messageId, reactionId),
-    meta: { chatId, userId, messageId, reactionId },
+    meta: { chatId, userId, messageId, reactionId }
   }
 }
 
@@ -118,7 +118,7 @@ export function updateChatStateAction(chatId, state) {
   return {
     type: 'CHAT_STATE_UPDATED',
     payload: state,
-    meta: { chatId },
+    meta: { chatId }
   }
 }
 
@@ -126,6 +126,6 @@ export function markLastReadGuestAction(chatId, guestId) {
   return {
     type: 'GUEST_MARK_LAST_READ',
     payload: markLastReadGuest(chatId, guestId),
-    meta: { chatId, guestId },
+    meta: { chatId, guestId }
   }
 }
