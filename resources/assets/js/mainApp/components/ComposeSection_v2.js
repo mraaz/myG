@@ -133,9 +133,8 @@ export default class ComposeSection extends Component {
 
     let hash_tags = []
     let data = null
-
     const { content, hashtags, mentions } = prepareDraftsEditorForSave(
-      this.state.postContent.trim(),
+      this.state.postContent,
       this.state.postContentHashtags,
       this.state.postContentMentions
     )
