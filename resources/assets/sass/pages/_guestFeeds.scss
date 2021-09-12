@@ -4375,6 +4375,42 @@ section#content-container {
       border: none;
       box-shadow: 0 0 0 2px #e5c746;
     }
+    &.game-profile-game-experiences{
+      .game-experience {
+        &.selected{
+          border: none !important;;
+          box-shadow: 0 0 0 2px #e5c746 !important;
+        }
+        .game-image{
+          img{
+            max-width: 100% !important;
+            max-height: 100% !important;
+          }
+        }
+        .name{
+          margin-top: 50px !important;
+        }
+        .selectedGame_image{
+          position: absolute;
+          bottom: 0;
+          left: 45%;
+          z-index: 1;
+          width: 20px;
+          height: 20px;
+          border-radius: 50%;
+          img{width: 100%;}
+          
+        }
+      }
+
+    }
+    .game-experience {
+      &.selected{
+        border: none;
+        box-shadow: 0 0 0 2px #e5c746;
+      }
+      
+    }
 
     .game-experience {
       position: relative;
@@ -4408,6 +4444,8 @@ section#content-container {
 
       .game-image {
         background-size: contain !important;
+        text-align: center !important;
+
       }
 
       .absolute-top {
@@ -4943,10 +4981,51 @@ section#content-container {
     }
     #profile-game-experiences .scroll {
       margin: 8px 4px;
+      border: none;
+      flex-direction: row !important;
+      background-color: transparent;
     }
-    #profile-game-experiences .game-experience {
-      width: 90%;
+    .mobile-profile-game-experiences {
+       .game-experience {
+            width: 45% !important;
+            padding-top: 0 !important;
+            margin: 5px !important;
+            background-color:transparent !important;
+            .game-image{
+              img{
+                width: 100px;
+                border-radius: 51%;
+                height: 100px;
+              }
+            }
+            .name{
+              font-size: 14px !important;
+            }
+            .selectedGame_image{
+              position: absolute;
+              bottom: 5px;
+             left: 45%;
+              z-index: 1;
+              width: 20px;
+              height: 20px;
+              border-radius: 50%;
+              img{width: 100%;}
+              
+            }
+        }
     }
+    #profile-game-experiences {
+      .game-experience {
+          width: 90%;
+          .game-image{
+            img{
+              width: 100px;
+              border-radius: 51%;
+              height: 100px;
+            }
+          }
+        }
+      }
     #profile-info .row {
       margin: 4px 12px;
     }

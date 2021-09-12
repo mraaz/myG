@@ -93,9 +93,11 @@ this.setState({refreshGuestLink:true})
       try {
         const initialData = await axios.get('/api/initialApp')
 
-        if (!this.state.once)
+        if (!this.state.once){
           this.setState({ once: true })
-
+          localStorage.removeItem('selectedGame');
+        }
+          
         const loggedOut = initialData.data.userInfo == 1981;
         
         const isOnGuestRoute = guestRoutes.some((route) => window.location.href.includes(route));

@@ -8,6 +8,9 @@ import ComposeSection from './ComposeSection_v2'
 import GamerSuggestions from './Profile/GamerSuggestions'
 import Channel from './Channel'
 import Events from './Events/main'
+import Games from './Games'
+import MobileGames from './Games/mobile'
+import notifyToast from '../../common/toast'
 
 import { logToElasticsearch } from '../../integration/http/logger'
 
@@ -31,7 +34,12 @@ class Posts extends Component {
       behavior: 'smooth'
     })
     //window.history.pushState('myG', 'myG', '/')
-    this.fetchMoreData()
+    const selectedGame = window.localStorage.getItem('selectedGame')
+    if (selectedGame == null) {
+      this.fetchMoreData()
+    } else {
+      this.gameClicked()
+    }
   }
 
   showLatestPosts = () => {
@@ -50,9 +58,9 @@ class Posts extends Component {
   }
 
   fetchMoreData = () => {
-    if (this.state.myPosts.length > 0) {
-      window.scrollTo(0, document.documentElement.offsetHeight - 4000)
-    }
+    // if (this.state.myPosts.length > 0) {
+    //   // window.scrollTo(0, document.documentElement.offsetHeight - 4000)
+    // }
     const self = this
 
     const getPosts = async function () {
@@ -91,13 +99,78 @@ class Posts extends Component {
         logToElasticsearch('error', 'Posts', 'Failed at myPosts' + ' ' + error)
       }
     }
-
     this.setState(
       {
         counter: this.state.counter + 1
       },
       () => {
         getPosts()
+      }
+    )
+  }
+
+  gameClicked = (id = '', game_name = '') => {
+    const selectedGame = window.localStorage.getItem('selectedGame')
+
+    this.setState(
+      {
+        counter: 1,
+      },
+      async () => {
+        if (id) {
+          if (selectedGame == null) {
+            const d = []
+            d.push(id)
+            window.localStorage.setItem('selectedGame', JSON.stringify(d))
+          } else {
+            const p = JSON.parse(selectedGame)
+            if (!p.includes(id)) {
+              p.push(id)
+              window.localStorage.setItem('selectedGame', JSON.stringify(p))
+              notifyToast(`Got it! ${game_name} selected`)
+            } else {
+              const d = p.filter((item) => item != id)
+              window.localStorage.setItem('selectedGame', JSON.stringify(d))
+            }
+          }
+        }
+        const data = window.localStorage.getItem('selectedGame')
+        const gamePayload = typeof data == 'string' ? JSON.parse(data) : data
+        if (!gamePayload.length) {
+          this.setState(
+            {
+              counter: 0
+            },
+            () => {
+              this.fetchMoreData()
+            }
+          )
+          return
+        }
+        try {
+          const myPosts = await axios.post('/api/post/guest_feed', {
+            counter: 1,
+            game_names_ids: JSON.stringify(gamePayload)
+          })
+          if (myPosts.data == '' || myPosts.data == {}) {
+            this.setState({
+              moreplease: false
+            })
+            return
+          }
+          if (myPosts.data.myPosts) {
+            this.setState({
+              myPosts: [...myPosts.data.myPosts]
+            })
+          } else {
+            this.setState({
+              moreplease: false
+            })
+            return
+          }
+        } catch (error) {
+          logToElasticsearch('error', 'Posts', 'Failed at myPosts' + ' ' + error)
+        }
       }
     )
   }
@@ -120,6 +193,7 @@ class Posts extends Component {
 
   render() {
     const { myPosts = [], moreplease, isFetching = false, post_submit_loading = false } = this.state
+    const sg = window.localStorage.getItem('selectedGame')
     return (
       <Fragment>
         {post_submit_loading && (
@@ -148,7 +222,24 @@ class Posts extends Component {
           successCallback={this.composeSuccess}
           initialData={this.props.initialData == undefined ? 'loading' : this.props.initialData}
         />
-
+        <div id='profile'>
+          <div className='desktopShow'>
+            <Games
+              userId={this.props.userId}
+              selectedGame={sg ? JSON.parse(sg) : []}
+              alias={this.props.alias}
+              handleGameClick={this.gameClicked}
+            />
+          </div>
+          <div className='mobileShow'>
+            <MobileGames
+              userId={this.props.userId}
+              selectedGame={sg ? JSON.parse(sg) : []}
+              alias={this.props.alias}
+              handleGameClick={this.gameClicked}
+            />
+          </div>
+        </div>
         {myPosts.length > 0 && !post_submit_loading && (
           <section id='posts' className={isFetching ? '' : `active`}>
             <InfiniteScroll dataLength={myPosts.length} next={this.fetchMoreData} hasMore={moreplease}>
@@ -156,12 +247,17 @@ class Posts extends Component {
             </InfiniteScroll>
           </section>
         )}
+        {myPosts.length == 0 && !post_submit_loading && (
+          <section id='posts' className={isFetching ? '' : `active`}>
+            <h1>No Data found !</h1>
+          </section>
+        )}
       </Fragment>
     )
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state, props) {
   return {
     mainChannelEnabled: state.user.mainChannelEnabled
   }

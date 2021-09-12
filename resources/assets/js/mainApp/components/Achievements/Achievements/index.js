@@ -1,12 +1,13 @@
 import React from 'react';
 import get from 'lodash.get';
-import { connect } from 'react-redux';
+import { FormattedMessage, injectIntl } from 'react-intl'
 import { ignoreFunctions } from '../../../../common/render'
 import Banner from '../../Profile/Banner';
 import Badges from '../Badges';
 import Daily from '../Daily';
 import Weekly from '../Weekly';
 import Monthly from '../Monthly';
+
 
 class Achievements extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
@@ -30,10 +31,10 @@ class Achievements extends React.Component {
     const selected = this.state.selected || get(this.props, 'routeProps.match.params.route') || 'badges';
     return(
       <div className='headers'>
-        <div className={`header clickable ${selected === 'badges' && 'selected'}`} onClick={() => this.selectTab('badges')}>Badges</div>
-        <div className={`header clickable ${selected === 'daily' && 'selected'}`} onClick={() => this.selectTab('daily')}>Daily</div>
-        <div className={`header clickable ${selected === 'weekly' && 'selected'}`} onClick={() => this.selectTab('weekly')}>Weekly</div>
-        <div className={`header clickable ${selected === 'monthly' && 'selected'}`} onClick={() => this.selectTab('monthly')}>Monthly</div>
+        <div className={`header clickable ${selected === 'badges' && 'selected'}`} onClick={() => this.selectTab('badges')}><FormattedMessage id='achievements.headers.Badges' defaultMessage='Badges' /></div>
+        <div className={`header clickable ${selected === 'daily' && 'selected'}`} onClick={() => this.selectTab('daily')}><FormattedMessage id='achievements.headers.Daily' defaultMessage='Daily' /></div>
+        <div className={`header clickable ${selected === 'weekly' && 'selected'}`} onClick={() => this.selectTab('weekly')}><FormattedMessage id='achievements.headers.Weekly' defaultMessage='Weekly' /></div>
+        <div className={`header clickable ${selected === 'monthly' && 'selected'}`} onClick={() => this.selectTab('monthly')}><FormattedMessage id='achievements.headers.Monthly' defaultMessage='Monthly' /></div>
       </div>
     );
   }
@@ -55,17 +56,5 @@ class Achievements extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
-  return { 
-    
-  }
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Achievements)
+export default injectIntl(Achievements)
 

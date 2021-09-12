@@ -87,7 +87,7 @@ class GameExperienceController {
         const allmyGameExperiences = await Database.table('game_experiences')
           .innerJoin('game_names', 'game_names.id', 'game_experiences.game_names_id')
           .where('game_experiences.user_id', '=', auth.user.id)
-          .select('game_experiences.*', 'game_names.game_name')
+          .select('game_experiences.*', 'game_names.game_name', 'game_names.game_img')
         return {
           allmyGameExperiences
         }
@@ -97,7 +97,8 @@ class GameExperienceController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error
+          message: (error && error.message) || error,
+          method: 'show'
         })
       }
     }
@@ -105,8 +106,7 @@ class GameExperienceController {
 
   async showGuest() {
     try {
-      const allfancyGameExperiences = await Database.table('game_experiences')
-        .innerJoin('game_names', 'game_names.id', 'game_experiences.game_names_id')
+      const allfancyGameExperiences = await Database.table('game_names')
         .select('game_names.*')
         .orderBy('game_names.counter', 'desc')
         .limit(5)
