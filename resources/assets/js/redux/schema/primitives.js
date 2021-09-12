@@ -42,6 +42,6 @@ export function forceStatus(value) {
 }
 
 export function forceObject(value) {
-  if (value && Object.keys(value).length) return value;
-  return {};
+  if (value && Object.keys(value).length) return value
+  return {}
 }

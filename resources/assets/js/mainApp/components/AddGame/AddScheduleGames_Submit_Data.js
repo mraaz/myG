@@ -18,7 +18,7 @@ export async function SubmitDataFunction(myG) {
     co_hosts = null,
     tags = [],
     team_id = null
-    
+
   if (myG.selected_region != undefined && myG.selected_region != null && myG.selected_region.length != 0) {
     myRegion = Convert_to_comma_delimited_value(myG.selected_region)
   }
@@ -114,7 +114,7 @@ export async function SubmitDataFunction(myG) {
       autoJoinHost: myG.autoJoinHost,
       mic: myG.mic,
       eighteen_plus: myG.eighteen_plus,
-      game_languages: myLanguages,
+      game_languages: myLanguages
     })
     return post
   } catch (error) {

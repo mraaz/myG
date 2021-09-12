@@ -1,6 +1,5 @@
 'use strict'
 
-class GameNameFieldController {
-}
+class GameNameFieldController {}
 
 module.exports = GameNameFieldController

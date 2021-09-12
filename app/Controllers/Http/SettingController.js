@@ -10,18 +10,18 @@ class SettingController {
     if (auth.user) {
       try {
         var mySettings = await Database.from('settings').where({
-          user_id: auth.user.id,
+          user_id: auth.user.id
         })
         if (mySettings.length == 0) {
           var newUserSettings = await Settings.create({
-            user_id: auth.user.id,
+            user_id: auth.user.id
           })
           mySettings = await Database.from('settings').where({
-            user_id: auth.user.id,
+            user_id: auth.user.id
           })
         }
         return {
-          mySettings,
+          mySettings
         }
       } catch (error) {
         LoggingRepository.log({
@@ -29,7 +29,7 @@ class SettingController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     }
@@ -48,7 +48,7 @@ class SettingController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {

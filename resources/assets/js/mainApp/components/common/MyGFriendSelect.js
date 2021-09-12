@@ -11,17 +11,18 @@ export default class MyGFriendSelect extends React.Component {
   }
 
   fetchFriends = async (keywords) => {
-    return axios.post(`/api/user/keywordSearchResults`, { keywords, counter: 1 })
-      .then((response) => parsePlayersToSelectData(response.data.playerSearchResults.data, { backgroundColor: '#171a1c' }));
+    return axios
+      .post(`/api/user/keywordSearchResults`, { keywords, counter: 1 })
+      .then((response) => parsePlayersToSelectData(response.data.playerSearchResults.data, { backgroundColor: '#171a1c' }))
   }
 
   onChange = async (input) => {
-    if (input.length > 10) input = input.slice(0, 10);
-    this.props.onChange(input);
+    if (input.length > 10) input = input.slice(0, 10)
+    this.props.onChange(input)
   }
 
   limitInputLength = (inputValue) => {
-    return inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88);
+    return inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88)
   }
 
   // How to use react-select styles -> https://react-select.com/styles#style-object
@@ -32,28 +33,28 @@ export default class MyGFriendSelect extends React.Component {
       backgroundColor: '#2D363A',
       borderRadius: '4px',
       padding: '4px 0',
-      ...(this.props.containerStyles || {}),
+      ...(this.props.containerStyles || {})
     }),
     input: (provided) => ({
       ...provided,
       backgroundColor: '#2D363A',
       color: '#fff',
       fontSize: '16px',
-      ...(this.props.inputStyles || {}),
+      ...(this.props.inputStyles || {})
     }),
     valueContainer: (provided) => ({
       ...provided,
       color: '#fff',
       fontSize: '16px',
       backgroundColor: '#2D363A',
-      ...(this.props.valueContainerStyles || {}),
+      ...(this.props.valueContainerStyles || {})
     }),
     placeholder: (provided) => ({
       ...provided,
       color: '#fff',
       fontSize: '16px',
       backgroundColor: '#2D363A',
-      ...(this.props.placeholderStyles || {}),
+      ...(this.props.placeholderStyles || {})
     }),
     control: (provided) => ({
       ...provided,
@@ -61,44 +62,44 @@ export default class MyGFriendSelect extends React.Component {
       fontSize: '16px',
       backgroundColor: '#2D363A',
       border: 'none',
-      ...(this.props.controlStyles || {}),
+      ...(this.props.controlStyles || {})
     }),
     singleValue: (provided) => ({
       ...provided,
       color: '#fff',
       fontSize: '16px',
       backgroundColor: '#2D363A',
-      ...(this.props.singleValueStyles || {}),
+      ...(this.props.singleValueStyles || {})
     }),
     multiValue: (provided) => ({
       ...provided,
       color: '#fff',
       fontSize: '16px',
       backgroundColor: '#2D363A',
-      ...(this.props.multiValueStyles || {}),
+      ...(this.props.multiValueStyles || {})
     }),
     option: (provided) => ({
       ...provided,
       color: '#fff',
       fontSize: '16px',
       backgroundColor: '#171a1c',
-      ...(this.props.optionStyles || {}),
+      ...(this.props.optionStyles || {})
     }),
     menu: (provided) => ({
       ...provided,
       color: '#fff',
       fontSize: '16px',
       backgroundColor: '#2D363A',
-      ...(this.props.menuStyles || {}),
-    }),
-  });
+      ...(this.props.menuStyles || {})
+    })
+  })
 
   renderLabel = (friend) => (
-    <div style={{ display: 'flex', alignItems: 'center', backgroundColor: '#2D363A'  }}>
+    <div style={{ display: 'flex', alignItems: 'center', backgroundColor: '#2D363A' }}>
       <img style={{ display: 'inline', marginRight: '10px', borderRadius: '30px' }} src={friend.img} height={20} width={20} />
       <div style={{ display: 'inline', color: '#fff' }}>{friend.name}</div>
     </div>
-  );
+  )
 
   render() {
     return (

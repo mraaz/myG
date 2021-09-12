@@ -29,13 +29,13 @@ class ChatIndicator extends React.Component {
 export function mapStateToProps(state) {
   const unreadMessages = state.chat.unreadMessages || []
   return {
-    unreadMessagesCount: unreadMessages.filter((message) => !message.read).length,
+    unreadMessagesCount: unreadMessages.filter((message) => !message.read).length
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    fetchUnreadMessages: () => dispatch(fetchUnreadMessagesAction()),
+    fetchUnreadMessages: () => dispatch(fetchUnreadMessagesAction())
   }
 }
 

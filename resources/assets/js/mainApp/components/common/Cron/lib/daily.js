@@ -5,7 +5,7 @@ export default class CustomCron extends Component {
     super(props)
     this.state = {
       hour: 0,
-      minute: 0,
+      minute: 0
     }
 
     this.onDayChange = this.onDayChange.bind(this)
@@ -29,7 +29,7 @@ export default class CustomCron extends Component {
         '*',
         '*',
         '?',
-        '*',
+        '*'
       ]
       if (e.target.value == '') {
         val[3] = ''

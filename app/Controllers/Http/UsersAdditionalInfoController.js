@@ -18,34 +18,30 @@ class UsersAdditionalInfoController {
           logged_in_country_code: logged_in_country_code,
           in_eu: in_eu,
           last_logged_in_ip: last_logged_in_ip,
-          logged_in_regional: logged_in_regional,
+          logged_in_regional: logged_in_regional
         })
       } catch (error) {
         if (error.code == 'ER_DUP_ENTRY') {
-          await UsersAdditionalInfo.query()
-            .where('user_id', '=', auth.user.id)
-            .update({
-              logged_in_country_code: logged_in_country_code,
-              in_eu: in_eu,
-              last_logged_in_ip: last_logged_in_ip,
-              logged_in_regional: logged_in_regional,
-            })
+          await UsersAdditionalInfo.query().where('user_id', '=', auth.user.id).update({
+            logged_in_country_code: logged_in_country_code,
+            in_eu: in_eu,
+            last_logged_in_ip: last_logged_in_ip,
+            logged_in_regional: logged_in_regional
+          })
         } else {
           LoggingRepository.log({
             environment: process.env.NODE_ENV,
             type: 'error',
             source: 'backend',
             context: __filename,
-            message: (error && error.message) || error,
+            message: (error && error.message) || error
           })
           return
         }
       }
-      await User.query()
-        .where('id', '=', auth.user.id)
-        .update({
-          has_additional: true,
-        })
+      await User.query().where('id', '=', auth.user.id).update({
+        has_additional: true
+      })
     } else {
       return 'You are not Logged In!'
     }
@@ -131,7 +127,7 @@ class UsersAdditionalInfoController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message && provider) || error,
+          message: (error && error.message && provider) || error
         })
       }
     } else {

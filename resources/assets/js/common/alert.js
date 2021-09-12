@@ -18,8 +18,8 @@ export function showMessengerAlert(label, onConfirm, onCancel, confirmText) {
       marginRight: 'auto',
       marginLeft: 'auto',
       marginTop: 'auto',
-      marginBottom: 'auto',
-    },
+      marginBottom: 'auto'
+    }
   }
   store.dispatch(alertAction(true))
 }

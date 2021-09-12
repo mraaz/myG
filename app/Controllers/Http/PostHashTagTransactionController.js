@@ -8,7 +8,7 @@ class PostHashTagTransactionController {
       try {
         const create_arrTags = PostHashTagTransaction.create({
           post_id: post_id,
-          hash_tag_id: hash_tag_id,
+          hash_tag_id: hash_tag_id
         })
         return
       } catch (error) {
@@ -20,7 +20,7 @@ class PostHashTagTransactionController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     }

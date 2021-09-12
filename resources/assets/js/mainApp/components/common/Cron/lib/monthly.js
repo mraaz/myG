@@ -5,7 +5,7 @@ export default class CustomCron extends Component {
     super(props)
     this.state = {
       hour: 0,
-      minute: 0,
+      minute: 0
     }
 
     this.onDayChange = this.onDayChange.bind(this)
@@ -34,7 +34,7 @@ export default class CustomCron extends Component {
         this.state.value[3],
         '1/1',
         '?',
-        '*',
+        '*'
       ]
       val[3] = `${e.target.value}`
       this.props.onChange(val)
@@ -49,7 +49,7 @@ export default class CustomCron extends Component {
         this.state.value[3],
         '1/1',
         '?',
-        '*',
+        '*'
       ]
       if (e.target.value == '') {
         val[3] = ''
@@ -85,7 +85,7 @@ export default class CustomCron extends Component {
                 '1',
                 '1/1',
                 '?',
-                '*',
+                '*'
               ])
             }}
             value='1'
@@ -108,7 +108,7 @@ export default class CustomCron extends Component {
                 'L',
                 '*',
                 '?',
-                '*',
+                '*'
               ])
             }}
             type='radio'
@@ -129,7 +129,7 @@ export default class CustomCron extends Component {
                 'LW',
                 '*',
                 '?',
-                '*',
+                '*'
               ])
             }}
             type='radio'
@@ -151,7 +151,7 @@ export default class CustomCron extends Component {
                 `L-${1}`,
                 '*',
                 '?',
-                '*',
+                '*'
               ])
             }}
             value='4'

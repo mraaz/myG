@@ -5,7 +5,7 @@ export default class GuestBanner extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     return ignoreFunctions(nextProps, nextState, this.props, this.state)
   }
-  constructor(props){
+  constructor(props) {
     super(props)
     this.navRef = React.createRef()
   }
@@ -29,7 +29,7 @@ export default class GuestBanner extends React.Component {
         this.navRef.current.style.right = '0'
         this.navRef.current.style.position = 'fixed'
         this.navRef.current.style.zIndex = '1001'
-        this.navRef.current.style.backgroundColor= '#181a1c'
+        this.navRef.current.style.backgroundColor = '#181a1c'
       }
     })
   }

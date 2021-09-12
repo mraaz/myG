@@ -54,7 +54,7 @@ export function formatDate(date) {
     .toLocaleDateString('en-GB', {
       day: 'numeric',
       month: 'short',
-      year: 'numeric',
+      year: 'numeric'
     })
     .split(' ')
     .join('-')

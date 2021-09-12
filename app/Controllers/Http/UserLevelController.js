@@ -1,6 +1,5 @@
 'use strict'
 
-class UserLevelController {
-}
+class UserLevelController {}
 
 module.exports = UserLevelController

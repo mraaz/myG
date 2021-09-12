@@ -2,7 +2,7 @@ import React from 'react'
 import get from 'lodash.get'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage } from 'react-intl'
 import General from './Context/General'
 import Games from './Context/Games'
 import SearchResults from './Context/SearchResults'
@@ -13,7 +13,7 @@ import EncryptionLogin from './Context/EncryptionLogin'
 import ConnectionWarning from './Context/ConnectionWarning'
 import StatusTimerWrapper from '../StatusTimerWrapper'
 import WindowFocusHandler from '../WindowFocusHandler'
-import ChatNotifications from './ChatNotifications';
+import ChatNotifications from './ChatNotifications'
 
 import { handleLink } from '../../../common/link'
 import { monitorChats, monitorSocketConnection } from '../../../integration/ws/chat'
@@ -23,7 +23,7 @@ import {
   closeChatAction,
   clearChatAction,
   blockUserAction,
-  unblockUserAction,
+  unblockUserAction
 } from '../../../redux/actions/chatAction'
 import {
   favoriteGameAction,
@@ -32,15 +32,15 @@ import {
   updateStatusAction,
   toggleNotificationSoundsAction,
   toggleAutoSelfDestructAction,
-  togglePushNotificationsAction,
+  togglePushNotificationsAction
 } from '../../../redux/actions/userAction'
 import { generateKeysAction, validatePinAction, togglePersistEncryptionAction } from '../../../redux/actions/encryptionAction'
 import { searchPaginatedAction } from '../../../redux/actions/paginationAction'
 import { uploadGameIcon } from '../../../integration/http/chat'
 import logger from '../../../common/logger'
 import { ignoreFunctions } from '../../../common/render'
-import { GoogleAnalytics } from '../../../common/analytics';
-import { WithTooltip } from '../Tooltip';
+import { GoogleAnalytics } from '../../../common/analytics'
+import { WithTooltip } from '../Tooltip'
 
 class Messenger extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
@@ -55,8 +55,8 @@ class Messenger extends React.Component {
     windowFocused: true,
     dividerExpanded: {
       general: true,
-      games: false,
-    },
+      games: false
+    }
   }
 
   componentDidMount() {
@@ -88,21 +88,37 @@ class Messenger extends React.Component {
             <div className='locked-image'>
               <img src='https://myG.gg/platform_images/Dashboard/Lock_Icon_Mobile.svg' className='img-locked' />
             </div>
-            <span><FormattedMessage id="messenger.locked-chat" defaultMessage="Your Chat is locked" /></span>
+            <span>
+              <FormattedMessage id='messenger.locked-chat' defaultMessage='Your Chat is locked' />
+            </span>
             <span>
               <FormattedMessage
-                id="level.reach-to-unlock"
-                defaultMessage="Reach <highlight>level {level}</highlight> to unlock it."
-                values={{ level: 2, highlight: text => <span style={{ color: '#E6C846' }}><strong>{text}</strong></span> }}
+                id='level.reach-to-unlock'
+                defaultMessage='Reach <highlight>level {level}</highlight> to unlock it.'
+                values={{
+                  level: 2,
+                  highlight: (text) => (
+                    <span style={{ color: '#E6C846' }}>
+                      <strong>{text}</strong>
+                    </span>
+                  )
+                }}
               />
             </span>
             <div className='rectangle'>
               <img src='https://myG.gg/platform_images/Dashboard/btn_Network.svg' className='img-network' />
               <div className='body-of-text'>
                 <FormattedMessage
-                  id="achievements.call-to-action"
-                  defaultMessage="Go to <link>Achievements</link> to learn how to progress."
-                  values={{ link: text => <Link to={'/achievements/badges'}>&nbsp;{text}<strong></strong>{' '}</Link> }}
+                  id='achievements.call-to-action'
+                  defaultMessage='Go to <link>Achievements</link> to learn how to progress.'
+                  values={{
+                    link: (text) => (
+                      <Link to={'/achievements/badges'}>
+                        &nbsp;{text}
+                        <strong></strong>{' '}
+                      </Link>
+                    )
+                  }}
                 />
               </div>
             </div>
@@ -260,7 +276,7 @@ class Messenger extends React.Component {
         {...{
           status: this.props.status,
           isStatusLocked: this.props.isStatusLocked,
-          updateStatus: this.props.updateStatus,
+          updateStatus: this.props.updateStatus
         }}
       />
     )
@@ -273,9 +289,7 @@ class Messenger extends React.Component {
   }
 
   renderChatNotifications = () => {
-    return (
-      <ChatNotifications notifications={this.props.notifications} openChat={this.props.openChat} />
-    )
+    return <ChatNotifications notifications={this.props.notifications} openChat={this.props.openChat} />
   }
 
   openChat = (contact) => {
@@ -286,12 +300,16 @@ class Messenger extends React.Component {
   }
 
   renderCollapseOption = () => {
-    if (this.props.mobile) return null;
+    if (this.props.mobile) return null
     return (
       <div className='sidebar-menu-toggle' style={{ textAlign: 'left' }} onClick={() => this.setState({ collapsed: true })}>
-        <img style={{ transform: 'rotate(180deg)', margin: 8 }} src='https://myG.gg/platform_images/Dashboard/btn_Uncollapse_Menu.svg' className='img-fluid' />
+        <img
+          style={{ transform: 'rotate(180deg)', margin: 8 }}
+          src='https://myG.gg/platform_images/Dashboard/btn_Uncollapse_Menu.svg'
+          className='img-fluid'
+        />
       </div>
-    );
+    )
   }
 
   renderCollapseContact = (contact) => {
@@ -301,32 +319,29 @@ class Messenger extends React.Component {
     const icon = get(contact, 'icon', '') || ''
     const status = get(contact, 'status', '') || ''
     return (
-      <div className="messenger-collapsed-contact clickable"
-        key={contactId}
-        onClick={() => this.openChat(contact)}
-      >
-        <div
-          className='messenger-contact-icon'
-          style={{ marginRight: 0, backgroundImage: `url('${icon}'), url('${profile_img}')` }}
-        >
+      <div className='messenger-collapsed-contact clickable' key={contactId} onClick={() => this.openChat(contact)}>
+        <div className='messenger-contact-icon' style={{ marginRight: 0, backgroundImage: `url('${icon}'), url('${profile_img}')` }}>
           <div className={`messenger-contact-online-indicator chat-component-header-status-indicator-${status}`} />
         </div>
-        <WithTooltip extraClass='messenger-collapsed-contact-name-tooltip' text={name} position={{ left: '-32px' }} disabled={name.length <= 6}>
-          <span className="messenger-collapsed-contact-name">
-            {name.slice(0, 6) + (name.length > 6 ? '...' : '')}
-          </span>
+        <WithTooltip
+          extraClass='messenger-collapsed-contact-name-tooltip'
+          text={name}
+          position={{ left: '-32px' }}
+          disabled={name.length <= 6}
+        >
+          <span className='messenger-collapsed-contact-name'>{name.slice(0, 6) + (name.length > 6 ? '...' : '')}</span>
         </WithTooltip>
       </div>
-    );
+    )
   }
 
   renderCollapsedMessenger = () => {
-    if (!this.state.collapsed) return null;
-    if (this.props.mobile) return null;
+    if (!this.state.collapsed) return null
+    if (this.props.mobile) return null
     return (
       <React.Fragment>
-        <section className="messenger-collapsed-container">
-          <div className="messenger-collapsed">
+        <section className='messenger-collapsed-container'>
+          <div className='messenger-collapsed'>
             <div className='toggle-menu' style={{ marginBottom: 12 }} onClick={() => this.setState({ collapsed: false })}>
               <img src='https://myG.gg/platform_images/Dashboard/toggle_menu_collapsed.svg' height='24' width='24' />
             </div>
@@ -348,15 +363,15 @@ class Messenger extends React.Component {
         </section>
         {this.renderChatNotifications()}
       </React.Fragment>
-    );
+    )
   }
 
   render() {
     logger.log('RENDER', 'Messenger')
-    if (this.state.collapsed) return this.renderCollapsedMessenger();
+    if (this.state.collapsed) return this.renderCollapsedMessenger()
     if (parseInt(this.props.level) < 2) return this.renderLockedChat()
-    const topBarSpacer = this.props.mobileMenuActive ? { height: '90vh', marginTop: '80px' } : {};
-    const sideBar = document.getElementById('main-sidebar') || { offsetWidth: 80 };
+    const topBarSpacer = this.props.mobileMenuActive ? { height: '90vh', marginTop: '80px' } : {}
+    const sideBar = document.getElementById('main-sidebar') || { offsetWidth: 80 }
     const mobileMessengerWidth = window.innerWidth < 575 ? '100vw' : `calc(100vw - ${sideBar.offsetWidth}px)`
     return (
       <React.Fragment>
@@ -413,7 +428,7 @@ function mapStateToProps(state) {
     searchResults: state.pagination.search,
     searching: state.pagination.searchLoading,
     contactCount: state.user.contactCount,
-    mobileMenuActive: state.mobileMenu.mobileMenuIsActive,
+    mobileMenuActive: state.mobileMenu.mobileMenuIsActive
   }
 }
 
@@ -436,7 +451,7 @@ function mapDispatchToProps(dispatch) {
     toggleNotificationSounds: (disabled) => dispatch(toggleNotificationSoundsAction(disabled)),
     toggleAutoSelfDestruct: (enabled) => dispatch(toggleAutoSelfDestructAction(enabled)),
     togglePersistEncryption: (persist) => dispatch(togglePersistEncryptionAction(persist)),
-    togglePushNotifications: (userId) => dispatch(togglePushNotificationsAction(userId)),
+    togglePushNotifications: (userId) => dispatch(togglePushNotificationsAction(userId))
   }
 }
 

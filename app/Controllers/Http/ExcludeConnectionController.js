@@ -1,6 +1,5 @@
 'use strict'
 
-class ExcludeConnectionController {
-}
+class ExcludeConnectionController {}
 
 module.exports = ExcludeConnectionController

@@ -39,7 +39,7 @@ const AddGameContainer = ({ level }) => {
     show_experience: true,
     show_platform: true,
     show_region: true,
-    show_game_tags: false,
+    show_game_tags: false
   })
   const [mainSettingsState, updateMainSettingsState] = useState({
     scheduledGameId: null,
@@ -56,7 +56,7 @@ const AddGameContainer = ({ level }) => {
     isPublicGame: true,
     autoAccept: true,
     autoJoinHost: true,
-    show_times: false,
+    show_times: false
   })
   const [optionalFieldsState, updateOptionalFieldsState] = useState({
     value_one: null,
@@ -69,7 +69,7 @@ const AddGameContainer = ({ level }) => {
     value_two_key: null,
     value_three_key: null,
     value_four_key: null,
-    value_five_key: null,
+    value_five_key: null
   })
   const [gameLink, updateGameLink] = useState('')
   const gameLinkRef = useRef(null)
@@ -174,12 +174,12 @@ const AddGameContainer = ({ level }) => {
         mic: advancedSettingsState.mic,
         eighteen_plus: advancedSettingsState.eighteen_plus,
         language: advancedSettingsState.language,
-        show_times: mainSettingsState.show_times,
+        show_times: mainSettingsState.show_times
       })
       updateMainSettingsState((currentState) => ({
         ...currentState,
         scheduledGameId: data.id,
-        scheduledGameGuid: data.schedule_games_GUID,
+        scheduledGameGuid: data.schedule_games_GUID
       }))
       updateGameLink(data.schedule_games_GUID)
       updateIsGameListedModalOpen(true)
@@ -193,7 +193,8 @@ const AddGameContainer = ({ level }) => {
       <div className={styles.footerContainer} id={styles.footerContainer}>
         <div
           className={classNames([styles.footerSubmitButton, isButtonDisabled() ? styles.footerSubmitButtonLight : ''])}
-          onClick={isSubmitting ? null : onAddGameSubmit}>
+          onClick={isSubmitting ? null : onAddGameSubmit}
+        >
           Schedule Game
         </div>
       </div>
@@ -231,7 +232,8 @@ const AddGameContainer = ({ level }) => {
             onClick={() => {
               window.open(`https://myG.gg/scheduledGames/${gameLink}`, '_blank')
             }}
-            readOnly>
+            readOnly
+          >
             <div style={{ marginTop: '9px', marginLeft: '15px', cursor: 'pointer' }} onClick={copyToClipboard}>
               <img src='https://myG.gg/platform_images/Dashboard/Link.svg' height='18' width='18' />
             </div>
@@ -336,7 +338,7 @@ const AddGameContainer = ({ level }) => {
 
 function mapStateToProps(state) {
   return {
-    level: (state.user.userTransactionStates || {}).user_level,
+    level: (state.user.userTransactionStates || {}).user_level
   }
 }
 

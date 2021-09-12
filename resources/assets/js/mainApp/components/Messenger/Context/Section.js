@@ -12,9 +12,9 @@ class Section extends React.Component {
   }
 
   static getDerivedStateFromProps(props, state) {
-    const loadedAllContacts = props.contacts.length === props.contactsCount && props.contactsCount !== 0;
-    if (loadedAllContacts) return { loadingMore: false };
-    if (props.contacts.length > state.previousCount || state.page === 0 && state.previousCount > 10) {
+    const loadedAllContacts = props.contacts.length === props.contactsCount && props.contactsCount !== 0
+    if (loadedAllContacts) return { loadingMore: false }
+    if (props.contacts.length > state.previousCount || (state.page === 0 && state.previousCount > 10)) {
       return { page: state.page + 1, previousCount: props.contacts.length, loadingMore: false }
     }
   }
@@ -24,7 +24,7 @@ class Section extends React.Component {
     this.state = {
       page: 0,
       previousCount: 0,
-      loadingMore: false,
+      loadingMore: false
     }
     this.contactsListRef = React.createRef()
   }
@@ -44,13 +44,13 @@ class Section extends React.Component {
     const contactsList = this.contactsListRef.current
     if (!contactsList) return
     const hasScrolledToBottom = contactsList.scrollHeight - contactsList.scrollTop === 200
-    if (hasScrolledToBottom) this.onScroll();
+    if (hasScrolledToBottom) this.onScroll()
   }
 
   onScroll = () => {
-    const loadedAllContacts = this.props.contacts.length === this.props.contactsCount && this.props.contactsCount !== 0;
-    if (loadedAllContacts || this.state.loadingMore) return;
-    this.setState({ loadingMore: true }, this.fetchContacts);
+    const loadedAllContacts = this.props.contacts.length === this.props.contactsCount && this.props.contactsCount !== 0
+    if (loadedAllContacts || this.state.loadingMore) return
+    this.setState({ loadingMore: true }, this.fetchContacts)
   }
 
   fetchContacts = () => {
@@ -151,14 +151,14 @@ export function mapStateToProps(state, props) {
     loadingMore: state.pagination.contactsLoadingMore,
     contactsCount: state.pagination.contactsCount,
     contacts,
-    chats,
+    chats
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
     fetchContactsPaginated: (page, status, gameId, search, refresh) =>
-      dispatch(fetchContactsPaginatedAction(page, status, gameId, search, refresh)),
+      dispatch(fetchContactsPaginatedAction(page, status, gameId, search, refresh))
   }
 }
 

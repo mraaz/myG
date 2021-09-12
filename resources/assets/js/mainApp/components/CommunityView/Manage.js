@@ -158,7 +158,8 @@ export default class Manage extends React.Component {
             <div className='community___label col-sm-4'>Change Community Name</div>
             <div className='community___input col-sm-6'>
               <input
-                type='text' autocomplete='off'
+                type='text'
+                autocomplete='off'
                 value={communityName}
                 onBlur={this.handleNameblur}
                 onChange={this.handleCommunityNameChange}

@@ -11,12 +11,12 @@ function styles() {
     .src('resources/assets/sass/**/*.scss')
     .pipe(
       sass({
-        outputStyle: 'compressed',
+        outputStyle: 'compressed'
       }).on('error', sass.logError)
     )
     .pipe(
       autoprefixer({
-        overrideBrowserslist: ['defaults', 'not IE 11', 'maintained node versions'],
+        overrideBrowserslist: ['defaults', 'not IE 11', 'maintained node versions']
       })
     )
     .pipe(cleanCSS({ compatibility: '*' }))
@@ -31,17 +31,17 @@ function server(done) {
   browserSync.init({
     proxy: {
       target: 'localhost:3333', // can be [virtual host, sub-directory, localhost with port]
-      ws: false, // enables websockets
+      ws: false // enables websockets
     },
     notify: false,
     open: false, //change this to true if you want the broser to open automatically
-    serveStatic: ['.', './public'],
+    serveStatic: ['.', './public']
   })
   done()
 }
 
 function webpack(cb) {
-  return exec('webpack', function(err, stdout, stderr) {
+  return exec('webpack', function (err, stdout, stderr) {
     console.log(stdout)
     console.log(stderr)
     console.log(err)

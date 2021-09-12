@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from 'uuid'
 import {
   fetchChats,
   fetchChat,
@@ -28,7 +28,7 @@ import {
   blockUser,
   unblockUser,
   setTyping,
-  fetchGroupPrivateKeyRequests,
+  fetchGroupPrivateKeyRequests
 } from '../../integration/http/chat'
 import { fetchGames, fetchContact, prepareMessenger } from '../../integration/http/user'
 import { prepareEncryption } from '../../integration/encryption'
@@ -37,7 +37,7 @@ export function onNewChatAction(chat, userId) {
   return {
     type: 'NEW_CHAT',
     payload: { chat },
-    meta: { userId },
+    meta: { userId }
   }
 }
 
@@ -45,7 +45,7 @@ export function onChatUpdatedAction(chat, userId) {
   return {
     type: 'ON_CHAT_UPDATED',
     payload: { chat },
-    meta: { userId },
+    meta: { userId }
   }
 }
 
@@ -53,7 +53,7 @@ export function onGameStartingAction(chatId, userId) {
   return {
     type: 'ON_GAME_STARTING',
     payload: { chatId },
-    meta: { userId },
+    meta: { userId }
   }
 }
 
@@ -61,49 +61,49 @@ export function onNewMessageAction(message, userId) {
   return {
     type: 'NEW_MESSAGE',
     payload: { message },
-    meta: { userId },
+    meta: { userId }
   }
 }
 
 export function onUpdateMessageAction(message) {
   return {
     type: 'UPDATE_MESSAGE',
-    payload: { message },
+    payload: { message }
   }
 }
 
 export function onDeleteMessagesAction(payload) {
   return {
     type: 'ON_MESSAGES_DELETED',
-    payload,
+    payload
   }
 }
 
 export function onChatNotification(payload) {
   return {
     type: 'ON_CHAT_NOTIFICATION',
-    payload,
+    payload
   }
 }
 
 export function onReactionAddedAction(payload) {
   return {
     type: 'ON_REACTION_ADDED',
-    payload,
+    payload
   }
 }
 
 export function onReactionRemovedAction(payload) {
   return {
     type: 'ON_REACTION_REMOVED',
-    payload,
+    payload
   }
 }
 
 export function onDeleteChatAction(payload) {
   return {
     type: 'ON_CHAT_DELETED',
-    payload,
+    payload
   }
 }
 
@@ -111,7 +111,7 @@ export function onTypingAction(payload, userId) {
   return {
     type: 'ON_TYPING',
     payload,
-    meta: { userId },
+    meta: { userId }
   }
 }
 
@@ -119,7 +119,7 @@ export function onUserJoinedGroupAction(payload, userId) {
   return {
     type: 'ON_USER_JOINED',
     payload,
-    meta: { userId },
+    meta: { userId }
   }
 }
 
@@ -127,7 +127,7 @@ export function onUserLeftGroupAction(payload, userId) {
   return {
     type: 'ON_USER_LEFT',
     payload,
-    meta: { userId },
+    meta: { userId }
   }
 }
 
@@ -135,7 +135,7 @@ export function onGuestJoinedGroupAction(payload, userId) {
   return {
     type: 'ON_GUEST_JOINED',
     payload,
-    meta: { userId },
+    meta: { userId }
   }
 }
 
@@ -143,7 +143,7 @@ export function onGuestLeftGroupAction(payload, userId) {
   return {
     type: 'ON_GUEST_LEFT',
     payload,
-    meta: { userId },
+    meta: { userId }
   }
 }
 
@@ -151,7 +151,7 @@ export function onMarkAsReadAction(payload, userId) {
   return {
     type: 'MARK_AS_READ',
     payload,
-    meta: { userId },
+    meta: { userId }
   }
 }
 
@@ -159,7 +159,7 @@ export function onSelfDestructAction(payload, userId) {
   return {
     type: 'SELF_DESTRUCT',
     payload,
-    meta: { userId },
+    meta: { userId }
   }
 }
 
@@ -167,7 +167,7 @@ export function onPublicKeyUpdatedAction(payload, userId) {
   return {
     type: 'PUBLIC_KEY_UPDATED',
     payload: payload,
-    meta: { userId },
+    meta: { userId }
   }
 }
 
@@ -175,7 +175,7 @@ export function updateChatStateAction(chatId, state) {
   return {
     type: 'CHAT_STATE_UPDATED',
     payload: state,
-    meta: { chatId },
+    meta: { chatId }
   }
 }
 
@@ -184,7 +184,7 @@ export function prepareMessengerAction(userId, alias, pin, privateKey, publicKey
   return {
     type: 'PREPARE_MESSENGER',
     payload: Promise.all(requests).then(([messenger, encryption]) => ({ ...messenger, ...encryption })),
-    meta: { userId, alias },
+    meta: { userId, alias }
   }
 }
 
@@ -205,7 +205,7 @@ export function prepareChatAction(chatId, userId, contactId, isGroup) {
     linksRequest,
     entryLogsRequest,
     contactRequest,
-    contactsRequest,
+    contactsRequest
   ]
   return {
     type: 'PREPARE_CHAT',
@@ -218,24 +218,24 @@ export function prepareChatAction(chatId, userId, contactId, isGroup) {
         ...links,
         ...entryLogs,
         ...contact,
-        ...contacts,
+        ...contacts
       })
     ),
-    meta: { chatId, contactId, userId },
+    meta: { chatId, contactId, userId }
   }
 }
 
 export function fetchChatsAction() {
   return {
     type: 'FETCH_CHATS',
-    payload: fetchChats(),
+    payload: fetchChats()
   }
 }
 
 export function fetchGamesAction(userId) {
   return {
     type: 'FETCH_GAMES',
-    payload: fetchGames(userId),
+    payload: fetchGames(userId)
   }
 }
 
@@ -243,7 +243,7 @@ export function fetchChatAction(chatId) {
   return {
     type: 'FETCH_CHAT',
     payload: fetchChat(chatId),
-    meta: { chatId },
+    meta: { chatId }
   }
 }
 
@@ -251,7 +251,7 @@ export function createChatAction(contacts, userId, title, icon, encryption, isGr
   return {
     type: 'CREATE_CHAT',
     payload: createChat(contacts, [userId], title, icon, encryption && encryption.publicKey, isGroup, individualGameId, gameId),
-    meta: { userId, encryption },
+    meta: { userId, encryption }
   }
 }
 
@@ -259,7 +259,7 @@ export function updateChatAction(chatId, payload) {
   return {
     type: 'UPDATE_CHAT',
     payload: updateChat(chatId, payload),
-    meta: { chatId, ...payload },
+    meta: { chatId, ...payload }
   }
 }
 
@@ -267,7 +267,7 @@ export function checkSelfDestructAction(chatId) {
   return {
     type: 'CHECK_SELF_DESTRUCT',
     payload: checkSelfDestruct(chatId),
-    meta: { chatId },
+    meta: { chatId }
   }
 }
 
@@ -275,7 +275,7 @@ export function clearChatAction(chatId) {
   return {
     type: 'CLEAR_CHAT',
     payload: clearChat(chatId),
-    meta: { chatId },
+    meta: { chatId }
   }
 }
 
@@ -283,7 +283,7 @@ export function deleteChatAction(chatId) {
   return {
     type: 'DELETE_CHAT',
     payload: deleteChat(chatId),
-    meta: { chatId },
+    meta: { chatId }
   }
 }
 
@@ -291,7 +291,7 @@ export function exitGroupAction(chatId) {
   return {
     type: 'EXIT_GROUP',
     payload: exitGroup(chatId),
-    meta: { chatId },
+    meta: { chatId }
   }
 }
 
@@ -299,35 +299,35 @@ export function removeFromGroupAction(chatId, userId) {
   return {
     type: 'REMOVE_FROM_GROUP',
     payload: removeFromGroup(chatId, userId),
-    meta: { chatId, userId },
+    meta: { chatId, userId }
   }
 }
 
 export function dismissNotificationAction(notificationId) {
   return {
     type: 'DISMISS_NOTIFICATION',
-    payload: { notificationId },
+    payload: { notificationId }
   }
 }
 
 export function openChatAction(chatId, chat) {
   return {
     type: 'OPEN_CHAT',
-    payload: { chatId, chat },
+    payload: { chatId, chat }
   }
 }
 
 export function closeChatAction(chatId) {
   return {
     type: 'CLOSE_CHAT',
-    payload: { chatId },
+    payload: { chatId }
   }
 }
 
 export function fetchChannelAction(channelId) {
   return {
     type: 'FETCH_CHANNEL',
-    payload: fetchChannel(channelId),
+    payload: fetchChannel(channelId)
   }
 }
 
@@ -335,14 +335,14 @@ export function fetchMessagesAction(chatId, page) {
   return {
     type: 'FETCH_CHAT_MESSAGES',
     payload: fetchMessages(chatId, page),
-    meta: { chatId, page },
+    meta: { chatId, page }
   }
 }
 
 export function fetchUnreadMessagesAction() {
   return {
     type: 'FETCH_UNREAD_MESSAGES',
-    payload: fetchUnreadMessages(),
+    payload: fetchUnreadMessages()
   }
 }
 
@@ -350,12 +350,23 @@ export function clearUnreadIndicatorAction() {
   return { type: 'CLEAR_UNREAD_INDICATOR' }
 }
 
-export function sendMessageAction(chatId, userId, alias, encrypted, attachment, replyId, replyContent, replyBackup, unencryptedContent, forceSelfDestruct) {
+export function sendMessageAction(
+  chatId,
+  userId,
+  alias,
+  encrypted,
+  attachment,
+  replyId,
+  replyContent,
+  replyBackup,
+  unencryptedContent,
+  forceSelfDestruct
+) {
   const uuid = uuidv4()
   return {
     type: 'SEND_MESSAGE',
     payload: sendMessage(chatId, userId, alias, encrypted, null, attachment, replyId, replyContent, replyBackup, uuid, forceSelfDestruct),
-    meta: { chatId, userId, alias, encrypted, attachment, replyId, replyContent, replyBackup, uuid, unencryptedContent, forceSelfDestruct },
+    meta: { chatId, userId, alias, encrypted, attachment, replyId, replyContent, replyBackup, uuid, unencryptedContent, forceSelfDestruct }
   }
 }
 
@@ -363,7 +374,7 @@ export function editMessageAction(chatId, userId, messageId, encrypted) {
   return {
     type: 'EDIT_MESSAGE',
     payload: editMessage(chatId, userId, messageId, encrypted),
-    meta: { chatId, userId },
+    meta: { chatId, userId }
   }
 }
 
@@ -371,7 +382,7 @@ export function deleteMessageAction(chatId, userId, messageId, origin) {
   return {
     type: 'DELETE_MESSAGE',
     payload: deleteMessage(chatId, userId, messageId),
-    meta: { chatId, userId, messageId, origin },
+    meta: { chatId, userId, messageId, origin }
   }
 }
 
@@ -379,7 +390,7 @@ export function addReactionAction(chatId, userId, messageId, reactionId) {
   return {
     type: 'ADD_REACTION',
     payload: addReaction(chatId, userId, messageId, reactionId),
-    meta: { chatId, userId, messageId, reactionId },
+    meta: { chatId, userId, messageId, reactionId }
   }
 }
 
@@ -387,28 +398,28 @@ export function removeReactionAction(chatId, userId, messageId, reactionId) {
   return {
     type: 'REMOVE_REACTION',
     payload: removeReaction(chatId, userId, messageId, reactionId),
-    meta: { chatId, userId, messageId, reactionId },
+    meta: { chatId, userId, messageId, reactionId }
   }
 }
 
 export function fetchBlockedUsersAction() {
   return {
     type: 'FETCH_BLOCKED_USERS',
-    payload: fetchBlockedUsers(),
+    payload: fetchBlockedUsers()
   }
 }
 
 export function blockUserAction(blockedUserId) {
   return {
     type: 'BLOCK_USER',
-    payload: blockUser(blockedUserId),
+    payload: blockUser(blockedUserId)
   }
 }
 
 export function unblockUserAction(blockedUserId) {
   return {
     type: 'UNBLOCK_USER',
-    payload: unblockUser(blockedUserId),
+    payload: unblockUser(blockedUserId)
   }
 }
 
@@ -416,7 +427,7 @@ export function setTypingAction(chatId, isTyping) {
   return {
     type: 'SET_TYPING',
     payload: setTyping(chatId, isTyping),
-    meta: { chatId, isTyping },
+    meta: { chatId, isTyping }
   }
 }
 
@@ -424,7 +435,7 @@ export function addContactsToChatAction(userId, chatId, contacts, publicKey, pri
   return {
     type: 'ADD_CONTACTS_TO_CHAT',
     payload: addContactsToChat(userId, chatId, contacts, publicKey, privateKey, userPrivateKey),
-    meta: { userId, chatId },
+    meta: { userId, chatId }
   }
 }
 
@@ -432,7 +443,7 @@ export function inviteUserToGroupAction(userId, chatId, contactId, publicKey, pr
   return {
     type: 'INVITE_USER_TO_GROUP',
     payload: inviteUserToGroup(userId, chatId, contactId, publicKey, privateKey, userPrivateKey),
-    meta: { userId, chatId },
+    meta: { userId, chatId }
   }
 }
 
@@ -440,6 +451,6 @@ export function updateLinkAction(chatId, uuid, expiry, expire) {
   return {
     type: 'UPDATE_LINK',
     payload: updateLink(chatId, uuid, expiry, expire),
-    meta: { chatId, uuid },
+    meta: { chatId, uuid }
   }
 }

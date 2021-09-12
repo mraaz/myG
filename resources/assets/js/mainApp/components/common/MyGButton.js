@@ -8,13 +8,13 @@ const MyGButton = ({ customStyles, text, onClick, primary, secondary, loading })
       height: '35px',
       lineHeight: '34px',
       margin: '0 20px',
-      cursor: 'pointer',
-    },
+      cursor: 'pointer'
+    }
   }
-  const hasCssStyle = !!primary || !!secondary;
-  let cssStyle = `${primary ? 'myg-button-primary' : ''}` + `${secondary ? 'myg-button-secondary' : ''}`;
-  const objectStyle = hasCssStyle ? {} : { ...styles.button, ...customStyles };
-  if (loading) cssStyle += ' myg-button-loading';
+  const hasCssStyle = !!primary || !!secondary
+  let cssStyle = `${primary ? 'myg-button-primary' : ''}` + `${secondary ? 'myg-button-secondary' : ''}`
+  const objectStyle = hasCssStyle ? {} : { ...styles.button, ...customStyles }
+  if (loading) cssStyle += ' myg-button-loading'
   return (
     <div className={cssStyle} style={objectStyle} onClick={onClick}>
       {text}

@@ -10,8 +10,8 @@ export class SocketConnection {
 
   subscribe(channel, handler) {
     if (!this.ws) return setTimeout(() => this.subscribe(channel), 1000)
-    const subscription = this.ws.getSubscription(channel);
-    if (subscription) return subscription;
+    const subscription = this.ws.getSubscription(channel)
+    if (subscription) return subscription
     const result = this.ws.subscribe(channel)
     result.on('event', (event) => handler(event))
     result.on('error', (error) => {

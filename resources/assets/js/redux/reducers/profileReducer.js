@@ -5,7 +5,7 @@ import ProfileSchema from '../schema/profile'
 const initialState = {
   profiles: {},
   gamerSuggestions: [],
-  ownAlias: null,
+  ownAlias: null
 }
 
 export default function reducer(state = initialState, action) {
@@ -14,7 +14,7 @@ export default function reducer(state = initialState, action) {
       logger.log('User', `Redux -> Loading User Info (User): `, action.payload)
       return {
         ...state,
-        ownAlias: action.payload.alias,
+        ownAlias: action.payload.alias
       }
     }
 
@@ -27,7 +27,7 @@ export default function reducer(state = initialState, action) {
       profiles[alias].set({ loading: true })
       return {
         ...state,
-        profiles,
+        profiles
       }
     }
 
@@ -40,7 +40,7 @@ export default function reducer(state = initialState, action) {
       profiles[alias].set({ loading: false })
       return {
         ...state,
-        profiles,
+        profiles
       }
     }
 
@@ -53,7 +53,7 @@ export default function reducer(state = initialState, action) {
       profiles[alias].set({ loading: false })
       return {
         ...state,
-        profiles,
+        profiles
       }
     }
 
@@ -65,31 +65,31 @@ export default function reducer(state = initialState, action) {
       profiles[alias].set({ error: get(action, 'payload.error') })
       return {
         ...state,
-        profiles,
+        profiles
       }
     }
 
     case 'UPDATE_PROFILE_GAME_FULFILLED': {
       logger.log('PROFILE', `Redux -> Updated profile game for ${action.meta.alias}: `, action.payload)
       const alias = action.meta.alias
-      const gameExperiences = action.payload.gameExperiences;
+      const gameExperiences = action.payload.gameExperiences
       const profiles = addProfile(state, alias)
-      profiles[alias].gameExperiences = gameExperiences;
+      profiles[alias].gameExperiences = gameExperiences
       return {
         ...state,
-        profiles,
+        profiles
       }
     }
 
     case 'SEND_FRIEND_REQUEST_FULFILLED': {
       logger.log('PROFILE', `Redux -> Sent friend request for ${action.meta.alias}`)
       const alias = action.meta.alias
-      const profiles = checkProfile(addProfile(state, alias), state.ownAlias);
+      const profiles = checkProfile(addProfile(state, alias), state.ownAlias)
       profiles[alias].set({ hasSentFriendRequest: true })
       profiles[state.ownAlias].addFriendRequest(action.meta.alias)
       return {
         ...state,
-        profiles,
+        profiles
       }
     }
 
@@ -100,19 +100,19 @@ export default function reducer(state = initialState, action) {
       profiles[alias].set({ isFriend: true, hasSentFriendRequest: false })
       return {
         ...state,
-        profiles,
+        profiles
       }
     }
 
     case 'CANCEL_FRIEND_REQUEST_FULFILLED': {
       logger.log('PROFILE', `Redux -> Cancelled Friend Request ${action.meta.alias}`)
       const alias = action.meta.alias
-      const profiles = checkProfile(addProfile(state, alias), state.ownAlias);
+      const profiles = checkProfile(addProfile(state, alias), state.ownAlias)
       profiles[alias].set({ isFriend: false, hasSentFriendRequest: false })
       profiles[state.ownAlias].removeFriendRequest(action.meta.alias)
       return {
         ...state,
-        profiles,
+        profiles
       }
     }
 
@@ -123,31 +123,31 @@ export default function reducer(state = initialState, action) {
       profiles[alias].set({ isFriend: false, hasSentFriendRequest: false })
       return {
         ...state,
-        profiles,
+        profiles
       }
     }
 
     case 'FOLLOW_FULFILLED': {
       logger.log('PROFILE', `Redux -> Followed ${action.meta.alias}`)
       const alias = action.meta.alias
-      const profiles = checkProfile(addProfile(state, alias), state.ownAlias);
+      const profiles = checkProfile(addProfile(state, alias), state.ownAlias)
       profiles[alias].set({ isFollower: true })
       profiles[state.ownAlias].addFollower(action.meta.alias)
       return {
         ...state,
-        profiles,
+        profiles
       }
     }
 
     case 'UNFOLLOW_FULFILLED': {
       logger.log('PROFILE', `Redux -> Unfollowed ${action.meta.alias}`)
       const alias = action.meta.alias
-      const profiles = checkProfile(addProfile(state, alias), state.ownAlias);
+      const profiles = checkProfile(addProfile(state, alias), state.ownAlias)
       profiles[alias].set({ isFollower: false })
       profiles[state.ownAlias].removeFollower(action.meta.alias)
       return {
         ...state,
-        profiles,
+        profiles
       }
     }
 
@@ -159,7 +159,7 @@ export default function reducer(state = initialState, action) {
       profiles[alias].set({ image })
       return {
         ...state,
-        profiles,
+        profiles
       }
     }
 
@@ -171,16 +171,16 @@ export default function reducer(state = initialState, action) {
       profiles[alias].set({ background })
       return {
         ...state,
-        profiles,
+        profiles
       }
     }
 
     case 'FETCH_GAMER_SUGGESTIONS_FULFILLED': {
       logger.log('PROFILE', `Redux -> Fetched gamer suggestions `, action.payload)
-      const gamerSuggestions = action.payload.gamerSuggestions || [];
+      const gamerSuggestions = action.payload.gamerSuggestions || []
       return {
         ...state,
-        gamerSuggestions,
+        gamerSuggestions
       }
     }
 
@@ -192,7 +192,7 @@ export default function reducer(state = initialState, action) {
       profiles[alias].set({ error: get(action, 'payload.error') })
       return {
         ...state,
-        profiles,
+        profiles
       }
     }
 
@@ -204,7 +204,7 @@ export default function reducer(state = initialState, action) {
       profiles[alias].set({ error: get(action, 'payload.error') })
       return {
         ...state,
-        profiles,
+        profiles
       }
     }
 
@@ -221,7 +221,7 @@ function addProfile(state, alias) {
 }
 
 function checkProfile(profiles, alias) {
-  if (!alias) return profiles;
+  if (!alias) return profiles
   if (!profiles[alias]) profiles[alias] = new ProfileSchema()
   else profiles[alias] = new ProfileSchema(profiles[alias])
   return profiles

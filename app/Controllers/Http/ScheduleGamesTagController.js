@@ -1,6 +1,5 @@
 'use strict'
 
-class ScheduleGamesTagController {
-}
+class ScheduleGamesTagController {}
 
 module.exports = ScheduleGamesTagController

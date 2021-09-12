@@ -8,7 +8,7 @@ const MyGModal = ({ isOpen, children, ...props }) => {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: '#1D232690',
+      backgroundColor: '#1D232690'
     },
     content: {
       borderRadius: '14px',
@@ -17,8 +17,8 @@ const MyGModal = ({ isOpen, children, ...props }) => {
       flexDirection: 'column',
       backgroundColor: '#101214',
       border: 'none',
-      padding: 0,
-    },
+      padding: 0
+    }
   }
 
   return (

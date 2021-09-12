@@ -25,7 +25,7 @@ export default class GameComments extends Component {
       preview_file: [],
       aws_key_id: [],
       file_keys: '',
-      uploading: false,
+      uploading: false
     }
     this.imageFileType = ['jpeg', 'jpg', 'png', 'gif']
     this.videoFileType = ['mov', 'webm', 'mpg', 'mp4', 'avi', 'ogg']
@@ -42,11 +42,11 @@ export default class GameComments extends Component {
     try {
       const gameComments = await axios.get(`/api/comments/scheduled_games/${id}`)
       this.setState({
-        comments: [],
+        comments: []
       })
       this.setState({
         comments: gameComments.data.allComments,
-        comment_total: gameComments.data.allComments.length,
+        comment_total: gameComments.data.allComments.length
       })
     } catch (error) {
       console.log(error)
@@ -114,7 +114,7 @@ export default class GameComments extends Component {
 
   doUploadS3 = async (file, name) => {
     this.setState({
-      uploading: true,
+      uploading: true
     })
 
     try {
@@ -123,13 +123,13 @@ export default class GameComments extends Component {
       this.setState({
         preview_file: [post.data.Location],
         file_keys: post.data.Key,
-        aws_key_id: [post.data.aws_key_id],
+        aws_key_id: [post.data.aws_key_id]
       })
     } catch (error) {
       toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file.'} />)
     }
     this.setState({
-      uploading: false,
+      uploading: false
     })
   }
 
@@ -143,7 +143,7 @@ export default class GameComments extends Component {
 
     this.setState({
       preview_file: [],
-      file_keys: '',
+      file_keys: ''
     })
   }
 
@@ -160,7 +160,7 @@ export default class GameComments extends Component {
           content: this.state.value.trim(),
           schedule_games_id: this.props.game_id,
           media_url: this.state.preview_file.length > 0 ? JSON.stringify(this.state.preview_file) : '',
-          aws_key_id: aws_key_id.length > 0 ? aws_key_id : '',
+          aws_key_id: aws_key_id.length > 0 ? aws_key_id : ''
         })
 
         this.setState({
@@ -168,12 +168,12 @@ export default class GameComments extends Component {
           preview_file: '',
           file_keys: '',
           value: '',
-          aws_key_id: [],
+          aws_key_id: []
         })
         this.pullComments()
         this.setState({
           comment_total: this.state.comment_total + 1,
-          zero_comments: true,
+          zero_comments: true
         })
       } catch (error) {
         console.log(error)
@@ -229,8 +229,9 @@ export default class GameComments extends Component {
                     className='profile__image'
                     style={{
                       backgroundImage: `url('${userInfo.profile_img ? userInfo.profile_img : defaultUserImage}')`,
-                      backgroundSize: 'cover',
-                    }}>
+                      backgroundSize: 'cover'
+                    }}
+                  >
                     <div className='online__status'></div>
                   </div>
                 </Link>

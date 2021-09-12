@@ -23,7 +23,8 @@
     "sass": "gulp styles",
     "js": "gulp webpack",
     "build": "npm run sass && npm run js",
-    "sonar": "node sonarqube-scanner.js"
+    "sonar": "node sonarqube-scanner.js",
+    "pretty": "prettier --write \"./**/*.{js,jsx,json}\""
   },
   "keywords": [
     "adonisjs",
@@ -93,6 +94,7 @@
     "node-cron": "^2.0.3",
     "node-fetch": "^2.6.0",
     "path-browserify": "^1.0.1",
+    "prettier": "^2.4.0",
     "prop-types": "^15.6.2",
     "querystring": "^0.2.0",
     "rc-slider": "8.7.1",

@@ -23,10 +23,7 @@ class SeatsAvailableController {
       const failedAttempts = await RedisRepository.getRecentFailedLoginAttempts(ip)
       if (failedAttempts > 5) return response.send('LIMIT_EXCEEED')
       const code = params.code
-      const hasCode = await ExtraSeatsCodes.query()
-        .where('code', code)
-        .select('*')
-        .first()
+      const hasCode = await ExtraSeatsCodes.query().where('code', code).select('*').first()
       if (hasCode == undefined) {
         await RedisRepository.registerFailedLoginAttempt(ip)
         return response.send('false')
@@ -45,7 +42,7 @@ class SeatsAvailableController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
       return response.send('false')
     }
@@ -53,9 +50,7 @@ class SeatsAvailableController {
 
   async storeSeatsAvailableEmail({ params, response }) {
     const email = await EncryptionRepository.encryptField(params.email)
-    const existingEmail = await SeatsAvailableEmail.query()
-      .where('email', email)
-      .first()
+    const existingEmail = await SeatsAvailableEmail.query().where('email', email).first()
     if (existingEmail) return response.send(false)
     const seatsAvailableEmail = new SeatsAvailableEmail()
     seatsAvailableEmail.email = email
@@ -64,9 +59,7 @@ class SeatsAvailableController {
   }
 
   async delete_expired_codes() {
-    await ExtraSeatsCodes.query()
-      .where('expiry', '<', Database.fn.now())
-      .delete()
+    await ExtraSeatsCodes.query().where('expiry', '<', Database.fn.now()).delete()
   }
 }
 

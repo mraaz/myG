@@ -5,20 +5,20 @@ const initialState = {
     quests: [],
     collected: false,
     collectable: false,
-    completed: 0,
+    completed: 0
   },
   weekly: {
     quests: [],
     collected: false,
     collectable: false,
-    completed: 0,
+    completed: 0
   },
   monthly: {
     quests: [],
     collected: false,
     collectable: false,
-    completed: 0,
-  },
+    completed: 0
+  }
 }
 
 export default function reducer(state = initialState, action) {
@@ -30,7 +30,7 @@ export default function reducer(state = initialState, action) {
       logger.log('User', `Redux -> Fetched Daily Quests: `, action.payload)
       return {
         ...state,
-        daily: action.payload,
+        daily: action.payload
       }
     }
 
@@ -38,7 +38,7 @@ export default function reducer(state = initialState, action) {
       logger.log('User', `Redux -> Fetched Weekly Quests: `, action.payload)
       return {
         ...state,
-        weekly: action.payload,
+        weekly: action.payload
       }
     }
 
@@ -46,7 +46,7 @@ export default function reducer(state = initialState, action) {
       logger.log('User', `Redux -> Fetched Monthly Quests: `, action.payload)
       return {
         ...state,
-        monthly: action.payload,
+        monthly: action.payload
       }
     }
 

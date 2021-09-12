@@ -105,7 +105,7 @@ export async function SubmitDataFunction(myG) {
       autoJoinHost: myG.autoJoinHost,
       mic: myG.mic,
       eighteen_plus: myG.eighteen_plus,
-      game_languages: myLanguages,
+      game_languages: myLanguages
     })
 
     return post

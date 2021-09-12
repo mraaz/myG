@@ -16,7 +16,7 @@ class SponsoredPostController {
 
         SponsoredPostsTransaction.create({
           user_id: auth.user.id,
-          sponsored_posts_id: request.input('sponsoredPost_id'),
+          sponsored_posts_id: request.input('sponsoredPost_id')
         })
       } catch (error) {
         if (error.code == 'ER_DUP_ENTRY') {
@@ -27,7 +27,7 @@ class SponsoredPostController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {

@@ -50,7 +50,7 @@ const EditGameContainer = (props) => {
     language: null,
     show_experience: false,
     show_platform: true,
-    show_region: true,
+    show_region: true
   })
   const [mainSettingsState, updateMainSettingsState] = useState({
     scheduledGameId: null,
@@ -66,7 +66,7 @@ const EditGameContainer = (props) => {
     isCommentsAllowed: true,
     isPublicGame: true,
     autoAccept: true,
-    autoJoinHost: true,
+    autoJoinHost: true
   })
   const [optionalFieldsState, updateOptionalFieldsState] = useState({
     value_one: null,
@@ -79,7 +79,7 @@ const EditGameContainer = (props) => {
     value_two_key: null,
     value_three_key: null,
     value_four_key: null,
-    value_five_key: null,
+    value_five_key: null
   })
   const [gameLink, updateGameLink] = useState('')
   const gameLinkRef = useRef(null)
@@ -132,7 +132,8 @@ const EditGameContainer = (props) => {
       focusConfirmBtn={false}
       showCloseButton={true}
       onConfirm={() => hideAlert('true')}
-      onCancel={() => hideAlert('false')}></SweetAlert>
+      onCancel={() => hideAlert('false')}
+    ></SweetAlert>
   )
 
   useEffect(() => {
@@ -296,13 +297,13 @@ const EditGameContainer = (props) => {
         gameId: id,
         mic: advancedSettingsState.mic,
         eighteen_plus: advancedSettingsState.eighteen_plus,
-        language: advancedSettingsState.language,
+        language: advancedSettingsState.language
       })
 
       updateMainSettingsState((currentState) => ({
         ...currentState,
         scheduledGameId: data.id,
-        scheduledGameGuid: mainSettingsState.scheduledGameGuid,
+        scheduledGameGuid: mainSettingsState.scheduledGameGuid
       }))
       updateGameLink(mainSettingsState.scheduledGameGuid)
 
@@ -338,7 +339,8 @@ const EditGameContainer = (props) => {
       <div className={styles.footerContainer} id={styles.footerContainer}>
         <div
           className={classNames([styles.footerSubmitButton, isButtonDisabled() ? styles.footerSubmitButtonLight : ''])}
-          onClick={isSubmitting ? null : onAddGameSubmit}>
+          onClick={isSubmitting ? null : onAddGameSubmit}
+        >
           Update Game
         </div>
 
@@ -382,7 +384,8 @@ const EditGameContainer = (props) => {
             onClick={() => {
               window.open(`https://myG.gg/scheduledGames/${gameLink}`, '_blank')
             }}
-            readOnly>
+            readOnly
+          >
             <div style={{ marginTop: '9px', marginLeft: '15px', cursor: 'pointer' }} onClick={copyToClipboard}>
               <img src='https://myG.gg/platform_images/Dashboard/Link.svg' height='18' width='18' />
             </div>
@@ -423,7 +426,7 @@ const EditGameContainer = (props) => {
                   { value: 4, label: 'Not enuf players' },
                   { value: 5, label: 'Decided not to play anymore, sorry all' },
                   { value: 6, label: 'Meh, bite me!' },
-                  { value: 7, label: 'Old game, just doing clean up :)' },
+                  { value: 7, label: 'Old game, just doing clean up :)' }
                 ]}
                 placeholder={'Select a reason '}
                 className='game__values'

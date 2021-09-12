@@ -208,10 +208,10 @@ export default class IndividualPost extends Component {
     })
 
     if (this.props.post.no_of_comments != 0) {
-    this.setState({
-      zero_comments: true,
-      comment_total: this.props.post.no_of_comments
-    })
+      this.setState({
+        zero_comments: true,
+        comment_total: this.props.post.no_of_comments
+      })
     }
 
     if (post.group_id != null && post.group_id != '' && post.name != undefined && post.name.trim() != '') {

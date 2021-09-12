@@ -33,7 +33,7 @@ class Groups extends React.Component {
       page: 0,
       previousCount: 0,
       canShowLoader: false,
-      showingGroupCreation: false,
+      showingGroupCreation: false
     }
     this.groupsListRef = React.createRef()
   }
@@ -71,8 +71,8 @@ class Groups extends React.Component {
     this.setState({ showingGroupCreation: false })
     const {
       value: {
-        chat: { chatId },
-      },
+        chat: { chatId }
+      }
     } = await this.props.createChat(
       contacts.map((contact) => contact.contactId),
       this.props.userId,
@@ -187,13 +187,13 @@ export function mapStateToProps(state) {
     loading: state.pagination.groupsLoading,
     loadingMore: state.pagination.groupsLoadingMore,
     groups: groups.sort(compareLastMessages),
-    chats: state.chat.chats,
+    chats: state.chat.chats
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    fetchGroupsPaginated: (page, gameId, refresh) => dispatch(fetchGroupsPaginatedAction(page, gameId, refresh)),
+    fetchGroupsPaginated: (page, gameId, refresh) => dispatch(fetchGroupsPaginatedAction(page, gameId, refresh))
   }
 }
 

@@ -1,13 +1,25 @@
 import React from 'react'
 
-const MyGInput = ({ containerStyles, inputStyles, placeholder, value, onChange, children, refInput, onClick, onBlur, maxLength, ...props }) => {
+const MyGInput = ({
+  containerStyles,
+  inputStyles,
+  placeholder,
+  value,
+  onChange,
+  children,
+  refInput,
+  onClick,
+  onBlur,
+  maxLength,
+  ...props
+}) => {
   const styles = {
     container: {
       backgroundColor: '#2D363A',
       padding: '0 7px',
       width: 'fit-content',
       borderRadius: '4px',
-      display: 'flex',
+      display: 'flex'
     },
     inputContainer: {
       width: '400px',
@@ -15,8 +27,8 @@ const MyGInput = ({ containerStyles, inputStyles, placeholder, value, onChange, 
       border: '1px #273137',
       backgroundColor: '#2D363A',
       color: '#fff',
-      fontSize: '15px',
-    },
+      fontSize: '15px'
+    }
   }
 
   return (
@@ -40,7 +52,7 @@ const MyGInput = ({ containerStyles, inputStyles, placeholder, value, onChange, 
 MyGInput.defaultProps = {
   containerStyles: {},
   inputStyles: {},
-  onClick: () => {},
+  onClick: () => {}
 }
 
 export default MyGInput

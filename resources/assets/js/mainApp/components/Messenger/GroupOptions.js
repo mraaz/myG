@@ -23,7 +23,7 @@ class GroupOptions extends React.Component {
   state = {
     title: '',
     showingMembers: false,
-    exitingGroup: false,
+    exitingGroup: false
   }
 
   onSaveTitle() {
@@ -120,12 +120,14 @@ class GroupOptions extends React.Component {
                 value={this.state.title}
                 onKeyPress={this.onKeyPress}
                 onKeyDown={this.onKeyDown}
-                onChange={(event) => this.setState({ title: event.target.value, titleError: false })}></input>
+                onChange={(event) => this.setState({ title: event.target.value, titleError: false })}
+              ></input>
             </div>
 
             <div
               className={`chat-component-group-button clickable ${!this.state.title.trim() && inactiveStyle}`}
-              onClick={() => this.onSaveTitle()}>
+              onClick={() => this.onSaveTitle()}
+            >
               save
             </div>
           </div>
@@ -143,14 +145,16 @@ class GroupOptions extends React.Component {
                 null,
                 'Yes'
               )
-            }>
+            }
+          >
             <div className='chat-component-options-option-icon' style={{ backgroundImage: `url(${getAssetUrl('ic_chat_delete')})` }} />
             clear
           </div>
 
           <div
             className={`chat-component-options-option clickable ${this.props.group.muted && inactiveStyle}`}
-            onClick={() => this.props.updateChat(this.props.group.chatId, { muted: !this.props.group.muted })}>
+            onClick={() => this.props.updateChat(this.props.group.chatId, { muted: !this.props.group.muted })}
+          >
             <div className='chat-component-options-option-icon' style={{ backgroundImage: `url(${getAssetUrl('ic_chat_mute')})` }} />
             {this.props.group.muted ? 'unmute' : 'mute'}
           </div>
@@ -158,7 +162,8 @@ class GroupOptions extends React.Component {
 
         <div
           className={`chat-component-options-option clickable`}
-          onClick={() => this.setState((previous) => ({ showingMembers: !previous.showingMembers }))}>
+          onClick={() => this.setState((previous) => ({ showingMembers: !previous.showingMembers }))}
+        >
           <div className='chat-component-options-option-icon' style={{ backgroundImage: `url(${getAssetUrl('ic_chat_group_members')})` }} />
           {isGroupModerator ? 'manage group members' : 'check group members'}
         </div>
@@ -174,13 +179,15 @@ class GroupOptions extends React.Component {
 
             <div
               className={`chat-component-group-button chat-component-group-button-smaller clickable`}
-              onClick={() => this.setState((previous) => ({ showingLinks: !previous.showingLinks }))}>
+              onClick={() => this.setState((previous) => ({ showingLinks: !previous.showingLinks }))}
+            >
               edit
             </div>
 
             <div
               className={`chat-component-group-button chat-component-group-button-smaller clickable`}
-              onClick={async () => copyToClipboard(await createShortLink(mainLink))}>
+              onClick={async () => copyToClipboard(await createShortLink(mainLink))}
+            >
               copy
             </div>
           </div>
@@ -205,7 +212,8 @@ class GroupOptions extends React.Component {
             Self destruct mode (ALT+S)
             <WithTooltip
               position={{ bottom: '-6px', left: '58px' }}
-              text={'Kaboom! When activated, messages\nwill only remain for 24 hours'}>
+              text={'Kaboom! When activated, messages\nwill only remain for 24 hours'}
+            >
               <ToggleButton
                 value={this.props.group.selfDestruct || false}
                 onToggle={(selfDestruct) => this.props.updateChat(this.props.group.chatId, { selfDestruct: !selfDestruct })}
@@ -216,7 +224,8 @@ class GroupOptions extends React.Component {
 
         <div
           className={`chat-component-options-option clickable chat-component-options-option-warning`}
-          onClick={() => this.setState({ exitingGroup: true })}>
+          onClick={() => this.setState({ exitingGroup: true })}
+        >
           {isGroupOwner ? 'delete group' : 'leave group'}
         </div>
 
@@ -238,7 +247,7 @@ function mapDispatchToProps(dispatch) {
     updateLink: (chatId, uuid, expiry, expire) => dispatch(updateLinkAction(chatId, uuid, expiry, expire)),
     clearChat: (chatId) => dispatch(clearChatAction(chatId)),
     exitGroup: (chatId) => dispatch(exitGroupAction(chatId)),
-    deleteChat: (chatId) => dispatch(deleteChatAction(chatId)),
+    deleteChat: (chatId) => dispatch(deleteChatAction(chatId))
   }
 }
 

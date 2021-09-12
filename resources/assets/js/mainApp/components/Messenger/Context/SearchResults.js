@@ -11,7 +11,7 @@ export default class SearchResults extends React.Component {
 
   state = {
     contacts: [],
-    groups: [],
+    groups: []
   }
 
   static getDerivedStateFromProps(props) {
@@ -40,7 +40,7 @@ export default class SearchResults extends React.Component {
     return {
       contacts: JSON.parse(JSON.stringify(contacts)),
       groups: JSON.parse(JSON.stringify(groups)),
-      games: JSON.parse(JSON.stringify(games)),
+      games: JSON.parse(JSON.stringify(games))
     }
   }
 
@@ -58,7 +58,8 @@ export default class SearchResults extends React.Component {
   }
 
   renderEmpty = () => {
-    if (!this.props.search || this.props.loading || this.state.contacts.length || this.state.groups.length || this.state.games.length) return null
+    if (!this.props.search || this.props.loading || this.state.contacts.length || this.state.groups.length || this.state.games.length)
+      return null
     return (
       <div className='messenger-search-no-results-container'>
         <p className='messenger-search-no-results-title'>Cannot find any results</p>

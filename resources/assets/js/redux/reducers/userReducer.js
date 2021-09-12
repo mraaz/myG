@@ -1,4 +1,4 @@
-import uniq from 'lodash.uniq';
+import uniq from 'lodash.uniq'
 import logger from '../../common/logger'
 import notifyToast from '../../common/toast'
 
@@ -18,7 +18,7 @@ const initialState = {
   statsUpdatedFromWebsocket: false,
   statsForAlias: {},
   onlineUsers: [],
-  notifiedOnline: [],
+  notifiedOnline: []
 }
 
 export default function reducer(
@@ -29,7 +29,7 @@ export default function reducer(
     language: null,
     isAdmin: false,
     status: 'online',
-    ...initialState,
+    ...initialState
   },
   action
 ) {
@@ -47,7 +47,7 @@ export default function reducer(
         notificationSoundsDisabled: !!action.payload.notification_sounds_disabled,
         autoSelfDestruct: !!action.payload.chat_auto_self_destruct,
         notifiedOnline: [],
-        ...action.payload,
+        ...action.payload
       }
     }
 
@@ -65,7 +65,7 @@ export default function reducer(
         contactCount,
         games,
         status,
-        isStatusLocked,
+        isStatusLocked
       }
     }
 
@@ -81,7 +81,7 @@ export default function reducer(
         })
         return {
           ...state,
-          contacts,
+          contacts
         }
       }
       const { contact: newContact } = action.payload
@@ -91,7 +91,7 @@ export default function reducer(
       else contacts.push(newContact)
       return {
         ...state,
-        contacts,
+        contacts
       }
     }
 
@@ -102,7 +102,7 @@ export default function reducer(
       contactCount[action.meta.status] = action.payload.count
       return {
         ...state,
-        contactCount,
+        contactCount
       }
     }
 
@@ -114,7 +114,7 @@ export default function reducer(
       else contacts.push(action.payload.contact)
       return {
         ...state,
-        contacts,
+        contacts
       }
     }
 
@@ -123,7 +123,7 @@ export default function reducer(
       const { games } = action.payload
       return {
         ...state,
-        games,
+        games
       }
     }
 
@@ -133,7 +133,7 @@ export default function reducer(
       return {
         ...state,
         status: status === 'offline' && !isStatusLocked ? 'online' : status,
-        isStatusLocked,
+        isStatusLocked
       }
     }
 
@@ -143,7 +143,7 @@ export default function reducer(
       return {
         ...state,
         status,
-        isStatusLocked,
+        isStatusLocked
       }
     }
 
@@ -157,13 +157,13 @@ export default function reducer(
       Object.assign(contact, { status, lastSeen })
       if (!existing) contacts.push(contact)
       if (status === 'online' && !notifiedOnline.includes(alias) && state.onlineNotificationsEnabled) {
-        notifiedOnline.push(alias);
-        notifyToast('has come online', alias);
+        notifiedOnline.push(alias)
+        notifyToast('has come online', alias)
       }
       return {
         ...state,
         contacts,
-        notifiedOnline,
+        notifiedOnline
       }
     }
 
@@ -180,7 +180,7 @@ export default function reducer(
       if (!existing) contacts.push(contact)
       return {
         ...state,
-        contacts,
+        contacts
       }
     }
 
@@ -189,7 +189,7 @@ export default function reducer(
       const friendRequests = (action.payload.friendRequests || []).map((request) => request.other_user_id)
       return {
         ...state,
-        friendRequests,
+        friendRequests
       }
     }
 
@@ -197,7 +197,7 @@ export default function reducer(
       logger.log('USER', `Redux -> Found Users: `, action.payload)
       return {
         ...state,
-        foundUsers: action.payload.users,
+        foundUsers: action.payload.users
       }
     }
 
@@ -209,7 +209,7 @@ export default function reducer(
       game.isFavorite = true
       return {
         ...state,
-        games,
+        games
       }
     }
 
@@ -221,7 +221,7 @@ export default function reducer(
       game.isFavorite = false
       return {
         ...state,
-        games,
+        games
       }
     }
 
@@ -233,7 +233,7 @@ export default function reducer(
       game.icon = action.meta.icon
       return {
         ...state,
-        games,
+        games
       }
     }
 
@@ -244,7 +244,7 @@ export default function reducer(
       contacts.push({ contactId: action.payload })
       return {
         ...state,
-        contacts,
+        contacts
       }
     }
 
@@ -253,7 +253,7 @@ export default function reducer(
       const contacts = JSON.parse(JSON.stringify(state.contacts))
       return {
         ...state,
-        contacts: contacts.filter((contact) => contact.contactId !== action.payload),
+        contacts: contacts.filter((contact) => contact.contactId !== action.payload)
       }
     }
 
@@ -261,7 +261,7 @@ export default function reducer(
       logger.log('USER', `Redux -> Toggle Notification Sounds: `, action.meta)
       return {
         ...state,
-        notificationSoundsDisabled: action.meta.disabled,
+        notificationSoundsDisabled: action.meta.disabled
       }
     }
 
@@ -269,7 +269,7 @@ export default function reducer(
       logger.log('USER', `Redux -> Toggle Auto Self Destruct: `, action.meta)
       return {
         ...state,
-        autoSelfDestruct: action.meta.enabled,
+        autoSelfDestruct: action.meta.enabled
       }
     }
 
@@ -278,7 +278,7 @@ export default function reducer(
       const { pushNotificationsEnabled } = action.payload.settings
       return {
         ...state,
-        pushNotificationsEnabled,
+        pushNotificationsEnabled
       }
     }
 
@@ -287,7 +287,7 @@ export default function reducer(
       const { pushNotificationsEnabled } = action.payload.settings
       return {
         ...state,
-        pushNotificationsEnabled,
+        pushNotificationsEnabled
       }
     }
 
@@ -295,7 +295,7 @@ export default function reducer(
       logger.log('CHAT', `Redux -> Toggled Main Channel`)
       return {
         ...state,
-        mainChannelEnabled: !state.mainChannelEnabled,
+        mainChannelEnabled: !state.mainChannelEnabled
       }
     }
 
@@ -303,7 +303,7 @@ export default function reducer(
       logger.log('CHAT', `Redux -> Toggled Online Notifications`)
       return {
         ...state,
-        onlineNotificationsEnabled: !state.onlineNotificationsEnabled,
+        onlineNotificationsEnabled: !state.onlineNotificationsEnabled
       }
     }
 
@@ -315,13 +315,13 @@ export default function reducer(
         statsForAlias[action.meta.alias] = userTransactionStates
         return {
           ...state,
-          statsForAlias,
+          statsForAlias
         }
       }
       return {
         ...state,
         userTransactionStates,
-        statsUpdatedFromWebsocket: false,
+        statsUpdatedFromWebsocket: false
       }
     }
 
@@ -329,7 +329,7 @@ export default function reducer(
       logger.log('USER', 'Redux -> Checked Level')
       return {
         ...state,
-        leveled_up_offline: false,
+        leveled_up_offline: false
       }
     }
 
@@ -337,21 +337,21 @@ export default function reducer(
       logger.log('USER', 'Redux -> Fetched Online Users: ', action.payload)
       return {
         ...state,
-        onlineUsers: action.payload,
+        onlineUsers: action.payload
       }
     }
 
     case 'ON_ACTIVE_NOW': {
       logger.log('USER', `Redux -> On Active Now: `, action.payload)
       const onlineUsers = JSON.parse(JSON.stringify(state.onlineUsers))
-      const hasActiveNow = onlineUsers.find(({ game }) => game === 'Active Now');
-      const activeNow = hasActiveNow || { game: 'Active Now', gamers: [] };
-      if (!hasActiveNow) onlineUsers.push(activeNow);
-      if (action.payload.active) activeNow.gamers = uniq([...activeNow.gamers, action.payload.alias]);
-      if (!action.payload.active) activeNow.gamers = activeNow.gamers.filter((alias) => alias !== action.payload.alias);
+      const hasActiveNow = onlineUsers.find(({ game }) => game === 'Active Now')
+      const activeNow = hasActiveNow || { game: 'Active Now', gamers: [] }
+      if (!hasActiveNow) onlineUsers.push(activeNow)
+      if (action.payload.active) activeNow.gamers = uniq([...activeNow.gamers, action.payload.alias])
+      if (!action.payload.active) activeNow.gamers = activeNow.gamers.filter((alias) => alias !== action.payload.alias)
       return {
         ...state,
-        onlineUsers,
+        onlineUsers
       }
     }
 
@@ -360,7 +360,7 @@ export default function reducer(
       return {
         ...state,
         userTransactionStates: action.payload,
-        statsUpdatedFromWebsocket: true,
+        statsUpdatedFromWebsocket: true
       }
     }
 
@@ -368,7 +368,7 @@ export default function reducer(
       logger.log('USER', `Redux -> Selected Language `, action.payload)
       return {
         ...state,
-        language: action.payload,
+        language: action.payload
       }
     }
 

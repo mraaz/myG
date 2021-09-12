@@ -9,7 +9,7 @@ class LoggingController {
       'context',
       'browser',
       'system',
-      'message',
+      'message'
     ])
     const { success, error } = await LoggingRepository.log({ environment, type, source, context, browser, system, message })
     response.send({ success, error })

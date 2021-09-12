@@ -16,7 +16,7 @@ class CommonController {
     try {
       const permission_query_current_user = await Database.from('usergroups').where({
         user_id: auth.user.id,
-        group_id: group_id,
+        group_id: group_id
       })
 
       if (permission_query_current_user.length > 0) {
@@ -24,7 +24,7 @@ class CommonController {
       } else {
         const owner_query = await Database.from('groups').where({
           user_id: auth.user.id,
-          id: group_id,
+          id: group_id
         })
 
         if (owner_query.length > 0) {
@@ -38,7 +38,7 @@ class CommonController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -50,7 +50,7 @@ class CommonController {
           other_user_id: other_user_id,
           user_id: auth.user.id,
           activity_type: 16,
-          schedule_games_id: schedule_games_id,
+          schedule_games_id: schedule_games_id
         })
         const userId = other_user_id
         const notifications = await NotificationsRepository.count({ auth: { user: { id: userId } }, request: null })
@@ -65,7 +65,7 @@ class CommonController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -80,7 +80,7 @@ class CommonController {
           other_user_id: other_user_id,
           user_id: auth.user.id,
           activity_type: activity_type,
-          schedule_games_id: schedule_games_id,
+          schedule_games_id: schedule_games_id
         })
         const userId = other_user_id
         const notifications = await NotificationsRepository.count({ auth: { user: { id: userId } }, request: null })
@@ -92,7 +92,7 @@ class CommonController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -107,7 +107,7 @@ class CommonController {
           other_user_id: other_user_id,
           user_id: auth.user.id,
           activity_type: 14,
-          schedule_games_id: schedule_games_id,
+          schedule_games_id: schedule_games_id
         })
         const userId = other_user_id
         const notifications = await NotificationsRepository.count({ auth: { user: { id: userId } }, request: null })
@@ -119,7 +119,7 @@ class CommonController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -133,7 +133,7 @@ class CommonController {
         const remove_schedule_game_attendees = await Database.table('notifications')
           .where({
             schedule_games_id: schedule_games_id,
-            activity_type: activity_type,
+            activity_type: activity_type
           })
           .delete()
         const userId = auth.user.id
@@ -146,7 +146,7 @@ class CommonController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -161,7 +161,7 @@ class CommonController {
           .where({
             schedule_games_id: schedule_games_id,
             activity_type: activity_type,
-            user_id: user_id,
+            user_id: user_id
           })
           .delete()
         const userId = auth.user.id
@@ -174,7 +174,7 @@ class CommonController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {

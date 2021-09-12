@@ -1,6 +1,5 @@
 'use strict'
 
-class CoHostController {
-}
+class CoHostController {}
 
 module.exports = CoHostController

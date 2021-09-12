@@ -13,7 +13,7 @@ export default class AttachUploader extends React.Component {
   }
 
   state = {
-    loading: false,
+    loading: false
   }
 
   handleSubmit = async (_, status, allFiles) => {
@@ -65,7 +65,7 @@ export default class AttachUploader extends React.Component {
             border: 'none',
             padding: 0,
             margin: 0,
-            height: 0,
+            height: 0
           },
           preview: {
             flexDirection: 'column',
@@ -73,10 +73,10 @@ export default class AttachUploader extends React.Component {
             justifyContent: 'center',
             margin: 0,
             padding: '8px',
-            border: 'none',
+            border: 'none'
           },
           submitButtonContainer: {
-            margin: 0,
+            margin: 0
           },
           inputLabel: {
             fontSize: 14,
@@ -85,8 +85,8 @@ export default class AttachUploader extends React.Component {
             color: '#FAFAFA',
             position: 'relative',
             margin: '15px 0 0 0',
-            padding: '40px 0',
-          },
+            padding: '40px 0'
+          }
         }}
       />
     )

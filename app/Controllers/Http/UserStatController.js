@@ -1,6 +1,5 @@
 'use strict'
 
-class UserStatController {
-}
+class UserStatController {}
 
 module.exports = UserStatController

@@ -23,13 +23,13 @@ class EncryptionParaphraseRegistration extends React.Component {
 
 export function mapStateToProps(state) {
   return {
-    pin: state.encryption.pin,
+    pin: state.encryption.pin
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    setEncryptionPin: (pin, persist) => dispatch(setEncryptionPinAction(pin, persist)),
+    setEncryptionPin: (pin, persist) => dispatch(setEncryptionPinAction(pin, persist))
   }
 }
 

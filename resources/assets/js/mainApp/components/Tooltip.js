@@ -8,7 +8,9 @@ export default class Tooltip extends React.PureComponent {
       <div className='tooltip-component'>
         <div className='container' style={position || {}}>
           {text.split('\n').map((text, index) => (
-            <p key={index} className={extraClass}>{text}</p>
+            <p key={index} className={extraClass}>
+              {text}
+            </p>
           ))}
         </div>
       </div>
@@ -18,11 +20,11 @@ export default class Tooltip extends React.PureComponent {
 
 export class WithTooltip extends React.PureComponent {
   state = {
-    hovering: false,
+    hovering: false
   }
 
   render() {
-    if (this.props.disabled) return this.props.children;
+    if (this.props.disabled) return this.props.children
     const { style = {} } = this.props
     return (
       <div onMouseEnter={() => this.setState({ hovering: true })} onMouseLeave={() => this.setState({ hovering: false })} style={style}>
