@@ -46,5 +46,9 @@
   "myg.cancel": "Cancel",
   "myg.create": "Create",
   "myg.select.hint": "Select...",
-  "myg.team-select.hint": "Select which team will play this match"
+  "myg.team-select.hint": "Select which team will play this match",
+  "achievements.headers.Badges":"Badges",
+  "achievements.headers.Daily":"Daily",
+  "achievements.headers.Weekly":"Weekly",
+  "achievements.headers.Monthly":"Monthly"
 }
