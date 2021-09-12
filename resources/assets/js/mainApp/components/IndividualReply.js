@@ -2,10 +2,20 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 import moment from 'moment'
+import { EditorState } from 'draft-js'
 
 import SweetAlert from './common/MyGSweetAlert'
 import { logToElasticsearch } from '../../integration/http/logger'
 import ReportPost from './common/ReportPost'
+import { DraftComposer } from './common/Draftjs'
+import {
+  convertToEditorState,
+  cloneEditorState,
+  isEmptyDraftJs,
+  prepareDraftsEditorForSave,
+  REPLY_EDIT,
+  REPLY_STATIC
+} from '../../common/draftjs'
 
 export default class IndividualReply extends Component {
   constructor() {
@@ -18,10 +28,12 @@ export default class IndividualReply extends Component {
       dropdown: false,
       reply_deleted: false,
       show_edit_reply: false,
-      value: '',
-      content: '',
+      replyEdited: EditorState.createEmpty(),
+      content: null,
       reply_time: '',
-      alert: null
+      alert: null,
+      mentions: [],
+      hashtags: []
     }
     this.textInput = null
 
@@ -40,8 +52,9 @@ export default class IndividualReply extends Component {
       this.setState({ show_profile_img: true })
     }
 
+    const content = convertToEditorState(this.props.reply.content)
     this.setState({
-      content: this.props.reply.content
+      content
     })
 
     var reply_timestamp = moment(this.props.reply.updated_at, 'YYYY-MM-DD HH:mm:ssZ')
@@ -163,7 +176,7 @@ export default class IndividualReply extends Component {
       this.setState({
         show_edit_reply: true,
         dropdown: false,
-        value: myReply_content.data.this_reply[0].content
+        replyEdited: convertToEditorState(myReply_content.data.this_reply[0].content)
       })
       this.focusTextInput()
     } catch (error) {
@@ -171,54 +184,29 @@ export default class IndividualReply extends Component {
     }
   }
 
-  handleChange = (e) => {
-    this.setState({ value: e.target.value })
-  }
-
-  detectKey = (e) => {
-    if (e.key === 'Enter' && e.shiftKey) {
-      return
-    }
-
-    if (e.key === 'Escape') {
-      this.setState({
-        show_edit_reply: false,
-        dropdown: false,
-        value: ''
-      })
-    }
-
-    if (e.key === 'Enter') {
-      e.preventDefault()
-      e.stopPropagation()
-      this.insert_reply()
-    }
-  }
+  submit = () => {}
 
   insert_reply = () => {
-    if (this.state.value == '') {
+    if (isEmptyDraftJs(this.state.replyEdited)) {
+      // If empty, return and do nothing. Cannot edit a reply to be nothing.
       return
     }
-    if (this.state.value.trim() == '') {
-      this.setState({
-        value: ''
-      })
-      return
-    }
+
     const self = this
     var reply_id = this.props.reply.id
 
     const saveReply = async function () {
-      try {
-        const mysaveReply = await axios.post(`/api/replies/update/${reply_id}`, {
-          content: self.state.value
-        })
+      const { content } = prepareDraftsEditorForSave(self.state.replyEdited, self.state.hashtags, self.state.mentions)
 
+      try {
+        await axios.post(`/api/replies/update/${reply_id}`, {
+          content
+        })
         self.setState({
           show_edit_reply: false,
           dropdown: false,
-          content: self.state.value,
-          value: ''
+          content: cloneEditorState(self.state.replyEdited),
+          replyEdited: EditorState.createEmpty()
         })
       } catch (error) {
         logToElasticsearch('error', 'IndividualReply', 'Failed saveReply:' + ' ' + error)
@@ -275,8 +263,8 @@ export default class IndividualReply extends Component {
     }
   }
 
-  handleLinkClick = ()=>{
-    if(this.props.handleLinkClick){
+  handleLinkClick = () => {
+    if (this.props.handleLinkClick) {
       this.props.handleLinkClick()
     }
   }
@@ -294,13 +282,17 @@ export default class IndividualReply extends Component {
             <div className='comment-info'>
               <Link to={`/profile/${reply.alias}`} onClick={this.handleLinkClick}>{`@${reply.alias}`}</Link>
               {'  '}
-              {!this.state.show_edit_reply && (
+              {!this.state.show_edit_reply && this.state.content && (
                 <div className='comment-content'>
-                  <p>{this.state.content}</p>
+                  <DraftComposer
+                    editorType={REPLY_STATIC}
+                    editorState={this.state.content}
+                    setEditorState={(state) => this.setState({ content: state })}
+                  ></DraftComposer>
                   {media_urls.length > 0 && (
                     <div className='show__comment__image'>
-                      {media_urls.map((img) => {
-                        return <img src={img} />
+                      {media_urls.map((img, index) => {
+                        return <img key={index} src={img} />
                       })}
                     </div>
                   )}
@@ -335,18 +327,22 @@ export default class IndividualReply extends Component {
               </div>
             </div>
             {/* reply option end  */}
-            {this.state.show_edit_reply && (
-              <div className='edit__comment__input'>
-                <input
-                  type='text' autocomplete='off'
-                  id='reply_name_box'
-                  className='reply-name-box'
-                  onKeyDown={this.detectKey}
-                  ref={this.setTextInputRef}
-                  onChange={this.handleChange}
-                  value={this.state.value}
-                />
-              </div>
+            {this.state.show_edit_reply && this.state.replyEdited && (
+              <DraftComposer
+                editorType={REPLY_EDIT}
+                editorState={this.state.replyEdited}
+                setEditorState={(state) => this.setState({ replyEdited: state })}
+                handleReturnKey={this.insert_reply}
+                handleSpecialKeys={(e) =>
+                  this.setState({
+                    show_edit_reply: false,
+                    dropdown: false,
+                    replyEdited: EditorState.createEmpty()
+                  })
+                }
+                addHashtag={(hashtagMention) => this.setState({ hashtags: [...this.state.hashtags, hashtagMention] })}
+                addMention={(userMention) => this.setState({ mentions: [...this.state.mentions, userMention] })}
+              ></DraftComposer>
             )}
             {/* profile section start  */}
             <Link to={`/profile/${reply.alias}`} className='user-img' onClick={this.handleLinkClick}>

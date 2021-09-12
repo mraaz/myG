@@ -32,10 +32,7 @@ export default class Settings extends React.Component {
           <div className='messenger-settings-toggle-title'>Push Notifications</div>
           <div className='messenger-settings-toggle-subtitle'>Receive a Push Notifications for incoming messages.</div>
         </div>
-        <ToggleButton
-          value={this.props.pushNotificationsEnabled}
-          onToggle={() => this.props.togglePushNotifications(this.props.userId)}
-        />
+        <ToggleButton value={this.props.pushNotificationsEnabled} onToggle={() => this.props.togglePushNotifications(this.props.userId)} />
       </div>
     )
   }
@@ -60,7 +57,9 @@ export default class Settings extends React.Component {
       <div className='messenger-settings-toggle'>
         <div className='messenger-settings-toggle-hint'>
           <div className='messenger-settings-toggle-title'>Remember Encryption</div>
-          <div className='messenger-settings-toggle-subtitle'>Your chat encryption key will be stored in this computer even if you log out.</div>
+          <div className='messenger-settings-toggle-subtitle'>
+            Your chat encryption key will be stored in this computer even if you log out.
+          </div>
         </div>
         <ToggleButton
           value={this.props.persistEncryption}

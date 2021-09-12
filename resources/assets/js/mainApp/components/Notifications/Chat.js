@@ -19,7 +19,7 @@ const tabObj = {
   0: '',
   1: 'MESSAGE',
   2: 'GROUP_MESSAGE',
-  3: 'PROMOTED,DEMOTED,KICKED',
+  3: 'PROMOTED,DEMOTED,KICKED'
 }
 
 export default class Chat extends Component {
@@ -30,7 +30,7 @@ export default class Chat extends Component {
       chatNotifications: [],
       moreplease: true,
       counter: 1,
-      tab: 0,
+      tab: 0
     }
     this.myRef = React.createRef()
   }
@@ -57,7 +57,7 @@ export default class Chat extends Component {
     if (chatNotification.data && chatNotification.data.length == 0) {
       this.setState({
         moreplease: false,
-        fetching: false,
+        fetching: false
       })
       return
     }
@@ -127,7 +127,7 @@ export default class Chat extends Component {
     const notify = chatNotifications.map((noti) => {
       return {
         ...noti,
-        hasRead: true,
+        hasRead: true
       }
     })
     markread_chatNotification()
@@ -202,7 +202,8 @@ export default class Chat extends Component {
                   chat-notification-id={chatNoti.chatId}
                   className={`notification ${chatNoti.hasRead == false ? 'unread' : ''}`}
                   key={chatNoti.id}
-                  onClick={(e) => this.handleClickNotiFication(chatNoti.chatId, index, chatNoti.type)}>
+                  onClick={(e) => this.handleClickNotiFication(chatNoti.chatId, index, chatNoti.type)}
+                >
                   <div className='notification-user-avatar'>
                     <Link to={`/profile/${chatNoti.senderAlias}`}>
                       <img onError={this.addDefaultSrc} src={chatNoti.senderIcon ? chatNoti.senderIcon : defaultUserImage} />

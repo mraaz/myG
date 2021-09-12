@@ -11,8 +11,8 @@ export default class Game extends React.Component {
   state = {
     dividerExpanded: {
       friends: true,
-      groups: false,
-    },
+      groups: false
+    }
   }
 
   renderContacts = () => {

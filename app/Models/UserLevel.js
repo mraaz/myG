@@ -3,7 +3,6 @@
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const Model = use('Model')
 
-class UserLevel extends Model {
-}
+class UserLevel extends Model {}
 
 module.exports = UserLevel

@@ -9,7 +9,7 @@ export default class GroupLinkOptions extends React.Component {
   }
 
   state = {
-    currentTab: 0,
+    currentTab: 0
   }
 
   renderHeader = () => {
@@ -31,17 +31,20 @@ export default class GroupLinkOptions extends React.Component {
       <div className='chat-group-links-tabs'>
         <div
           className={`chat-group-links-tab clickable ${this.state.currentTab === 0 && selectedStyle}`}
-          onClick={() => this.setState({ currentTab: 0 })}>
+          onClick={() => this.setState({ currentTab: 0 })}
+        >
           Link A
         </div>
         <div
           className={`chat-group-links-tab clickable ${this.state.currentTab === 1 && selectedStyle}`}
-          onClick={() => this.setState({ currentTab: 1 })}>
+          onClick={() => this.setState({ currentTab: 1 })}
+        >
           Link B
         </div>
         <div
           className={`chat-group-links-tab clickable ${this.state.currentTab === 2 && selectedStyle}`}
-          onClick={() => this.setState({ currentTab: 2 })}>
+          onClick={() => this.setState({ currentTab: 2 })}
+        >
           Link C
         </div>
       </div>
@@ -54,7 +57,10 @@ export default class GroupLinkOptions extends React.Component {
     return (
       <div className='chat-group-links-current-tab-container'>
         <div className='chat-group-links-current-link-container'>
-          <div className='chat-group-links-current-link' style={this.props.mobile && { width: '64vw', overflowX: 'scroll', padding: '10px 0 0 0', height: '40px' }}>
+          <div
+            className='chat-group-links-current-link'
+            style={this.props.mobile && { width: '64vw', overflowX: 'scroll', padding: '10px 0 0 0', height: '40px' }}
+          >
             {linkURL}
           </div>
         </div>
@@ -74,33 +80,63 @@ export default class GroupLinkOptions extends React.Component {
         <div className='chat-group-links-ruler' />
         <div
           className='chat-group-links-ruler-option clickable'
-          onClick={() => this.props.updateLink(this.props.group.chatId, link.uuid, null, false)}>
+          onClick={() => this.props.updateLink(this.props.group.chatId, link.uuid, null, false)}
+        >
           <div className={`chat-group-links-ruler-option-inside ${link.expiry === null && selectedOptionStyle}`} />
-          <div style={this.props.mobile && { marginLeft: 0, width: '12px;' }} className={`chat-group-links-ruler-option-text ${link.expiry === null && selectedTextStyle}`}>{this.props.mobile ? '∞' : 'Unlimited'}</div>
+          <div
+            style={this.props.mobile && { marginLeft: 0, width: '12px;' }}
+            className={`chat-group-links-ruler-option-text ${link.expiry === null && selectedTextStyle}`}
+          >
+            {this.props.mobile ? '∞' : 'Unlimited'}
+          </div>
         </div>
         <div
           className='chat-group-links-ruler-option clickable'
-          onClick={() => this.props.updateLink(this.props.group.chatId, link.uuid, 3, false)}>
+          onClick={() => this.props.updateLink(this.props.group.chatId, link.uuid, 3, false)}
+        >
           <div className={`chat-group-links-ruler-option-inside ${link.expiry === 3 && selectedOptionStyle}`} />
-          <div style={this.props.mobile && { marginLeft: 0, width: '12px;' }} className={`chat-group-links-ruler-option-text ${link.expiry === 3 && selectedTextStyle}`}>{this.props.mobile ? '3hrs' : 'Last 3hrs'}</div>
+          <div
+            style={this.props.mobile && { marginLeft: 0, width: '12px;' }}
+            className={`chat-group-links-ruler-option-text ${link.expiry === 3 && selectedTextStyle}`}
+          >
+            {this.props.mobile ? '3hrs' : 'Last 3hrs'}
+          </div>
         </div>
         <div
           className='chat-group-links-ruler-option clickable'
-          onClick={() => this.props.updateLink(this.props.group.chatId, link.uuid, 6, false)}>
+          onClick={() => this.props.updateLink(this.props.group.chatId, link.uuid, 6, false)}
+        >
           <div className={`chat-group-links-ruler-option-inside ${link.expiry === 6 && selectedOptionStyle}`} />
-          <div style={this.props.mobile && { marginLeft: 0, width: '12px;' }} className={`chat-group-links-ruler-option-text ${link.expiry === 6 && selectedTextStyle}`}>{this.props.mobile ? '6hrs' : 'Last 6hrs'}</div>
+          <div
+            style={this.props.mobile && { marginLeft: 0, width: '12px;' }}
+            className={`chat-group-links-ruler-option-text ${link.expiry === 6 && selectedTextStyle}`}
+          >
+            {this.props.mobile ? '6hrs' : 'Last 6hrs'}
+          </div>
         </div>
         <div
           className='chat-group-links-ruler-option clickable'
-          onClick={() => this.props.updateLink(this.props.group.chatId, link.uuid, 12, false)}>
+          onClick={() => this.props.updateLink(this.props.group.chatId, link.uuid, 12, false)}
+        >
           <div className={`chat-group-links-ruler-option-inside ${link.expiry === 12 && selectedOptionStyle}`} />
-          <div style={this.props.mobile && { marginLeft: 0, width: '12px;' }} className={`chat-group-links-ruler-option-text ${link.expiry === 12 && selectedTextStyle}`}>{this.props.mobile ? '12hrs' : 'Last 12hrs'}</div>
+          <div
+            style={this.props.mobile && { marginLeft: 0, width: '12px;' }}
+            className={`chat-group-links-ruler-option-text ${link.expiry === 12 && selectedTextStyle}`}
+          >
+            {this.props.mobile ? '12hrs' : 'Last 12hrs'}
+          </div>
         </div>
         <div
           className='chat-group-links-ruler-option clickable'
-          onClick={() => this.props.updateLink(this.props.group.chatId, link.uuid, 24, false)}>
+          onClick={() => this.props.updateLink(this.props.group.chatId, link.uuid, 24, false)}
+        >
           <div className={`chat-group-links-ruler-option-inside ${link.expiry === 24 && selectedOptionStyle}`} />
-          <div style={this.props.mobile && { marginLeft: 0, width: '12px;' }} className={`chat-group-links-ruler-option-text ${link.expiry === 24 && selectedTextStyle}`}>{this.props.mobile ? '24hrs' : 'Last 24hrs'}</div>
+          <div
+            style={this.props.mobile && { marginLeft: 0, width: '12px;' }}
+            className={`chat-group-links-ruler-option-text ${link.expiry === 24 && selectedTextStyle}`}
+          >
+            {this.props.mobile ? '24hrs' : 'Last 24hrs'}
+          </div>
         </div>
       </div>
     )
@@ -111,7 +147,8 @@ export default class GroupLinkOptions extends React.Component {
     return (
       <div
         className='chat-group-links-expire-link-button clickable'
-        onClick={() => this.props.updateLink(this.props.group.chatId, link.uuid, undefined, true)}>
+        onClick={() => this.props.updateLink(this.props.group.chatId, link.uuid, undefined, true)}
+      >
         expire link
       </div>
     )

@@ -1,0 +1,342 @@
+@import '../../../../../../../node_modules/@draft-js-plugins/mention/lib/plugin.css';
+@import '../../../../../../../node_modules/@draft-js-plugins/emoji/lib/plugin.css';
+
+.editorWrapper {
+  .postRow {
+    display: flex;
+  }
+
+  &.comment-composer,
+  &.post-composer,
+  &.reply-composer {
+    width: 100%;
+  }
+}
+
+.editor {
+  &.post-composer {
+    background: #171a1c 0 0 no-repeat padding-box;
+    resize: none;
+    overflow-y: scroll;
+    width: 100%;
+    min-height: 80px;
+    border: 0.5px solid #273137;
+    color: #657172;
+    padding: 30px;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 14px;
+    font-family: Montserrat, sans-serif;
+    line-height: unset;
+    box-sizing: border-box;
+    cursor: text;
+
+    &:global(.public-DraftEditor-content) {
+      min-height: 140px;
+    }
+  }
+
+  &.reply-composer {
+    position: relative;
+    height: 40px;
+    width: 100%;
+    border: 1px solid #e5c746;
+    border-radius: 4px;
+    background: #1d2326 0% 0% no-repeat padding-box;
+    resize: none;
+    overflow: visible;
+    color: #657172;
+    font-size: 12px;
+    padding: 8px 20px;
+  }
+
+  &.comment-composer {
+    position: relative;
+    z-index: 2;
+    border: none;
+    min-height: 40px;
+    width: 100%;
+    border: 1px solid #273035;
+    border-radius: 4px 0 0 4px;
+    background: #1d2326 0 0 no-repeat padding-box;
+    resize: none;
+    overflow: visible;
+    color: #657172;
+    font-size: 12px;
+    padding: 8px 20px;
+    top: 20px;
+
+    .public-DraftStyleDefault-block {
+      overflow-x: auto;
+      white-space: pre;
+    }
+  }
+
+  &.post-static,
+  &.reply-static,
+  &.comment-static {
+  }
+
+  &.post-edit,
+  &.comment-edit,
+  &.reply-edit {
+    // height: 50px;
+    width: 100%;
+    border: 1px solid #e5c746;
+    border-radius: 4px;
+    background: #1d2326 0 0 no-repeat padding-box;
+    resize: none;
+    overflow: auto;
+    color: #657172;
+    font-size: 12px;
+    padding: 8px 20px;
+  }
+
+  .esyutjr {
+    background-color: #171a1c;
+    box-shadow: none;
+    border: 1px solid #273137;
+    border-radius: 8px;
+
+    .e1adbvmt {
+      background-color: #273137;
+    }
+  }
+}
+
+.hashtagsList {
+  white-space: pre-line;
+  padding-top: 15px;
+}
+
+#draftComposer:focus-visible {
+  outline: auto 1px;
+}
+
+.hashtag {
+  color: #e5c746;
+  font-family: cursive;
+}
+
+.emojiBox {
+  display: flex;
+  padding: 6px 20px;
+  height: 60px;
+  justify-content: flex-start;
+  align-items: center;
+  z-index: 1000;
+  display: none;
+
+  @media screen and (min-width: 575px) {
+    display: block;
+  }
+
+  &:not(.post-composer) {
+    position: absolute;
+    top: 16px;
+    right: 70px;
+
+    &.reply-composer {
+      right: 60px;
+      top: -4px;
+
+      .ejr02pv {
+        right: 0;
+      }
+    }
+
+    &.post-edit,
+    &.comment-edit,
+    &.reply-edit {
+      right: 0;
+      top: 70px;
+
+      .ejr02pv {
+        right: 0;
+      }
+    }
+
+    &.comment-composer {
+      .e8k2yoa,
+      .e13wqaj6 {
+        width: 36px;
+        height: 36px;
+      }
+    }
+
+    .e8k2yoa,
+    .e13wqaj6 {
+      background-color: transparent;
+      border: 6px solid #171a1c;
+      color: #2f3a40;
+      width: 27px;
+      height: 27px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding-bottom: 3px;
+
+      &:hover {
+        background-color: transparent;
+      }
+    }
+
+    .ejr02pv {
+      right: -168%;
+    }
+  }
+
+  span.addToBoxLabel {
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 14px;
+    font-family: Montserrat, sans-serif;
+    color: #657172;
+    padding: 0 20px 0 0;
+  }
+
+  // Emoji
+
+  // Main box
+  .ejr02pv {
+    background-color: #171a1c;
+    box-shadow: none;
+    border: 1px solid #273137;
+    border-radius: 8px;
+  }
+
+  // List item
+  .e1eigyu0 {
+    background-color: #273137;
+  }
+
+  // emoji menu active
+  .e1q5rpho {
+    color: #e5c746;
+  }
+
+  // emjoy activation button
+  .e8k2yoa,
+  .e13wqaj6 {
+    color: #171a1c;
+    background-color: #e5c746;
+    border: 1px solid #171a1c;
+
+    &:hover {
+      background-color: darken(#e5c746, 10%);
+    }
+  }
+}
+
+// myG Mentions theme
+
+.myG__mention {
+  color: #eedb89;
+  cursor: pointer;
+  display: inline-block;
+  padding-left: 2px;
+  padding-right: 2px;
+  text-decoration: none;
+
+  span {
+    color: #eedb89;
+
+    &:hover {
+      color: #fff;
+    }
+  }
+
+  &:hover {
+    color: #fff;
+  }
+}
+
+.myG__mentionSuggestions {
+  border: 1px solid #273137;
+  max-width: 500px;
+  border-radius: 8px;
+  position: absolute;
+  z-index: 10000;
+}
+
+.myG__mentionSuggestionsEntryContainer {
+  display: flex;
+  flex-direction: row;
+  padding: 10px 18px;
+  background-color: #171a1c;
+
+  &.column {
+    flex-direction: column;
+  }
+
+  &.myG__mentionSuggestionsEntryFocused {
+    background-color: #273137;
+    border-radius: 8px;
+  }
+
+  .myG__mentionSuggestionsEntryContainerUpper {
+    display: block;
+  }
+
+  .myG__mentionSuggestionsEntryContainerLower {
+    display: flex;
+    flex-direction: row;
+    color: #657172;
+    font-weight: normal;
+  }
+
+  .myG__mentionSuggestionsEntryContainerLeft {
+  }
+
+  .myG__mentionSuggestionsEntryContainerRight {
+    padding-left: 10px;
+    display: flex;
+    align-items: center;
+  }
+
+  .myG__mentionSuggestionsEntryCreateLabel {
+    color: #fff;
+    font-weight: bold;
+    padding-right: 5px;
+  }
+
+  .myG__mentionSuggestionsEntryHashtag {
+    color: #fff;
+    font-weight: bold;
+
+    &.highlighted {
+      color: #e5c746;
+    }
+  }
+
+  .myG__mentionSuggestionsEntryHashtagCount {
+  }
+
+  .myG__mentionSuggestionsEntryAvatar {
+    display: block;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+  }
+
+  .myG__mentionSuggestionsEntryText {
+    color: #fff;
+    font-weight: bold;
+  }
+}
+
+.DraftEditor-root {
+  position: relative;
+
+  .public-DraftEditorPlaceholder-root {
+    position: absolute;
+  }
+
+  .DraftEditor-editorContainer {
+    position: relative;
+  }
+
+  .public-DraftEditorPlaceholder-inner {
+    // z-index: 0;
+  }
+}

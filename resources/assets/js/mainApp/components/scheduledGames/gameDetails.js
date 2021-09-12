@@ -26,14 +26,21 @@ export default class GameDetails extends Component {
   }
 
   render() {
-    const { singleScheduleGamesPayload = {}, selected_game = {}, showRightSideInfo, commentData, showAllComment, updateSingleScheduleGamesPayload } = this.props
+    const {
+      singleScheduleGamesPayload = {},
+      selected_game = {},
+      showRightSideInfo,
+      commentData,
+      showAllComment,
+      updateSingleScheduleGamesPayload
+    } = this.props
     const {
       additional_game_info = {},
       approved_gamers = [],
       join_status = '',
       additional_submit_info = false,
       additional_submit_info_fields = [],
-      myStatus = 0,
+      myStatus = 0
     } = singleScheduleGamesPayload
     const { id = '', game_name = '', experience = '', no_of_gamers = '', tags = [] } = selected_game
     const {
@@ -45,7 +52,7 @@ export default class GameDetails extends Component {
       region = '',
       allow_comments = 0,
       schedule_games_GUID,
-      accept_msg = '',
+      accept_msg = ''
     } = additional_game_info
 
     let mic = additional_game_info.mic
@@ -149,7 +156,8 @@ export default class GameDetails extends Component {
                       <WithTooltip
                         position={{ bottom: '24px', left: '-12px' }}
                         style={{ height: '24px', display: 'inline-block', marginBottom: '5px' }}
-                        text={tag.content}>
+                        text={tag.content}
+                      >
                         <p className='singleTags' title={tag.content}>
                           {tag.content}
                         </p>

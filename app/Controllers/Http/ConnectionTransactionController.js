@@ -1,6 +1,5 @@
 'use strict'
 
-class ConnectionTransactionController {
-}
+class ConnectionTransactionController {}
 
 module.exports = ConnectionTransactionController

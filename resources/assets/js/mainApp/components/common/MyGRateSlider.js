@@ -4,7 +4,7 @@ import { getAssetUrl } from '../../../common/assets'
 export default class MyGRateSlider extends React.PureComponent {
   state = {
     holdingSlider: false,
-    focusedRating: 0,
+    focusedRating: 0
   }
 
   componentDidMount() {
@@ -43,7 +43,8 @@ export default class MyGRateSlider extends React.PureComponent {
         onMouseDown={this.onMouseDown}
         onMouseUp={this.onMouseUp}
         onMouseEnter={() => this.onMouseEnter(rating)}
-        onClick={() => this.onClick(rating)}>
+        onClick={() => this.onClick(rating)}
+      >
         <div className={style} />
       </div>
     )
@@ -56,9 +57,7 @@ export default class MyGRateSlider extends React.PureComponent {
   render() {
     return (
       <div className='rate-slider'>
-        <div className='slider'>
-          {ratings.map(this.renderRating)}
-        </div>
+        <div className='slider'>{ratings.map(this.renderRating)}</div>
         <div className='rating-icon' style={{ backgroundImage: this.getRatingIcon() }} />
         <div className='rating-indicator' style={{ color: colors[this.state.focusedRating] }}>
           ({this.state.focusedRating})
@@ -81,7 +80,7 @@ const icons = {
   7: 'ic_rating_happy',
   8: 'ic_rating_happy',
   9: 'ic_rating_very_happy',
-  10: 'ic_rating_very_happy',
+  10: 'ic_rating_very_happy'
 }
 
 const colors = {
@@ -95,5 +94,5 @@ const colors = {
   7: '#04C1D7',
   8: '#04C1D7',
   9: '#00CF98',
-  10: '#00CF98',
+  10: '#00CF98'
 }

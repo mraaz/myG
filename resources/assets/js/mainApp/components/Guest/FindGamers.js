@@ -11,21 +11,23 @@ class GuestFindGamers extends React.Component {
     return ignoreFunctions(nextProps, nextState, this.props, this.state)
   }
   state = {
-    showModal: false,
+    showModal: false
   }
 
-  handleGuestModal = ()=>{
-    this.setState({showModal:!this.state.showModal})
+  handleGuestModal = () => {
+    this.setState({ showModal: !this.state.showModal })
   }
 
   render() {
     return (
       <div id='find-gamers' className='guest-page' style={{ backgroundColor: '#000' }}>
         <GuestBanner handleGuestModal={this.handleGuestModal} />
-        {this.state.showModal && <SignUpModal  handleGuestModal={this.handleGuestModal} onClick={() => this.setState({ showModal: false })} />}
-       
+        {this.state.showModal && (
+          <SignUpModal handleGuestModal={this.handleGuestModal} onClick={() => this.setState({ showModal: false })} />
+        )}
+
         <div id='guest-content'>
-          <Search {...this.props} guest onSearch={this.props.searchGamers} handleGuestModal={this.handleGuestModal}  />
+          <Search {...this.props} guest onSearch={this.props.searchGamers} handleGuestModal={this.handleGuestModal} />
         </div>
       </div>
     )

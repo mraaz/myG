@@ -32,7 +32,7 @@ export default class MyScheduledGames extends Component {
       showAllComment: false,
       fetching: false,
       exclude_expired: false,
-      slideOptionText: 'Exclude expired games',
+      slideOptionText: 'Exclude expired games'
     }
   }
 
@@ -50,7 +50,7 @@ export default class MyScheduledGames extends Component {
     const scheduleGames = await axios.post(`/api/myScheduledGames`, {
       counter: 1,
       exclude_expired: false,
-      filter: 0,
+      filter: 0
     })
 
     if (scheduleGames.data && scheduleGames.data.myScheduledGames && scheduleGames.data.myScheduledGames.length > 0) {
@@ -72,7 +72,7 @@ export default class MyScheduledGames extends Component {
         singleScheduleGamesPayload: scheduleGames.data,
         selected_game: { ...game },
         showRightSideInfo: true,
-        showAllComment: false,
+        showAllComment: false
       })
     }
   }
@@ -85,7 +85,7 @@ export default class MyScheduledGames extends Component {
       singleScheduleGamesPayload: {},
       selected_game: {},
       showRightSideInfo: false,
-      showAllComment: false,
+      showAllComment: false
     })
   }
 
@@ -96,12 +96,12 @@ export default class MyScheduledGames extends Component {
     const scheduleGamesRes = await axios.post(`/api/myScheduledGames`, {
       counter: count,
       exclude_expired: exclude_expired,
-      filter,
+      filter
     })
     if (scheduleGamesRes.data && scheduleGamesRes.data.myScheduledGames.length == 0) {
       this.setState({
         moreplease: false,
-        fetching: false,
+        fetching: false
       })
       return
     }
@@ -119,7 +119,7 @@ export default class MyScheduledGames extends Component {
     const scheduleGamesRes = await axios.post(`/api/myScheduledGames`, {
       counter: 1,
       exclude_expired: checked,
-      filter,
+      filter
     })
 
     this.setState({ slideOptionText: checked ? 'Show expired games' : 'Exclude expired games' })
@@ -132,7 +132,7 @@ export default class MyScheduledGames extends Component {
         fetching: false,
         exclude_expired: checked,
         filter,
-        scheduleGames: [],
+        scheduleGames: []
       })
     }
   }
@@ -143,9 +143,9 @@ export default class MyScheduledGames extends Component {
   }
 
   updateSingleScheduleGamesPayload = (id) => {
-    axios.get(`/api/ScheduleGame/additional_game_info/${id}`).then(additionalGameInformation => {
+    axios.get(`/api/ScheduleGame/additional_game_info/${id}`).then((additionalGameInformation) => {
       this.setState({
-        singleScheduleGamesPayload: additionalGameInformation.data,
+        singleScheduleGamesPayload: additionalGameInformation.data
       })
     })
   }
@@ -168,7 +168,7 @@ export default class MyScheduledGames extends Component {
       scheduleGamesView = {},
       showAllComment,
       fetching,
-      prefilledFilter,
+      prefilledFilter
     } = this.state
     const { latestScheduledGames = [] } = scheduleGamesView
 

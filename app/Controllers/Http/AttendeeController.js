@@ -31,9 +31,7 @@ class AttendeeController {
           return false
         }
 
-        const getGameFields = await Database.from('game_name_fields')
-          .where({ game_names_id: get_game_info.game_names_id })
-          .first()
+        const getGameFields = await Database.from('game_name_fields').where({ game_names_id: get_game_info.game_names_id }).first()
 
         if (getGameFields != undefined) {
           let db_obj = ''
@@ -87,7 +85,7 @@ class AttendeeController {
           value_two: db_save_value_array[1],
           value_three: db_save_value_array[2],
           value_four: db_save_value_array[3],
-          value_five: db_save_value_array[4],
+          value_five: db_save_value_array[4]
         })
 
         const no_of_gamers = (
@@ -128,7 +126,7 @@ class AttendeeController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     }
@@ -165,7 +163,7 @@ class AttendeeController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -177,7 +175,7 @@ class AttendeeController {
         .count('* as no_of_allAttendees')
 
       return {
-        allAttendees,
+        allAttendees
       }
     } catch (error) {
       LoggingRepository.log({
@@ -185,7 +183,7 @@ class AttendeeController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -194,11 +192,11 @@ class AttendeeController {
     try {
       const allAttendees = await Database.from('attendees').where({
         schedule_games_id: request.params.id,
-        type: 3,
+        type: 3
       })
 
       return {
-        allAttendees,
+        allAttendees
       }
     } catch (error) {
       LoggingRepository.log({
@@ -206,7 +204,7 @@ class AttendeeController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -227,7 +225,7 @@ class AttendeeController {
         .select('type')
 
       return {
-        myattendance,
+        myattendance
       }
     } catch (error) {
       LoggingRepository.log({
@@ -235,7 +233,7 @@ class AttendeeController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -299,7 +297,7 @@ class AttendeeController {
         .limit(6)
 
       return {
-        role_call,
+        role_call
       }
     } catch (error) {
       LoggingRepository.log({
@@ -307,7 +305,7 @@ class AttendeeController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -321,7 +319,7 @@ class AttendeeController {
         .paginate(request.input('counter'), 10)
 
       return {
-        role_call_ALL,
+        role_call_ALL
       }
     } catch (error) {
       LoggingRepository.log({
@@ -329,7 +327,7 @@ class AttendeeController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -339,17 +337,13 @@ class AttendeeController {
       additional_submit_info_fields = {}
 
     try {
-      const additional_game_info = await Database.from('schedule_games')
-        .where('schedule_games.id', '=', request.params.id)
-        .first()
+      const additional_game_info = await Database.from('schedule_games').where('schedule_games.id', '=', request.params.id).first()
 
       if (additional_game_info == undefined) {
         return
       }
       //Figure out what fields to return, create the key value pair.
-      const getGameFields = await Database.from('game_name_fields')
-        .where({ game_names_id: additional_game_info.game_names_id })
-        .first()
+      const getGameFields = await Database.from('game_name_fields').where({ game_names_id: additional_game_info.game_names_id }).first()
 
       if (getGameFields != undefined) {
         let obj = '',
@@ -376,7 +370,7 @@ class AttendeeController {
 
       return {
         additional_submit_info,
-        additional_submit_info_fields,
+        additional_submit_info_fields
       }
     } catch (error) {
       LoggingRepository.log({
@@ -384,7 +378,7 @@ class AttendeeController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -410,9 +404,7 @@ class AttendeeController {
         }
 
         //look up co hosts and notify aswell
-        const co_hosts = await Database.from('co_hosts')
-          .where({ schedule_games_id: request.params.id })
-          .select('user_id')
+        const co_hosts = await Database.from('co_hosts').where({ schedule_games_id: request.params.id }).select('user_id')
 
         for (let i = 0; i < co_hosts.length; i++) {
           request.params.other_user_id = co_hosts[i].user_id
@@ -420,14 +412,12 @@ class AttendeeController {
         }
 
         // Getting: TypeError: ScheduleGameController is not a constructor, No idea why so created the string here instead
-        const update_vacany = await ScheduleGame.query()
-          .where({ id: request.params.id })
-          .update({ vacancy: true })
+        const update_vacany = await ScheduleGame.query().where({ id: request.params.id }).update({ vacancy: true })
 
         const delete_attendance = await Database.table('attendees')
           .where({
             schedule_games_id: request.params.id,
-            user_id: auth.user.id,
+            user_id: auth.user.id
           })
           .delete()
 
@@ -441,7 +431,7 @@ class AttendeeController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -468,7 +458,7 @@ class AttendeeController {
       }
 
       return {
-        getScheduleGameInvites,
+        getScheduleGameInvites
       }
     } catch (error) {
       LoggingRepository.log({
@@ -476,20 +466,16 @@ class AttendeeController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
   async check_permission({ auth }, schedule_game_id) {
     let approved = false
 
-    const co_hosts = await Database.from('co_hosts')
-      .where({ schedule_games_id: schedule_game_id })
-      .select('user_id')
+    const co_hosts = await Database.from('co_hosts').where({ schedule_games_id: schedule_game_id }).select('user_id')
 
-    const get_host = await Database.from('schedule_games')
-      .select('user_id')
-      .where({ id: schedule_game_id })
+    const get_host = await Database.from('schedule_games').select('user_id').where({ id: schedule_game_id })
 
     if (get_host[0].user_id == auth.user.id) {
       approved = true
@@ -519,7 +505,7 @@ class AttendeeController {
         const delete_invite = await Database.table('attendees')
           .where({
             schedule_games_id: request.params.schedule_game_id,
-            user_id: request.params.id,
+            user_id: request.params.id
           })
           .delete()
 
@@ -533,7 +519,7 @@ class AttendeeController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -573,10 +559,10 @@ class AttendeeController {
         const up_invite = await Attendee.query()
           .where({
             schedule_games_id: request.input('schedule_game_id'),
-            user_id: request.input('user_id'),
+            user_id: request.input('user_id')
           })
           .update({
-            type: 1,
+            type: 1
           })
 
         const get_all_attendees = await Database.from('attendees')
@@ -617,7 +603,7 @@ class AttendeeController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     }

@@ -1,14 +1,13 @@
 import React from 'react'
 import Dropzone from 'react-dropzone'
-import { FormattedMessage, injectIntl } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl'
 import { Upload_to_S3, Remove_file } from '../AWS_utilities'
 const buckectBaseUrl = 'https://myG.gg/platform_images/'
 
 class MyGDropzone extends React.Component {
-
   state = {
     preview_files: [],
-    uploading: false,
+    uploading: false
   }
 
   handlePreviewRemove = (e, src) => {
@@ -19,7 +18,7 @@ class MyGDropzone extends React.Component {
       Remove_file(this.state.preview_files[0].key, this.state.preview_files[0].id)
     }
     this.setState({ preview_files: preview_files })
-    this.props.onChange(null);
+    this.props.onChange(null)
   }
 
   handleAcceptedFiles = async (file, rejectedFiles) => {
@@ -39,16 +38,16 @@ class MyGDropzone extends React.Component {
       new_preview_files.push({
         src: post.data.Location,
         key: post.data.Key,
-        id: post.data.aws_key_id,
-      });
-      this.setState({ preview_files: new_preview_files, uploading: false });
-      this.props.onChange(new_preview_files[0]);
+        id: post.data.aws_key_id
+      })
+      this.setState({ preview_files: new_preview_files, uploading: false })
+      this.props.onChange(new_preview_files[0])
     }
   }
 
   render() {
-    const hasImage = this.state.preview_files.length > 0 || !!this.props.image;
-    const imagePreview = !!hasImage && this.state.preview_files.length > 0 ? this.state.preview_files[0] : this.props.image;
+    const hasImage = this.state.preview_files.length > 0 || !!this.props.image
+    const imagePreview = !!hasImage && this.state.preview_files.length > 0 ? this.state.preview_files[0] : this.props.image
     return (
       <div className='media__container myg-dropzone clickable' style={this.props.containerStyle || {}}>
         {!hasImage && (
@@ -59,15 +58,13 @@ class MyGDropzone extends React.Component {
             maxSize={11185350}
             accept='image/jpeg,image/jpg,image/png,image/gif'
             disabled={this.state.uploading}
-            className='dropzone-thumb'>
+            className='dropzone-thumb'
+          >
             {() => {
               return (
                 <section className='custom__html dropzone-section myg-dropzone-section'>
                   <div className='text'>
-                    <FormattedMessage
-                      id="myg.dropzone.hint"
-                      defaultMessage="Drop your image"
-                    />
+                    <FormattedMessage id='myg.dropzone.hint' defaultMessage='Drop your image' />
                   </div>
                   <div className='images community-images-container myg-dropzone-image'>
                     <span className=' button photo-btn'>
@@ -76,18 +73,15 @@ class MyGDropzone extends React.Component {
                   </div>
                   <div className='text'>
                     <FormattedMessage
-                      id="myg.dropzone.call-to-action"
-                      defaultMessage="Or <highlight>click here</highlight> to select"
-                      values={{ level: 2, highlight: text => <span className="myg-dropzone-link">{text}</span> }}
+                      id='myg.dropzone.call-to-action'
+                      defaultMessage='Or <highlight>click here</highlight> to select'
+                      values={{ level: 2, highlight: (text) => <span className='myg-dropzone-link'>{text}</span> }}
                     />
                   </div>
                   {this.state.uploading && (
                     <div className='text'>
                       <span>
-                        <FormattedMessage
-                          id="myg.dropzone.loading"
-                          defaultMessage="Uploading..."
-                        />
+                        <FormattedMessage id='myg.dropzone.loading' defaultMessage='Uploading...' />
                       </span>
                     </div>
                   )}
@@ -103,15 +97,15 @@ class MyGDropzone extends React.Component {
                 <img src={imagePreview.src} key={imagePreview.src} />
                 <span className='remove' onClick={(e) => this.handlePreviewRemove(e, imagePreview.src)}>
                   X
-                    </span>
+                </span>
               </span>
               {this.state.preview_files.length > 3 ? `(${this.state.preview_files.length})...` : ''}
             </div>
           )}
         </section>
       </div>
-    );
+    )
   }
 }
 
-export default injectIntl(MyGDropzone);
+export default injectIntl(MyGDropzone)

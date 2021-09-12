@@ -19,30 +19,30 @@ export default class Posts extends Component {
   }
 
   componentDidMount() {
-    window.scrollTo({ top: 500, behavior: 'smooth' });
-    this.fetchMoreData();
-    document.addEventListener('scroll', this.handleScroll, { passive: true });
-    document.addEventListener('wheel', this.handleScroll, { passive: true });
+    window.scrollTo({ top: 500, behavior: 'smooth' })
+    this.fetchMoreData()
+    document.addEventListener('scroll', this.handleScroll, { passive: true })
+    document.addEventListener('wheel', this.handleScroll, { passive: true })
   }
 
   componentWillUnmount() {
-    document.removeEventListener('scroll', this.handleScroll, false);
-    document.removeEventListener('wheel', this.handleScroll, false);
+    document.removeEventListener('scroll', this.handleScroll, false)
+    document.removeEventListener('wheel', this.handleScroll, false)
   }
 
   handleScroll = () => {
-    if (!document.getElementById("posts")) return;
-    const windowHeight = window.innerHeight;
-    const container = document.getElementById("posts");
-    const containerHeight = container.offsetHeight;
-    const containerPosition = container.getBoundingClientRect();
-    const containerOffset = containerPosition.y;
-    const needsMoreData = (windowHeight - (containerHeight + containerOffset)) > 0;
+    if (!document.getElementById('posts')) return
+    const windowHeight = window.innerHeight
+    const container = document.getElementById('posts')
+    const containerHeight = container.offsetHeight
+    const containerPosition = container.getBoundingClientRect()
+    const containerOffset = containerPosition.y
+    const needsMoreData = windowHeight - (containerHeight + containerOffset) > 0
     if (needsMoreData && this.state.moreplease && !this.state.fetching) {
       const { counter = 1 } = this.state
       this.setState({ counter: counter + 1 }, () => {
         this.fetchMoreData()
-      });
+      })
     }
   }
 
@@ -158,12 +158,14 @@ export default class Posts extends Component {
           </span>
         </div>
         {[0, 1, 2, 3].includes(this.props.current_user_permission) && (
-          <ComposeSection
-            successCallback={this.composeSuccess}
-            initialData={this.props.initialData == undefined ? 'loading' : this.props.initialData}
-            communityBox={true}
-            group_id={this.props.group_id}
-          />
+          <Fragment>
+            <ComposeSection
+              successCallback={this.composeSuccess}
+              initialData={this.props.initialData == undefined ? 'loading' : this.props.initialData}
+              communityBox={true}
+              group_id={this.props.group_id}
+            />
+          </Fragment>
         )}
         {post_submit_loading && (
           <div className='timeline-item'>
@@ -184,6 +186,7 @@ export default class Posts extends Component {
             </div>
           </div>
         )}
+        <hr />
         {myPosts.length > 0 && !post_submit_loading && (
           <section id='posts' className={isFetching ? '' : `active`}>
             {this.showLatestPosts()}

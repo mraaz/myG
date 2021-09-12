@@ -12,7 +12,7 @@ export default class HashTagList extends Component {
       counter: 1,
       myPosts: [],
       moreplease: true,
-      isFetching: false,
+      isFetching: false
     }
   }
 
@@ -20,17 +20,17 @@ export default class HashTagList extends Component {
     const self = this
     const { match } = this.props.routeProps
 
-    const getHashTags = async function() {
+    const getHashTags = async function () {
       try {
         const data = await axios.post('/api/post/showHashTagPosts/', {
           content: decodeURIComponent(match.params.content),
-          counter: 1,
+          counter: 1
         })
 
         self.setState({
           myPosts: data.data.myPosts,
           moreplease: data.data.myPosts ? (data.data.myPosts.length > 9 ? true : false) : false,
-          isFetching: false,
+          isFetching: false
         })
       } catch (error) {
         logToElasticsearch('error', 'HashTagList', 'componentDidMount' + ' ' + error)
@@ -40,7 +40,7 @@ export default class HashTagList extends Component {
 
     window.scrollTo({
       top: 500,
-      behavior: 'smooth',
+      behavior: 'smooth'
     })
   }
 
@@ -71,20 +71,20 @@ export default class HashTagList extends Component {
       try {
         const data = await axios.post('/api/post/showHashTagPosts/', {
           content: decodeURIComponent(match.params.content),
-          counter: counter,
+          counter: counter
         })
 
         if (data.data.myPosts.length == 0) {
           this.setState({
             myPosts: [...myPosts],
             moreplease: false,
-            isFetching: false,
+            isFetching: false
           })
           return
         }
         this.setState({
           myPosts: [...myPosts, ...data.data.myPosts],
-          isFetching: false,
+          isFetching: false
         })
       } catch (error) {
         logToElasticsearch('error', 'HashTagList', 'fetchMoreData' + ' ' + error)
@@ -95,7 +95,7 @@ export default class HashTagList extends Component {
     this.setState(
       {
         counter: count ? count : myCounter + 1,
-        isFetching: true,
+        isFetching: true
       },
       () => {
         getPosts()

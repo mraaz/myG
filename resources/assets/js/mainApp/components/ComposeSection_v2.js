@@ -1,20 +1,19 @@
 import React, { Component, Fragment } from 'react'
 import axios from 'axios'
-import PostFileModal from './PostFileModal'
 import Dropzone from 'react-dropzone'
-import TextareaAutosize from 'react-textarea-autosize'
+import { toast } from 'react-toastify'
+import { EditorState } from 'draft-js'
 
 const buckectBaseUrl = 'https://myG.gg/platform_images/'
 import { MyGCreateableSelect ,MyGGameSelect} from './common'
-import { Disable_keys, Hash_Tags } from './Utility_Function'
+import PostFileModal from './PostFileModal'
+import { Disable_keys, Hash_Tags,Toast_style,Game_name_values } from './Utility_Function'
 import { Upload_to_S3, Remove_file } from './AWS_utilities'
 
-import { toast } from 'react-toastify'
-import { Toast_style,Game_name_values } from './Utility_Function'
 import ImageGallery from './common/ImageGallery/ImageGallery.js'
 import { logToElasticsearch } from '../../integration/http/logger'
-
-const MAX_HASH_TAGS = 21
+import { DraftComposer } from './common/Draftjs'
+import { prepareDraftsEditorForSave, isEmptyDraftJs, MAX_HASH_TAGS, POST_COMPOSER } from '../../common/draftjs'
 
 const createOption = (label, hash_tag_id) => ({
   label,
@@ -28,7 +27,6 @@ export default class ComposeSection extends Component {
     this.state = {
       show_post: false,
       profile_img: '',
-      post_content: '',
       video: '',
       bFileModalOpen: false,
       fileType: 'photo',
@@ -46,6 +44,9 @@ export default class ComposeSection extends Component {
       options_tags: '',
       value_tags: [],
       isShowAllGroup: false,
+      postContent: EditorState.createEmpty(),
+      postContentHashtags: [],
+      postContentMentions: [],
       game_names_id:'',
       games:[]
     }
@@ -55,6 +56,7 @@ export default class ComposeSection extends Component {
     this.openVideoPost = this.openVideoPost.bind(this)
     this.callbackPostFileModalClose = this.callbackPostFileModalClose.bind(this)
     this.callbackPostFileModalConfirm = this.callbackPostFileModalConfirm.bind(this)
+
     this.doUploadS3 = this.doUploadS3.bind(this)
     this.imageFileType = ['jpeg', 'jpg', 'png', 'gif']
     this.videoFileType = ['mov', 'webm', 'mpg', 'mp4', 'avi', 'ogg']
@@ -101,7 +103,7 @@ export default class ComposeSection extends Component {
   }
   handleClear = () => {
     this.setState({
-      post_content: '',
+      postContent: EditorState.createEmpty(),
       preview_files: [],
       keys: [],
       overlay_active: false,
@@ -116,8 +118,9 @@ export default class ComposeSection extends Component {
   }
 
   submitForm = async () => {
-    const content = this.state.post_content.trim()
+    //const content = this.state.post_content.trim()
     // const userLang = navigator.language || navigator.userLanguage
+
     let media_url = []
     let aws_key_id = []
 
@@ -127,35 +130,52 @@ export default class ComposeSection extends Component {
         aws_key_id.push(this.state.preview_files[i].id)
       }
     }
-    let hash_tags = []
-    if (this.state.value_tags.length != 0 && this.state.value_tags != null) {
-      if (this.state.value_tags.length >= MAX_HASH_TAGS) {
-        toast.success(<Toast_style text={"Crikey, mate! That's alot of tags. I'll only grab 20 and dump the rest."} />)
-      }
-      for (let i = 0; i < MAX_HASH_TAGS && i < this.state.value_tags.length; i++) {
-        if (/['/.%#$,;`\\]/.test(this.state.value_tags[i].value)) {
-          toast.success(<Toast_style text={'Sorry mate! Hash tags can not have invalid characters'} />)
-          return
-        }
 
-        delete this.state.value_tags[i].label
+    let hash_tags = []
+    let data = null
+
+    const { content, hashtags, mentions } = prepareDraftsEditorForSave(
+      this.state.postContent.trim(),
+      this.state.postContentHashtags,
+      this.state.postContentMentions
+    )
+
+    if (hashtags !== null && hashtags.length !== 0) {
+      // Verify all tags are valid, if any found early return
+      if (hashtags.some((hashtag) => /['/.%#$,;`\\]/.test(hashtag.tag))) {
+        toast.success(<Toast_style text={'Sorry mate! Hash tags can not have invalid characters'} />)
+        return
       }
-      hash_tags = JSON.stringify(this.state.value_tags)
+
+      if (hashtags.length >= MAX_HASH_TAGS) {
+        toast.success(<Toast_style text={"Crikey, mate! That's alot of tags. I'll only grab 20 and dump the rest."} />)
+        hashtags = hashtags.slice(0, 20)
+      }
+    }
+
+    hash_tags = JSON.stringify(
+      hashtags.map((hashtag) => ({
+        value: hashtag.tag,
+        hash_tag_id: hashtag.id
+      }))
+    )
+
+    data = {
+      content,
+      video: this.state.video,
+      user_id: this.props.initialData.userInfo.id,
+      type: 'text',
+      visibility: this.state.visibility,
+      group_id: this.props.group_id ? this.props.group_id : this.state.group_id.toString(),
+      media_url: media_url.length > 0 ? JSON.stringify(media_url) : '',
+      aws_key_id: aws_key_id.length > 0 ? aws_key_id : '',
+      hash_tags,
+      mentionsList: JSON.stringify(mentions),
+      game_names_id: this.state.game_names_id ?this.state.game_names_id.value :''
     }
 
     try {
-      const post = await axios.post('/api/post', {
-        content: content,
-        video: this.state.video,
-        user_id: this.props.initialData.userInfo.id,
-        type: 'text',
-        visibility: this.state.visibility,
-        group_id: this.props.group_id ? this.props.group_id : this.state.group_id.toString(),
-        media_url: media_url.length > 0 ? JSON.stringify(media_url) : '',
-        aws_key_id: aws_key_id.length > 0 ? aws_key_id : '',
-        hash_tags: hash_tags,
-        game_names_id: this.state.game_names_id ?this.state.game_names_id.value :''
-      })
+      const post = await axios.post('/api/post', data)
       if (post.data == 'video_link_failed') {
         toast.success(<Toast_style text={`Strewth mate! Invalid video link`} />)
         return
@@ -163,7 +183,6 @@ export default class ComposeSection extends Component {
       this.setState(
         {
           bFileModalOpen: false,
-          post_content: '',
           media_url: [],
           preview_files: [],
           keys: [],
@@ -174,7 +193,10 @@ export default class ComposeSection extends Component {
           selected_group: [],
           group_id: [],
           open_compose_textTab: true,
-          video: ''
+          video: '',
+          postContent: EditorState.createEmpty(),
+          postContentHashtags: [],
+          postContentMentions: []
         },
         () => {
           media_url = []
@@ -195,10 +217,6 @@ export default class ComposeSection extends Component {
     })
   }
 
-  handleChange_txtArea = (event) => {
-    const value = event.target.value
-    this.setState({ post_content: value })
-  }
   handleFocus_txtArea = () => {
     this.setState({ overlay_active: true })
   }
@@ -207,10 +225,6 @@ export default class ComposeSection extends Component {
   }
 
   detectKey = (e) => {
-    // if (e.key === 'Enter') {
-    //
-    // }
-
     if (e.key === 'Enter' && e.shiftKey) {
       e.preventDefault()
       e.stopPropagation()
@@ -278,7 +292,7 @@ export default class ComposeSection extends Component {
     }
     if (label == 'text') {
       setTimeout(function () {
-        document.getElementById('composeTextarea').focus()
+        document.getElementById('draftComposer').focus()
       }, 0)
     }
     this.setState({ open_compose_textTab, overlay_active: true })
@@ -447,11 +461,10 @@ export default class ComposeSection extends Component {
       selected_group_data,
       group_id,
       overlay_active,
-      post_content = '',
       isShowAllGroup = false,
       visibility
     } = this.state
-    const isButtonDisable = post_content != '' || preview_files.length > 0 ? true : false
+    const isButtonDisable = !isEmptyDraftJs(this.state.postContent) || preview_files.length > 0 ? true : false
     const groups = [...selected_group_data]
     const AllGroups = [...selected_group_data]
     const preview_filesData = [...preview_files]
@@ -471,22 +484,20 @@ export default class ComposeSection extends Component {
           </div>
           {open_compose_textTab && (
             <div className='text__editor__section'>
-              <div className='media'>
+              <DraftComposer
+                editorType={POST_COMPOSER}
+                editorState={this.state.postContent}
+                setEditorState={(state) => this.setState({ postContent: state })}
+                placeholder={"What's up..."}
+                addHashtag={(hashtagMention) => this.setState({ postContentHashtags: [...this.state.postContentHashtags, hashtagMention] })}
+                addMention={(userMention) => this.setState({ postContentMentions: [...this.state.postContentMentions, userMention] })}
+              >
                 {preview_filesData.length > 0 && (
-                  <ImageGallery items={preview_filesData} showFullscreenButton={false} showGalleryFullscreenButton={false} />
+                  <div className='media'>
+                    <ImageGallery items={preview_filesData} showFullscreenButton={false} showGalleryFullscreenButton={false} />
+                  </div>
                 )}
-              </div>
-              <TextareaAutosize
-                onChange={this.handleChange_txtArea}
-                onFocus={this.handleFocus_txtArea}
-                onKeyDown={this.detectKey}
-                maxLength='2048'
-                value={post_content}
-                placeholder="What's up... "
-                id={`composeTextarea`}
-                minRows={3}
-                maxRows={38}
-              />
+              </DraftComposer>
             </div>
           )}
           {open_compose_textTab && (
@@ -563,35 +574,14 @@ export default class ComposeSection extends Component {
                 }}
               </Dropzone>
               {/* <div className=' button photo-btn' onClick={() => this.openPhotoPost()}>
-              <i className='far fa-images' />
-            </div>
-            <div className='button video-btn' onClick={() => this.openVideoPost()}>
-              <i className='far fa-play-circle' />
-            </div>
-            <div className='button video-btn' onClick={() => this.openAudioPost()}>
-              <i className='far fa-volume-up' />
-            </div> */}
-            </div>
-          )}
-          {open_compose_textTab && (
-            <div className='hashTag_section'>
-              <div className='hashtag_label'>Add Hashtags</div>
-              <div className='hashtag_input'>
-                <MyGCreateableSelect
-                  isClearable
-                  isMulti
-                  onKeyDown={Disable_keys}
-                  onCreateOption={this.handleCreateHashTags}
-                  getNewOptionData={this.getNewOptionData}
-                  options={this.state.options_tags}
-                  value={this.state.value_tags}
-                  onChange={this.handleChange_Hash_tags}
-                  onInputChange={this.getOptions_tags}
-                  classNamePrefix='filter'
-                  className='hash_tag_name_box'
-                  placeholder='Search, Select or create Hash Tags'
-                />
+                <i className='far fa-images' />
               </div>
+              <div className='button video-btn' onClick={() => this.openVideoPost()}>
+                <i className='far fa-play-circle' />
+              </div>
+              <div className='button video-btn' onClick={() => this.openAudioPost()}>
+                <i className='far fa-volume-up' />
+              </div> */}
             </div>
           )}
           {open_compose_textTab && (

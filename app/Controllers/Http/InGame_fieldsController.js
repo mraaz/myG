@@ -24,9 +24,7 @@ const find_InGame_Fields = async (myScheduledGames) => {
 
 const find_InGame_Fields_NOT_paginate = async (myScheduledGames) => {
   for (var i = 0; i < myScheduledGames.length; i++) {
-    var myScheduledTrans = await Database.from('schedule_games_transactions')
-      .where({ schedule_games_id: myScheduledGames[i].id })
-      .first()
+    var myScheduledTrans = await Database.from('schedule_games_transactions').where({ schedule_games_id: myScheduledGames[i].id }).first()
 
     if (myScheduledTrans == undefined) {
       continue

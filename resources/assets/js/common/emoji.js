@@ -2,7 +2,7 @@ import { getEmojiDataFromNative, emojiIndex } from 'emoji-mart'
 import data from 'emoji-mart/data/all.json'
 
 export function convertColonsToEmojis(text) {
-  const possibleEmojis = text.match(/:([^:]*):/g) || [];
+  const possibleEmojis = text.match(/:([^:]*):/g) || []
   for (const possibleEmoji of possibleEmojis) {
     const colons = possibleEmoji.replace(':', '').replace(':', '')
     const emoji = emojiIndex.search(colons)[0]

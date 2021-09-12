@@ -9,32 +9,32 @@ const SelectedInvites = ({
   showOptions,
   onCommunityClick,
   onGroupClick,
-  onPlayerClick,
+  onPlayerClick
 }) => {
   const [hoveredElements, updateHoveredElements] = useState({})
   const GROUP_LIST = ['Selected Players', 'Selected Groups', 'Selected Communities']
   const groupData = {
     'Selected Players': selectedPlayers,
     'Selected Groups': selectedGroups,
-    'Selected Communities': selectedCommunities,
+    'Selected Communities': selectedCommunities
   }
   const groupUpdate = {
     'Selected Players': onPlayerClick,
     'Selected Groups': onGroupClick,
-    'Selected Communities': onCommunityClick,
+    'Selected Communities': onCommunityClick
   }
 
   const handleMouseHover = (key) => {
     updateHoveredElements((currentElements) => ({
       ...currentElements,
-      [key]: true,
+      [key]: true
     }))
   }
 
   const onMouseLeave = (key) => {
     updateHoveredElements((currentElements) => ({
       ...currentElements,
-      [key]: false,
+      [key]: false
     }))
   }
 
@@ -45,17 +45,19 @@ const SelectedInvites = ({
         onClick={() => {
           updateShowOptions((currentOptions) => ({
             ...currentOptions,
-            [group]: !currentOptions[group],
+            [group]: !currentOptions[group]
           }))
-        }}>
+        }}
+      >
         <div className='invite-players__invites-header'>{group}</div>
         <div className='invite-players__invites-header-right'>
           <div className='invite-players__invites-header-right-count'>({Object.keys(groupData[group]).length})</div>
           <div
             className={classNames([
               'invite-players__invites-header-arrow',
-              showOptions[group] ? 'invite-players__invites-header-arrow-down' : '',
-            ])}>
+              showOptions[group] ? 'invite-players__invites-header-arrow-down' : ''
+            ])}
+          >
             >
           </div>
         </div>
@@ -69,7 +71,8 @@ const SelectedInvites = ({
 
     return (
       <div
-        className={classNames(['invite-players__player-list-container', showOptions[group] ? '' : 'invite-players__player-list-hidden'])}>
+        className={classNames(['invite-players__player-list-container', showOptions[group] ? '' : 'invite-players__player-list-hidden'])}
+      >
         {Object.keys(data).map((key) => {
           return (
             <div
@@ -82,8 +85,9 @@ const SelectedInvites = ({
               }}
               className={classNames([
                 'invite-players__player-list-element',
-                hoveredElements[key] ? '' : 'invite-players__player-list-element-hovered',
-              ])}>
+                hoveredElements[key] ? '' : 'invite-players__player-list-element-hovered'
+              ])}
+            >
               <div style={{ display: 'flex' }}>
                 <img src={data[key].img} height={20} width={20} className='invite-players__player-image' />
                 <div className='invite-players__player-list-text'>{data[key].name}</div>

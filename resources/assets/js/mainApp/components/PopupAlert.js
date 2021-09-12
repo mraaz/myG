@@ -16,7 +16,8 @@ class PopupAlert extends React.PureComponent {
           focusConfirmBtn={false}
           showCloseButton={true}
           onConfirm={() => window.messengerSweetAlert.onConfirm()}
-          onCancel={() => window.messengerSweetAlert.onCancel()}>
+          onCancel={() => window.messengerSweetAlert.onCancel()}
+        >
           {window.messengerSweetAlert.label}
         </SweetAlert>
       </div>
@@ -26,7 +27,7 @@ class PopupAlert extends React.PureComponent {
 
 function mapStateToProps(state) {
   return {
-    alert: state.alert.show,
+    alert: state.alert.show
   }
 }
 

@@ -6,17 +6,14 @@ export default class Button extends Component {
   }
 
   render() {
-    const { title, active } = this.props;
+    const { title, active } = this.props
 
-    const isActive = active == false ? '' : 'active';
+    const isActive = active == false ? '' : 'active'
 
     return (
-      <button
-        className={'button ' + isActive}
-        onClick={this.props.onClick}
-      >
+      <button className={'button ' + isActive} onClick={this.props.onClick}>
         {title}
       </button>
-    );
+    )
   }
 }

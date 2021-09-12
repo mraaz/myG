@@ -49,7 +49,7 @@ class ReportController {
           report_description: request.input('report_description'),
           post_id: request.input('post_id'),
           comment_id: request.input('comment_id'),
-          reply_id: request.input('reply_id'),
+          reply_id: request.input('reply_id')
         })
         return newReport
       } catch (error) {
@@ -62,7 +62,7 @@ class ReportController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     }
@@ -79,7 +79,7 @@ class ReportController {
 
         const delete_report = await Database.table('reports')
           .where({
-            id: request.params.id,
+            id: request.params.id
           })
           .delete()
 
@@ -90,7 +90,7 @@ class ReportController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -152,7 +152,7 @@ class ReportController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }
@@ -235,9 +235,7 @@ class ReportController {
   }
 
   async security_check({ auth }) {
-    const security_check = await Database.from('admins')
-      .where({ user_id: auth.user.id, permission_level: 1 })
-      .first()
+    const security_check = await Database.from('admins').where({ user_id: auth.user.id, permission_level: 1 }).first()
 
     if (security_check == undefined) {
       return false
@@ -255,7 +253,7 @@ class ReportController {
       }
       const report_ = await Database.table('reports')
         .where({
-          id: request.params.id,
+          id: request.params.id
         })
         .first()
 
@@ -276,38 +274,29 @@ class ReportController {
       let owner
       switch (type) {
         case 1:
-          owner = await Database.from('posts')
-            .where('posts.id', '=', report_.post_id)
-            .select('user_id')
-            .first()
+          owner = await Database.from('posts').where('posts.id', '=', report_.post_id).select('user_id').first()
 
           await Database.table('posts')
             .where({
-              id: report_.post_id,
+              id: report_.post_id
             })
             .delete()
           break
         case 2:
-          owner = await Database.from('comments')
-            .where('comments.id', '=', report_.comment_id)
-            .select('user_id')
-            .first()
+          owner = await Database.from('comments').where('comments.id', '=', report_.comment_id).select('user_id').first()
 
           await Database.table('comments')
             .where({
-              id: report_.comment_id,
+              id: report_.comment_id
             })
             .delete()
           break
         case 3:
-          owner = await Database.from('replies')
-            .where('replies.id', '=', report_.reply_id)
-            .select('user_id')
-            .first()
+          owner = await Database.from('replies').where('replies.id', '=', report_.reply_id).select('user_id').first()
 
           await Database.table('replies')
             .where({
-              id: report_.reply_id,
+              id: report_.reply_id
             })
             .delete()
           break
@@ -317,14 +306,12 @@ class ReportController {
 
       await Database.table('reports')
         .where({
-          id: request.params.id,
+          id: request.params.id
         })
         .delete()
 
       //noti the owner: bad content
-      const _reported = await Database.from('reported')
-        .where({ user_id: owner.user_id })
-        .first()
+      const _reported = await Database.from('reported').where({ user_id: owner.user_id }).first()
 
       const reported_controller = new ReportedController()
 
@@ -337,7 +324,7 @@ class ReportController {
           third_offence_date: _reported.third_offence_date,
           first_offence: _reported.first_offence,
           second_offence: _reported.second_offence,
-          third_offence: _reported.third_offence,
+          third_offence: _reported.third_offence
         }
 
         reported_controller.update(owner.user_id, offenceInfo, report_.report_description, type)
@@ -348,7 +335,7 @@ class ReportController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error,
+        message: (error && error.message) || error
       })
     }
   }

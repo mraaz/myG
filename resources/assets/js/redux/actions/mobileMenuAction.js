@@ -1,12 +1,12 @@
 export function openMobileMenuAction() {
   return {
-    type: 'SHOW_MOBILE_MENU',
+    type: 'SHOW_MOBILE_MENU'
   }
 }
 
 export function closeMobileMenuAction() {
   return {
-    type: 'CLOSE_MOBILE_MENU',
+    type: 'CLOSE_MOBILE_MENU'
   }
 }
 

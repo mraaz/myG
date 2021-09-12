@@ -22,8 +22,8 @@ const initialState = {
   search: {
     contacts: [],
     groups: [],
-    games: [],
-  },
+    games: []
+  }
 }
 
 export default function reducer(state = initialState, action) {
@@ -36,7 +36,7 @@ export default function reducer(state = initialState, action) {
       return {
         ...state,
         contactsLoading: action.meta.refresh,
-        contactsLoadingMore: true,
+        contactsLoadingMore: true
       }
     }
 
@@ -44,7 +44,7 @@ export default function reducer(state = initialState, action) {
       return {
         ...state,
         groupsLoading: action.meta.refresh,
-        groupsLoadingMore: true,
+        groupsLoadingMore: true
       }
     }
 
@@ -52,7 +52,7 @@ export default function reducer(state = initialState, action) {
       return {
         ...state,
         gamesLoading: action.meta.refresh,
-        gamesLoadingMore: true,
+        gamesLoadingMore: true
       }
     }
 
@@ -60,7 +60,7 @@ export default function reducer(state = initialState, action) {
       return {
         ...state,
         searchLoading: action.meta.refresh,
-        searchLoadingMore: true,
+        searchLoadingMore: true
       }
     }
 
@@ -72,7 +72,7 @@ export default function reducer(state = initialState, action) {
           contactsLoading: false,
           contactsLoadingMore: false,
           contactsCount: action.payload.count,
-          foundContacts: action.payload.contacts,
+          foundContacts: action.payload.contacts
         }
       }
       const currentContacts = JSON.parse(JSON.stringify(state[action.meta.status]))
@@ -84,7 +84,7 @@ export default function reducer(state = initialState, action) {
         contactsLoading: false,
         contactsLoadingMore: false,
         contactsCount: action.payload.count,
-        [action.meta.status]: contacts,
+        [action.meta.status]: contacts
       }
     }
 
@@ -98,7 +98,7 @@ export default function reducer(state = initialState, action) {
         ...state,
         groupsLoading: false,
         groupsLoadingMore: false,
-        groups,
+        groups
       }
     }
 
@@ -112,7 +112,7 @@ export default function reducer(state = initialState, action) {
         ...state,
         gamesLoading: false,
         gamesLoadingMore: false,
-        games,
+        games
       }
     }
 
@@ -122,7 +122,7 @@ export default function reducer(state = initialState, action) {
         ...state,
         searchLoading: false,
         searchLoadingMore: false,
-        search: action.payload || {},
+        search: action.payload || {}
       }
     }
 
@@ -130,7 +130,7 @@ export default function reducer(state = initialState, action) {
       logger.log('PAGINATION', `Redux -> Loading Recents`)
       return {
         ...state,
-        recentsLoading: true,
+        recentsLoading: true
       }
     }
 
@@ -139,7 +139,7 @@ export default function reducer(state = initialState, action) {
       return {
         ...state,
         recents: (action.payload.messages || []).sort((m1, m2) => m2.messageId - m1.messageId),
-        recentsLoading: false,
+        recentsLoading: false
       }
     }
 
@@ -152,7 +152,7 @@ export default function reducer(state = initialState, action) {
       const recents = [...recentMessages, newMessage].sort((m1, m2) => m2.messageId - m1.messageId)
       return {
         ...state,
-        recents,
+        recents
       }
     }
 
@@ -165,7 +165,7 @@ export default function reducer(state = initialState, action) {
       groups.push(action.payload.chat)
       return {
         ...state,
-        groups,
+        groups
       }
     }
 
@@ -174,7 +174,7 @@ export default function reducer(state = initialState, action) {
       const groups = JSON.parse(JSON.stringify(state.groups)).filter((chat) => parseInt(chat.chatId) !== parseInt(action.payload.chatId))
       return {
         ...state,
-        groups,
+        groups
       }
     }
 

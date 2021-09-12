@@ -32,9 +32,9 @@ module.exports = {
   sqlite: {
     client: 'sqlite3',
     connection: {
-      filename: Helpers.databasePath(`${Env.get('DB_DATABASE', 'development')}.sqlite`),
+      filename: Helpers.databasePath(`${Env.get('DB_DATABASE', 'development')}.sqlite`)
     },
-    useNullAsDefault: true,
+    useNullAsDefault: true
   },
 
   /*
@@ -55,8 +55,8 @@ module.exports = {
       user: Env.get('DB_USER', 'root'),
       password: Env.get('DB_PASSWORD', ''),
       database: Env.get('DB_DATABASE', 'adonis'),
-      charset: 'utf8mb4',
-    },
+      charset: 'utf8mb4'
+    }
   },
 
   /*
@@ -77,7 +77,7 @@ module.exports = {
       user: Env.get('DB_USER', 'root'),
       password: Env.get('DB_PASSWORD', ''),
       database: Env.get('DB_DATABASE', 'adonis'),
-      charset: 'utf8mb4',
-    },
-  },
+      charset: 'utf8mb4'
+    }
+  }
 }

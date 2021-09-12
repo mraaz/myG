@@ -9,7 +9,7 @@ import {
   addReactionAction,
   removeReactionAction,
   updateChatStateAction,
-  markLastReadGuestAction,
+  markLastReadGuestAction
 } from '../../../redux/actions/guestAction'
 
 function mapDispatchToProps(dispatch) {
@@ -24,7 +24,7 @@ function mapDispatchToProps(dispatch) {
       dispatch(addReactionAction(chatId, userId, messageId, reactionId, senderName)),
     removeReaction: (chatId, userId, messageId, reactionId) => dispatch(removeReactionAction(chatId, userId, messageId, reactionId)),
     updateChatState: (chatId, state) => dispatch(updateChatStateAction(chatId, state)),
-    markLastReadGuest: (chatId, userId) => dispatch(markLastReadGuestAction(chatId, userId)),
+    markLastReadGuest: (chatId, userId) => dispatch(markLastReadGuestAction(chatId, userId))
   }
 }
 

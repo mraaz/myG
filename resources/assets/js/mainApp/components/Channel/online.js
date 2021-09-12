@@ -13,7 +13,7 @@ export class OnlineUsers extends React.Component {
   }
 
   state = {
-    expanded: ['Active Now'],
+    expanded: ['Active Now']
   }
 
   componentDidMount() {
@@ -21,7 +21,7 @@ export class OnlineUsers extends React.Component {
   }
 
   renderHeader = ({ name, icon, color, fixed }) => {
-    if (name === 'Active Now' && !fixed) return null;
+    if (name === 'Active Now' && !fixed) return null
     const expanded = this.state.expanded.includes(name)
     const chevronType = expanded ? 'down' : 'right'
     return (
@@ -32,9 +32,10 @@ export class OnlineUsers extends React.Component {
           this.setState((previous) => ({
             expanded: previous.expanded.includes(name)
               ? [...previous.expanded.filter((game) => game !== name)]
-              : [...previous.expanded, name],
+              : [...previous.expanded, name]
           }))
-        }>
+        }
+      >
         <div className='messenger-body-game-section' style={{ backgroundColor: color }}>
           <div className='messenger-game-icon' style={{ backgroundImage: `url('${icon}')` }} />
           <p className='messenger-body-section-header-name'>{name}</p>
@@ -78,9 +79,9 @@ export class OnlineUsers extends React.Component {
 
   renderOnlineUsers = () => {
     try {
-      return (this.props.onlineUsers || []).map(this.renderGame);
-    } catch(error) {
-      logToElasticsearch('error', 'Online Users Error', { onlineUsers: this.props.onlineUsers, error: error && error.message || error });
+      return (this.props.onlineUsers || []).map(this.renderGame)
+    } catch (error) {
+      logToElasticsearch('error', 'Online Users Error', { onlineUsers: this.props.onlineUsers, error: (error && error.message) || error })
       return <span>No online users at the moment</span>
     }
   }
@@ -92,13 +93,12 @@ export class OnlineUsers extends React.Component {
         className={`messenger-body-section ${style}`}
         style={{
           width: '20%',
-          height: this.props.page ? '100%' : '400px',
-        }}>
+          height: this.props.page ? '100%' : '400px'
+        }}
+      >
         {!!this.props.modal && this.renderOnlineUsersButton()}
         {this.renderHeader({ name: 'Active Now', color: '#425156', fixed: true })}
-        <div style={{ overflowY: 'scroll' }}>
-          {this.renderOnlineUsers()}
-        </div>
+        <div style={{ overflowY: 'scroll' }}>{this.renderOnlineUsers()}</div>
       </div>
     )
   }
@@ -106,13 +106,13 @@ export class OnlineUsers extends React.Component {
 
 export function mapStateToProps(state) {
   const alias = state.user.alias
-  const onlineUsers = Array.isArray(state.user.onlineUsers) ? state.user.onlineUsers : [];
+  const onlineUsers = Array.isArray(state.user.onlineUsers) ? state.user.onlineUsers : []
   return { alias, onlineUsers }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    fetchOnlineUsers: () => dispatch(fetchOnlineUsersAction()),
+    fetchOnlineUsers: () => dispatch(fetchOnlineUsersAction())
   }
 }
 

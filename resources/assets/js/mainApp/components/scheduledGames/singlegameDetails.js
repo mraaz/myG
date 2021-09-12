@@ -57,7 +57,7 @@ export default class SingleGameDetails extends Component {
       myStatus,
       additional_submit_info = false,
       additional_submit_info_fields = [],
-      getAllGamers = [],
+      getAllGamers = []
     } = scheduleGames
 
     const [scheduleGames_data = {}] = latestScheduledGames
@@ -74,7 +74,7 @@ export default class SingleGameDetails extends Component {
       id = '',
       schedule_games_GUID,
       marked_as_deleted = 0,
-      reason_for_deletion = null,
+      reason_for_deletion = null
     } = scheduleGames_data
     const { no_of_gamers } = getAllGamers[0] || {}
     const experience_split = experience ? experience.split(',') : []
@@ -112,8 +112,16 @@ export default class SingleGameDetails extends Component {
                         </div>
                       )
                     })}
-                  <a className="clickable share-copy" onClick={() => copyToClipboard(`Checkout this game -> ${window.location.href}`)}>Share</a>
-                  <a className="clickable share-facebook" target="_blank" href={`https://www.facebook.com/sharer/sharer.php?u=${window.location.href}`}>Facebook</a>
+                  <a className='clickable share-copy' onClick={() => copyToClipboard(`Checkout this game -> ${window.location.href}`)}>
+                    Share
+                  </a>
+                  <a
+                    className='clickable share-facebook'
+                    target='_blank'
+                    href={`https://www.facebook.com/sharer/sharer.php?u=${window.location.href}`}
+                  >
+                    Facebook
+                  </a>
                 </div>
               </div>
               {!marked_as_deleted && (
@@ -173,7 +181,8 @@ export default class SingleGameDetails extends Component {
                       <WithTooltip
                         position={{ bottom: '24px', left: '-12px' }}
                         style={{ height: '24px', display: 'inline-block', marginBottom: '10px' }}
-                        text={tag.content}>
+                        text={tag.content}
+                      >
                         <p className='singleTags' title={tag.content}>
                           {tag.content}
                         </p>

@@ -18,7 +18,8 @@ class ChatOptions extends React.Component {
       <div className='chat-component-options-container'>
         <div
           className={`chat-component-options-option clickable`}
-          onClick={() => window.router.replace(`/profile/${this.props.contactAlias}`)}>
+          onClick={() => window.router.replace(`/profile/${this.props.contactAlias}`)}
+        >
           <div className='chat-component-options-option-icon' style={{ backgroundImage: `url(${getAssetUrl('ic_chat_profile')})` }} />
           {this.props.contactAlias} profile
         </div>
@@ -33,14 +34,16 @@ class ChatOptions extends React.Component {
                 null,
                 'Yes'
               )
-            }>
+            }
+          >
             <div className='chat-component-options-option-icon' style={{ backgroundImage: `url(${getAssetUrl('ic_chat_delete')})` }} />
             clear
           </div>
 
           <div
             className={`chat-component-options-option clickable ${this.props.muted && inactiveStyle}`}
-            onClick={() => this.props.updateChat(this.props.chatId, { muted: !this.props.muted })}>
+            onClick={() => this.props.updateChat(this.props.chatId, { muted: !this.props.muted })}
+          >
             <div className='chat-component-options-option-icon' style={{ backgroundImage: `url(${getAssetUrl('ic_chat_mute')})` }} />
             {this.props.muted ? 'unmute' : 'mute'}
           </div>
@@ -51,7 +54,8 @@ class ChatOptions extends React.Component {
           onClick={() => {
             if (!this.props.blocked) this.props.blockUser(this.props.contactId)
             else this.props.unblockUser(this.props.contactId)
-          }}>
+          }}
+        >
           <div className='chat-component-options-option-icon' style={{ backgroundImage: `url(${getAssetUrl('ic_chat_block')})` }} />
           {this.props.blocked ? 'unblock friend' : 'block friend'}
         </div>
@@ -60,7 +64,8 @@ class ChatOptions extends React.Component {
           Self destruct mode (ALT+S)
           <WithTooltip
             position={{ bottom: '-6px', right: '10px' }}
-            text={'Kaboom! When activated, messages\nwill only remain for 24 hours'}>
+            text={'Kaboom! When activated, messages\nwill only remain for 24 hours'}
+          >
             <ToggleButton
               value={this.props.selfDestruct || false}
               onToggle={(selfDestruct) => this.props.updateChat(this.props.chatId, { selfDestruct: !selfDestruct })}
@@ -75,7 +80,7 @@ class ChatOptions extends React.Component {
 function mapDispatchToProps(dispatch) {
   return {
     updateChat: (chatId, payload) => dispatch(updateChatAction(chatId, payload)),
-    clearChat: (chatId) => dispatch(clearChatAction(chatId)),
+    clearChat: (chatId) => dispatch(clearChatAction(chatId))
   }
 }
 

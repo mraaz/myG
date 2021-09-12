@@ -15,7 +15,7 @@ export default class Contact extends React.Component {
   }
 
   state = {
-    messages: [],
+    messages: []
   }
 
   decryptMessage = (message) => {

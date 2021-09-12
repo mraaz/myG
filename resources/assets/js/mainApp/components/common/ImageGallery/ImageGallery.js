@@ -7,7 +7,7 @@ export default class CustomImageGallery extends React.Component {
     super()
     this.state = {
       showVideo: {},
-      videoPreviewIcon: 'https://myG.gg/platform_images/Dashboard/BTN_Attach_Video.svg',
+      videoPreviewIcon: 'https://myG.gg/platform_images/Dashboard/BTN_Attach_Video.svg'
     }
 
     this.imageFileType = ['jpeg', 'jpg', 'png', 'gif']
@@ -17,7 +17,7 @@ export default class CustomImageGallery extends React.Component {
   _toggleShowVideo(url) {
     this.state.showVideo[url] = !Boolean(this.state.showVideo[url])
     this.setState({
-      showVideo: this.state.showVideo,
+      showVideo: this.state.showVideo
     })
 
     if (this.state.showVideo[url]) {
@@ -54,7 +54,7 @@ export default class CustomImageGallery extends React.Component {
           embedUrl: data.src,
           original: this.state.videoPreviewIcon,
           thumbnail: this.state.videoPreviewIcon,
-          renderItem: this._renderVideo.bind(this),
+          renderItem: this._renderVideo.bind(this)
         }
       } else {
         return { original: data.src, original: data.src, thumbnail: data.src }

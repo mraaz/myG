@@ -18,7 +18,7 @@ const VENDOR_LIBS = [
   'axios',
   'react-select',
   'react-toastify',
-  'readable-stream',
+  'readable-stream'
 ]
 const outputPath = path.resolve(__dirname, 'public/js/components')
 
@@ -32,14 +32,14 @@ module.exports = (env) => {
   return {
     entry: {
       mainApp: './resources/assets/js/mainApp/index.js',
-      vendor: VENDOR_LIBS,
+      vendor: VENDOR_LIBS
       //stlyes: './resources/assets/sass/main.scss', COULDNT MAKE THIS WORK
     },
     output: {
       filename: '[name].js',
       path: outputPath,
       publicPath: `/js/components/`,
-      pathinfo: false,
+      pathinfo: false
     },
     devtool: mode == 'development' ? 'inline-source-map' : false,
     mode: mode,
@@ -51,51 +51,51 @@ module.exports = (env) => {
           use: {
             loader: 'babel-loader',
             options: {
-              presets: ['@babel/env', '@babel/react'],
-            },
-          },
+              presets: ['@babel/env', '@babel/react']
+            }
+          }
         },
         {
           test: /\.scss$/,
           use: [
             {
-              loader: 'style-loader',
+              loader: 'style-loader'
             },
             {
               loader: 'css-loader',
               options: {
-                sourceMap: true,
-              },
+                sourceMap: true
+              }
             },
             {
               loader: 'sass-loader',
               options: {
-                sourceMap: true,
-              },
-            },
-          ],
+                sourceMap: true
+              }
+            }
+          ]
         },
         {
           test: /\.css$/,
           use: [
             {
-              loader: 'style-loader',
+              loader: 'style-loader'
             },
             {
               loader: 'css-loader',
               options: {
-                sourceMap: true,
-              },
+                sourceMap: true
+              }
             },
             {
               loader: 'sass-loader',
               options: {
-                sourceMap: true,
-              },
-            },
-          ],
-        },
-      ],
+                sourceMap: true
+              }
+            }
+          ]
+        }
+      ]
     },
     plugins: [
       new CompressionPlugin({
@@ -104,13 +104,13 @@ module.exports = (env) => {
         test: /\.js$|\.jsx$|\.css$|\.html$|\.eot?.+$|\.ttf?.+$|\.woff?.+$|\.svg?.+$/,
         compressionOptions: {
           params: {
-            [zlib.constants.BROTLI_PARAM_QUALITY]: 11,
-          },
+            [zlib.constants.BROTLI_PARAM_QUALITY]: 11
+          }
         },
         threshold: 10240,
         minRatio: 0.8,
-        deleteOriginalAssets: false,
-      }),
+        deleteOriginalAssets: false
+      })
     ],
     plugins: [
       new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
@@ -118,24 +118,24 @@ module.exports = (env) => {
       //new BundleAnalyzerPlugin(),
 
       new webpack.ProvidePlugin({
-        Buffer: ['buffer', 'Buffer'],
+        Buffer: ['buffer', 'Buffer']
       }),
       new webpack.DefinePlugin({
         process: {
           version: JSON.stringify(''),
           env: {
-            NODE_ENV: JSON.stringify(mode),
-          },
-        },
-      }),
+            NODE_ENV: JSON.stringify(mode)
+          }
+        }
+      })
     ],
     resolve: {
       symlinks: false,
       fallback: {
         crypto: require.resolve('crypto-browserify'),
         stream: require.resolve('stream-browserify'),
-        path: require.resolve('path-browserify'),
-      },
+        path: require.resolve('path-browserify')
+      }
     },
     optimization: {
       moduleIds: 'deterministic',
@@ -153,20 +153,20 @@ module.exports = (env) => {
             test: 'vendor',
             chunks: 'all',
             priority: 1,
-            name: 'vendor',
-          },
-        },
+            name: 'vendor'
+          }
+        }
       },
       minimizer: [
         new TerserPlugin({
           parallel: true,
           terserOptions: {
-            ecma: 6,
-          },
-        }),
+            ecma: 6
+          }
+        })
       ],
-      removeAvailableModules: true,
+      removeAvailableModules: true
     },
-    mode,
+    mode
   }
 }

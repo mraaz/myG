@@ -1,6 +1,5 @@
 'use strict'
 
-class ConnectionCriteriaController {
-}
+class ConnectionCriteriaController {}
 
 module.exports = ConnectionCriteriaController

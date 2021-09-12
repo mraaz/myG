@@ -12,6 +12,7 @@ const LoggingRepository = require('../../Repositories/Logging')
 const ApiController = use('./ApiController')
 const CommonController = use('./CommonController')
 const AchievementsRepository = require('../../Repositories/Achievements')
+const NotificationController_v2 = use('./NotificationController_v2')
 
 //const { validate } = use('Validator')
 
@@ -67,6 +68,16 @@ class PostController {
 
           if (request.input('hash_tags') != undefined && request.input('hash_tags') != null && request.input('hash_tags').length > 0) {
             await this.process_hash_tags({ auth }, request.input('hash_tags'), newPost.id)
+          }
+
+          if (!!request.input('mentionsList')) {
+            const mentions = JSON.parse(request.input('mentionsList'))
+
+            if (mentions.length) {
+              for (let mention of mentions) {
+                console.log(mention.name)
+              }
+            }
           }
         } else {
           for (var i = 0; i < arrGroups_id.length; i++) {

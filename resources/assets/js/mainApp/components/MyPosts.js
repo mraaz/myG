@@ -115,6 +115,7 @@ export default class MyPosts extends Component {
           successCallback={this.composeSuccess}
           initialData={this.props.initialData == undefined ? 'loading' : this.props.initialData}
         />
+        <hr />
         {post_submit_loading && (
           <div className='timeline-item'>
             <div className='animated-background'>
