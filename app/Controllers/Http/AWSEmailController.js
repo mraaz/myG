@@ -7,7 +7,7 @@ const SESConfig = {
   apiVersion: '2010-12-01',
   accessKeyId: Env.get('AWS_ACCESS_KEY_ID'),
   accessSecretKey: Env.get('AWS_SECRET_ACCESS_KEY'),
-  region: Env.get('AWS_SES_REGION'),
+  region: Env.get('AWS_SES_REGION')
 }
 
 class AWSEmailController {
@@ -28,21 +28,21 @@ class AWSEmailController {
     var params = {
       Source: 'myG <' + Env.get('SMTP_FROM_ADDRESS') + '>',
       Destination: {
-        ToAddresses: [toAddress],
+        ToAddresses: [toAddress]
       },
       ReplyToAddresses: [Env.get('SMTP_FROM_ADDRESS')],
       Message: {
         Body: {
           Html: {
             Charset: 'UTF-8',
-            Data: body,
-          },
+            Data: body
+          }
         },
         Subject: {
           Charset: 'UTF-8',
-          Data: subject,
-        },
-      },
+          Data: subject
+        }
+      }
     }
 
     this.sendEmail(params)

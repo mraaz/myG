@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect } from 'react'
 import classNames from 'classnames'
-import Slider, { Range } from 'rc-slider'
+import Slider from 'rc-slider'
 import moment from 'moment'
 import CustomCron from '../common/Cron/MyGCron'
 import axios from 'axios'
@@ -29,12 +29,11 @@ const EditGame = ({
   mainSettingsState,
   updateMainSettingsState,
   optionalFieldsState,
-  updateOptionalFieldsState,
-  additional_info,
+  updateOptionalFieldsState
 }) => {
   // Similar to componentDidMount and componentDidUpdate:
   useEffect(() => {
-    const getInitialData_Tags = async function() {
+    const getInitialData_Tags = async function () {
       try {
         let results = await Schedule_Game_Tags()
         updateAdvancedSettings({ optionTags: results })
@@ -43,7 +42,7 @@ const EditGame = ({
       }
     }
 
-    const getInitialData_GameName = async function() {
+    const getInitialData_GameName = async function () {
       try {
         let results = await Game_name_values(mainSettingsState.gameTitle.value)
         updateMainSettings({ gameTitle: results })
@@ -66,35 +65,35 @@ const EditGame = ({
   const updateMainSettings = (stateUpdates) => {
     updateMainSettingsState((currentState) => ({
       ...currentState,
-      ...stateUpdates,
+      ...stateUpdates
     }))
   }
 
   const updateAdvancedSettings = (stateUpdates) => {
     updateAdvancedSettingsState((currentState) => ({
       ...currentState,
-      ...stateUpdates,
+      ...stateUpdates
     }))
   }
 
   const updateState = (stateUpdates) => {
     updateComponentState((currentState) => ({
       ...currentState,
-      ...stateUpdates,
+      ...stateUpdates
     }))
   }
 
   const updateOptionalSettings = (stateUpdates) => {
     updateOptionalFieldsState((currentState) => ({
       ...currentState,
-      ...stateUpdates,
+      ...stateUpdates
     }))
   }
 
   const createOption = (label, game_names_id) => ({
     label,
     value: label,
-    game_names_id,
+    game_names_id
   })
 
   const handleCreateTags = (inputValue) => {
@@ -121,7 +120,7 @@ const EditGame = ({
 
     updateAdvancedSettings({
       optionTags: [...optionTags, newOption],
-      tags: [...tags, newOption],
+      tags: [...tags, newOption]
     })
   }
 
@@ -143,12 +142,12 @@ const EditGame = ({
     value: inputValue,
     label: optionLabel,
     __isNew__: true,
-    isEqual: () => false,
+    isEqual: () => false
   })
 
   // api calls
   const getOptionsTags = (inputValue) => {
-    const getInitialData = async function(inputValue) {
+    const getInitialData = async function (inputValue) {
       try {
         let results = await Schedule_Game_Tags(inputValue)
         updateAdvancedSettings({ optionTags: results })
@@ -165,7 +164,7 @@ const EditGame = ({
   }
 
   const getOptionsGames = (inputValue) => {
-    const getInitialData = async function(inputValue) {
+    const getInitialData = async function (inputValue) {
       try {
         let results = await Game_name_values(inputValue)
         updateMainSettings({ gameTitlesList: results })
@@ -184,9 +183,9 @@ const EditGame = ({
   const onPlayersSuggestionFetch = async (value) => {
     try {
       const {
-        data: { playerSearchResults },
+        data: { playerSearchResults }
       } = await axios.post(`/api/user/playerSearchResults`, {
-        alias: value,
+        alias: value
       })
       const parsedData = parsePlayersToSelectData(playerSearchResults)
       return parsedData
@@ -199,28 +198,28 @@ const EditGame = ({
   const getPlayersNumberView = () => {
     const numberStyle = {
       color: '#fff',
-      border: 'none',
+      border: 'none'
     }
     const dotStyle = {
       borderRadius: '4px 4px 0px 0px',
       border: 'none',
       bottom: '0px',
       height: '10px',
-      backgroundColor: '#b9b9b9',
+      backgroundColor: '#b9b9b9'
     }
     const railStyle = {
       backgroundColor: '#b9b9b9',
-      width: '400px',
+      width: '400px'
     }
     const handleStyle = {
       border: 'none',
       backgroundColor: '#E6C846',
       height: '16px',
-      width: '16px',
+      width: '16px'
     }
     const trackStyle = {
       backgroundColor: '#b9b9b9',
-      width: '400px',
+      width: '400px'
     }
 
     return (
@@ -230,7 +229,7 @@ const EditGame = ({
           <SliderWithTooltip
             value={mainSettingsState.numberOfPlayers}
             style={{
-              margin: '42px 7px',
+              margin: '42px 7px'
             }}
             onChange={(value) => {
               updateMainSettings({ numberOfPlayers: value })
@@ -240,7 +239,7 @@ const EditGame = ({
               25: { label: 25, style: numberStyle },
               50: { label: 50, style: numberStyle },
               75: { label: 75, style: numberStyle },
-              100: { label: 100, style: numberStyle },
+              100: { label: 100, style: numberStyle }
             }}
             dotStyle={dotStyle}
             min={1}
@@ -252,9 +251,9 @@ const EditGame = ({
               placement: 'top',
               prefixCls: 'rc-slider-tooltip',
               align: {
-                offset: [0, -5],
+                offset: [0, -5]
               },
-              visible: true,
+              visible: true
             }}
             tipFormatter={(value) => {
               if (value === 1) {
@@ -269,7 +268,7 @@ const EditGame = ({
           onClick={(value) => {
             updateMainSettings({
               isUnlimitedPlayers: value,
-              numberOfPlayers: value ? -42 : 1,
+              numberOfPlayers: value ? -42 : 1
             })
           }}
           labelText='Unlimited'
@@ -324,7 +323,8 @@ const EditGame = ({
           }}
           minDate={moment(mainSettingsState.startTime)}
           maxDate={moment(mainSettingsState.startTime).add(14, 'days')}
-          selected={mainSettingsState.endTime}>
+          selected={mainSettingsState.endTime}
+        >
           <img
             style={{ margin: '0 10px' }}
             src='https://myG.gg/platform_images/Dashboard/X+icon.svg'
@@ -333,7 +333,7 @@ const EditGame = ({
             onClick={() => {
               updateMainSettings({
                 isEndGameFieldSelected: false,
-                endTime: null,
+                endTime: null
               })
             }}
           />
@@ -357,9 +357,10 @@ const EditGame = ({
                   }
                   updateMainSettings({
                     isEndGameFieldSelected: true,
-                    endTime: moment(mainSettingsState.startTime).add(2, 'days'),
+                    endTime: moment(mainSettingsState.startTime).add(2, 'days')
                   })
-                }}>
+                }}
+              >
                 Add End Time
               </div>
             </div>
@@ -372,7 +373,8 @@ const EditGame = ({
                   className={styles.optionalText}
                   onClick={(value) => {
                     updateMainSettings({ isRepeatFieldSelected: true })
-                  }}>
+                  }}
+                >
                   Set To Repeat
                 </div>
               </React.Fragment>
@@ -390,14 +392,15 @@ const EditGame = ({
           <div
             style={{
               display: 'flex',
-              alignItems: 'center',
-            }}>
+              alignItems: 'center'
+            }}
+          >
             <CustomCron
               onChange={({ cron, occurrence, repeatEvery }) => {
                 updateMainSettings({
                   cron,
                   occurrence,
-                  repeatEvery,
+                  repeatEvery
                 })
               }}
               tabs={['Daily', 'Weekly', 'Monthly']}
@@ -417,7 +420,7 @@ const EditGame = ({
                   endTime: null,
                   cron: null,
                   occurrence: null,
-                  repeatEvery: null,
+                  repeatEvery: null
                 })
               }}
             />
@@ -608,11 +611,11 @@ const EditGame = ({
           value_three: null,
           value_four: null,
           value_five: null,
-          game_name_fields_img: value.game_name_fields_img,
+          game_name_fields_img: value.game_name_fields_img
         })
       } else {
         updateOptionalSettings({
-          game_name_fields_img: value.game_name_fields_img,
+          game_name_fields_img: value.game_name_fields_img
         })
       }
 
@@ -650,7 +653,7 @@ const EditGame = ({
                 updateMainSettings({
                   isEndGameFieldSelected: false,
                   endTime: null,
-                  startTime: value,
+                  startTime: value
                 })
                 return
               }
@@ -811,9 +814,10 @@ const EditGame = ({
         style={{
           backgroundImage: `url(${optionalFieldsState.game_name_fields_img})`,
           backgroundSize: 'cover',
-          backgroundRepeat: 'no-repeat',
+          backgroundRepeat: 'no-repeat'
         }}
-        className={styles.optionalViewContainer}>
+        className={styles.optionalViewContainer}
+      >
         <div className={styles.optionalHeaderContainer}>
           <span>In-Game Fields </span>
           <span>(Optional)</span>
@@ -927,7 +931,7 @@ const EditGame = ({
           <div
             className={classNames([
               styles.menuLine,
-              state.selectedSettings === SETTINGS_ENUMS.ADVANCED ? styles.menuLineHighlighted : null,
+              state.selectedSettings === SETTINGS_ENUMS.ADVANCED ? styles.menuLineHighlighted : null
             ])}
           />
         </div>

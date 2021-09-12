@@ -375,7 +375,7 @@ class ConnectionController {
           total_score: findConnection_criteria.score
         })
 
-        const createNewTransaction = await Database.table('connection_transactions').insert({
+        await Database.table('connection_transactions').insert({
           connections_id: createNewEntry,
           connection_criterias_id: findConnection_criteria.id,
           values: attr.value
@@ -384,23 +384,19 @@ class ConnectionController {
         return
       }
       if (attr.type == 1) {
-        const createNewTransaction = await Database.table('connection_transactions').insert({
+        await Database.table('connection_transactions').insert({
           connections_id: attr.connection_id,
           connection_criterias_id: findConnection_criteria.id,
           values: attr.value
         })
 
-        const update_vacany = await Connection.query()
-          .where({ id: attr.connection_id })
-          .increment('total_score', findConnection_criteria.score)
+        await Connection.query().where({ id: attr.connection_id }).increment('total_score', findConnection_criteria.score)
 
         return
       }
 
       if (attr.type == 2) {
-        const update_vacany = await Connection.query()
-          .where({ id: attr.connection_id })
-          .increment('total_score', findConnection_criteria.score)
+        await Connection.query().where({ id: attr.connection_id }).increment('total_score', findConnection_criteria.score)
 
         return
       }
@@ -878,7 +874,7 @@ class ConnectionController {
           .whereNotIn('user_id', showallMyEnemies)
           .whereNotIn('user_id', showPending)
 
-        for (var x = 0; x < gamers_in_these_games.length; x++) {
+        for (let x = 0; x < gamers_in_these_games.length; x++) {
           const getConnection = await Database.from('connections')
             .where({ user_id: auth.user.id, other_user_id: gamers_in_these_games[x].user_id })
             .select('id')
@@ -919,7 +915,7 @@ class ConnectionController {
       const showallMyEnemies = Database.from('exclude_connections').where({ user_id: auth.user.id }).select('other_user_id as user_id')
 
       //Delete friends and exluded connections
-      const delete_noti = await Database.table('connections')
+      await Database.table('connections')
         .where({
           user_id: auth.user.id
         })
@@ -927,9 +923,9 @@ class ConnectionController {
         .orWhereIn('other_user_id', showallMyEnemies)
         .delete()
 
-      //Cleam up connections, we don't want more than 500
-      var today = new Date()
-      var priorDate = new Date().setDate(today.getDate() - 60)
+      //Clean up connections, we don't want more than 500
+      let today = new Date()
+      let priorDate = new Date().setDate(today.getDate() - 60)
       const cutOff_date = new Date(priorDate)
 
       const total_connections = await Database.table('connections')
@@ -950,7 +946,7 @@ class ConnectionController {
           .limit(1)
           .offset(287)
 
-        const delete_connections = await Database.table('connections')
+        await Database.table('connections')
           .where({
             user_id: auth.user.id
           })
@@ -964,14 +960,11 @@ class ConnectionController {
         .count('* as no_of_group_connections')
 
       if (group_connections[0].no_of_group_connections > 288) {
-        var today = new Date()
-        var priorDate = new Date().setDate(today.getDate() - 30)
+        let today = new Date()
+        let priorDate = new Date().setDate(today.getDate() - 30)
         const cutOff_date = new Date(priorDate)
 
-        const get_stale_group_connections = await Database.from('group_connections')
-          .where({ user_id: auth.user.id })
-          .where('updated_at', '<', cutOff_date)
-          .delete()
+        await Database.from('group_connections').where({ user_id: auth.user.id }).where('updated_at', '<', cutOff_date).delete()
       }
     } catch (error) {
       LoggingRepository.log({
