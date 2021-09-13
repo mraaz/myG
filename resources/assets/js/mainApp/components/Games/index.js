@@ -4,6 +4,8 @@ import { getAssetUrl } from '../../../common/assets';
 import { ignoreFunctions } from '../../../common/render'
 import { WithTooltip } from '../Tooltip';
 import { injectIntl } from 'react-intl'
+
+import notifyToast from '../../../common/toast'
 class Games extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     return ignoreFunctions(nextProps, nextState, this.props, this.state)
@@ -115,10 +117,9 @@ class Games extends React.Component {
     );
   }
 
-  renderAddGameExperience = () => {
-    // if (!this.state.isSelf) return null;
+  renderAddGameExperience = () => {    
     return(
-      <div className="add-game-experience clickable" onClick={() => this.setState({ selected: 'edit' })}>
+      <div className="add-game-experience clickable" onClick={() => {notifyToast(`Add NEW Game Experience to create a new filter`); this.props.routeProps.history.push(`/profile/${this.props.alias}`)}}>
         <div
           className="icon"
           style={{ backgroundImage: `url(${getAssetUrl('ic_profile_add')})` }}

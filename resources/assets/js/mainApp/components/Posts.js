@@ -115,6 +115,7 @@ class Posts extends Component {
     this.setState(
       {
         counter: 1,
+        myPosts: []
       },
       async () => {
         if (id) {
@@ -229,6 +230,7 @@ class Posts extends Component {
               selectedGame={sg ? JSON.parse(sg) : []}
               alias={this.props.alias}
               handleGameClick={this.gameClicked}
+              routeProps={this.props.routeProps.routeProps}
             />
           </div>
           <div className='mobileShow'>
