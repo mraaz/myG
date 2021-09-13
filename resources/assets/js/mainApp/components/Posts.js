@@ -21,7 +21,7 @@ class Posts extends Component {
       counter: 0,
       myPosts: [],
       moreplease: true,
-      post_submit_loading: false,
+      post_submit_loading: true,
       showEvents: false
     }
   }
@@ -101,10 +101,12 @@ class Posts extends Component {
     }
     this.setState(
       {
-        counter: this.state.counter + 1
+        counter: this.state.counter + 1,
+        post_submit_loading: true
       },
-      () => {
-        getPosts()
+      async () => {
+        await getPosts()
+        this.setState({ post_submit_loading: false })
       }
     )
   }
@@ -115,7 +117,8 @@ class Posts extends Component {
     this.setState(
       {
         counter: 1,
-        myPosts: []
+        myPosts: [],
+        post_submit_loading: true
       },
       async () => {
         if (id) {
@@ -155,17 +158,20 @@ class Posts extends Component {
           })
           if (myPosts.data == '' || myPosts.data == {}) {
             this.setState({
-              moreplease: false
+              moreplease: false,
+              post_submit_loading: false
             })
             return
           }
           if (myPosts.data.myPosts) {
             this.setState({
-              myPosts: [...myPosts.data.myPosts]
+              myPosts: [...myPosts.data.myPosts],
+              post_submit_loading: false
             })
           } else {
             this.setState({
-              moreplease: false
+              moreplease: false,
+              post_submit_loading: false
             })
             return
           }
@@ -251,7 +257,7 @@ class Posts extends Component {
         )}
         {myPosts.length == 0 && !post_submit_loading && (
           <section id='posts' className={isFetching ? '' : `active`}>
-            <h1>No Data found !</h1>
+            {notifyToast(`Sorry mate! No great posts found for this game. Let's create one now?`)}
           </section>
         )}
       </Fragment>
