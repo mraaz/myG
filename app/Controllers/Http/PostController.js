@@ -872,6 +872,8 @@ class PostController {
         counterValue = 10
       }
 
+      if (parseInt(request.input('counter')) == 1) counterValue = 4
+
       const trendingPosts_likes = await Database.from('posts')
         .innerJoin('likes', 'likes.post_id', 'posts.id')
         .whereIn('posts.visibility', [1])
