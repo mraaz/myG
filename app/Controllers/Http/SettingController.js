@@ -61,32 +61,49 @@ class SettingController {
   async siteMap({ auth, request, response }) {
     if (auth.user) {
       try {
-        console.log('TEST!!')
+        let arrPages = []
+        arrPages.push('https://myg.gg/guest')
+        arrPages.push('https://myg.gg/find-gamers/search')
+
         const header_1 = "<?xml version='1.0' encoding='UTF-8'?>\n"
         const open_urlSet = '<urlset\n'
         const header_3 = "  xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'\n"
         const header_4 = "  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'\n"
         const header_5 = "  xsi:schemaLocation='http://www.sitemaps.org/schemas/sitemap/0.9'\n"
-        const header_6 = "  http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd'>\n"
+        const header_6 = "  http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd'>\n\n\n"
 
-        const openURL = '    <url>\n'
-        const closeURL = '    </url>\n'
-        const close_urlSet = '  </urlset>\n'
+        const openURL = '  <url>\n'
+        const closeURL = '  </url>\n'
 
-        const strTmp = 'String of text\n Hello worlds'
-        fs.writeFile('/t/sitemap.xml', header_1 + open_urlSet + header_3 + header_4 + header_5 + header_6, function (err) {
-          if (err) {
-            return console.log(err)
+        const openLOC = '    <loc>'
+        const closeLOC = '</loc>\n'
+
+        const close_urlSet = '\n</urlset>'
+
+        //         <url>
+        //           <loc>https://myg.gg/guest</loc>
+        //   <lastmod>2021-09-16T11:55:53+00:00</lastmod>
+        // </url>
+
+        // fs.writeFile('c:/t/sitemap.xml', header_1 + open_urlSet + header_3 + header_4 + header_5 + header_6, function (err) {
+        //   if (err) {
+        //     return console.log(err)
+        //   }
+        // })
+
+        for (let index = 0; index < arrPages.length; index++) {
+          if (index == 0) {
+            fs.appendFileSync('c:\\t\\sitemap.xml', header_1 + open_urlSet + header_3 + header_4 + header_5 + header_6)
           }
-          console.log('The file was saved!')
-        })
 
-        fs.appendFile('/t/sitemap.xml', openURL + closeURL + close_urlSet, function (err) {
-          if (err) {
-            return console.log(err)
+          fs.appendFileSync('c:\\t\\sitemap.xml', openURL + openLOC + arrPages[index] + closeLOC + closeURL)
+          console.log('HOND')
+
+          if (index == arrPages.length - 1) {
+            fs.appendFileSync('c:\\t\\sitemap.xml', close_urlSet)
           }
-          console.log('The file was saved!')
-        })
+        }
+
         return 'Saved successfully'
       } catch (error) {
         LoggingRepository.log({
