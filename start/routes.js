@@ -250,6 +250,7 @@ Route.post('/api/friends/allmyFriends', 'FriendController.showallmyFriends')
 
 Route.get('/api/settings', 'SettingController.show')
 Route.post('/api/settings', 'SettingController.store')
+Route.get('/api/settings/siteMap', 'SettingController.siteMap')
 
 Route.post('/api/commendations', 'CommendationController.store')
 Route.get('/api/commendations/user/:id', 'CommendationController.showUser')
