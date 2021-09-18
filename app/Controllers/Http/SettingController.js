@@ -76,7 +76,7 @@ class SettingController {
         const open_urlSet = '<urlset\n'
         const header_3 = "  xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'\n"
         const header_4 = "  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'\n"
-        const header_5 = "  xsi:schemaLocation='http://www.sitemaps.org/schemas/sitemap/0.9'\n"
+        const header_5 = "  xsi:schemaLocation='http://www.sitemaps.org/schemas/sitemap/0.9\n"
         const header_6 = "  http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd'>\n\n\n"
 
         const openURL = '  <url>\n'
