@@ -91,6 +91,16 @@ class Settings extends Component {
     console.log('disableAcccount click')
   }
 
+  createSiteMap = async () => {
+    console.log('createSiteMap click')
+    try {
+      const getSettings = await axios.get('/api/settings/siteMap')
+      console.log(getSettings, '<<<getSettings')
+    } catch (error) {
+      logToElasticsearch('error', 'Settings', 'Failed handleNotifyViaEmailChange:' + ' ' + error)
+    }
+  }
+
   sponsorsAction = () => {
     this.setState({ modalStatus: true })
   }
@@ -350,6 +360,11 @@ class Settings extends Component {
               {this.state.feature_on && (
                 <button type='button' className='disableAcccount' onClick={this.disableAcccount}>
                   Disable Account
+                </button>
+              )}
+              {this.state.feature_on && (
+                <button type='button' className='disableAcccount' onClick={this.createSiteMap}>
+                  Create SiteMap
                 </button>
               )}
               <button type='button' className='sponsorsAction' onClick={() => this.sponsorsAction()}>

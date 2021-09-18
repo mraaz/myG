@@ -1,2 +1,3 @@
 User-agent: *
 Allow: /
+Sitemap: https://myg-media.s3.amazonaws.com/default_user/sitemap.xml
