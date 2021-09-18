@@ -11,11 +11,11 @@ class SettingController {
   async show({ auth, request, response }) {
     if (auth.user) {
       try {
-        var mySettings = await Database.from('settings').where({
+        let mySettings = await Database.from('settings').where({
           user_id: auth.user.id
         })
         if (mySettings.length == 0) {
-          var newUserSettings = await Settings.create({
+          await Settings.create({
             user_id: auth.user.id
           })
           mySettings = await Database.from('settings').where({
@@ -40,7 +40,7 @@ class SettingController {
   async store({ auth, request, response }) {
     if (auth.user) {
       try {
-        const saveSettings = await Settings.query()
+        await Settings.query()
           .where('user_id', '=', auth.user.id)
           .update({ email_notification: request.input('email_notification') })
         return 'Saved successfully'
@@ -58,13 +58,20 @@ class SettingController {
     }
   }
 
-  async siteMap({ auth, request, response }) {
+  async siteMap({ auth }) {
     if (auth.user) {
-      try {
-        let arrPages = []
-        arrPages.push('https://myg.gg/guest')
-        arrPages.push('https://myg.gg/find-gamers/search')
+      const security_check = await Database.from('admins').where({ user_id: auth.user.id, permission_level: 1 }).first()
+      let isAdmin = false
 
+      if (security_check != undefined) {
+        isAdmin = true
+      }
+      if (!isAdmin) return
+
+      //Ensure this file doesnt already fs.exists, as this appends
+      const filePath = 'c:\\t\\sitemap.xml'
+
+      try {
         const header_1 = "<?xml version='1.0' encoding='UTF-8'?>\n"
         const open_urlSet = '<urlset\n'
         const header_3 = "  xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'\n"
@@ -80,29 +87,29 @@ class SettingController {
 
         const close_urlSet = '\n</urlset>'
 
-        //         <url>
-        //           <loc>https://myg.gg/guest</loc>
-        //   <lastmod>2021-09-16T11:55:53+00:00</lastmod>
-        // </url>
+        fs.appendFileSync(filePath, header_1 + open_urlSet + header_3 + header_4 + header_5 + header_6)
 
-        // fs.writeFile('c:/t/sitemap.xml', header_1 + open_urlSet + header_3 + header_4 + header_5 + header_6, function (err) {
-        //   if (err) {
-        //     return console.log(err)
-        //   }
-        // })
+        const profileUsers = await Database.from('posts')
+          .innerJoin('users', 'users.id', 'posts.user_id')
+          .select('alias')
+          .groupBy('users.id')
+
+        //Hard coded values
+        let arrPages = []
+        arrPages.push('https://myg.gg/guest')
+        arrPages.push('https://myg.gg/find-gamers/search')
 
         for (let index = 0; index < arrPages.length; index++) {
-          if (index == 0) {
-            fs.appendFileSync('c:\\t\\sitemap.xml', header_1 + open_urlSet + header_3 + header_4 + header_5 + header_6)
-          }
-
-          fs.appendFileSync('c:\\t\\sitemap.xml', openURL + openLOC + arrPages[index] + closeLOC + closeURL)
-          console.log('HOND')
-
-          if (index == arrPages.length - 1) {
-            fs.appendFileSync('c:\\t\\sitemap.xml', close_urlSet)
-          }
+          fs.appendFileSync(filePath, openURL + openLOC + arrPages[index] + closeLOC + closeURL)
         }
+
+        //User profiles
+        for (let index = 0; index < profileUsers.length; index++) {
+          const tmpStr = 'https://myG.gg/profile/' + profileUsers[index].alias
+          fs.appendFileSync(filePath, openURL + openLOC + tmpStr + closeLOC + closeURL)
+        }
+
+        fs.appendFileSync(filePath, close_urlSet)
 
         return 'Saved successfully'
       } catch (error) {
