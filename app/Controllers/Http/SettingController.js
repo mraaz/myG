@@ -89,11 +89,6 @@ class SettingController {
 
         fs.appendFileSync(filePath, header_1 + open_urlSet + header_3 + header_4 + header_5 + header_6)
 
-        const profileUsers = await Database.from('posts')
-          .innerJoin('users', 'users.id', 'posts.user_id')
-          .select('alias')
-          .groupBy('users.id')
-
         //Hard coded values
         let arrPages = []
         arrPages.push('https://myg.gg/guest')
@@ -103,9 +98,25 @@ class SettingController {
           fs.appendFileSync(filePath, openURL + openLOC + arrPages[index] + closeLOC + closeURL)
         }
 
+        const profileUsers = await Database.from('posts')
+          .innerJoin('users', 'users.id', 'posts.user_id')
+          .select('alias')
+          .groupBy('users.id')
+
         //User profiles
         for (let index = 0; index < profileUsers.length; index++) {
           const tmpStr = 'https://myG.gg/profile/' + profileUsers[index].alias
+          fs.appendFileSync(filePath, openURL + openLOC + tmpStr + closeLOC + closeURL)
+        }
+
+        const activeGroups = await Database.from('posts')
+          .innerJoin('groups', 'groups.id', 'posts.group_id')
+          .select('groups.name')
+          .groupBy('groups.id')
+
+        //Groups with posts
+        for (let index = 0; index < activeGroups.length; index++) {
+          const tmpStr = 'https://myG.gg/community/' + encodeURIComponent(activeGroups[index].name)
           fs.appendFileSync(filePath, openURL + openLOC + tmpStr + closeLOC + closeURL)
         }
 
