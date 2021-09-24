@@ -101,6 +101,16 @@ class Settings extends Component {
     }
   }
 
+  createSiteMap2 = async () => {
+    console.log('/api/clashroyale/show click')
+    try {
+      const tmp = await axios.get('/api/clashroyale/show')
+      console.log(tmp)
+    } catch (error) {
+      logToElasticsearch('error', 'Settings', 'Failed handleNotifyViaEmailChange:' + ' ' + error)
+    }
+  }
+
   sponsorsAction = () => {
     this.setState({ modalStatus: true })
   }
@@ -365,6 +375,11 @@ class Settings extends Component {
               {this.state.feature_on && (
                 <button type='button' className='disableAcccount' onClick={this.createSiteMap}>
                   Create SiteMap
+                </button>
+              )}
+              {this.state.feature_on && (
+                <button type='button' className='disableAcccount' onClick={this.createSiteMap2}>
+                  Pull Data
                 </button>
               )}
               <button type='button' className='sponsorsAction' onClick={() => this.sponsorsAction()}>
