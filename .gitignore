@@ -147,3 +147,4 @@ database/migrations/1627650356441_posts_schema.js
 database/migrations/1628859278721_posts_schema.js
 database/migrations/1629614860724_posts_schema.js
 database/migrations/1631411072832_settings_schema.js
+database/migrations/1632544717445_clash_royale_schema.js

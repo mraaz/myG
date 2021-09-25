@@ -699,7 +699,7 @@ class NotificationController {
   async updateRead_Status({ auth, request, response }) {
     if (auth.user) {
       try {
-        const updateRead_Status = await Notification.query()
+        await Notification.query()
           .where({
             other_user_id: auth.user.id,
             post_id: request.params.post_id,
@@ -722,7 +722,7 @@ class NotificationController {
   async updateRead_Status_schedule_game({ auth, request, response }) {
     if (auth.user) {
       try {
-        const updateRead_Status_schedule_game = await Notification.query()
+        await Notification.query()
           .where({
             other_user_id: auth.user.id,
             schedule_games_id: request.params.schedule_game_id,
@@ -745,7 +745,7 @@ class NotificationController {
   async updateRead_Status_groups({ auth, request, response }) {
     if (auth.user) {
       try {
-        const updateRead_Status_groups = await Notification.query()
+        await Notification.query()
           .where({
             other_user_id: auth.user.id,
             group_id: request.params.group_id,
@@ -769,7 +769,7 @@ class NotificationController {
   async updateRead_Status_ding({ auth, request, response }) {
     if (auth.user) {
       try {
-        const updateRead_Status_ding = await Notification.query()
+        await Notification.query()
           .where({
             other_user_id: auth.user.id,
             activity_type: 20
@@ -790,7 +790,7 @@ class NotificationController {
 
   async markAllNoti({ auth, request, response }) {
     try {
-      const markAllNoti = await Notification.query()
+      await Notification.query()
         .where({ other_user_id: auth.user.id })
         .whereIn('activity_type', [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 19, 20])
         .update({ read_status: 1 })
@@ -808,7 +808,7 @@ class NotificationController {
 
   async deleteAllNoti({ auth, request, response }) {
     try {
-      const deleteAllNoti = await Database.table('notifications')
+      await Database.table('notifications')
         .where({
           other_user_id: auth.user.id
         })

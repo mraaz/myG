@@ -1,10 +1,12 @@
 'use strict'
 
+const ClashRoyale = use('App/Models/ClashRoyale')
 const Database = use('Database')
+
+const CommonController = use('./CommonController')
+
 const LoggingRepository = require('../../Repositories/Logging')
 const axios = use('axios')
-
-const util = require('util')
 
 class ClashRoyaleController {
   async show({ auth, request, response }) {
@@ -63,6 +65,42 @@ class ClashRoyaleController {
         context: __filename,
         message: (error && error.message) || error
       })
+    }
+  }
+
+  async update({ auth, request, response }) {
+    if (auth.user) {
+      try {
+        const get_player = await Database.from('clash_royale_transactions')
+          .where({
+            player_tag: request.input('player_tag')
+          })
+          .first()
+
+        if (get_player == undefined) {
+          const commonController = new CommonController()
+          const current_user_permission = await commonController.get_permission({ auth }, request.input('group_id'))
+
+          if (current_user_permission != 0 && current_user_permission != 1) {
+            await Database.table('clash_royale_transactions').where({ user_id: auth.user.id }).delete()
+          }
+        }
+
+        await Database.table('clash_royale_transactions')
+          .where({ player_tag: request.input('player_tag') })
+          .update({ user_id: request.input('user_id') })
+
+        return 'Saved successfully'
+      } catch (error) {
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+          method: 'update'
+        })
+      }
     }
   }
 }

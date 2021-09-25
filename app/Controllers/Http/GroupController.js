@@ -460,14 +460,14 @@ class GroupController {
     if (auth.user) {
       const commonController = new CommonController()
 
-      let current_user_permission = await commonController.get_permission({ auth }, request.input('group_id'))
+      const current_user_permission = await commonController.get_permission({ auth }, request.input('group_id'))
 
       try {
         if (current_user_permission != 0 && current_user_permission != 1 && current_user_permission != 2) {
           return
         }
 
-        const update_img = await Group.query()
+        await Group.query()
           .where({ id: request.input('group_id') })
           .update({ group_img: request.input('group_img') })
         return 'Saved successfully'
@@ -488,12 +488,12 @@ class GroupController {
       try {
         const commonController = new CommonController()
 
-        let current_user_permission = await commonController.get_permission({ auth }, request.input('group_id'))
+        const current_user_permission = await commonController.get_permission({ auth }, request.input('group_id'))
 
         if (current_user_permission != 0 && current_user_permission != 1 && current_user_permission != 2) {
           return
         }
-        const update_group_type = await Group.query()
+        await Group.query()
           .where({ id: request.input('group_id') })
           .update({
             type: request.input('privacy'),
@@ -546,12 +546,12 @@ class GroupController {
         }
         const commonController = new CommonController()
 
-        let current_user_permission = await commonController.get_permission({ auth }, request.input('group_id'))
+        const current_user_permission = await commonController.get_permission({ auth }, request.input('group_id'))
 
         if (current_user_permission != 0 && current_user_permission != 1) {
           return
         }
-        const update_img = await Group.query()
+        await Group.query()
           .where({ id: request.input('group_id') })
           .update({ name: request.input('name').trim() })
 
