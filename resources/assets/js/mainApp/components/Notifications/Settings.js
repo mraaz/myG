@@ -103,8 +103,18 @@ class Settings extends Component {
 
   createSiteMap2 = async () => {
     console.log('/api/clashroyale/show click')
+    const clanTag = 'YL9YCYU' //'QG8UQCV0'
+
     try {
-      const tmp = await axios.get('/api/clashroyale/show')
+      //const tmp = await axios.get(`/api/clashroyale/show/${clanTag}`)
+      const tmp = await axios.post('/api/clashroyale/store/', {
+        player_tag: '2R9PCGC',
+        user_id: 624,
+        reminder_one: '01:00',
+        reminder_two: '01:00',
+        reminder_three: '01:00'
+      })
+
       console.log(tmp)
     } catch (error) {
       logToElasticsearch('error', 'Settings', 'Failed handleNotifyViaEmailChange:' + ' ' + error)

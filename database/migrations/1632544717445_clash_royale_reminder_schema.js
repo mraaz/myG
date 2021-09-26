@@ -16,6 +16,7 @@ class ClashRoyaleSchema extends Schema {
         .datetime("email_notification_last_runtime")
         .defaultTo(Database.raw("CURRENT_TIMESTAMP")).index()
       table.integer('number_of_wars_remaining').unsigned().defaultTo(0).index()
+      table.time("reminder_time").notNullable().index()
       table.timestamps()
     })
   }

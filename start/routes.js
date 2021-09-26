@@ -252,7 +252,8 @@ Route.get('/api/settings', 'SettingController.show')
 Route.post('/api/settings', 'SettingController.store')
 Route.get('/api/settings/siteMap', 'SettingController.siteMap')
 
-Route.get('/api/clashroyale/show', 'ClashRoyaleController.show')
+Route.get('/api/clashroyale/show/:clanTag', 'ClashRoyaleController.show')
+Route.post('/api/clashroyale/store/', 'ClashRoyaleController.store')
 
 Route.post('/api/commendations', 'CommendationController.store')
 Route.get('/api/commendations/user/:id', 'CommendationController.showUser')
