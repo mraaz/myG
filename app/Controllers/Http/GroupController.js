@@ -458,8 +458,8 @@ class GroupController {
 
   async update_img({ auth, request, response }) {
     if (auth.user) {
+      if (request.input('group_id') == undefined || request.input('group_id') == '') return
       const commonController = new CommonController()
-
       const current_user_permission = await commonController.get_permission({ auth }, request.input('group_id'))
 
       try {
@@ -486,8 +486,8 @@ class GroupController {
   async update_settings({ auth, request, response }) {
     if (auth.user) {
       try {
+        if (request.input('group_id') == undefined || request.input('group_id') == '') return
         const commonController = new CommonController()
-
         const current_user_permission = await commonController.get_permission({ auth }, request.input('group_id'))
 
         if (current_user_permission != 0 && current_user_permission != 1 && current_user_permission != 2) {
@@ -544,8 +544,9 @@ class GroupController {
         if (/['/.%#$,;`\\]/.test(request.input('name'))) {
           return false
         }
-        const commonController = new CommonController()
 
+        if (request.input('group_id') == undefined || request.input('group_id') == '') return
+        const commonController = new CommonController()
         const current_user_permission = await commonController.get_permission({ auth }, request.input('group_id'))
 
         if (current_user_permission != 0 && current_user_permission != 1) {

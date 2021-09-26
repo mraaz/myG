@@ -87,6 +87,7 @@ class ClashRoyaleController {
         // const getPlayerInfo = await axios.get(`https://api.clashroyale.com/v1/${getPlayerURL}`, CONFIG)
 
         // return getPlayerInfo.data
+
         const get_player = await Database.from('clash_royale_transactions')
           .where({
             player_tag: request.input('player_tag')
@@ -94,6 +95,8 @@ class ClashRoyaleController {
           .first()
 
         if (get_player != undefined) return
+
+        if (request.input('group_id') == undefined || request.input('group_id').trim() == '') return
 
         const commonController = new CommonController()
         const current_user_permission = await commonController.get_permission({ auth }, request.input('group_id'))
@@ -103,14 +106,16 @@ class ClashRoyaleController {
           await Database.table('clash_royale_transactions').where({ user_id: auth.user.id }).delete()
         }
 
-        await ClashRoyaleTrans.create({
+        const cr_trans_id = await ClashRoyaleTrans.create({
+          group_id: request.input('group_id'),
           player_tag: request.input('player_tag'),
-          user_id: request.input('user_id'),
-          clan_tag: request.input('user_id')
+          user_id: request.input('user_id')
         })
 
         if (request.input('reminder_one') != undefined) {
           await ClashRoyaleReminder.create({
+            clash_royale_trans_id: cr_trans_id.id,
+            clan_tag: request.input('clanTag'),
             player_tag: request.input('player_tag'),
             user_id: request.input('user_id'),
             reminder_time: request.input('reminder_one')
@@ -119,6 +124,8 @@ class ClashRoyaleController {
 
         if (request.input('reminder_two') != undefined) {
           await ClashRoyaleReminder.create({
+            clash_royale_trans_id: cr_trans_id.id,
+            clan_tag: request.input('clanTag'),
             player_tag: request.input('player_tag'),
             user_id: request.input('user_id'),
             reminder_time: request.input('reminder_two')
@@ -127,6 +134,8 @@ class ClashRoyaleController {
 
         if (request.input('reminder_three') != undefined) {
           await ClashRoyaleReminder.create({
+            clash_royale_trans_id: cr_trans_id.id,
+            clan_tag: request.input('clanTag'),
             player_tag: request.input('player_tag'),
             user_id: request.input('user_id'),
             reminder_time: request.input('reminder_three')

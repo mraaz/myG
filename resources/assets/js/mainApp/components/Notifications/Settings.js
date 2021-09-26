@@ -108,8 +108,10 @@ class Settings extends Component {
     try {
       //const tmp = await axios.get(`/api/clashroyale/show/${clanTag}`)
       const tmp = await axios.post('/api/clashroyale/store/', {
+        group_id: 1,
         player_tag: '2R9PCGC',
         user_id: 624,
+        clanTag: clanTag,
         reminder_one: '01:00',
         reminder_two: '01:00',
         reminder_three: '01:00'
