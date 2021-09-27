@@ -17,6 +17,8 @@ const CONFIG = {
 
 class ClashRoyaleController {
   async show({ auth, request, response }) {
+    // periodType: "training"
+    // periodType: "warDay"
     try {
       if (request.params.clanTag == undefined || request.params.clanTag == '') {
         return 'Invalid Clan Tag'
@@ -76,9 +78,7 @@ class ClashRoyaleController {
     }
   }
 
-  async store({ auth, request, response }) {
-    console.log('TEST')
-
+  async storePlayerDetails({ auth, request, response }) {
     if (auth.user) {
       try {
         // const clanTag = '2R9PCGC'
@@ -86,7 +86,13 @@ class ClashRoyaleController {
 
         // const getPlayerInfo = await axios.get(`https://api.clashroyale.com/v1/${getPlayerURL}`, CONFIG)
 
-        // return getPlayerInfo.data
+        if (request.input('clash_royale_trans_id') == undefined) {
+          await Database.table('clash_royale_transactions')
+            .where({
+              id: request.input('clash_royale_trans_id')
+            })
+            .delete()
+        }
 
         const get_player = await Database.from('clash_royale_transactions')
           .where({
@@ -96,7 +102,7 @@ class ClashRoyaleController {
 
         if (get_player != undefined) return
 
-        if (request.input('group_id') == undefined || request.input('group_id').trim() == '') return
+        if (request.input('group_id') == undefined || request.input('group_id') == '') return
 
         const commonController = new CommonController()
         const current_user_permission = await commonController.get_permission({ auth }, request.input('group_id'))
@@ -153,6 +159,98 @@ class ClashRoyaleController {
           method: 'store'
         })
       }
+    }
+  }
+  async getPlayerDetails({ request }) {
+    try {
+      const playerDetails = Database.from('clash_royale_transactions')
+        .leftJoin('clash_royale_reminders', 'clash_royale_reminders.clash_royale_trans_id', 'clash_royale_transactions.id')
+        .where('clash_royale_transactions.group_id', '=', request.input('group_id'))
+        .andWhere('clash_royale_transactions.player_tag', '=', request.input('player_tag'))
+        .select('clash_royale_transactions.*', 'clash_royale_reminders.reminder_time')
+        .options({ nestTables: true })
+
+      return playerDetails
+    } catch (error) {
+      if (error.response.data.reason == 'notFound') {
+        return 'Clan not found'
+      }
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+        method: 'show'
+      })
+    }
+  }
+
+  async deletePlayerDetails({ request }) {
+    try {
+      await Database.table('clash_royale_transactions')
+        .where({
+          id: request.params.clash_royale_trans_id
+        })
+        .delete()
+    } catch (error) {
+      if (error.response.data.reason == 'notFound') {
+        return 'Clan not found'
+      }
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+        method: 'show'
+      })
+    }
+  }
+
+  async updatePlayerDetails({ request }) {
+    try {
+      await ClashRoyaleTrans.query()
+        .where({ id: request.input('clash_royale_trans_id') })
+        .update({ user_id: request.input('user_id') })
+
+      if (request.input('reminder_one') != undefined) {
+        await ClashRoyaleReminder.query({
+          reminder_time: request.input('reminder_one')
+        })
+      }
+
+      if (request.input('reminder_two') != undefined) {
+        await ClashRoyaleReminder.query({
+          clash_royale_trans_id: cr_trans_id.id,
+          clan_tag: request.input('clanTag'),
+          player_tag: request.input('player_tag'),
+          user_id: request.input('user_id'),
+          reminder_time: request.input('reminder_two')
+        })
+      }
+
+      if (request.input('reminder_three') != undefined) {
+        await ClashRoyaleReminder.query({
+          clash_royale_trans_id: cr_trans_id.id,
+          clan_tag: request.input('clanTag'),
+          player_tag: request.input('player_tag'),
+          user_id: request.input('user_id'),
+          reminder_time: request.input('reminder_three')
+        })
+      }
+    } catch (error) {
+      if (error.response.data.reason == 'notFound') {
+        return 'Clan not found'
+      }
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+        method: 'show'
+      })
     }
   }
 }

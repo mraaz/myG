@@ -103,19 +103,39 @@ class Settings extends Component {
 
   createSiteMap2 = async () => {
     console.log('/api/clashroyale/show click')
-    const clanTag = 'YL9YCYU' //'QG8UQCV0'
+    const clanTag = 'QG8UQCV0' //'YL9YCYU'
+    const clash_royale_trans_id = 5
 
     try {
-      //const tmp = await axios.get(`/api/clashroyale/show/${clanTag}`)
-      const tmp = await axios.post('/api/clashroyale/store/', {
-        group_id: 1,
-        player_tag: '2R9PCGC',
-        user_id: 624,
-        clanTag: clanTag,
-        reminder_one: '01:00',
-        reminder_two: '01:00',
-        reminder_three: '01:00'
-      })
+      const tmp = await axios.get(`/api/clashroyale/show/${clanTag}`)
+
+      // const tmp = await axios.post('/api/clashroyale/storePlayerDetails/', {
+      //   group_id: 1,
+      //   player_tag: '2R9PCGC',
+      //   user_id: 624,
+      //   clanTag: clanTag,
+      //   reminder_one: '01:00',
+      //   reminder_two: '01:00',
+      //   reminder_three: '01:00'
+      // })
+
+      // const tmp = await axios.post('/api/clashroyale/getPlayerDetails/', {
+      //   group_id: 1,
+      //   player_tag: '2R9PCGC'
+      // })
+
+      //const tmp = await axios.delete(`/api/clashroyale/deletePlayerDetails/${clash_royale_trans_id}`)
+
+      // const tmp = await axios.post('/api/clashroyale/storePlayerDetails/', {
+      //   clash_royale_trans_id: 1,
+      //   group_id: 1,
+      //   player_tag: '2R9PCGC',
+      //   user_id: 624,
+      //   clanTag: clanTag,
+      //   reminder_one: '01:00',
+      //   reminder_two: '01:00',
+      //   reminder_three: '01:00'
+      // })
 
       console.log(tmp)
     } catch (error) {

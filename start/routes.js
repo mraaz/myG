@@ -253,7 +253,9 @@ Route.post('/api/settings', 'SettingController.store')
 Route.get('/api/settings/siteMap', 'SettingController.siteMap')
 
 Route.get('/api/clashroyale/show/:clanTag', 'ClashRoyaleController.show')
-Route.post('/api/clashroyale/store/', 'ClashRoyaleController.store')
+Route.post('/api/clashroyale/storePlayerDetails/', 'ClashRoyaleController.storePlayerDetails')
+Route.post('/api/clashroyale/getPlayerDetails/', 'ClashRoyaleController.getPlayerDetails')
+Route.delete('/api/clashroyale/deletePlayerDetails/:clash_royale_trans_id', 'ClashRoyaleController.deletePlayerDetails')
 
 Route.post('/api/commendations', 'CommendationController.store')
 Route.get('/api/commendations/user/:id', 'CommendationController.showUser')
