@@ -233,7 +233,8 @@ class GameNameController {
   syncToElasticsearch = async () => {
     const gameSearchResults = await Database.table('game_names')
       .leftJoin('game_name_fields', 'game_name_fields.game_names_id', 'game_names.id')
-      .select('game_names.*', 'game_name_fields.game_names_id as more_data')
+      .leftJoin('game_stats', 'game_stats.game_names_id', 'game_names.id')
+      .select('game_names.*', 'game_name_fields.game_names_id as more_data', 'game_stats.game_stat_fields')
 
     for await (let gameName of gameSearchResults) {
       await ElasticsearchRepository.storeGameName(gameName)
@@ -352,6 +353,32 @@ class GameNameController {
       experience: true,
       platform: true,
       region: true
+    }
+  }
+
+  //Manually ran for now. This inserts JSON fields into the Game_stats table
+  async insertFeildsintoGameStats() {
+    try {
+      const clashRoyaleJSON = {
+        fieldName: 'Clan tag',
+        required: false,
+        placeholder: 'Enter Clan tag, e.g. YL9YCYU'
+      }
+
+      await Database.table('game_stats').insert({
+        game_names_id: 1014,
+        game_stat_fields: JSON.stringify(clashRoyaleJSON)
+      })
+
+      return 'All Done'
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error
+      })
     }
   }
 }

@@ -107,7 +107,9 @@ class Settings extends Component {
     const clash_royale_trans_id = 5
 
     try {
-      const tmp = await axios.get(`/api/clashroyale/show/${clanTag}`)
+      //const tmp = await axios.get(`/api/clashroyale/show/${clanTag}`)
+
+      const tmp = await axios.get('/api/GameNames/insertFeildsintoGameStats')
 
       // const tmp = await axios.post('/api/clashroyale/storePlayerDetails/', {
       //   group_id: 1,
