@@ -136,9 +136,6 @@ Route.post('/api/GameNames', 'GameNameController.store')
 Route.get('/api/GameNames/:int/gameSearchResults', 'GameNameController.gameSearchResults')
 Route.get('/api/GameNames/getTopGames', 'GameNameController.getTopGames')
 
-//Maunally run to insert fields into Game_stats field
-//Route.get('/api/GameNames/insertFeildsintoGameStats', 'GameNameController.insertFeildsintoGameStats')
-
 Route.get('/api/Tags', 'TagController.show')
 Route.post('/api/Tags/getTagsforGames', 'TagController.getTagsforGames')
 Route.post('/api/Tags/getTopTagsforGames', 'TagController.getTopTagsforGames')

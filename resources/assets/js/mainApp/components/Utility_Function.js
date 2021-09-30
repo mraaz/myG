@@ -55,6 +55,7 @@ export async function Game_name_values(inputValue) {
   } else {
     inputValue = inputValue.trimStart()
     getGameName = await axios.get(`/api/GameNames/${inputValue}/gameSearchResults`)
+    console.log(getGameName, '<<<getGameName')
   }
   try {
     let results = []
