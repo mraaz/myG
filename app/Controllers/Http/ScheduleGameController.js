@@ -1646,7 +1646,7 @@ class ScheduleGameController {
 
   async getHeader_stats_header({ request }) {
     let additional_info_data = {}
-
+    console.log('Ant easy')
     try {
       const getGameFields = await Database.from('game_name_fields').where({ game_names_id: request.params.game_names_id }).first()
 

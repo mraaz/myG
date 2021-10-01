@@ -77,7 +77,8 @@ class GroupController {
           group_img: request.input('group_img') ? request.input('group_img') : null,
           type: request.input('type'),
           all_accept: request.input('all_accept'),
-          grp_description: request.input('grp_description')
+          grp_description: request.input('grp_description'),
+          stats_header: request.input('stats_header')
         })
 
         if (request.input('aws_key_id') != undefined && request.input('aws_key_id') != null) {
@@ -498,7 +499,8 @@ class GroupController {
           .update({
             type: request.input('privacy'),
             all_accept: request.input('mApprovals') == 'true' ? 1 : 0,
-            grp_description: request.input('description')
+            grp_description: request.input('description'),
+            stats_header: request.input('stats_header')
           })
 
         // if (request.input('tags') != null && request.input('tags').length > 0) {
