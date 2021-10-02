@@ -77,8 +77,8 @@ class ClashRoyaleController {
         }
       }
 
-      return getCurrentriverraceInfo.data
-      //return getClanInfo.data
+      //return getCurrentriverraceInfo.data
+      return getClanInfo.data
     } catch (error) {
       if (error.response.data.reason == 'notFound') {
         return 'Clan not found'
