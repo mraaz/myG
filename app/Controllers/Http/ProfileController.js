@@ -92,7 +92,13 @@ class ProfileController {
       if (!requestingUserId) return
       const gameId = params.gameId
       log('PROFILE', `User ${requestingUserId} requesting dynamic fields for game ${gameId}`)
-      const fields = await ProfileRepository.fetchDynamicFields({ gameId })
+      let fields = await ProfileRepository.fetchDynamicFields({ gameId })
+
+      //Decided to loop thru the array again. Could look into this as a refactor
+      for (let index = 0; index < fields.length; index++) {
+        if (fields[index].id == 'stats_header') fields.splice(index, 1)
+      }
+
       return response.send(fields)
     } catch (error) {
       LoggingRepository.log({

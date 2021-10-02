@@ -65,7 +65,7 @@ class EsportsBioController {
 
   async update({ auth, request, response }) {
     try {
-      const updateEsports_Exp = await EsportsBio.query()
+      await EsportsBio.query()
         .where({ user_id: auth.user.id })
         .update({
           status: request.input('status'),

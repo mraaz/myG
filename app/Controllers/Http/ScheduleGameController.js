@@ -1580,12 +1580,12 @@ class ScheduleGameController {
     // additional_info_values = {}
 
     try {
-      const game_info = await Database.from('game_names').where({ id: request.params.game_names_id }).first()
+      // const game_info = await Database.from('game_names').where({ id: request.params.game_names_id }).first()
 
-      if (game_info == undefined) {
-        return
-      }
-      const getGameFields = await Database.from('game_name_fields').where({ game_names_id: game_info.id }).first()
+      // if (game_info == undefined) {
+      //   return
+      // }
+      const getGameFields = await Database.from('game_name_fields').where({ game_names_id: request.params.game_names_id }).first()
 
       if (getGameFields != undefined) {
         let obj = '',
@@ -1618,6 +1618,8 @@ class ScheduleGameController {
             value: obj5[obj[key]]
           }
         }
+      } else {
+        return
       }
 
       if (JSON.stringify(additional_info_data) != '{}') {
@@ -1625,6 +1627,7 @@ class ScheduleGameController {
       }
 
       delete additional_info_data['stats_link']
+      delete additional_info_data['stats_header']
 
       return {
         additional_info,
@@ -1637,6 +1640,62 @@ class ScheduleGameController {
         source: 'backend',
         context: __filename,
         message: (error && error.message) || error
+      })
+    }
+  }
+
+  async getHeader_stats_header({ request }) {
+    let additional_info_data = {}
+    console.log('Ant easy')
+    try {
+      const getGameFields = await Database.from('game_name_fields').where({ game_names_id: request.params.game_names_id }).first()
+
+      if (getGameFields != undefined) {
+        let obj = '',
+          obj2 = '',
+          obj3 = '',
+          obj4 = '',
+          obj5 = ''
+
+        if (getGameFields.in_game_fields != undefined) {
+          obj = JSON.parse(getGameFields.in_game_fields)
+        }
+        if (getGameFields.in_game_field_labels != undefined) {
+          obj2 = JSON.parse(getGameFields.in_game_field_labels)
+        }
+        if (getGameFields.in_game_field_types != undefined) {
+          obj3 = JSON.parse(getGameFields.in_game_field_types)
+        }
+        if (getGameFields.in_game_field_placeholders != undefined) {
+          obj4 = JSON.parse(getGameFields.in_game_field_placeholders)
+        }
+        if (getGameFields.in_game_field_values != undefined) {
+          obj5 = JSON.parse(getGameFields.in_game_field_values)
+        }
+
+        for (let key in obj) {
+          additional_info_data[obj[key]] = {
+            label: obj2[obj[key]],
+            type: obj3[obj[key]],
+            placeholder: obj4[obj[key]],
+            value: obj5[obj[key]]
+          }
+        }
+      } else {
+        return
+      }
+
+      const data = additional_info_data['stats_header']
+
+      return data
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+        method: 'getHeader_stats_header'
       })
     }
   }
