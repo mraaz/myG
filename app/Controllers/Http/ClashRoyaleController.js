@@ -35,7 +35,7 @@ class ClashRoyaleController {
       const getCurrentriverraceInfo = await axios.get(`https://api.clashroyale.com/v1/${getCurrentriverraceURL}`, CONFIG)
       //const getRiverRaceLogInfo = await axios.get(`https://api.clashroyale.com/v1/${getRiverRaceLogURL}`, CONFIG)
 
-      const isWarToday = getCurrentriverraceInfo.data.periodType == 'warDay' ? true : false
+      const isWarToday = getCurrentriverraceInfo.data.periodType == 'training' ? false : true
       let riverRaceStruct = {}
 
       if (isWarToday) {
@@ -77,8 +77,8 @@ class ClashRoyaleController {
         }
       }
 
-      //return getCurrentriverraceInfo.data
-      return getClanInfo.data
+      return getCurrentriverraceInfo.data
+      //return getClanInfo.data
     } catch (error) {
       if (error.response.data.reason == 'notFound') {
         return 'Clan not found'

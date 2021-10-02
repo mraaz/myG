@@ -103,12 +103,12 @@ class Settings extends Component {
 
   createSiteMap2 = async () => {
     console.log('/api/clashroyale/show click')
-    const clanTag = 'QG8UQCV0' //'YL9YCYU'
+    const clanTag = '8G9VY92' //'QG8UQCV0' //'YL9YCYU'
     const clash_royale_player_id = 1
     const game_names_id = 1014
 
     try {
-      //const tmp = await axios.get(`/api/clashroyale/show/${clanTag}`)
+      const tmp = await axios.get(`/api/clashroyale/show/${clanTag}`)
 
       //const tmp = await axios.get(`/api/ScheduleGame/getHeader_stats_header/${game_names_id}`)
 
@@ -130,7 +130,7 @@ class Settings extends Component {
 
       //const tmp = await axios.delete(`/api/clashroyale/deletePlayerDetails/${clash_royale_player_id}`)
 
-      //THIS IS AN UPDATE STATEMENT
+      THIS IS AN UPDATE STATEMENT
       const tmp = await axios.post('/api/clashroyale/storePlayerDetails/', {
         clash_royale_players_id: 3,
         group_id: 1,
