@@ -130,17 +130,17 @@ class Settings extends Component {
 
       //const tmp = await axios.delete(`/api/clashroyale/deletePlayerDetails/${clash_royale_player_id}`)
 
-      THIS IS AN UPDATE STATEMENT
-      const tmp = await axios.post('/api/clashroyale/storePlayerDetails/', {
-        clash_royale_players_id: 3,
-        group_id: 1,
-        player_tag: '2R9PCGC',
-        user_id: 624,
-        clanTag: clanTag,
-        reminder_one: '01:00',
-        reminder_two: '01:00',
-        reminder_three: '01:00'
-      })
+      //THIS IS AN UPDATE STATEMENT
+      // const tmp = await axios.post('/api/clashroyale/storePlayerDetails/', {
+      //   clash_royale_players_id: 3,
+      //   group_id: 1,
+      //   player_tag: '2R9PCGC',
+      //   user_id: 624,
+      //   clanTag: clanTag,
+      //   reminder_one: '01:00',
+      //   reminder_two: '01:00',
+      //   reminder_three: '01:00'
+      // })
 
       console.log(tmp)
     } catch (error) {
