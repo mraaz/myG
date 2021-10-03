@@ -5,10 +5,11 @@ const ClashRoyalePlayers = use('App/Models/ClashRoyalePlayers')
 const Database = use('Database')
 
 const CommonController = use('./CommonController')
+const SlackController = use('./SlackController')
 
 const LoggingRepository = require('../../Repositories/Logging')
-const axios = use('axios')
 
+const axios = use('axios')
 const TOKEN =
   'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6IjE4ZjYzOWEwLTg4MzAtNGFkYy1iNjRjLTYwMzg4NDIyNTQ4MCIsImlhdCI6MTYzMzAwMzUyMiwic3ViIjoiZGV2ZWxvcGVyL2U0ZjA1ZjI4LWJmOGMtNDJmNS0yY2I1LTU0ZTZlNjA2N2QxMiIsInNjb3BlcyI6WyJyb3lhbGUiXSwibGltaXRzIjpbeyJ0aWVyIjoiZGV2ZWxvcGVyL3NpbHZlciIsInR5cGUiOiJ0aHJvdHRsaW5nIn0seyJjaWRycyI6WyIxMDEuMTE1LjEzNi4yNDgiXSwidHlwZSI6ImNsaWVudCJ9XX0.lUuxPHW0CAM0rlwLEokoC7KKtoZtu5AFiCAnSKQQIXpC0rukg91Pg5-ZoiMMHASVRYkac9_8WFiwVEJTqyo8DQ'
 const CONFIG = {
@@ -20,34 +21,6 @@ class ClashRoyaleController {
     // periodType: "training"
     // periodType: "warDay"
     // periodType: "colosseum"
-
-    console.log('CLEAR')
-
-    // const getClanInfo = await axios.post('https://hooks.slack.com/services/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', {
-    //   payload: JSON.stringify({
-    //     channel: '#myg-alerts',
-    //     text: 'This is posted to #myg-alerts and comes from a bot named webhookbot.'
-    //   })
-    // })
-
-    const data = 'Hello World ! '
-    const payload = {
-      username: 'myG_webApp',
-      attachments: [{ text: data, color: 'green' }]
-    }
-    const options = {
-      icon_emoji: slackBotIconEmoji,
-      method: 'post',
-      baseURL: 'https://hooks.slack.com/services/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',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-      },
-      data: payload
-    }
-    const try_post = await axios.request(options)
-    console.log(try_post)
-
-    return
 
     try {
       if (request.params.clanTag == undefined || request.params.clanTag == '') {
@@ -113,6 +86,12 @@ class ClashRoyaleController {
       if (error.response.data.reason == 'notFound') {
         return 'Clan not found'
       }
+      if (error.response.data.reason == 'accessDenied') {
+        const slack = new SlackController()
+        slack.sendMessage('Clash Royale Auth Failed: Auth Token: ' + TOKEN)
+        return 'Auth Error'
+      }
+
       LoggingRepository.log({
         environment: process.env.NODE_ENV,
         type: 'error',
