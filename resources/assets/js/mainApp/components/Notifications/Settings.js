@@ -103,7 +103,9 @@ class Settings extends Component {
 
   createSiteMap2 = async () => {
     console.log('/api/clashroyale/show click')
-    const clanTag = '8G9VY92' //'QG8UQCV0' //'YL9YCYU'
+    let strclanTag = '#8G9VY92' //'QG8UQCV0' //'YL9YCYU'
+    const clanTag = strclanTag.replace(/#/g, '')
+
     const clash_royale_player_id = 1
     const game_names_id = 1014
 

@@ -21,12 +21,42 @@ class ClashRoyaleController {
     // periodType: "warDay"
     // periodType: "colosseum"
 
+    console.log('CLEAR')
+
+    // const getClanInfo = await axios.post('https://hooks.slack.com/services/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', {
+    //   payload: JSON.stringify({
+    //     channel: '#myg-alerts',
+    //     text: 'This is posted to #myg-alerts and comes from a bot named webhookbot.'
+    //   })
+    // })
+
+    const data = 'Hello World ! '
+    const payload = {
+      username: 'myG_webApp',
+      attachments: [{ text: data, color: 'green' }]
+    }
+    const options = {
+      icon_emoji: slackBotIconEmoji,
+      method: 'post',
+      baseURL: 'https://hooks.slack.com/services/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',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+      },
+      data: payload
+    }
+    const try_post = await axios.request(options)
+    console.log(try_post)
+
+    return
+
     try {
       if (request.params.clanTag == undefined || request.params.clanTag == '') {
         return 'Invalid Clan Tag'
       }
 
-      const clanTag = request.params.clanTag
+      const strClanTag = request.params.clanTag
+      const clanTag = strClanTag.replace(/#/g, '').trim()
+
       const getClanURL = 'clans/' + '%23' + clanTag + '/members'
       //const getRiverRaceLogURL = 'clans/' + '%23' + clanTag + '/riverracelog'
       const getCurrentriverraceURL = 'clans/' + '%23' + clanTag + '/currentriverrace'
