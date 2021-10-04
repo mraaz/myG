@@ -10,6 +10,8 @@ const SlackController = use('./SlackController')
 const LoggingRepository = require('../../Repositories/Logging')
 
 const axios = use('axios')
+
+//Decided to leave token in code, as each token is restricted to an IP
 const TOKEN =
   'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6IjE4ZjYzOWEwLTg4MzAtNGFkYy1iNjRjLTYwMzg4NDIyNTQ4MCIsImlhdCI6MTYzMzAwMzUyMiwic3ViIjoiZGV2ZWxvcGVyL2U0ZjA1ZjI4LWJmOGMtNDJmNS0yY2I1LTU0ZTZlNjA2N2QxMiIsInNjb3BlcyI6WyJyb3lhbGUiXSwibGltaXRzIjpbeyJ0aWVyIjoiZGV2ZWxvcGVyL3NpbHZlciIsInR5cGUiOiJ0aHJvdHRsaW5nIn0seyJjaWRycyI6WyIxMDEuMTE1LjEzNi4yNDgiXSwidHlwZSI6ImNsaWVudCJ9XX0.lUuxPHW0CAM0rlwLEokoC7KKtoZtu5AFiCAnSKQQIXpC0rukg91Pg5-ZoiMMHASVRYkac9_8WFiwVEJTqyo8DQ'
 const CONFIG = {
@@ -89,6 +91,11 @@ class ClashRoyaleController {
       if (error.message == 'Request failed with status code 403') {
         const slack = new SlackController()
         slack.sendMessage('Clash Royale Auth Failed: Auth Token: ' + TOKEN)
+        return 'Auth Error'
+      }
+      if (error.message == 'Request failed with status code 429') {
+        const slack = new SlackController()
+        slack.sendMessage('Clash Royale request was throttled! Auth Token: ' + TOKEN)
         return 'Auth Error'
       }
 
