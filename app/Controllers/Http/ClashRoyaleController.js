@@ -5,10 +5,11 @@ const ClashRoyalePlayers = use('App/Models/ClashRoyalePlayers')
 const Database = use('Database')
 
 const CommonController = use('./CommonController')
+const SlackController = use('./SlackController')
 
 const LoggingRepository = require('../../Repositories/Logging')
-const axios = use('axios')
 
+const axios = use('axios')
 const TOKEN =
   'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6IjE4ZjYzOWEwLTg4MzAtNGFkYy1iNjRjLTYwMzg4NDIyNTQ4MCIsImlhdCI6MTYzMzAwMzUyMiwic3ViIjoiZGV2ZWxvcGVyL2U0ZjA1ZjI4LWJmOGMtNDJmNS0yY2I1LTU0ZTZlNjA2N2QxMiIsInNjb3BlcyI6WyJyb3lhbGUiXSwibGltaXRzIjpbeyJ0aWVyIjoiZGV2ZWxvcGVyL3NpbHZlciIsInR5cGUiOiJ0aHJvdHRsaW5nIn0seyJjaWRycyI6WyIxMDEuMTE1LjEzNi4yNDgiXSwidHlwZSI6ImNsaWVudCJ9XX0.lUuxPHW0CAM0rlwLEokoC7KKtoZtu5AFiCAnSKQQIXpC0rukg91Pg5-ZoiMMHASVRYkac9_8WFiwVEJTqyo8DQ'
 const CONFIG = {
@@ -26,7 +27,9 @@ class ClashRoyaleController {
         return 'Invalid Clan Tag'
       }
 
-      const clanTag = request.params.clanTag
+      const strClanTag = request.params.clanTag
+      const clanTag = strClanTag.replace(/#/g, '').trim()
+
       const getClanURL = 'clans/' + '%23' + clanTag + '/members'
       //const getRiverRaceLogURL = 'clans/' + '%23' + clanTag + '/riverracelog'
       const getCurrentriverraceURL = 'clans/' + '%23' + clanTag + '/currentriverrace'
@@ -83,6 +86,12 @@ class ClashRoyaleController {
       if (error.response.data.reason == 'notFound') {
         return 'Clan not found'
       }
+      if (error.response.data.reason == 'accessDenied') {
+        const slack = new SlackController()
+        slack.sendMessage('Clash Royale Auth Failed: Auth Token: ' + TOKEN)
+        return 'Auth Error'
+      }
+
       LoggingRepository.log({
         environment: process.env.NODE_ENV,
         type: 'error',

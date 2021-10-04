@@ -141,6 +141,11 @@ spec:
                 secretKeyRef:
                   name:  {{ template "mygame.fullname" . }}
                   key: translatekey
+            - name: SLACK_BASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name:  {{ template "mygame.fullname" . }}
+                  key: slackbasekey
             - name: SECRET_KEY
               valueFrom:
                 secretKeyRef:
