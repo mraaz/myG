@@ -416,7 +416,7 @@ class Settings extends Component {
                   Create SiteMap
                 </button>
               )}
-              {this.state.feature_on && (
+              {!this.state.feature_on && (
                 <button type='button' className='disableAcccount' onClick={this.createSiteMap2}>
                   Pull Data
                 </button>
