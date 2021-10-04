@@ -83,10 +83,10 @@ class ClashRoyaleController {
       //return getCurrentriverraceInfo.data
       return getClanInfo.data
     } catch (error) {
-      if (error.response.data.reason == 'notFound') {
+      if (error.message == 'Request failed with status code 404') {
         return 'Clan not found'
       }
-      if (error.response.data.reason == 'accessDenied') {
+      if (error.message == 'Request failed with status code 403') {
         const slack = new SlackController()
         slack.sendMessage('Clash Royale Auth Failed: Auth Token: ' + TOKEN)
         return 'Auth Error'
