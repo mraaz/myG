@@ -177,6 +177,13 @@ const getJobs = (runEveryJobOnStart) => [
     runOnStart: runEveryJobOnStart ? true : false,
     enabled: true,
   },
+  {
+    name: 'Clash_royale_war_reminder',
+    action: require('./tasks/clash-royale-war-reminder'),
+    schedule: '0 0 * * 0', // At 00:00 on Sunday.
+    runOnStart: runEveryJobOnStart ? true : false,
+    enabled: true,
+  },
 ];
 
 //Code from AWS Event Bridge

@@ -8,12 +8,13 @@ const CommonController = use('./CommonController')
 const SlackController = use('./SlackController')
 
 const LoggingRepository = require('../../Repositories/Logging')
+const EncryptionRepository = require('../../Repositories/Encryption')
 
 const axios = use('axios')
 
 //Decided to leave token in code, as each token is restricted to an IP
 const TOKEN =
-  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6IjE4ZjYzOWEwLTg4MzAtNGFkYy1iNjRjLTYwMzg4NDIyNTQ4MCIsImlhdCI6MTYzMzAwMzUyMiwic3ViIjoiZGV2ZWxvcGVyL2U0ZjA1ZjI4LWJmOGMtNDJmNS0yY2I1LTU0ZTZlNjA2N2QxMiIsInNjb3BlcyI6WyJyb3lhbGUiXSwibGltaXRzIjpbeyJ0aWVyIjoiZGV2ZWxvcGVyL3NpbHZlciIsInR5cGUiOiJ0aHJvdHRsaW5nIn0seyJjaWRycyI6WyIxMDEuMTE1LjEzNi4yNDgiXSwidHlwZSI6ImNsaWVudCJ9XX0.lUuxPHW0CAM0rlwLEokoC7KKtoZtu5AFiCAnSKQQIXpC0rukg91Pg5-ZoiMMHASVRYkac9_8WFiwVEJTqyo8DQ'
+  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6Ijk1ODlhOWZlLWU1MGYtNGM0ZC04YWMxLWY1MjJhNzQxYWYwNCIsImlhdCI6MTYzMzUyMjk5NCwic3ViIjoiZGV2ZWxvcGVyL2U0ZjA1ZjI4LWJmOGMtNDJmNS0yY2I1LTU0ZTZlNjA2N2QxMiIsInNjb3BlcyI6WyJyb3lhbGUiXSwibGltaXRzIjpbeyJ0aWVyIjoiZGV2ZWxvcGVyL3NpbHZlciIsInR5cGUiOiJ0aHJvdHRsaW5nIn0seyJjaWRycyI6WyIxMDEuMTE1LjIwMi4xNzciXSwidHlwZSI6ImNsaWVudCJ9XX0.ZIYz70tjkOkrnayWJjKjE-M7rX3NPxBnAh6hF7CrovciGXToB6WizZQY_myYEkGisasTSpFWcZMhPc7tbj_26w'
 const CONFIG = {
   headers: { Authorization: `Bearer ${TOKEN}` }
 }
@@ -96,7 +97,7 @@ class ClashRoyaleController {
       if (error.message == 'Request failed with status code 429') {
         const slack = new SlackController()
         slack.sendMessage('Clash Royale request was throttled! Auth Token: ' + TOKEN)
-        return 'Auth Error'
+        return 'Throttled Error'
       }
 
       LoggingRepository.log({
@@ -126,23 +127,23 @@ class ClashRoyaleController {
             .delete()
         }
 
+        if (request.input('group_id') == undefined || request.input('group_id') == '') return
+
         const get_player = await Database.from('clash_royale_players')
           .where({
-            player_tag: request.input('player_tag')
+            player_tag: request.input('player_tag'),
+            group_id: request.input('group_id')
           })
           .first()
-
         if (get_player != undefined) return
-
-        if (request.input('group_id') == undefined || request.input('group_id') == '') return
 
         const commonController = new CommonController()
         const current_user_permission = await commonController.get_permission({ auth }, request.input('group_id'))
 
         //Allow Admins to set multiple myG Accounts to player tags
-        if (current_user_permission != 0 && current_user_permission != 1) {
-          await Database.table('clash_royale_players').where({ user_id: auth.user.id }).delete()
-        }
+        // if (current_user_permission != 0 && current_user_permission != 1) {
+        //   await Database.table('clash_royale_players').where({ user_id: auth.user.id }).delete()
+        // }
 
         const cr_trans_id = await ClashRoyalePlayers.create({
           group_id: request.input('group_id'),
@@ -174,7 +175,6 @@ class ClashRoyaleController {
             reminder_time: request.input('reminder_three')
           })
         }
-
         return 'Saved successfully'
       } catch (error) {
         LoggingRepository.log({
@@ -190,7 +190,7 @@ class ClashRoyaleController {
   }
   async getPlayerDetails({ request }) {
     try {
-      const playerDetails = Database.from('clash_royale_players')
+      const playerDetails = await Database.from('clash_royale_players')
         .leftJoin('clash_royale_reminders', 'clash_royale_reminders.clash_royale_players_id', 'clash_royale_players.id')
         .where('clash_royale_players.group_id', '=', request.input('group_id'))
         .andWhere('clash_royale_players.player_tag', '=', request.input('player_tag'))
@@ -231,6 +231,127 @@ class ClashRoyaleController {
         context: __filename,
         message: (error && error.message) || error,
         method: 'deletePlayerDetails'
+      })
+    }
+  }
+
+  async reminder_service({ request }) {
+    var curClanTag
+    console.log('Asdfd')
+    try {
+      //Get time n extract the hour
+      //Get a list of all clans that need reminding
+      //Call the api for this clan
+      //Get a list of players for this clan that need reminding
+      //Send off email
+      //Update DB
+
+      let d = new Date()
+      let curHour = d.getHours()
+      curHour = '01:00'
+
+      //Only EMAIL if we have NOT sent you an email in the last 24 hours
+      let today = new Date(),
+        cutOff_date = new Date(today)
+
+      cutOff_date.setMinutes(today.getMinutes() - 30)
+
+      const reminderClans = await Database.from('clash_royale_players')
+        .innerJoin('clash_royale_reminders', 'clash_royale_reminders.clash_royale_players_id', 'clash_royale_players.id')
+        .where('clash_royale_reminders.reminder_time', '=', curHour)
+        .andWhere('clash_royale_reminders.email_notification_last_runtime', '<', cutOff_date)
+        .select('clash_royale_players.clan_tag')
+        .groupBy('clash_royale_players.clan_tag')
+        .distinct('clash_royale_players.clan_tag')
+
+      for (let index = 0; index < reminderClans.length; index++) {
+        curClanTag = reminderClans[index].clan_tag
+        const getCurrentriverraceURL = 'clans/' + '%23' + curClanTag + '/currentriverrace'
+        try {
+          const getCurrentriverraceInfo = await axios.get(`https://api.clashroyale.com/v1/${getCurrentriverraceURL}`, CONFIG)
+
+          const reminderPlayers = await Database.from('clash_royale_players')
+            .innerJoin('clash_royale_reminders', 'clash_royale_reminders.clash_royale_players_id', 'clash_royale_players.id')
+            .innerJoin('users', 'users.id', 'clash_royale_players.user_id')
+            .where('clash_royale_reminders.reminder_time', '=', curHour)
+            .andWhere('clash_royale_reminders.email_notification_last_runtime', '<', cutOff_date)
+            .andWhere('clash_royale_reminders.clan_tag', '=', curClanTag)
+            .select('clash_royale_players.player_tag', 'users.email', 'clash_royale_reminders.number_of_wars_remaining')
+
+          let riverRaceStruct = {}
+
+          for (let index = 0; index < reminderPlayers.length; index++) {
+            if (riverRaceStruct[reminderPlayers[index].player_tag] != undefined) {
+              this.sendEmail(
+                await EncryptionRepository.decryptField(reminderPlayers[index].email),
+                riverRaceStruct[reminderPlayers[index].player_tag].decksUsedToday,
+                reminderPlayers[index].number_of_wars_remaining
+              )
+            } else {
+              for (let innerindex = 0; innerindex < getCurrentriverraceInfo.data.clan.participants.length; innerindex++) {
+                if (getCurrentriverraceInfo.data.clan.participants[innerindex].tag == reminderPlayers[index].player_tag) {
+                  this.sendEmail(
+                    await EncryptionRepository.decryptField(reminderPlayers[index].email),
+                    getCurrentriverraceInfo.data.clan.participants[innerindex].decksUsedToday,
+                    reminderPlayers[index].number_of_wars_remaining
+                  )
+                  delete getCurrentriverraceInfo.data.clan.participants[innerindex]
+                  break
+                } else {
+                  let playerRiverDetails = {
+                    decksUsedToday: getCurrentriverraceInfo.data.clan.participants[innerindex].decksUsedToday
+                  }
+                  riverRaceStruct[getCurrentriverraceInfo.data.clan.participants[innerindex].tag] = playerRiverDetails
+                  delete getCurrentriverraceInfo.data.clan.participants[innerindex]
+                }
+              }
+            }
+          }
+        } catch (error) {
+          if (error.message == 'Request failed with status code 404') {
+            await Database.table('clash_royale_players')
+              .where({
+                clan_tag: curClanTag
+              })
+              .delete()
+            continue
+          }
+          if (error.message == 'Request failed with status code 403') {
+            const slack = new SlackController()
+            slack.sendMessage('Clash Royale Auth Failed: Auth Token: ' + TOKEN)
+            return 'Auth Error'
+          }
+          if (error.message == 'Request failed with status code 429') {
+            const slack = new SlackController()
+            slack.sendMessage('Clash Royale request was throttled! Auth Token: ' + TOKEN)
+            return 'Throttled Error'
+          }
+        }
+      }
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+        method: 'reminder_service'
+      })
+    }
+  }
+
+  async sendEmail(email, curWar, preWar) {
+    try {
+      //check if curWar is 0, if so dont send email but update DB for remainingWar
+      //Otherwise send email , update DB with remainingWar n email Noti
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+        method: 'sendEmail'
       })
     }
   }
