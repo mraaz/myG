@@ -1484,6 +1484,90 @@ class EmailBodyController {
     `
     return body
   }
+
+  async clash_royale_wars_remaining(alias) {
+    const body = `
+          <p>&nbsp;</p>
+      <p>&nbsp;</p>
+      <!-- [if mso]>
+                <style type="text/css">
+                  body,
+                  table,
+                  td {
+                    font-family: Arial, Helvetica, sans-serif !important;
+                  }
+                </style>
+              <![endif]-->
+      <p>&nbsp;</p>
+      <!-- // FULL EMAIL -->
+      <table border="0" width="100%" cellspacing="0" cellpadding="0">
+      <tbody>
+      <tr><!-- // LEFT SPACER CELL *** MUST HAVE A BACKGROUND COLOUR -->
+      <td style="font-size: 0px;" bgcolor="#EBEBEB">&zwnj;</td>
+      <!-- LEFT SPACER CELL // --> <!-- // MAIN CONTENT CELL -->
+      <td align="center" bgcolor="#FFFFFF" width="600">&nbsp;
+      <table border="0" width="100%" cellspacing="0" cellpadding="0">
+      <tbody><!-- Top -->
+      <tr>
+      <td><img style="display: block; margin: 0px;" src="https://myG.gg/welcome-email/Welcome-to-myG_3_01.jpg" align="left" /></td>
+      </tr>
+      <tr>
+      <td style="display: block; margin: 0px; background-image: url('https://myG.gg/welcome-email/Welcome-to-myG_3_02.jpg');" align="left" width="600" height="39">
+      <p style="font-family: 'Montserrat Alternates', sans-serif; font-style: normal; font-weight: bold; font-size: 20px; color: rgba(255, 255, 255, 1); margin: 0; text-align: center;">${alias} you have WARS remaining in Royale!</p>
+      </td>
+      </tr>
+      <tr>
+      <td><img style="display: block; margin: 0px;" src="https://myG.gg/welcome-email/Welcome-to-myG_3_04.jpg" align="left" /></td>
+      </tr>
+      <tr>
+      <td style="display: block; margin: 0px; background-image: url('https://myG.gg/welcome-email/Welcome-to-myG_3_05.jpg');" align="left" width="600" height="62">&nbsp;</td>
+      </tr>
+      </tbody>
+      </table>
+      <table border="0" width="100%" cellspacing="0" cellpadding="0">
+      <tbody>
+      <tr>
+      <td style="margin: 0px; background-image: url('https://myG.gg/welcome-email/Welcome-to-myG_3_13.jpg'); background-repeat: no-repeat; vertical-align: top;" align="center" width="600" height="136">
+      <p style="width: 468px; text-align: center; font-family: 'Montserrat', sans-serif; font-style: normal; font-weight: 400; font-size: 12px; color: #000000; margin: 24px 0px 0px 34px;">myG's vision is to improve gamers performance, knowledge and experience and we're going to do that by becoming a kick ass gaming platform, allowing gamers to connect, share and improve.</p>
+      </td>
+      </tr>
+      </tbody>
+      </table>
+      <table border="0" width="100%" cellspacing="0" cellpadding="0">
+      <tbody>
+      <tr>
+      <td style="margin: 0px; background-image: url('https://myG.gg/welcome-email/Welcome-to-myG_3_16.jpg'); background-repeat: no-repeat; vertical-align: middle;" align="left" width="600" height="118">
+      <p style="text-align: center; font-family: 'Montserrat', sans-serif; font-style: normal; font-weight: bold; font-size: 12px; color: #000000; margin: 14px 0px 0px 0px;">Update your Profile, create/join games, <br />reach out to other gamers!</p>
+      </td>
+      </tr>
+      </tbody>
+      </table>
+      <table border="0" width="100%" cellspacing="0" cellpadding="0">
+      <tbody>
+      <tr>
+      <td style="margin: 0px; background-color: #fff; vertical-align: top;" align="left" width="600" height="54">
+      <p style="text-align: center; font-family: 'Montserrat', sans-serif; font-style: normal; font-weight: 400; font-size: 12px; color: #000000; margin: 0 auto;">If you wish to report bugs or make feature requests you <strong>can do this here.</strong></p>
+      </td>
+      </tr>
+      <tr>
+      <td style="margin: 0px; padding: 20px 0px 0px 30px; background-image: url('https://myG.gg/welcome-email/Welcome-to-myG_3_18.jpg'); background-color: #1e2327; background-repeat: no-repeat; vertical-align: top; line-height: 18px;" align="left" width="600" height="172">
+      <p style="width: 500px; text-align: left; font-family: 'Montserrat', sans-serif; font-size: 16px; font-weight: bold; color: rgba(255, 255, 255, 1);">For more information, please visit <strong>myG</strong>.</p>
+      <p style="width: 500px; text-align: left; font-family: 'Montserrat', sans-serif; font-style: normal; font-weight: 400; font-size: 12px; color: rgba(255, 255, 255, 1);">Please do not reply to this email as this address is not monitored.<br /> This email was sent by: myG LLC, Brisbane, Australia, 4000.<br /> Manage all email preferences within <a style="color: white; text-decoration: none;" href="https://myg.gg/?at=notifications&amp;submenu=6"> <strong>myG Settings</strong> </a> <br /><a style="color: white;" href="https://myg.gg/terms"><strong>Terms of Use</strong></a> &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<a style="color: white;" href="https://myg.gg/privacy_policy">Privacy Policy</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<a style="color: white;" href="mailto:levelup@myG.gg?subject=Email - Contact us">Contact Us</a> <br /> &copy; 2021 myG LLC. All Rights Reserved.</p>
+      </td>
+      </tr>
+      </tbody>
+      </table>
+      </td>
+      <!-- // MAIN CONTENT CELL --> <!-- // RIGHT SPACER CELL *** MUST HAVE A BACKGROUND COLOUR -->
+      <td style="font-size: 0px;" bgcolor="#EBEBEB">&zwnj;</td>
+      <!-- RIGHT SPACER CELL // --></tr>
+      </tbody>
+      </table>
+      <!-- FULL EMAIL // -->
+    `
+
+    return body
+  }
 }
 
 module.exports = EmailBodyController

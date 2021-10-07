@@ -6,6 +6,8 @@ const Database = use('Database')
 
 const CommonController = use('./CommonController')
 const SlackController = use('./SlackController')
+const AWSEmailController = use('./AWSEmailController')
+const Email_body = use('./EmailBodyController')
 
 const LoggingRepository = require('../../Repositories/Logging')
 const EncryptionRepository = require('../../Repositories/Encryption')
@@ -276,7 +278,13 @@ class ClashRoyaleController {
             .where('clash_royale_reminders.reminder_time', '=', curHour)
             .andWhere('clash_royale_reminders.email_notification_last_runtime', '<', cutOff_date)
             .andWhere('clash_royale_reminders.clan_tag', '=', curClanTag)
-            .select('clash_royale_players.player_tag', 'users.email', 'clash_royale_reminders.number_of_wars_remaining')
+            .select(
+              'clash_royale_players.player_tag',
+              'users.email',
+              'clash_royale_reminders.number_of_wars_remaining',
+              'clash_royale_reminders.id',
+              'user.alias'
+            )
 
           let riverRaceStruct = {}
 
@@ -285,7 +293,9 @@ class ClashRoyaleController {
               this.sendEmail(
                 await EncryptionRepository.decryptField(reminderPlayers[index].email),
                 riverRaceStruct[reminderPlayers[index].player_tag].decksUsedToday,
-                reminderPlayers[index].number_of_wars_remaining
+                reminderPlayers[index].number_of_wars_remaining,
+                reminderPlayers[index].id,
+                reminderPlayers[index].alias
               )
             } else {
               for (let innerindex = 0; innerindex < getCurrentriverraceInfo.data.clan.participants.length; innerindex++) {
@@ -293,7 +303,9 @@ class ClashRoyaleController {
                   this.sendEmail(
                     await EncryptionRepository.decryptField(reminderPlayers[index].email),
                     getCurrentriverraceInfo.data.clan.participants[innerindex].decksUsedToday,
-                    reminderPlayers[index].number_of_wars_remaining
+                    reminderPlayers[index].number_of_wars_remaining,
+                    reminderPlayers[index].id,
+                    reminderPlayers[index].alias
                   )
                   delete getCurrentriverraceInfo.data.clan.participants[innerindex]
                   break
@@ -340,10 +352,29 @@ class ClashRoyaleController {
     }
   }
 
-  async sendEmail(email, curWar, preWar) {
+  async sendEmail(email, curWar, preWar, clash_royale_reminders_id, alias) {
+    //check if curWar is 0, if so dont send email but update DB for remainingWar
+    //Otherwise send email , update DB with remainingWar n email Noti
     try {
-      //check if curWar is 0, if so dont send email but update DB for remainingWar
-      //Otherwise send email , update DB with remainingWar n email Noti
+      if (curWar == 0) {
+        await ClashRoyaleReminder.query().where('id', '=', clash_royale_reminders_id).update({
+          number_of_wars_remaining: 0
+        })
+      } else {
+        const today = new Date()
+        const email = new AWSEmailController()
+        const email_welcome_body = new Email_body()
+
+        const subject = "myG - The Gamer's platform - Summary: " + new Date(Date.now()).toDateString()
+        const body = await email_welcome_body.clash_royale_wars_remaining(alias)
+
+        email.createEmailnSend(email, subject, body)
+
+        await ClashRoyaleReminder.query().where('id', '=', clash_royale_reminders_id).update({
+          email_notification_last_runtime: today,
+          number_of_wars_remaining: curWar
+        })
+      }
     } catch (error) {
       LoggingRepository.log({
         environment: process.env.NODE_ENV,
