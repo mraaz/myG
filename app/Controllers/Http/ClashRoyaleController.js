@@ -239,7 +239,6 @@ class ClashRoyaleController {
 
   async reminder_service({ request }) {
     var curClanTag
-    console.log('Asdfd')
     try {
       //Get time n extract the hour
       //Get a list of all clans that need reminding
@@ -277,18 +276,20 @@ class ClashRoyaleController {
             .innerJoin('users', 'users.id', 'clash_royale_players.user_id')
             .where('clash_royale_reminders.reminder_time', '=', curHour)
             .andWhere('clash_royale_reminders.email_notification_last_runtime', '<', cutOff_date)
-            .andWhere('clash_royale_reminders.clan_tag', '=', curClanTag)
+            .andWhere('clash_royale_players.clan_tag', '=', curClanTag)
             .select(
               'clash_royale_players.player_tag',
               'users.email',
               'clash_royale_reminders.number_of_wars_remaining',
               'clash_royale_reminders.id',
-              'user.alias'
+              'users.alias'
             )
 
           let riverRaceStruct = {}
 
           for (let index = 0; index < reminderPlayers.length; index++) {
+            if (riverRaceStruct[reminderPlayers[index].player_tag] && riverRaceStruct[reminderPlayers[index].player_tag].sent == true)
+              continue
             if (riverRaceStruct[reminderPlayers[index].player_tag] != undefined) {
               this.sendEmail(
                 await EncryptionRepository.decryptField(reminderPlayers[index].email),
@@ -297,9 +298,17 @@ class ClashRoyaleController {
                 reminderPlayers[index].id,
                 reminderPlayers[index].alias
               )
+              riverRaceStruct[reminderPlayers[index].player_tag].sent = true
             } else {
+              let elements_to_delete = []
               for (let innerindex = 0; innerindex < getCurrentriverraceInfo.data.clan.participants.length; innerindex++) {
-                if (getCurrentriverraceInfo.data.clan.participants[innerindex].tag == reminderPlayers[index].player_tag) {
+                if (getCurrentriverraceInfo.data.clan.participants[innerindex].tag == '#' + reminderPlayers[index].player_tag) {
+                  if (
+                    riverRaceStruct[getCurrentriverraceInfo.data.clan.participants[innerindex].tag] &&
+                    riverRaceStruct[getCurrentriverraceInfo.data.clan.participants[innerindex].tag].sent == true
+                  ) {
+                    break
+                  }
                   this.sendEmail(
                     await EncryptionRepository.decryptField(reminderPlayers[index].email),
                     getCurrentriverraceInfo.data.clan.participants[innerindex].decksUsedToday,
@@ -307,15 +316,25 @@ class ClashRoyaleController {
                     reminderPlayers[index].id,
                     reminderPlayers[index].alias
                   )
-                  delete getCurrentriverraceInfo.data.clan.participants[innerindex]
+                  let playerRiverDetails = {
+                    decksUsedToday: getCurrentriverraceInfo.data.clan.participants[innerindex].decksUsedToday,
+                    sent: true
+                  }
+                  riverRaceStruct[getCurrentriverraceInfo.data.clan.participants[innerindex].tag] = playerRiverDetails
+
+                  elements_to_delete.push(innerindex)
                   break
                 } else {
                   let playerRiverDetails = {
-                    decksUsedToday: getCurrentriverraceInfo.data.clan.participants[innerindex].decksUsedToday
+                    decksUsedToday: getCurrentriverraceInfo.data.clan.participants[innerindex].decksUsedToday,
+                    sent: false
                   }
                   riverRaceStruct[getCurrentriverraceInfo.data.clan.participants[innerindex].tag] = playerRiverDetails
-                  delete getCurrentriverraceInfo.data.clan.participants[innerindex]
+                  elements_to_delete.push(innerindex)
                 }
+              }
+              for (let i = 0; i < elements_to_delete.length; i++) {
+                getCurrentriverraceInfo.data.clan.participants.splice(elements_to_delete[i], 1)
               }
             }
           }
@@ -338,6 +357,15 @@ class ClashRoyaleController {
             slack.sendMessage('Clash Royale request was throttled! Auth Token: ' + TOKEN)
             return 'Throttled Error'
           }
+
+          LoggingRepository.log({
+            environment: process.env.NODE_ENV,
+            type: 'error',
+            source: 'backend',
+            context: __filename,
+            message: (error && error.message) || error,
+            method: 'reminder_service_insider'
+          })
         }
       }
     } catch (error) {
@@ -362,18 +390,22 @@ class ClashRoyaleController {
         })
       } else {
         const today = new Date()
-        const email = new AWSEmailController()
+        const emailController = new AWSEmailController()
         const email_welcome_body = new Email_body()
 
-        const subject = "myG - The Gamer's platform - Summary: " + new Date(Date.now()).toDateString()
+        const subject = "myG - The Gamer's platform - CR Reminder: " + new Date(Date.now()).toDateString()
         const body = await email_welcome_body.clash_royale_wars_remaining(alias)
 
-        email.createEmailnSend(email, subject, body)
+        console.log('Got here')
+        console.log(email)
+        console.log(subject)
 
-        await ClashRoyaleReminder.query().where('id', '=', clash_royale_reminders_id).update({
-          email_notification_last_runtime: today,
-          number_of_wars_remaining: curWar
-        })
+        //emailController.createEmailnSend('mnraaz@gmail.com', subject, body)
+
+        // await ClashRoyaleReminder.query().where('id', '=', clash_royale_reminders_id).update({
+        //   email_notification_last_runtime: today,
+        //   number_of_wars_remaining: curWar
+        // })
       }
     } catch (error) {
       LoggingRepository.log({
