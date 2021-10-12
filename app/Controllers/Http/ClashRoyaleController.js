@@ -26,6 +26,7 @@ class ClashRoyaleController {
     // periodType: "training"
     // periodType: "warDay"
     // periodType: "colosseum"
+    let header = []
 
     try {
       if (request.params.clanTag == undefined || request.params.clanTag == '') {
@@ -59,17 +60,47 @@ class ClashRoyaleController {
           riverRaceStruct[getCurrentriverraceInfo.data.clan.participants[index].tag] = playerRiverDetails
         }
       }
-      const get_clan = await Database.from('clash_royale_players').where({
+      const get_clan = await Database.from('clash_royale_players').innerJoin('users', 'users.id', 'clash_royale_players.user_id').where({
         clan_tag: clanTag
       })
 
       let myGUsers = {}
       for (let index = 0; index < get_clan.length; index++) {
-        myGUsers[get_clan[index].player_tag] = get_clan[index].user_id
+        let tmpStruct = {
+          user_id: get_clan[index].user_id,
+          alias: get_clan[index].alias
+        }
+        myGUsers[get_clan[index].player_tag] = tmpStruct
       }
+
+      let headerStruct = {}
+
+      if (isWarToday) {
+        headerStruct = {
+          myG_alias: 'myG Alias',
+          decksUsed: 'Total decks used',
+          decksUsedToday: 'Total decks used today',
+          fame: 'Fame',
+          repairPoints: 'Repair Points',
+          boatAttacks: 'Boat Attacks'
+        }
+      } else {
+        headerStruct = {
+          myG_alias: 'myG Alias',
+          decksUsed: 'Total decks used',
+          decksUsedToday: 'Total decks used today'
+        }
+      }
+      header.push(headerStruct)
+      getClanInfo.data.header = header[0]
 
       for (let index = 0; index < getClanInfo.data.items.length; index++) {
         const player_tag_without_hash = getClanInfo.data.items[index].tag.substring(1)
+        if (myGUsers[player_tag_without_hash] && myGUsers[player_tag_without_hash].user_id != undefined)
+          getClanInfo.data.items[index].myG_user_id = myGUsers[player_tag_without_hash].user_id
+
+        if (myGUsers[player_tag_without_hash] && myGUsers[player_tag_without_hash].alias != undefined)
+          getClanInfo.data.items[index].myG_alias = myGUsers[player_tag_without_hash].alias
 
         if (isWarToday) {
           getClanInfo.data.items[index].decksUsed = riverRaceStruct[getClanInfo.data.items[index].tag].decksUsed
@@ -77,18 +108,16 @@ class ClashRoyaleController {
           getClanInfo.data.items[index].fame = riverRaceStruct[getClanInfo.data.items[index].tag].fame
           getClanInfo.data.items[index].repairPoints = riverRaceStruct[getClanInfo.data.items[index].tag].repairPoints
           getClanInfo.data.items[index].boatAttacks = riverRaceStruct[getClanInfo.data.items[index].tag].boatAttacks
-          getClanInfo.data.items[index].myG_user_id = myGUsers[player_tag_without_hash]
         } else {
           getClanInfo.data.items[index].decksUsed = 0
           getClanInfo.data.items[index].decksUsedToday = 0
-          getClanInfo.data.items[index].myG_user_id = myGUsers[player_tag_without_hash]
         }
       }
 
       //return getCurrentriverraceInfo.data
       return getClanInfo.data
     } catch (error) {
-      if (error.message == 'Request failed with status code 404') {
+      if (error.message == 'Request failed with  status code 404') {
         return 'Clan not found'
       }
       if (error.message == 'Request failed with status code 403') {
@@ -194,12 +223,44 @@ class ClashRoyaleController {
     try {
       const playerDetails = await Database.from('clash_royale_players')
         .leftJoin('clash_royale_reminders', 'clash_royale_reminders.clash_royale_players_id', 'clash_royale_players.id')
+        .innerJoin('users', 'users.id', 'clash_royale_players.user_id')
         .where('clash_royale_players.group_id', '=', request.input('group_id'))
         .andWhere('clash_royale_players.player_tag', '=', request.input('player_tag'))
-        .select('clash_royale_players.*', 'clash_royale_reminders.reminder_time')
-        .options({ nestTables: true })
+        .select('clash_royale_players.*', 'clash_royale_reminders.reminder_time', 'users.regional')
+      //.options({ nestTables: true })
 
-      return playerDetails
+      switch (playerDetails.length) {
+        case 1:
+          playerDetails[0].reminder_time_1 = playerDetails[0].reminder_time
+          playerDetails[0].regional = await EncryptionRepository.decryptField(playerDetails[0].regional)
+          delete playerDetails[0].reminder_time
+          break
+        case 2:
+          playerDetails[0].reminder_time_1 = playerDetails[0].reminder_time
+          playerDetails[0].regional = await EncryptionRepository.decryptField(playerDetails[0].regional)
+          delete playerDetails[0].reminder_time
+
+          playerDetails[0].reminder_time_2 = playerDetails[1].reminder_time
+
+          delete playerDetails[0].reminder_time
+          delete playerDetails[1]
+
+          break
+        case 3:
+          playerDetails[0].reminder_time_1 = playerDetails[0].reminder_time
+          playerDetails[0].regional = await EncryptionRepository.decryptField(playerDetails[0].regional)
+          delete playerDetails[0].reminder_time
+
+          playerDetails[0].reminder_time_2 = playerDetails[1].reminder_time
+          delete playerDetails[1]
+
+          playerDetails[0].reminder_time_3 = playerDetails[2].reminder_time
+          delete playerDetails[2]
+          break
+      }
+
+      if (playerDetails.length) return playerDetails[0]
+      else return playerDetails
     } catch (error) {
       if (error.response.data.reason == 'notFound') {
         return 'Clan not found'
@@ -249,7 +310,6 @@ class ClashRoyaleController {
 
       let d = new Date()
       let curHour = d.getHours()
-      curHour = '01:00'
 
       //Only EMAIL if we have NOT sent you an email in the last 24 hours
       let today = new Date(),
@@ -291,13 +351,16 @@ class ClashRoyaleController {
             if (riverRaceStruct[reminderPlayers[index].player_tag] && riverRaceStruct[reminderPlayers[index].player_tag].sent == true)
               continue
             if (riverRaceStruct[reminderPlayers[index].player_tag] != undefined) {
-              this.sendEmail(
-                await EncryptionRepository.decryptField(reminderPlayers[index].email),
-                riverRaceStruct[reminderPlayers[index].player_tag].decksUsedToday,
-                reminderPlayers[index].number_of_wars_remaining,
-                reminderPlayers[index].id,
-                reminderPlayers[index].alias
-              )
+              if (riverRaceStruct[reminderPlayers[index].player_tag].decksUsedToday != 4) {
+                this.sendEmail(
+                  await EncryptionRepository.decryptField(reminderPlayers[index].email),
+                  riverRaceStruct[reminderPlayers[index].player_tag].decksUsedToday,
+                  reminderPlayers[index].number_of_wars_remaining,
+                  reminderPlayers[index].id,
+                  reminderPlayers[index].alias
+                )
+              }
+
               riverRaceStruct[reminderPlayers[index].player_tag].sent = true
             } else {
               let elements_to_delete = []
@@ -309,13 +372,15 @@ class ClashRoyaleController {
                   ) {
                     break
                   }
-                  this.sendEmail(
-                    await EncryptionRepository.decryptField(reminderPlayers[index].email),
-                    getCurrentriverraceInfo.data.clan.participants[innerindex].decksUsedToday,
-                    reminderPlayers[index].number_of_wars_remaining,
-                    reminderPlayers[index].id,
-                    reminderPlayers[index].alias
-                  )
+                  if (getCurrentriverraceInfo.data.clan.participants[innerindex].decksUsedToday != 4) {
+                    this.sendEmail(
+                      await EncryptionRepository.decryptField(reminderPlayers[index].email),
+                      getCurrentriverraceInfo.data.clan.participants[innerindex].decksUsedToday,
+                      reminderPlayers[index].number_of_wars_remaining,
+                      reminderPlayers[index].id,
+                      reminderPlayers[index].alias
+                    )
+                  }
                   let playerRiverDetails = {
                     decksUsedToday: getCurrentriverraceInfo.data.clan.participants[innerindex].decksUsedToday,
                     sent: true
@@ -396,16 +461,12 @@ class ClashRoyaleController {
         const subject = "myG - The Gamer's platform - CR Reminder: " + new Date(Date.now()).toDateString()
         const body = await email_welcome_body.clash_royale_wars_remaining(alias)
 
-        console.log('Got here')
-        console.log(email)
-        console.log(subject)
+        emailController.createEmailnSend(email, subject, body)
 
-        //emailController.createEmailnSend('mnraaz@gmail.com', subject, body)
-
-        // await ClashRoyaleReminder.query().where('id', '=', clash_royale_reminders_id).update({
-        //   email_notification_last_runtime: today,
-        //   number_of_wars_remaining: curWar
-        // })
+        await ClashRoyaleReminder.query().where('id', '=', clash_royale_reminders_id).update({
+          email_notification_last_runtime: today,
+          number_of_wars_remaining: curWar
+        })
       }
     } catch (error) {
       LoggingRepository.log({
