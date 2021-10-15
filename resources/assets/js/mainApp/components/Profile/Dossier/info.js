@@ -10,6 +10,8 @@ import { LANGUAGE_OPTIONS } from '../../../static/AddGame'
 import { ignoreFunctions } from '../../../../common/render'
 import { showMessengerAlert } from '../../../../common/alert'
 
+import TimezoneSelect from 'react-timezone-select'
+
 export class DossierInfo extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     return ignoreFunctions(nextProps, nextState, this.props, this.state)
@@ -28,7 +30,8 @@ export class DossierInfo extends React.Component {
     visibilityCountry: 'secret',
     lookingForWork: false,
     hasMic: false,
-    underage: true
+    underage: true,
+    timeZone: ''
   }
 
   componentDidMount() {
@@ -43,6 +46,7 @@ export class DossierInfo extends React.Component {
     const email = get(this.props, 'profile.email') || ''
     const team = get(this.props, 'profile.team') || ''
     const country = get(this.props, 'profile.country') || ''
+    const timeZone = get(this.props, 'profile.timeZone') || Intl.DateTimeFormat().resolvedOptions().timeZone
     const hasMic = get(this.props, 'profile.hasMic')
     const underage = get(this.props, 'profile.underage')
     const relationshipValue = get(this.props, 'profile.relationship') || ''
@@ -70,7 +74,8 @@ export class DossierInfo extends React.Component {
       visibilityName,
       visibilityEmail,
       visibilityCountry,
-      lookingForWork
+      lookingForWork,
+      timeZone
     }
   }
 
@@ -96,6 +101,7 @@ export class DossierInfo extends React.Component {
     if (profile.visibilityEmail !== this.state.visibilityEmail) updates.visibilityEmail = this.state.visibilityEmail
     if (profile.visibilityCountry !== this.state.visibilityCountry) updates.visibilityCountry = this.state.visibilityCountry
     if (profile.lookingForWork !== this.state.lookingForWork) updates.lookingForWork = this.state.lookingForWork
+    if (profile.timeZone !== this.state.timeZone) updates.timeZone = this.state.timeZone
     return updates
   }
 
@@ -303,6 +309,17 @@ export class DossierInfo extends React.Component {
     )
   }
 
+  renderTimeZoneInput = () => {
+    return (
+      <div className='row'>
+        <span className='hint'>Timezone</span>
+        <div className='input-container timezone'>
+          <TimezoneSelect value={this.state.timeZone} onChange={(timezone) => this.setState({ timeZone: timezone })} />
+        </div>
+      </div>
+    )
+  }
+
   renderLanguagesInput = () => {
     return (
       <div className='row'>
@@ -402,6 +419,7 @@ export class DossierInfo extends React.Component {
             {this.renderDivider()}
             {this.renderTeamInput()}
             {this.renderCountryInput()}
+            {this.renderTimeZoneInput()}
             {this.renderLanguagesInput()}
             {this.renderRelationshipInput()}
             {this.renderHasMicInput()}
