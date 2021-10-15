@@ -103,20 +103,20 @@ class Settings extends Component {
 
   createSiteMap2 = async () => {
     console.log('/api/clashroyale/show click')
-    let strclanTag = '#8G9VY92' //'QG8UQCV0' //'YL9YCYU'
+    let strclanTag = 'QG8UQCV0' //'#8G9VY92' //'QG8UQCV0' //'YL9YCYU'
     const clanTag = strclanTag.replace(/#/g, '')
 
     const clash_royale_player_id = 1
     const game_names_id = 1014
 
     try {
-      const tmp = await axios.get(`/api/clashroyale/show/${clanTag}`)
+      //const tmp = await axios.get(`/api/clashroyale/show/${clanTag}`)
 
       //const tmp = await axios.get(`/api/ScheduleGame/getHeader_stats_header/${game_names_id}`)
 
       //Insert call
       // const tmp = await axios.post('/api/clashroyale/storePlayerDetails/', {
-      //   group_id: 1,
+      //   group_id: 2,
       //   player_tag: 'PUPGJJ9U',
       //   user_id: 1,
       //   clanTag: clanTag,
@@ -125,10 +125,10 @@ class Settings extends Component {
       //   reminder_three: '01:00'
       // })
 
-      // const tmp = await axios.post('/api/clashroyale/getPlayerDetails/', {
-      //   group_id: 1,
-      //   player_tag: '2R9PCGC'
-      // })
+      const tmp = await axios.post('/api/clashroyale/getPlayerDetails/', {
+        group_id: 2,
+        player_tag: 'PUPGJJ9U'
+      })
 
       //const tmp = await axios.delete(`/api/clashroyale/deletePlayerDetails/${clash_royale_player_id}`)
 
@@ -416,7 +416,7 @@ class Settings extends Component {
                   Create SiteMap
                 </button>
               )}
-              {!this.state.feature_on && (
+              {this.state.feature_on && (
                 <button type='button' className='disableAcccount' onClick={this.createSiteMap2}>
                   Pull Data
                 </button>

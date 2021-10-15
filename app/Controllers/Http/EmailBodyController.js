@@ -1484,6 +1484,129 @@ class EmailBodyController {
     `
     return body
   }
+
+  async clash_royale_wars_remaining(alias) {
+    const body = `<p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <!-- [if mso]>
+                    <style type="text/css">
+                      body,
+                      table,
+                      td {
+                        font-family: Arial, Helvetica, sans-serif !important;
+                      }
+                    </style>
+                  <![endif]-->
+    <p>&nbsp;</p>
+    <!-- // FULL EMAIL -->
+    <table border="0" width="100%" cellspacing="0" cellpadding="0">
+    <tbody>
+    <tr><!-- // LEFT SPACER CELL *** MUST HAVE A BACKGROUND COLOUR -->
+    <td style="font-size: 0px;" bgcolor="#EBEBEB">&zwnj;</td>
+    <!-- LEFT SPACER CELL // --> <!-- // MAIN CONTENT CELL -->
+    <td align="center" bgcolor="#FFFFFF" width="600">&nbsp;
+    <table border="0" width="100%" cellspacing="0" cellpadding="0">
+    <tbody><!-- Top -->
+    <tr>
+    <td><img style="display: block; margin: 0px;" src="https://myG.gg/welcome-email/Welcome-to-myG_3_01.jpg" align="left" /></td>
+    </tr>
+    <tr>
+    <td style="display: block; margin: 0px; background-image: url('https://myG.gg/welcome-email/Welcome-to-myG_3_02.jpg');" align="left" width="600" height="39">
+    <p style="font-family: 'Montserrat Alternates', sans-serif; font-style: normal; font-weight: bold; font-size: 20px; color: rgba(255, 255, 255, 1); margin: 0; text-align: center;">${alias} you have WARS remaining in Royale!</p>
+    </td>
+    </tr>
+    <tr>
+    <td><img style="display: block; margin: 0px;" src="https://myG.gg/welcome-email/Welcome-to-myG_3_04.jpg" align="left" /></td>
+    </tr>
+    <tr>
+    <td style="display: block; margin: 0px; background-image: url('https://myG.gg/welcome-email/Welcome-to-myG_3_05.jpg');" align="left" width="600" height="62">&nbsp;</td>
+    </tr>
+    </tbody>
+    </table>
+    <table border="0" width="100%" cellspacing="0" cellpadding="0">
+    <tbody>
+    <tr>
+    <td style="margin: 0px; background-image: url('https://myG.gg/welcome-email/Welcome-to-myG_3_13.jpg'); background-repeat: no-repeat; vertical-align: top;" align="center" width="600" height="136">
+    <p style="width: 468px; text-align: center; font-family: 'Montserrat', sans-serif; font-style: normal; font-weight: 400; font-size: 12px; color: #000000; margin: 24px 0px 0px 34px;">myG's vision is to improve gamers performance, knowledge and experience and we're going to do that by becoming a kick ass gaming platform, allowing gamers to connect, share and improve.</p>
+    </td>
+    </tr>
+    </tbody>
+    </table>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                        <tr>
+                          <td
+                            height="118"
+                            width="600"
+                            align="left"
+                            style="margin:0px;background-image:url('https://myG.gg/welcome-email/Welcome-to-myG_3_16.jpg');background-repeat: no-repeat; vertical-align:middle;"
+                          >
+                            <a style="text-decoration:none" href="https://myG.gg">
+                              <p
+                                style="text-align: center;font-family: 'Montserrat', sans-serif;font-style: normal;font-weight: 700;font-size: 12px;color: #000000;margin: 14px 0px 0px 0px;"
+                              >
+                                Update your Profile, create/join games, <br />reach out to
+                                other gamers!
+                              </p>
+                            </a>
+                          </td>
+                        </tr>
+                      </table>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        
+                        <tr>
+                          <td
+                            height="54"
+                            width="600"
+                            align="left"
+                            style="margin:0px;background-color: #fff; vertical-align:top;"
+                          >
+                          <a style="text-decoration:none" href="https://github.com/mraaz/myG.gg">
+                            <p
+                              style="text-align: center;font-family: 'Montserrat', sans-serif;font-style: normal;font-weight: 400;font-size: 12px;color: #000000;margin: 0 auto;"
+                            >
+                              If you wish to report bugs or make feature requests you
+                              <b>can do this here.</b>
+                            </p>
+                            </a>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td
+                            height="172"
+                            width="600"
+                            align="left"
+                            style="margin:0px;padding: 20px 0px 0px 30px;background-image:url('https://myG.gg/welcome-email/Welcome-to-myG_3_18.jpg');background-color: #1e2327;background-repeat: no-repeat; vertical-align:top; line-height: 18px;"
+                          >
+                            <a style="text-decoration:none" href="https://myG.gg">
+                              <p
+                                style="width:500px;text-align: left;font-family: 'Montserrat', sans-serif;font-size:16px;font-weight: 700;color: rgba(255, 255, 255, 1)"
+                              >
+                                For more information, please visit <b>myG</b>.
+                              </p>
+                            </a>
+                            <p
+                              style="width:500px;text-align: left;font-family: 'Montserrat', sans-serif;font-style: normal;font-weight: 400;font-size: 12px;color: rgba(255, 255, 255, 1);"
+                            >
+                              Please do not reply to this email as this address is not
+                              monitored.<br />
+                              This email was sent by: myG LLC, Brisbane, Australia, 4000.<br />
+                              Manage all email preferences within <a href="https://myg.gg/?at=notifications&submenu=6" style="color:white;text-decoration: none;"> <b>myG Settings</b> </a>
+                              <br /><a href="https://myg.gg/terms" style="color:white;"><b>Terms of Use</a> &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<a href="https://myg.gg/privacy_policy" style="color:white;">Privacy Policy</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<a href="mailto:levelup@myG.gg?subject=Email - Contact us" style="color:white;">Contact Us</a></b> <br />
+                              © 2021 myG LLC. All Rights Reserved.
+                            </p>
+                          </td>
+                        </tr>
+                      </table>
+    </td>
+    <!-- // MAIN CONTENT CELL --> <!-- // RIGHT SPACER CELL *** MUST HAVE A BACKGROUND COLOUR -->
+    <td style="font-size: 0px;" bgcolor="#EBEBEB">&zwnj;</td>
+    <!-- RIGHT SPACER CELL // --></tr>
+    </tbody>
+    </table>
+    <!-- FULL EMAIL // -->`
+
+    return body
+  }
 }
 
 module.exports = EmailBodyController
