@@ -166,7 +166,9 @@ class ClashRoyaleController {
             group_id: request.input('group_id')
           })
           .first()
+
         if (get_player != undefined) return
+        console.log('NICE')
 
         const commonController = new CommonController()
         const current_user_permission = await commonController.get_permission({ auth }, request.input('group_id'))
@@ -175,6 +177,11 @@ class ClashRoyaleController {
         // if (current_user_permission != 0 && current_user_permission != 1) {
         //   await Database.table('clash_royale_players').where({ user_id: auth.user.id }).delete()
         // }
+
+        const get_player_deets = await Database.from('users')
+          .where({ id: request.input('user_id') })
+          .select('users.timeZone')
+          .first()
 
         const cr_trans_id = await ClashRoyalePlayers.create({
           group_id: request.input('group_id'),
@@ -187,25 +194,25 @@ class ClashRoyaleController {
           await ClashRoyaleReminder.create({
             clash_royale_players_id: cr_trans_id.id,
             user_id: request.input('user_id'),
-            reminder_time: request.input('reminder_one')
+            reminder_time: await this.converttoUTCHours(request.input('reminder_one'), get_player_deets.timeZone)
           })
         }
 
-        if (request.input('reminder_two') != undefined) {
-          await ClashRoyaleReminder.create({
-            clash_royale_players_id: cr_trans_id.id,
-            user_id: request.input('user_id'),
-            reminder_time: request.input('reminder_two')
-          })
-        }
+        // if (request.input('reminder_two') != undefined) {
+        //   await ClashRoyaleReminder.create({
+        //     clash_royale_players_id: cr_trans_id.id,
+        //     user_id: request.input('user_id'),
+        //     reminder_time: this.converttoUTCHours(request.input('reminder_two'), get_player_deets.timeZone)
+        //   })
+        // }
 
-        if (request.input('reminder_three') != undefined) {
-          await ClashRoyaleReminder.create({
-            clash_royale_players_id: cr_trans_id.id,
-            user_id: request.input('user_id'),
-            reminder_time: request.input('reminder_three')
-          })
-        }
+        // if (request.input('reminder_three') != undefined) {
+        //   await ClashRoyaleReminder.create({
+        //     clash_royale_players_id: cr_trans_id.id,
+        //     user_id: request.input('user_id'),
+        //     reminder_time: this.converttoUTCHours(request.input('reminder_three'), get_player_deets.timeZone)
+        //   })
+        //}
         return 'Saved successfully'
       } catch (error) {
         LoggingRepository.log({
@@ -226,7 +233,7 @@ class ClashRoyaleController {
         .innerJoin('users', 'users.id', 'clash_royale_players.user_id')
         .where('clash_royale_players.group_id', '=', request.input('group_id'))
         .andWhere('clash_royale_players.player_tag', '=', request.input('player_tag'))
-        .select('clash_royale_players.*', 'clash_royale_reminders.reminder_time', 'users.regional')
+        .select('clash_royale_players.*', 'clash_royale_reminders.reminder_time', 'users.timeZone')
       //.options({ nestTables: true })
 
       switch (playerDetails.length) {
@@ -294,6 +301,25 @@ class ClashRoyaleController {
         context: __filename,
         message: (error && error.message) || error,
         method: 'deletePlayerDetails'
+      })
+    }
+  }
+
+  async converttoUTCHours(reminder_time, time_zone) {
+    try {
+      let new_date = new Date()
+      new_date.toLocaleString('en-US', { timeZone: time_zone })
+
+      new_date.setHours(reminder_time)
+      return new_date.getUTCHours()
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+        method: 'converttoUTCHours'
       })
     }
   }
