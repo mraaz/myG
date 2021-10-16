@@ -19,7 +19,8 @@ class ProfileController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error
+        message: (error && error.message) || error,
+        method: 'fetchProfileInfo'
       })
       return response.send({ error })
     }
@@ -41,7 +42,7 @@ class ProfileController {
         source: 'backend',
         context: __filename,
         message: (error && error.message) || error,
-        error
+        method: 'updateProfile'
       })
       return response.send({ error })
     }
@@ -61,7 +62,8 @@ class ProfileController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error
+        message: (error && error.message) || error,
+        method: 'updateGame'
       })
       return response.send({ error })
     }
@@ -80,7 +82,8 @@ class ProfileController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error
+        message: (error && error.message) || error,
+        method: 'fetchGamerSuggestions'
       })
       return response.send({ error })
     }
@@ -106,7 +109,8 @@ class ProfileController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error
+        message: (error && error.message) || error,
+        method: 'fetchDynamicFields'
       })
       return response.send({ error })
     }
@@ -128,7 +132,8 @@ class ProfileController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error
+        message: (error && error.message) || error,
+        method: 'commendUser'
       })
       return response.send({ error })
     }
@@ -148,7 +153,8 @@ class ProfileController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error
+        message: (error && error.message) || error,
+        method: 'deleteGameExperience'
       })
       return response.send({ error })
     }
@@ -174,7 +180,8 @@ class ProfileController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error
+        message: (error && error.message) || error,
+        method: 'fetchFriends'
       })
       return response.send({ friends: [], error })
     }
@@ -192,7 +199,8 @@ class ProfileController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error
+        message: (error && error.message) || error,
+        method: 'fetchGuestProfile'
       })
       return response.send({ error })
     }
