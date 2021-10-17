@@ -9,12 +9,6 @@ import { parsePlayersToSelectData } from '../../utils/InvitePlayersUtils'
 
 const MAX_INVITEES = 8
 
-const createOption = (label, hash_tag_id) => ({
-  label,
-  value: label,
-  hash_tag_id
-})
-
 export default class Manage extends React.Component {
   constructor() {
     super()
@@ -148,7 +142,7 @@ export default class Manage extends React.Component {
   }
 
   render() {
-    const { modalStatus, communityName, isunique, saveButtonDisabled } = this.state
+    const { communityName, isunique } = this.state
     const { current_user_permission } = this.props
 
     return (

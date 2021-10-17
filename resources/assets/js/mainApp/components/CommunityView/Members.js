@@ -136,6 +136,10 @@ export default class Members extends React.Component {
     }
   }
 
+  clashRoyale_kick = () => {
+    //Do the call that it
+  }
+
   showAlert() {
     const getAlert = () => (
       <SweetAlert
@@ -357,7 +361,9 @@ export default class Members extends React.Component {
 
   render() {
     const { modalStatus, isActive, saveButtonDisabled, searchMemberValue = '' } = this.state
-    const { current_user_permission } = this.props
+    const { current_user_permission, community_game_names_id } = this.props
+    const isthisClash = community_game_names_id == 1014 ? true : false
+
     return (
       <div className={`modal-container View__Member__modal ${modalStatus ? 'modal--show' : ''}`}>
         {this.state.alert}
@@ -418,6 +424,11 @@ export default class Members extends React.Component {
               <button type='button' disabled={saveButtonDisabled} onClick={() => this.handleSave(true)}>
                 Save
               </button>
+              {isthisClash && (
+                <button type='button' onClick={() => this.handleSave(true)}>
+                  Kick all members not in Clan
+                </button>
+              )}
             </div>
           )}
         </div>
