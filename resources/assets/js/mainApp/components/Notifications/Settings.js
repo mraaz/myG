@@ -116,17 +116,17 @@ class Settings extends Component {
 
       //Insert call
       // const tmp = await axios.post('/api/clashroyale/storePlayerDetails/', {
-      //   group_id: 2,
+      //   group_id: 1,
       //   player_tag: 'PUPGJJ9U',
       //   user_id: 1,
       //   clanTag: clanTag,
-      //   reminder_one: '01:00',
-      //   reminder_two: '01:00',
-      //   reminder_three: '01:00'
+      //   reminder_one: 22,
+      //   reminder_two: 1,
+      //   reminder_three: 5
       // })
 
       const tmp = await axios.post('/api/clashroyale/getPlayerDetails/', {
-        group_id: 2,
+        group_id: 1,
         player_tag: 'PUPGJJ9U'
       })
 
