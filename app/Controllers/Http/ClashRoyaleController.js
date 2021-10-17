@@ -168,7 +168,6 @@ class ClashRoyaleController {
           .first()
 
         if (get_player != undefined) return
-        console.log('NICE')
 
         const commonController = new CommonController()
         const current_user_permission = await commonController.get_permission({ auth }, request.input('group_id'))
@@ -198,21 +197,21 @@ class ClashRoyaleController {
           })
         }
 
-        // if (request.input('reminder_two') != undefined) {
-        //   await ClashRoyaleReminder.create({
-        //     clash_royale_players_id: cr_trans_id.id,
-        //     user_id: request.input('user_id'),
-        //     reminder_time: this.converttoUTCHours(request.input('reminder_two'), get_player_deets.timeZone)
-        //   })
-        // }
+        if (request.input('reminder_two') != undefined) {
+          await ClashRoyaleReminder.create({
+            clash_royale_players_id: cr_trans_id.id,
+            user_id: request.input('user_id'),
+            reminder_time: this.converttoUTCHours(request.input('reminder_two'), get_player_deets.timeZone)
+          })
+        }
 
-        // if (request.input('reminder_three') != undefined) {
-        //   await ClashRoyaleReminder.create({
-        //     clash_royale_players_id: cr_trans_id.id,
-        //     user_id: request.input('user_id'),
-        //     reminder_time: this.converttoUTCHours(request.input('reminder_three'), get_player_deets.timeZone)
-        //   })
-        //}
+        if (request.input('reminder_three') != undefined) {
+          await ClashRoyaleReminder.create({
+            clash_royale_players_id: cr_trans_id.id,
+            user_id: request.input('user_id'),
+            reminder_time: this.converttoUTCHours(request.input('reminder_three'), get_player_deets.timeZone)
+          })
+        }
         return 'Saved successfully'
       } catch (error) {
         LoggingRepository.log({
@@ -238,30 +237,48 @@ class ClashRoyaleController {
 
       switch (playerDetails.length) {
         case 1:
-          playerDetails[0].reminder_time_1 = playerDetails[0].reminder_time
+          playerDetails[0].reminder_time_1 = await this.converttoLocalHours(
+            playerDetails[0].reminder_time.substr(playerDetails[0].reminder_time.length - 2),
+            playerDetails[0].timeZone
+          )
           playerDetails[0].regional = await EncryptionRepository.decryptField(playerDetails[0].regional)
           delete playerDetails[0].reminder_time
           break
         case 2:
-          playerDetails[0].reminder_time_1 = playerDetails[0].reminder_time
+          playerDetails[0].reminder_time_1 = await this.converttoLocalHours(
+            playerDetails[0].reminder_time.substr(playerDetails[0].reminder_time.length - 2),
+            playerDetails[0].timeZone
+          )
           playerDetails[0].regional = await EncryptionRepository.decryptField(playerDetails[0].regional)
           delete playerDetails[0].reminder_time
 
-          playerDetails[0].reminder_time_2 = playerDetails[1].reminder_time
+          playerDetails[0].reminder_time_2 = await this.converttoLocalHours(
+            playerDetails[1].reminder_time.substr(playerDetails[1].reminder_time.length - 2),
+            playerDetails[1].timeZone
+          )
 
           delete playerDetails[0].reminder_time
           delete playerDetails[1]
 
           break
         case 3:
-          playerDetails[0].reminder_time_1 = playerDetails[0].reminder_time
+          playerDetails[0].reminder_time_1 = await this.converttoLocalHours(
+            playerDetails[0].reminder_time.substr(playerDetails[0].reminder_time.length - 2),
+            playerDetails[0].timeZone
+          )
           playerDetails[0].regional = await EncryptionRepository.decryptField(playerDetails[0].regional)
           delete playerDetails[0].reminder_time
 
-          playerDetails[0].reminder_time_2 = playerDetails[1].reminder_time
+          playerDetails[0].reminder_time_2 = await this.converttoLocalHours(
+            playerDetails[1].reminder_time.substr(playerDetails[1].reminder_time.length - 2),
+            playerDetails[1].timeZone
+          )
           delete playerDetails[1]
 
-          playerDetails[0].reminder_time_3 = playerDetails[2].reminder_time
+          playerDetails[0].reminder_time_3 = await this.converttoLocalHours(
+            playerDetails[2].reminder_time.substr(playerDetails[2].reminder_time.length - 2),
+            playerDetails[2].timeZone
+          )
           delete playerDetails[2]
           break
       }
@@ -305,13 +322,30 @@ class ClashRoyaleController {
     }
   }
 
-  async converttoUTCHours(reminder_time, time_zone) {
+  async converttoUTCHours(reminder_time_hours, time_zone) {
     try {
       let new_date = new Date()
-      new_date.toLocaleString('en-US', { timeZone: time_zone })
+      if (time_zone != 'GMT') new_date.toLocaleString('en-US', { timeZone: time_zone })
 
       new_date.setHours(reminder_time)
       return new_date.getUTCHours()
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+        method: 'converttoUTCHours'
+      })
+    }
+  }
+
+  async converttoLocalHours(reminder_time, time_zone) {
+    try {
+      let new_date = new Date(Date.UTC(1981, 3, 19, reminder_time, 0, 0))
+      if (time_zone != 'GMT') new_date.toLocaleString('en-US', { timeZone: time_zone })
+      return new_date.getHours()
     } catch (error) {
       LoggingRepository.log({
         environment: process.env.NODE_ENV,

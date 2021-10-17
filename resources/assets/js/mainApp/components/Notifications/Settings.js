@@ -115,20 +115,20 @@ class Settings extends Component {
       //const tmp = await axios.get(`/api/ScheduleGame/getHeader_stats_header/${game_names_id}`)
 
       //Insert call
-      const tmp = await axios.post('/api/clashroyale/storePlayerDetails/', {
-        group_id: 1,
-        player_tag: 'PUPGJJ9U',
-        user_id: 1,
-        clanTag: clanTag,
-        reminder_one: 22,
-        reminder_two: 1,
-        reminder_three: 5
-      })
-
-      // const tmp = await axios.post('/api/clashroyale/getPlayerDetails/', {
-      //   group_id: 2,
-      //   player_tag: 'PUPGJJ9U'
+      // const tmp = await axios.post('/api/clashroyale/storePlayerDetails/', {
+      //   group_id: 1,
+      //   player_tag: 'PUPGJJ9U',
+      //   user_id: 1,
+      //   clanTag: clanTag,
+      //   reminder_one: 22,
+      //   reminder_two: 1,
+      //   reminder_three: 5
       // })
+
+      const tmp = await axios.post('/api/clashroyale/getPlayerDetails/', {
+        group_id: 1,
+        player_tag: 'PUPGJJ9U'
+      })
 
       //const tmp = await axios.delete(`/api/clashroyale/deletePlayerDetails/${clash_royale_player_id}`)
 
