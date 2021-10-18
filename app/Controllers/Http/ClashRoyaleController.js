@@ -540,8 +540,9 @@ class ClashRoyaleController {
     }
   }
 
-  async kick_non_members({ auth, request, response }) {
+  async kick_non_clashRoyale_players({ auth, request, response }) {
     try {
+      console.log('adfdfd')
       //break this down
     } catch (error) {
       LoggingRepository.log({

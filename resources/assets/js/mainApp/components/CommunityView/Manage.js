@@ -73,7 +73,7 @@ export default class Manage extends React.Component {
   }
 
   handleCommunityNameSave = async () => {
-    const { communityName, description } = this.state
+    const { communityName } = this.state
     if (communityName.trim() == this.props.routeProps.match.params.name.trim()) {
       return
     }

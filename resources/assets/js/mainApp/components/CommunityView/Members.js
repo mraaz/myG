@@ -136,8 +136,13 @@ export default class Members extends React.Component {
     }
   }
 
-  clashRoyale_kick = () => {
-    //Do the call that it
+  kick_non_clashRoyale_players = async () => {
+    try {
+      const data = await axios.get(`/api/clashroyale/kick_non_clashRoyale_players/${this.props.group_id}`)
+      console.log(data, '<<<Child chose')
+    } catch (error) {
+      logToElasticsearch('error', 'CommunityView/Members.js', 'Failed clashRoyale_kick:' + ' ' + error)
+    }
   }
 
   showAlert() {
@@ -360,6 +365,7 @@ export default class Members extends React.Component {
   }
 
   render() {
+    console.log(this.props)
     const { modalStatus, isActive, saveButtonDisabled, searchMemberValue = '' } = this.state
     const { current_user_permission, community_game_names_id } = this.props
     const isthisClash = community_game_names_id == 1014 ? true : false
@@ -425,8 +431,8 @@ export default class Members extends React.Component {
                 Save
               </button>
               {isthisClash && (
-                <button type='button' onClick={() => this.handleSave(true)}>
-                  Kick all members not in Clan
+                <button type='button' onClick={() => this.kick_non_clashRoyale_players(true)}>
+                  Boot non Clan members
                 </button>
               )}
             </div>
