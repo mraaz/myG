@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 
@@ -20,12 +20,12 @@ export default class Manage extends React.Component {
       approval: 'true',
       description: '',
       coHosts: null,
-      stats_header:''
+      stats_header: ''
     }
   }
 
   componentDidMount() {
-    const { routeProps = {}, community_Membership_Approval, community_type, community_grp_description,stats_header } = this.props
+    const { routeProps = {}, community_Membership_Approval, community_type, community_grp_description, stats_header } = this.props
     const { match } = this.props.routeProps
 
     this.setState({
@@ -74,7 +74,6 @@ export default class Manage extends React.Component {
     })
   }
 
-
   handleCommunityClanTagChange = (e) => {
     const stats_header = e.target.value
     this.setState({ stats_header }, () => {
@@ -103,7 +102,7 @@ export default class Manage extends React.Component {
   }
   handleCommunityClanTagSave = async () => {
     const { stats_header } = this.state
-    const { stats_header:old_stats_header} = this.props
+    const { stats_header: old_stats_header } = this.props
     if (stats_header.trim() == old_stats_header) {
       return
     }
@@ -170,11 +169,11 @@ export default class Manage extends React.Component {
   }
 
   render() {
-    const { communityName, isunique,stats_header } = this.state
-    const { current_user_permission,community_game_names_id } = this.props
+    const { communityName, isunique, stats_header } = this.state
+    const { current_user_permission, community_game_names_id } = this.props
     const isthisClash = community_game_names_id == 1014 ? true : false
 
-    console.log("stats_header ",stats_header);
+    console.log('stats_header ', stats_header)
     return (
       <div className='setting__container'>
         {[0, 1].includes(current_user_permission) && (
@@ -193,21 +192,23 @@ export default class Manage extends React.Component {
             <button disabled={isunique} className='community___button col-sm-2' onClick={this.handleCommunityNameSave}>
               Save
             </button>
-            {isthisClash && <Fragment>
-              <div className='community___label col-sm-4'>Clan Tag Name</div>
-              <div className='community___input col-sm-6'>
-                <input
-                  type='text'
-                  autocomplete='off'
-                  value={stats_header}
-                  onChange={this.handleCommunityClanTagChange}
-                  placeholder='Change Clan Tag Name'
-                />
-              </div>
-              <button disabled={!stats_header} className='community___button col-sm-2' onClick={this.handleCommunityClanTagSave}>
-                Save
-              </button>
-            </Fragment>}
+            {isthisClash && (
+              <Fragment>
+                <div className='community___label col-sm-4'>Clan Tag Name</div>
+                <div className='community___input col-sm-6'>
+                  <input
+                    type='text'
+                    autocomplete='off'
+                    value={stats_header}
+                    onChange={this.handleCommunityClanTagChange}
+                    placeholder='Change Clan Tag Name'
+                  />
+                </div>
+                <button disabled={!stats_header} className='community___button col-sm-2' onClick={this.handleCommunityClanTagSave}>
+                  Save
+                </button>
+              </Fragment>
+            )}
           </div>
         )}
         <div className='group__privacy row'>
