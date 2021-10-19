@@ -104,10 +104,8 @@ class Games extends React.Component {
         {game_img && <div className="image game-image absolute-top" style={{ backgroundImage: `url(${game_img})` }} />}
         {game_name.length > 17 ?
           (
-            <WithTooltip text={game_name} position={{ bottom: '36px', left: '-2vw' }}>
-              <span className="name">{game_name.slice(0, 17) + '...'}</span>
-            </WithTooltip>
-          ): <span className="name">{game_name}</span>
+              <span className="name" title={game_name}>{game_name.slice(0, 17) + '...'}</span>
+          ): <span className="name" title={game_name}>{game_name}</span>
         }
         {selectedGame.includes(game_names_id)  && 
           <div className='selectedGame_image'>
