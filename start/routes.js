@@ -257,6 +257,7 @@ Route.get('/api/clashroyale/show/:clanTag', 'ClashRoyaleController.show')
 Route.post('/api/clashroyale/storePlayerDetails/', 'ClashRoyaleController.storePlayerDetails')
 Route.post('/api/clashroyale/getPlayerDetails/', 'ClashRoyaleController.getPlayerDetails')
 Route.delete('/api/clashroyale/deletePlayerDetails/:clash_royale_player_id', 'ClashRoyaleController.deletePlayerDetails')
+Route.get('/api/clashroyale/kick_non_clashRoyale_players/:group_id', 'ClashRoyaleController.kick_non_clashRoyale_players')
 
 Route.post('/api/commendations', 'CommendationController.store')
 Route.get('/api/commendations/user/:id', 'CommendationController.showUser')
