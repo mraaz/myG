@@ -41,6 +41,7 @@ const AddCommunity = ({
     const getInitialData_GameName = async function () {
       try {
         let results = await Game_name_values()
+        console.log("results  ",results);
         updateMainSettings({ gameTitlesList: results })
       } catch (error) {
         console.log(error)
@@ -330,6 +331,7 @@ const AddCommunity = ({
               getNewOptionData={getNewOptionData}
               onInputChange={getOptionsGames}
               onChange={(value) => {
+                
                 updateMainSettings({ gameTitle: value })
               }}
               value={mainSettingsState.gameTitle}
@@ -338,6 +340,24 @@ const AddCommunity = ({
               classNamePrefix='filter'
               onKeyDown={Disable_keys}
             />
+          </div>
+          <div className='field-title'>
+            <p>Game Clan Tag</p>
+          </div>
+          <div className='game-title-select'>
+          <MyGInput
+              value={mainSettingsState.community_Clan_Tag}
+              type='text'
+              autocomplete='off'
+              maxLength={75}
+              className={'community-input'}
+              minLength={3}
+              onKeyDown={Disable_keys}
+              containerStyles={{ width: '100%' }}
+              onChange={(value) => {
+                updateMainSettings({ community_Clan_Tag: value.target.value })
+              }}
+            ></MyGInput>
           </div>
           <div className='field-title'>
             <p>Featured Image</p>
