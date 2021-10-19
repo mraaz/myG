@@ -326,7 +326,12 @@ export default class Members extends React.Component {
   }
 
   renderSettingComponent = () => {
-    return <Manage {...this.props} onSettingsChange={this.onSettingsChange} group_id={this.props.group_id} />
+    return <Manage 
+    {...this.props} 
+    onSettingsChange={this.onSettingsChange} 
+    group_id={this.props.group_id} 
+    community_game_names_id={this.props.community_game_names_id}
+    />
   }
 
   handleMemberSearch = async (e) => {

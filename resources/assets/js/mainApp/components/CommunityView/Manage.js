@@ -143,7 +143,8 @@ export default class Manage extends React.Component {
 
   render() {
     const { communityName, isunique } = this.state
-    const { current_user_permission } = this.props
+    const { current_user_permission,community_game_names_id } = this.props
+    const isthisClash = community_game_names_id == 1014 ? true : false
 
     return (
       <div className='setting__container'>
@@ -158,6 +159,17 @@ export default class Manage extends React.Component {
                 onBlur={this.handleNameblur}
                 onChange={this.handleCommunityNameChange}
                 placeholder='Change Community Name'
+              />
+            </div>
+            <div className='community___label col-sm-4'>Clan Tag Name</div>
+            <div className='community___input col-sm-6'>
+              <input
+                type='text'
+                autocomplete='off'
+                value={communityName}
+                onBlur={this.handleNameblur}
+                onChange={this.handleCommunityNameChange}
+                placeholder='Change Clan Tag Name'
               />
             </div>
             <button disabled={isunique} className='community___button col-sm-2' onClick={this.handleCommunityNameSave}>
