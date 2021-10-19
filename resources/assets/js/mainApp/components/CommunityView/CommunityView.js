@@ -161,6 +161,7 @@ console.log("getOne  ",getOne);
           community_grp_description={communityDetails.grp_description}
           community_allGrpTags={communityDetails.allGrpTags}
           community_Name={decodeURIComponent(props.routeProps.match.params.name)}
+          community_game_names_id={communityDetails.game_names_id}
         />
       ) : (
         ''

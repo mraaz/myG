@@ -539,6 +539,22 @@ class ClashRoyaleController {
       })
     }
   }
+
+  async kick_non_clashRoyale_players({ auth, request, response }) {
+    try {
+      console.log('adfdfd')
+      //break this down
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+        method: 'sendEmail'
+      })
+    }
+  }
 }
 
 module.exports = ClashRoyaleController
