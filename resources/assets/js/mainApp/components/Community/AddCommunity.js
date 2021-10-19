@@ -41,7 +41,6 @@ const AddCommunity = ({
     const getInitialData_GameName = async function () {
       try {
         let results = await Game_name_values()
-        console.log("results  ",results);
         updateMainSettings({ gameTitlesList: results })
       } catch (error) {
         console.log(error)
@@ -81,11 +80,11 @@ const AddCommunity = ({
     }))
   }
 
-  // const createOption = (label, game_names_id) => ({
-  //   label,
-  //   value: label,
-  //   game_names_id,
-  // })
+  const createOption = (label, game_names_id) => ({
+    label,
+    value: label,
+    game_names_id,
+  })
 
   // const handleCreateTags = (inputValue) => {
   //   if (advancedSettingsState.tags.length >= MAX_GAME_TAGS) {
@@ -331,7 +330,7 @@ const AddCommunity = ({
               getNewOptionData={getNewOptionData}
               onInputChange={getOptionsGames}
               onChange={(value) => {
-                
+                //
                 updateMainSettings({ gameTitle: value })
               }}
               value={mainSettingsState.gameTitle}

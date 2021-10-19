@@ -162,6 +162,7 @@ console.log("getOne  ",getOne);
           community_allGrpTags={communityDetails.allGrpTags}
           community_Name={decodeURIComponent(props.routeProps.match.params.name)}
           community_game_names_id={communityDetails.game_names_id}
+          stats_header={communityDetails.stats_header}
         />
       ) : (
         ''
