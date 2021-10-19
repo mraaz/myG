@@ -10,6 +10,8 @@ import { LANGUAGE_OPTIONS } from '../../../static/AddGame'
 import { ignoreFunctions } from '../../../../common/render'
 import { showMessengerAlert } from '../../../../common/alert'
 
+import TimezoneSelect from 'react-timezone-select'
+
 export class DossierInfo extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     return ignoreFunctions(nextProps, nextState, this.props, this.state)
@@ -28,11 +30,16 @@ export class DossierInfo extends React.Component {
     visibilityCountry: 'secret',
     lookingForWork: false,
     hasMic: false,
-    underage: true
+    underage: true,
+    timeZone: ''
   }
 
   componentDidMount() {
-    this.setState(this.getProfile())
+    this.setState(this.getProfile(), () => {
+      if (this.state.timeZone == 'GMT') {
+        this.setState({ timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone })
+      }
+    })
   }
 
   getProfile = () => {
@@ -43,6 +50,7 @@ export class DossierInfo extends React.Component {
     const email = get(this.props, 'profile.email') || ''
     const team = get(this.props, 'profile.team') || ''
     const country = get(this.props, 'profile.country') || ''
+    let timeZone = get(this.props, 'profile.timeZone') || ''
     const hasMic = get(this.props, 'profile.hasMic')
     const underage = get(this.props, 'profile.underage')
     const relationshipValue = get(this.props, 'profile.relationship') || ''
@@ -56,6 +64,7 @@ export class DossierInfo extends React.Component {
     const visibilityEmail = get(this.props, 'profile.visibilityEmail') || 'secret'
     const visibilityCountry = get(this.props, 'profile.visibilityCountry') || 'secret'
     const lookingForWork = get(this.props, 'profile.lookingForWork') || false
+
     return {
       name,
       alias,
@@ -70,7 +79,8 @@ export class DossierInfo extends React.Component {
       visibilityName,
       visibilityEmail,
       visibilityCountry,
-      lookingForWork
+      lookingForWork,
+      timeZone
     }
   }
 
@@ -82,6 +92,8 @@ export class DossierInfo extends React.Component {
       updates.firstName = nameParts.length > 2 ? nameParts.slice(0, nameParts.length - 1).join(' ') : nameParts[0]
       updates.lastName = nameParts.length > 1 ? nameParts[nameParts.length - 1] : ''
     }
+    console.log(profile.timeZone, '<<<profile.timeZone')
+    console.log(this.state.timeZone, '<<<<this.state.timeZone')
     if (profile.team !== this.state.team) updates.team = this.state.team
     if (profile.country !== this.state.country) updates.country = this.state.country
     if (profile.hasMic !== this.state.hasMic) updates.hasMic = this.state.hasMic
@@ -96,13 +108,16 @@ export class DossierInfo extends React.Component {
     if (profile.visibilityEmail !== this.state.visibilityEmail) updates.visibilityEmail = this.state.visibilityEmail
     if (profile.visibilityCountry !== this.state.visibilityCountry) updates.visibilityCountry = this.state.visibilityCountry
     if (profile.lookingForWork !== this.state.lookingForWork) updates.lookingForWork = this.state.lookingForWork
+    if (profile.timeZone !== this.state.timeZone) updates.timeZone = this.state.timeZone
     return updates
   }
 
   onSave = () => {
     if (!this.state.name) return
     const updates = this.getUpdates() || {}
+    console.log(updates, '<<<S')
     const hasPendingChanges = Object.keys(updates).length
+    console.log(hasPendingChanges, '<<<Whats his')
     if (hasPendingChanges) this.props.updateProfile(this.state.alias, updates)
     this.props.onClose()
   }
@@ -303,6 +318,17 @@ export class DossierInfo extends React.Component {
     )
   }
 
+  renderTimeZoneInput = () => {
+    return (
+      <div className='row'>
+        <span className='hint'>Timezone</span>
+        <div className='input-container timezone'>
+          <TimezoneSelect value={this.state.timeZone} onChange={(timezone) => this.setState({ timeZone: timezone.value })} />
+        </div>
+      </div>
+    )
+  }
+
   renderLanguagesInput = () => {
     return (
       <div className='row'>
@@ -402,6 +428,7 @@ export class DossierInfo extends React.Component {
             {this.renderDivider()}
             {this.renderTeamInput()}
             {this.renderCountryInput()}
+            {this.renderTimeZoneInput()}
             {this.renderLanguagesInput()}
             {this.renderRelationshipInput()}
             {this.renderHasMicInput()}

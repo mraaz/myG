@@ -20,6 +20,7 @@ export default class ProfileSchema {
     if (data.mostPlayedGames !== undefined) this.mostPlayedGames = forceArray(data.mostPlayedGames)
     if (data.team !== undefined) this.team = forceString(data.team)
     if (data.country !== undefined) this.country = forceString(data.country)
+    if (data.timeZone !== undefined) this.timeZone = forceString(data.timeZone)
     if (data.twitch !== undefined) this.twitch = forceString(data.twitch)
     if (data.discord !== undefined) this.discord = forceString(data.discord)
     if (data.steam !== undefined) this.steam = forceString(data.steam)
