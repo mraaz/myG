@@ -38,11 +38,10 @@ const AddCommunityContainer = ({ level }) => {
     autoAccept: true,
     community_name: '',
     community_id: '',
-    community_Clan_Tag: '',
+    community_Clan_Tag: ''
   })
 
   const contentAreaRef = useRef()
-  let lastScrollY = 0
 
   const [gameLink, updateGameLink] = useState('')
   const gameLinkRef = useRef(null)

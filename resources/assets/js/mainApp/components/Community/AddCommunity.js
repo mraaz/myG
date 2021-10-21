@@ -1,4 +1,4 @@
-import React, { useEffect,useState,Fragment } from 'react'
+import React, { useEffect, useState, Fragment } from 'react'
 const buckectBaseUrl = 'https://myG.gg/platform_images/'
 
 import { toast } from 'react-toastify'
@@ -27,8 +27,8 @@ const AddCommunity = ({
   updateMainSettingsState,
   additional_info
 }) => {
-  const [toggleClanTag,setToggleClanTag] = useState(false);
-  const [clanTagProps,setClanTagProps] = useState({});
+  const [toggleClanTag, setToggleClanTag] = useState(false)
+  const [clanTagProps, setClanTagProps] = useState({})
   // Similar to componentDidMount and componentDidUpdate:
   useEffect(() => {
     // const getInitialData_Tags = async function() {
@@ -63,10 +63,10 @@ const AddCommunity = ({
 
   const showClanTag = async (value) => {
     const result = await axios.get(`/api/ScheduleGame/getHeader_stats_header/${value.game_names_id}`)
-    if(result.data){
+    if (result.data) {
       setToggleClanTag(true)
       setClanTagProps(result.data)
-    } else{
+    } else {
       setToggleClanTag(false)
       setClanTagProps({})
     }
@@ -96,7 +96,7 @@ const AddCommunity = ({
   const createOption = (label, game_names_id) => ({
     label,
     value: label,
-    game_names_id,
+    game_names_id
   })
 
   // const handleCreateTags = (inputValue) => {
@@ -307,7 +307,6 @@ const AddCommunity = ({
   }
 
   const getCommunityleftView = () => {
-
     return (
       <div className='community-flexBox'>
         <div className={styles.sideLineContainer}>
@@ -345,13 +344,12 @@ const AddCommunity = ({
               onInputChange={getOptionsGames}
               onChange={(value) => {
                 //
-                if(value.additional_info){
+                if (value.additional_info) {
                   showClanTag(value)
                   updateMainSettings({ gameTitle: value })
                 } else {
                   updateMainSettings({ gameTitle: value })
                 }
-                
               }}
               value={mainSettingsState.gameTitle}
               placeholder='Search, Select or create Game Title'
@@ -360,27 +358,29 @@ const AddCommunity = ({
               onKeyDown={Disable_keys}
             />
           </div>
-          {toggleClanTag && <Fragment>
-          <div className='field-title'>
-            <p>{clanTagProps.label}</p>
-          </div>
-          <div className='game-title-select'>
-          <MyGInput
-              value={mainSettingsState.community_Clan_Tag}
-              type='text'
-              placeholder={clanTagProps.placeholder}
-              autocomplete='off'
-              maxLength={75}
-              className={'community-input'}
-              minLength={3}
-              onKeyDown={Disable_keys}
-              containerStyles={{ width: '100%' }}
-              onChange={(value) => {
-                updateMainSettings({ community_Clan_Tag: value.target.value })
-              }}
-            ></MyGInput>
-          </div>
-          </Fragment>}
+          {toggleClanTag && (
+            <Fragment>
+              <div className='field-title'>
+                <p>{clanTagProps.label}</p>
+              </div>
+              <div className='game-title-select'>
+                <MyGInput
+                  value={mainSettingsState.community_Clan_Tag}
+                  type='text'
+                  placeholder={clanTagProps.placeholder}
+                  autocomplete='off'
+                  maxLength={18}
+                  className={'community-input'}
+                  minLength={3}
+                  onKeyDown={Disable_keys}
+                  containerStyles={{ width: '100%' }}
+                  onChange={(value) => {
+                    updateMainSettings({ community_Clan_Tag: value.target.value })
+                  }}
+                ></MyGInput>
+              </div>
+            </Fragment>
+          )}
           <div className='field-title'>
             <p>Featured Image</p>
           </div>
