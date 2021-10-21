@@ -32,7 +32,7 @@ const CommunityView = (props) => {
     const {
       data: { getOne = {} }
     } = await axios.get(`/api/groups/getGroupDetails/${groupName}`)
-
+console.log("getOne  ",getOne);
     if (Object.keys(getOne).length == 0) {
       toast.error(<Toast_style text={`Sorry mate, can't find that`} />)
       props.routeProps.history.push('/?at=communities')
@@ -162,6 +162,7 @@ const CommunityView = (props) => {
           community_allGrpTags={communityDetails.allGrpTags}
           community_Name={decodeURIComponent(props.routeProps.match.params.name)}
           community_game_names_id={communityDetails.game_names_id}
+          stats_header={communityDetails.stats_header}
         />
       ) : (
         ''

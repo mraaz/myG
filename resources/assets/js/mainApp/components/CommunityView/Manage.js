@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 
@@ -19,19 +19,21 @@ export default class Manage extends React.Component {
       privacy: 1,
       approval: 'true',
       description: '',
-      coHosts: null
+      coHosts: null,
+      stats_header: ''
     }
   }
 
   componentDidMount() {
-    const { routeProps = {}, community_Membership_Approval, community_type, community_grp_description } = this.props
+    const { routeProps = {}, community_Membership_Approval, community_type, community_grp_description, stats_header } = this.props
     const { match } = this.props.routeProps
 
     this.setState({
       communityName: match.params.name,
       privacy: community_type,
       approval: community_Membership_Approval == 1 ? 'true' : 'false',
-      description: community_grp_description
+      description: community_grp_description,
+      stats_header: stats_header
     })
   }
 
@@ -72,6 +74,13 @@ export default class Manage extends React.Component {
     })
   }
 
+  handleCommunityClanTagChange = (e) => {
+    const stats_header = e.target.value
+    this.setState({ stats_header }, () => {
+      this.props.onSettingsChange({ stats_header })
+    })
+  }
+
   handleCommunityNameSave = async () => {
     const { communityName } = this.state
     if (communityName.trim() == this.props.routeProps.match.params.name.trim()) {
@@ -86,6 +95,24 @@ export default class Manage extends React.Component {
         toast.success(<Toast_style text={'Nice! Community name has successfully saved.'} />)
         this.props.routeProps.match.params.name = communityName
         this.props.routeProps.history.push(`/community/${communityName}`)
+      }
+    } else {
+      toast.error(<Toast_style text={'Opps, minimum four characters required.'} />)
+    }
+  }
+  handleCommunityClanTagSave = async () => {
+    const { stats_header } = this.state
+    const { stats_header: old_stats_header } = this.props
+    if (stats_header.trim() == old_stats_header) {
+      return
+    }
+    if (stats_header && stats_header.length > 3) {
+      const change_group = axios.post('/api/groups/update_name', {
+        group_id: this.props.group_id,
+        stats_header: stats_header.trim()
+      })
+      if (change_group) {
+        toast.success(<Toast_style text={'Nice! Community Clan tag has successfully saved.'} />)
       }
     } else {
       toast.error(<Toast_style text={'Opps, minimum four characters required.'} />)
@@ -142,9 +169,11 @@ export default class Manage extends React.Component {
   }
 
   render() {
-    const { communityName, isunique } = this.state
-    const { current_user_permission } = this.props
+    const { communityName, isunique, stats_header } = this.state
+    const { current_user_permission, community_game_names_id } = this.props
+    const isthisClash = community_game_names_id == 1014 ? true : false
 
+    console.log('stats_header ', stats_header)
     return (
       <div className='setting__container'>
         {[0, 1].includes(current_user_permission) && (
@@ -163,6 +192,23 @@ export default class Manage extends React.Component {
             <button disabled={isunique} className='community___button col-sm-2' onClick={this.handleCommunityNameSave}>
               Save
             </button>
+            {isthisClash && (
+              <Fragment>
+                <div className='community___label col-sm-4'>Clan Tag Name</div>
+                <div className='community___input col-sm-6'>
+                  <input
+                    type='text'
+                    autocomplete='off'
+                    value={stats_header}
+                    onChange={this.handleCommunityClanTagChange}
+                    placeholder='Change Clan Tag Name'
+                  />
+                </div>
+                <button disabled={!stats_header} className='community___button col-sm-2' onClick={this.handleCommunityClanTagSave}>
+                  Save
+                </button>
+              </Fragment>
+            )}
           </div>
         )}
         <div className='group__privacy row'>
