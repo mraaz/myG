@@ -16,7 +16,7 @@ const axios = use('axios')
 
 //Decided to leave token in code, as each token is restricted to an IP
 const TOKEN =
-  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6Ijk1ODlhOWZlLWU1MGYtNGM0ZC04YWMxLWY1MjJhNzQxYWYwNCIsImlhdCI6MTYzMzUyMjk5NCwic3ViIjoiZGV2ZWxvcGVyL2U0ZjA1ZjI4LWJmOGMtNDJmNS0yY2I1LTU0ZTZlNjA2N2QxMiIsInNjb3BlcyI6WyJyb3lhbGUiXSwibGltaXRzIjpbeyJ0aWVyIjoiZGV2ZWxvcGVyL3NpbHZlciIsInR5cGUiOiJ0aHJvdHRsaW5nIn0seyJjaWRycyI6WyIxMDEuMTE1LjIwMi4xNzciXSwidHlwZSI6ImNsaWVudCJ9XX0.ZIYz70tjkOkrnayWJjKjE-M7rX3NPxBnAh6hF7CrovciGXToB6WizZQY_myYEkGisasTSpFWcZMhPc7tbj_26w'
+  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6ImM5ZGJmYzczLWJiY2UtNDg2ZC1hYTcwLWMxZWE1Y2I4NWQxYyIsImlhdCI6MTYzNDg4NTM4Mywic3ViIjoiZGV2ZWxvcGVyL2U0ZjA1ZjI4LWJmOGMtNDJmNS0yY2I1LTU0ZTZlNjA2N2QxMiIsInNjb3BlcyI6WyJyb3lhbGUiXSwibGltaXRzIjpbeyJ0aWVyIjoiZGV2ZWxvcGVyL3NpbHZlciIsInR5cGUiOiJ0aHJvdHRsaW5nIn0seyJjaWRycyI6WyIxMjAuMjMuMzEuMjM0Il0sInR5cGUiOiJjbGllbnQifV19.zKt4Sf6aodPfLfopTZiwuJqjiD4C-jkcZo3aouV_DMID3ut2EUz4Sz-mzENBDZv3vQ78IBIckf0O1M86xlFYLg'
 const CONFIG = {
   headers: { Authorization: `Bearer ${TOKEN}` }
 }
@@ -36,7 +36,8 @@ class ClashRoyaleController {
       const strClanTag = request.params.clanTag
       const clanTag = strClanTag.replace(/#/g, '').trim()
 
-      const getClanURL = 'clans/' + '%23' + clanTag + '/members'
+      //const getClanURL = 'clans/' + '%23' + clanTag + '/members'
+      const getClanURL = 'clans/' + '%23' + 'QG8UQCV0' + '/members'
       //const getRiverRaceLogURL = 'clans/' + '%23' + clanTag + '/riverracelog'
       const getCurrentriverraceURL = 'clans/' + '%23' + clanTag + '/currentriverrace'
 
@@ -542,16 +543,63 @@ class ClashRoyaleController {
 
   async kick_non_clashRoyale_players({ auth, request, response }) {
     try {
-      console.log('adfdfd')
+      console.log('Starting')
+
       //break this down
+      //break this down
+
+      //kick all members out of this community which are not in the clan
+      // Get all members in this group n their clan tags n not locked
+      // Get all clan tags
+
+      //Loop thru all community members and remove if not in clan
+
+      if (request.params.group_id == undefined || request.params.group_id == '') return
+
+      const allPlayers = await Database.from('clash_royale_players')
+        .innerJoin('users', 'users.id', 'clash_royale_players.user_id')
+        .where('clash_royale_players.group_id', '=', 1)
+
+      if (!allPlayers.length) return
+
+      const getClanURL = 'clans/' + '%23' + allPlayers[0].clan_tag + '/members'
+
+      const getClanInfo = await axios.get(`https://api.clashroyale.com/v1/${getClanURL}`, CONFIG)
+
+      let clanStruct = {}
+      for (let index = 0; index < getClanInfo.data.items.length; index++) {
+        const remove_hash = getClanInfo.data.items[index].tag.replace(/#/g, '')
+        clanStruct[remove_hash] = true
+      }
+      let tmpArr = [],
+        playerNames = []
+
+      for (let index = 0; index < allPlayers.length; index++) {
+        if (!clanStruct[allPlayers[index].player_tag]) {
+          tmpArr.push(allPlayers[index].id)
+          playerNames.push(allPlayers[index].alias)
+        }
+      }
+      if (tmpArr) {
+        await Database.table('clash_royale_players').whereIn('id', tmpArr).delete()
+      }
+      return playerNames
     } catch (error) {
+      if (error.message == 'Request failed with  status code 404') {
+        return 'Clan not found'
+      }
+      if (error.message == 'Request failed with status code 403') {
+        const slack = new SlackController()
+        slack.sendMessage('Clash Royale Auth Failed: Auth Token: ' + TOKEN)
+        return 'Auth Error'
+      }
       LoggingRepository.log({
         environment: process.env.NODE_ENV,
         type: 'error',
         source: 'backend',
         context: __filename,
         message: (error && error.message) || error,
-        method: 'sendEmail'
+        method: 'kick_non_clashRoyale_players'
       })
     }
   }

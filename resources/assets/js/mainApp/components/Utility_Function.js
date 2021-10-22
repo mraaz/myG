@@ -64,8 +64,8 @@ export async function Game_name_values(inputValue) {
     } else {
       results = getGameName.data.gameSearchResults
     }
-    var newArr = []
-    var i, newOption
+    let newArr = []
+    let i, newOption
     if (results.length != 0) {
       for (i = 0; i < results.length; i++) {
         if (results[i].game_img != '' && results[i].game_img != null) {
@@ -110,7 +110,7 @@ export async function Game_name_Tags(inputValue, game_names_id) {
     }
   }
 
-  var allTags
+  let allTags
   if (inputValue == '' || inputValue == undefined) {
     allTags = await axios.post('/api/Tags/getTopTagsforGames', {
       game_names_id: game_names_id
@@ -122,8 +122,8 @@ export async function Game_name_Tags(inputValue, game_names_id) {
     })
   }
   try {
-    var newArr = []
-    var i, newOption
+    let newArr = []
+    let i, newOption
 
     for (i = 0; i < allTags.data.allTags.length; i++) {
       newOption = createOption(allTags.data.allTags[i].tag, allTags.data.allTags[i].id)
@@ -146,8 +146,8 @@ export async function Schedule_Game_Tags(inputValue, gameId, noTopGameTags) {
     })
   }
   try {
-    var newArr = []
-    var i, newOption
+    let newArr = []
+    let i, newOption
 
     if (allTags.data && allTags.data.allTags) {
       for (i = 0; i < allTags.data.allTags.length; i++) {
@@ -172,8 +172,8 @@ export async function Schedule_Game_Skills(inputValue) {
     })
   }
   try {
-    var newArr = []
-    var i, newOption
+    let newArr = []
+    let i, newOption
 
     if (allSkills.data && allSkills.data.allSkills) {
       for (i = 0; i < allSkills.data.allSkills.length; i++) {
@@ -199,8 +199,8 @@ export async function Group_Hash_Tags(inputValue) {
   //   })
   // }
   // try {
-  //   var newArr = []
-  //   var i, newOption
+  //   let newArr = []
+  //   let i, newOption
   //
   //   if (allTags.data && allTags.data.allTags) {
   //     for (i = 0; i < allTags.data.allTags.length; i++) {
