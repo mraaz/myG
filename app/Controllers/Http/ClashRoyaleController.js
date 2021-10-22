@@ -556,6 +556,26 @@ class ClashRoyaleController {
 
       if (request.params.group_id == undefined || request.params.group_id == '') return
 
+      let tmpArr = [],
+        playerNames = [],
+        user_ids = []
+
+      const allPlayers = Database.from('clash_royale_players').where('clash_royale_players.group_id', '=', 1).select('user_id')
+
+      const allPlayersinGroup = await Database.from('usergroups')
+        .innerJoin('users', 'users.id', 'usergroups.user_id')
+        .where('usergroups.group_id', '=', 1)
+        .whereNot('usergroups.permission_level', '=', 1)
+        .whereNot('usergroups.permission_level', '=', 2)
+        .whereNot('usergroups.permission_level', '=', 42)
+        .whereNotIn('usergroups.user_id', allPlayers)
+        .select('usergroups.id', 'users.alias')
+
+      for (let index = 0; index < allPlayersinGroup.length; index++) {
+        playerNames.push(allPlayersinGroup[index].alias)
+        await Database.table('usergroups').where('id', allPlayersinGroup[index].id).delete()
+      }
+
       const allPlayers = await Database.from('clash_royale_players')
         .innerJoin('users', 'users.id', 'clash_royale_players.user_id')
         .where('clash_royale_players.group_id', '=', 1)
@@ -571,18 +591,25 @@ class ClashRoyaleController {
         const remove_hash = getClanInfo.data.items[index].tag.replace(/#/g, '')
         clanStruct[remove_hash] = true
       }
-      let tmpArr = [],
-        playerNames = []
 
       for (let index = 0; index < allPlayers.length; index++) {
         if (!clanStruct[allPlayers[index].player_tag]) {
           tmpArr.push(allPlayers[index].id)
           playerNames.push(allPlayers[index].alias)
+          user_ids.push(allPlayers[index].user_id)
         }
       }
+
+      //ToDo: UPDATE TO TEAMS USERGROUPS
+      if (user_ids) {
+        await Database.table('usergroups').whereIn('user_id', user_ids).andWhere('group_id', '=', request.params.group_id).delete()
+      }
+
+      //ToDo: REMOVE ONCE WE CREATE THE DB RELATIONSHIP WITH TEAMS
       if (tmpArr) {
         await Database.table('clash_royale_players').whereIn('id', tmpArr).delete()
       }
+
       return playerNames
     } catch (error) {
       if (error.message == 'Request failed with  status code 404') {

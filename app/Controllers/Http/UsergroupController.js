@@ -13,6 +13,7 @@ const ChatRepository = require('../../Repositories/Chat')
 const NotificationsRepository = require('../../Repositories/Notifications')
 const LoggingRepository = require('../../Repositories/Logging')
 
+//permission_level = 1 Admin, 2 Moderator, 3 User, 42 Pending
 class UsergroupController {
   async store({ auth, request }, onboarding = false) {
     if (auth.user) {

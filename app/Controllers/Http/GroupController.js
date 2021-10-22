@@ -15,6 +15,8 @@ const LoggingRepository = require('../../Repositories/Logging')
 
 const MAX_INVITEES = 9
 
+//permission_level = 1 Admin, 2 Moderator, 3 User, 42 Pending
+
 class GroupController {
   async store({ auth, request, response }) {
     if (auth.user) {
