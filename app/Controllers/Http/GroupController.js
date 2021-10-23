@@ -172,7 +172,6 @@ class GroupController {
           const commonController = new CommonController()
 
           current_user_permission = await commonController.get_permission({ auth }, getOne.id)
-          console.log(current_user_permission, '><>FEEL')
 
           const getFollowing = await Database.table('followers').where({ group_id: getOne.id, user_id: auth.user.id }).first()
 

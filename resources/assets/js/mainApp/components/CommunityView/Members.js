@@ -160,7 +160,7 @@ export default class Members extends React.Component {
       <SweetAlert
         danger
         showCancel
-        title='Are you sure you wish to remove ALL players whom are not in the Clash Royale CLAN?'
+        title='Are you sure you wish to remove ALL players from this community who are not in the Clash Royale CLAN?'
         confirmBtnText='Make it so!'
         focusCancelBtn={true}
         focusConfirmBtn={false}
@@ -174,7 +174,7 @@ export default class Members extends React.Component {
         onConfirm={() => this.kick_non_clashRoyale_players('true')}
         onCancel={() => this.kick_non_clashRoyale_players('false')}
       >
-        You will not be able to recover this entry!
+        Will not remove admins, moderators or locked myG players
       </SweetAlert>
     )
     this.setState({
@@ -470,9 +470,11 @@ export default class Members extends React.Component {
                 Save
               </button>
               {isthisClash && (
-                <button type='button' onClick={() => this.showAlert_for_kick()}>
-                  Boot non Clan members
-                </button>
+                <MyGButton
+                  customStyles={{ color: '#000', background: '#e5c746' }}
+                  onClick={() => this.showAlert_for_kick()}
+                  text='Remove non CR members'
+                />
               )}
             </div>
           )}
