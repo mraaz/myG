@@ -37,11 +37,11 @@ const AddCommunityContainer = ({ level }) => {
     gameTitle: '',
     autoAccept: true,
     community_name: '',
-    community_id: ''
+    community_id: '',
+    community_Clan_Tag: ''
   })
 
   const contentAreaRef = useRef()
-  let lastScrollY = 0
 
   const [gameLink, updateGameLink] = useState('')
   const gameLinkRef = useRef(null)
@@ -108,7 +108,8 @@ const AddCommunityContainer = ({ level }) => {
         coHosts: advancedSettingsState.coHosts,
         autoAccept: mainSettingsState.autoAccept,
         type: advancedSettingsState.type,
-        preview_files: advancedSettingsState.preview_files
+        preview_files: advancedSettingsState.preview_files,
+        community_Clan_Tag: mainSettingsState.community_Clan_Tag
       })
       updateGameLink(encodeURI(data.name.trim()))
       updateMainSettingsState({ community_id: data.id, community_name: data.name.trim() })
