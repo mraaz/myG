@@ -17,6 +17,7 @@ const axios = use('axios')
 //Decided to leave token in code, as each token is restricted to an IP
 const TOKEN =
   'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6IjEyNjQ5ZGU3LTNjMzMtNDM2Yy04ZTk0LWI4MDE0YjdlN2EwOCIsImlhdCI6MTYzNDYyOTI2MCwic3ViIjoiZGV2ZWxvcGVyL2I5OWJkYTY4LTdhYjktNTE0OS0wYTVkLWExYTdkZWNkYTg2MiIsInNjb3BlcyI6WyJyb3lhbGUiXSwibGltaXRzIjpbeyJ0aWVyIjoiZGV2ZWxvcGVyL3NpbHZlciIsInR5cGUiOiJ0aHJvdHRsaW5nIn0seyJjaWRycyI6WyI0NS4xMjcuMTM3LjEzNyJdLCJ0eXBlIjoiY2xpZW50In1dfQ.3W0QynByezVyzY4TYdITV_KRi13_YM28CVwdmO5xXfCkQBIEOOPyDlfFOUopTKmCbYrMj7xhCvRVODLyxmkNIg'
+
 const CONFIG = {
   headers: { Authorization: `Bearer ${TOKEN}` }
 }
@@ -36,7 +37,8 @@ class ClashRoyaleController {
       const strClanTag = request.params.clanTag
       const clanTag = strClanTag.replace(/#/g, '').trim()
 
-      const getClanURL = 'clans/' + '%23' + clanTag + '/members'
+      //const getClanURL = 'clans/' + '%23' + clanTag + '/members'
+      const getClanURL = 'clans/' + '%23' + 'QG8UQCV0' + '/members'
       //const getRiverRaceLogURL = 'clans/' + '%23' + clanTag + '/riverracelog'
       const getCurrentriverraceURL = 'clans/' + '%23' + clanTag + '/currentriverrace'
 
@@ -542,16 +544,92 @@ class ClashRoyaleController {
 
   async kick_non_clashRoyale_players({ auth, request, response }) {
     try {
-      console.log('adfdfd')
+      console.log('Starting')
+
       //break this down
+      //break this down
+
+      //kick all members out of this community which are not in the clan
+      // Get all members in this group n their clan tags n not locked
+      // Get all clan tags
+
+      //Loop thru all community members and remove if not in clan
+
+      if (request.params.group_id == undefined || request.params.group_id == '') return
+
+      let tmpArr = [],
+        playerNames = [],
+        user_ids = []
+
+      const allPlayers_gensis = Database.from('clash_royale_players')
+        .where('clash_royale_players.group_id', '=', request.params.group_id)
+        .select('user_id')
+
+      const allPlayersinGroup = await Database.from('usergroups')
+        .innerJoin('users', 'users.id', 'usergroups.user_id')
+        .where('usergroups.group_id', '=', 32)
+        .whereNot('usergroups.permission_level', '=', 32)
+        .whereNot('usergroups.permission_level', '=', 2)
+        .whereNot('usergroups.permission_level', '=', 42)
+        .whereNotIn('usergroups.user_id', allPlayers_gensis)
+        .select('usergroups.id', 'users.alias')
+
+      for (let index = 0; index < allPlayersinGroup.length; index++) {
+        playerNames.push(allPlayersinGroup[index].alias)
+        //await Database.table('usergroups').where('id', allPlayersinGroup[index].id).delete()
+      }
+      return playerNames
+      const allPlayers = await Database.from('clash_royale_players')
+        .innerJoin('users', 'users.id', 'clash_royale_players.user_id')
+        .where('clash_royale_players.group_id', '=', request.params.group_id)
+
+      if (!allPlayers.length) return
+
+      const getClanURL = 'clans/' + '%23' + allPlayers[0].clan_tag + '/members'
+
+      const getClanInfo = await axios.get(`https://api.clashroyale.com/v1/${getClanURL}`, CONFIG)
+
+      let clanStruct = {}
+      for (let index = 0; index < getClanInfo.data.items.length; index++) {
+        const remove_hash = getClanInfo.data.items[index].tag.replace(/#/g, '')
+        clanStruct[remove_hash] = true
+      }
+
+      for (let index = 0; index < allPlayers.length; index++) {
+        if (!clanStruct[allPlayers[index].player_tag]) {
+          tmpArr.push(allPlayers[index].id)
+          playerNames.push(allPlayers[index].alias)
+          user_ids.push(allPlayers[index].user_id)
+        }
+      }
+
+      //ToDo: UPDATE TO TEAMS USERGROUPS
+      if (user_ids) {
+        //await Database.table('usergroups').whereIn('user_id', user_ids).andWhere('group_id', '=', request.params.group_id).delete()
+      }
+
+      //ToDo: REMOVE ONCE WE CREATE THE DB RELATIONSHIP WITH TEAMS
+      if (tmpArr) {
+        //await Database.table('clash_royale_players').whereIn('id', tmpArr).delete()
+      }
+
+      return playerNames
     } catch (error) {
+      if (error.message == 'Request failed with  status code 404') {
+        return 'Clan not found'
+      }
+      if (error.message == 'Request failed with status code 403') {
+        const slack = new SlackController()
+        slack.sendMessage('Clash Royale Auth Failed: Auth Token: ' + TOKEN)
+        return 'Auth Error'
+      }
       LoggingRepository.log({
         environment: process.env.NODE_ENV,
         type: 'error',
         source: 'backend',
         context: __filename,
         message: (error && error.message) || error,
-        method: 'sendEmail'
+        method: 'kick_non_clashRoyale_players'
       })
     }
   }

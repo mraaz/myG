@@ -110,7 +110,7 @@ class Settings extends Component {
     const game_names_id = 1014
 
     try {
-      //const tmp = await axios.get(`/api/clashroyale/show/${clanTag}`)
+      const tmp = await axios.get(`/api/clashroyale/show/${clanTag}`)
 
       //const tmp = await axios.get(`/api/ScheduleGame/getHeader_stats_header/${game_names_id}`)
 
@@ -125,10 +125,10 @@ class Settings extends Component {
       //   reminder_three: 5
       // })
 
-      const tmp = await axios.post('/api/clashroyale/getPlayerDetails/', {
-        group_id: 1,
-        player_tag: 'PUPGJJ9U'
-      })
+      // const tmp = await axios.post('/api/clashroyale/getPlayerDetails/', {
+      //   group_id: 1,
+      //   player_tag: 'PUPGJJ9U'
+      // })
 
       //const tmp = await axios.delete(`/api/clashroyale/deletePlayerDetails/${clash_royale_player_id}`)
 

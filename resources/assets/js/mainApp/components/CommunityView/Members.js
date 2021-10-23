@@ -125,25 +125,62 @@ export default class Members extends React.Component {
       dropdown: false
     })
     if (text == 'true') {
-      const delete_group = await axios.post('/api/groups/delete', {
-        group_id: this.props.group_id
-      })
-      if (delete_group) {
-        toast.error(<Toast_style text={'Hmmmm, Group has been deleted successfully.'} />)
-      } else {
-        toast.error(<Toast_style text={'Hmmmm, Something went wrong. Please try again.'} />)
+      try {
+        const delete_group = await axios.post('/api/groups/delete', {
+          group_id: this.props.group_id
+        })
+        if (delete_group) {
+          toast.error(<Toast_style text={'Hmmmm, Group has been deleted successfully.'} />)
+        } else {
+          toast.error(<Toast_style text={'Hmmmm, Something went wrong. Please try again.'} />)
+        }
+      } catch (error) {
+        logToElasticsearch('error', 'CommunityView/Members.js', 'Failed handleDelete:' + ' ' + error)
       }
+
       this.props.routeProps.history.push('/?at=communities')
     }
   }
 
-  kick_non_clashRoyale_players = async () => {
-    try {
-      const data = await axios.get(`/api/clashroyale/kick_non_clashRoyale_players/${this.props.group_id}`)
-      console.log(data, '<<<Child chose')
-    } catch (error) {
-      logToElasticsearch('error', 'CommunityView/Members.js', 'Failed clashRoyale_kick:' + ' ' + error)
+  kick_non_clashRoyale_players = async (text) => {
+    this.setState({
+      showKickAlert: ''
+    })
+    if (text == 'true') {
+      try {
+        const data = await axios.get(`/api/clashroyale/kick_non_clashRoyale_players/${this.props.group_id}`)
+        console.log(data, '<<<Child chose')
+      } catch (error) {
+        logToElasticsearch('error', 'CommunityView/Members.js', 'Failed clashRoyale_kick:' + ' ' + error)
+      }
     }
+  }
+
+  showAlert_for_kick() {
+    const getAlert = () => (
+      <SweetAlert
+        danger
+        showCancel
+        title='Are you sure you wish to remove ALL players from this community who are not in the Clash Royale CLAN?'
+        confirmBtnText='Make it so!'
+        focusCancelBtn={true}
+        focusConfirmBtn={false}
+        showCloseButton={false}
+        btnSize='lg'
+        style={{
+          display: 'flex',
+          whiteSpace: 'pre',
+          width: '41%'
+        }}
+        onConfirm={() => this.kick_non_clashRoyale_players('true')}
+        onCancel={() => this.kick_non_clashRoyale_players('false')}
+      >
+        Will not remove admins, moderators or locked myG players
+      </SweetAlert>
+    )
+    this.setState({
+      showKickAlert: getAlert()
+    })
   }
 
   showAlert() {
@@ -172,6 +209,7 @@ export default class Members extends React.Component {
       alert: getAlert()
     })
   }
+
   showExpelAlert(member) {
     const getAlert = () => (
       <SweetAlert
@@ -382,6 +420,7 @@ export default class Members extends React.Component {
       <div className={`modal-container View__Member__modal ${modalStatus ? 'modal--show' : ''}`}>
         {this.state.alert}
         {this.state.userExpelAlert}
+        {this.state.showKickAlert}
         <div className='modal-wrap'>
           <div className='modal__header'>
             <div className='tabs___header'>
@@ -439,9 +478,11 @@ export default class Members extends React.Component {
                 Save
               </button>
               {isthisClash && (
-                <button type='button' onClick={() => this.kick_non_clashRoyale_players(true)}>
-                  Boot non Clan members
-                </button>
+                <MyGButton
+                  customStyles={{ color: '#000', background: '#e5c746' }}
+                  onClick={() => this.showAlert_for_kick()}
+                  text='Remove non CR members'
+                />
               )}
             </div>
           )}
