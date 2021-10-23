@@ -560,25 +560,27 @@ class ClashRoyaleController {
         playerNames = [],
         user_ids = []
 
-      const allPlayers = Database.from('clash_royale_players').where('clash_royale_players.group_id', '=', 1).select('user_id')
+      const allPlayers_gensis = Database.from('clash_royale_players')
+        .where('clash_royale_players.group_id', '=', request.params.group_id)
+        .select('user_id')
 
       const allPlayersinGroup = await Database.from('usergroups')
         .innerJoin('users', 'users.id', 'usergroups.user_id')
-        .where('usergroups.group_id', '=', 1)
-        .whereNot('usergroups.permission_level', '=', 1)
+        .where('usergroups.group_id', '=', 32)
+        .whereNot('usergroups.permission_level', '=', 32)
         .whereNot('usergroups.permission_level', '=', 2)
         .whereNot('usergroups.permission_level', '=', 42)
-        .whereNotIn('usergroups.user_id', allPlayers)
+        .whereNotIn('usergroups.user_id', allPlayers_gensis)
         .select('usergroups.id', 'users.alias')
 
       for (let index = 0; index < allPlayersinGroup.length; index++) {
         playerNames.push(allPlayersinGroup[index].alias)
-        await Database.table('usergroups').where('id', allPlayersinGroup[index].id).delete()
+        //await Database.table('usergroups').where('id', allPlayersinGroup[index].id).delete()
       }
-
+      return playerNames
       const allPlayers = await Database.from('clash_royale_players')
         .innerJoin('users', 'users.id', 'clash_royale_players.user_id')
-        .where('clash_royale_players.group_id', '=', 1)
+        .where('clash_royale_players.group_id', '=', request.params.group_id)
 
       if (!allPlayers.length) return
 
@@ -602,12 +604,12 @@ class ClashRoyaleController {
 
       //ToDo: UPDATE TO TEAMS USERGROUPS
       if (user_ids) {
-        await Database.table('usergroups').whereIn('user_id', user_ids).andWhere('group_id', '=', request.params.group_id).delete()
+        //await Database.table('usergroups').whereIn('user_id', user_ids).andWhere('group_id', '=', request.params.group_id).delete()
       }
 
       //ToDo: REMOVE ONCE WE CREATE THE DB RELATIONSHIP WITH TEAMS
       if (tmpArr) {
-        await Database.table('clash_royale_players').whereIn('id', tmpArr).delete()
+        //await Database.table('clash_royale_players').whereIn('id', tmpArr).delete()
       }
 
       return playerNames
