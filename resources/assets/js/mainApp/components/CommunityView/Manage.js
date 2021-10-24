@@ -100,24 +100,6 @@ export default class Manage extends React.Component {
       toast.error(<Toast_style text={'Opps, minimum four characters required.'} />)
     }
   }
-  handleCommunityClanTagSave = async () => {
-    const { stats_header } = this.state
-    const { stats_header: old_stats_header } = this.props
-    if (stats_header.trim() == old_stats_header) {
-      return
-    }
-    if (stats_header && stats_header.length > 3) {
-      const change_group = axios.post('/api/groups/update_name', {
-        group_id: this.props.group_id,
-        stats_header: stats_header.trim()
-      })
-      if (change_group) {
-        toast.success(<Toast_style text={'Nice! Community Clan tag has successfully saved.'} />)
-      }
-    } else {
-      toast.error(<Toast_style text={'Opps, minimum four characters required.'} />)
-    }
-  }
 
   handleInviteFriends = () => {
     if (this.state.coHosts != undefined && this.state.coHosts != null && this.state.coHosts != '') {
@@ -177,21 +159,24 @@ export default class Manage extends React.Component {
     return (
       <div className='setting__container'>
         {[0, 1].includes(current_user_permission) && (
-          <div className='communityName__section row'>
-            <div className='community___label col-sm-4'>Change Community Name</div>
-            <div className='community___input col-sm-6'>
-              <input
-                type='text'
-                autocomplete='off'
-                value={communityName}
-                onBlur={this.handleNameblur}
-                onChange={this.handleCommunityNameChange}
-                placeholder='Change Community Name'
-              />
-            </div>
-            <button disabled={isunique} className='community___button col-sm-2' onClick={this.handleCommunityNameSave}>
-              Save
-            </button>
+          <Fragment>
+              <div className='communityName__section row'>
+                  <div className='community___label col-sm-4'>Change Community Name</div>
+                  <div className='community___input col-sm-6'>
+                    <input
+                  type='text'
+                  autocomplete='off'
+                  value={communityName}
+                  onBlur={this.handleNameblur}
+                  onChange={this.handleCommunityNameChange}
+                  placeholder='Change Community Name'
+                />
+              </div>
+              <button disabled={isunique} className='community___button col-sm-2' onClick={this.handleCommunityNameSave}>
+                Save
+              </button>
+          </div>
+          <div className='communityName__section clanTag row'>
             {isthisClash && (
               <Fragment>
                 <div className='community___label col-sm-4'>Clan Tag Name</div>
@@ -204,12 +189,10 @@ export default class Manage extends React.Component {
                     placeholder='Change Clan Tag Name'
                   />
                 </div>
-                <button disabled={!stats_header} className='community___button col-sm-2' onClick={this.handleCommunityClanTagSave}>
-                  Save
-                </button>
               </Fragment>
             )}
           </div>
+          </Fragment>
         )}
         <div className='group__privacy row'>
           <div className='label col-sm-4 col-xs-4'>Privacy</div>

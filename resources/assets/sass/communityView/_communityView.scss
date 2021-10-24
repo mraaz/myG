@@ -582,6 +582,10 @@
   .setting__container {
     width: 100%;
     .communityName__section {
+      &.clanTag{
+        justify-content: left;
+        margin-top: 10px;
+      }
       display: flex;
       justify-content: center;
       align-items: center;
