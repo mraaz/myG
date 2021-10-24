@@ -162,6 +162,8 @@ class ClashRoyaleController {
 
         if (request.input('group_id') == undefined || request.input('group_id') == '') return
 
+        if (request.input('user_id') == undefined || request.input('user_id') == '') return
+
         const get_player = await Database.from('clash_royale_players')
           .where({
             player_tag: request.input('player_tag'),
@@ -188,7 +190,8 @@ class ClashRoyaleController {
           group_id: request.input('group_id'),
           clan_tag: request.input('clanTag'),
           player_tag: request.input('player_tag'),
-          user_id: request.input('user_id')
+          user_id: request.input('user_id'),
+          player_locked: request.input('player_locked')
         })
 
         if (request.input('reminder_one') != undefined) {
@@ -544,17 +547,6 @@ class ClashRoyaleController {
 
   async kick_non_clashRoyale_players({ auth, request, response }) {
     try {
-      console.log('Starting')
-
-      //break this down
-      //break this down
-
-      //kick all members out of this community which are not in the clan
-      // Get all members in this group n their clan tags n not locked
-      // Get all clan tags
-
-      //Loop thru all community members and remove if not in clan
-
       if (request.params.group_id == undefined || request.params.group_id == '') return
 
       let tmpArr = [],
@@ -567,20 +559,21 @@ class ClashRoyaleController {
 
       const allPlayersinGroup = await Database.from('usergroups')
         .innerJoin('users', 'users.id', 'usergroups.user_id')
-        .where('usergroups.group_id', '=', 32)
-        .whereNot('usergroups.permission_level', '=', 32)
+        .where('usergroups.group_id', '=', request.params.group_id)
+        .whereNot('usergroups.permission_level', '=', 1)
         .whereNot('usergroups.permission_level', '=', 2)
         .whereNot('usergroups.permission_level', '=', 42)
         .whereNotIn('usergroups.user_id', allPlayers_gensis)
-        .select('usergroups.id', 'users.alias')
+        .select('usergroups.id', 'users.alias', 'usergroups.user_id')
 
       for (let index = 0; index < allPlayersinGroup.length; index++) {
         playerNames.push(allPlayersinGroup[index].alias)
         //await Database.table('usergroups').where('id', allPlayersinGroup[index].id).delete()
       }
-      return playerNames
+
       const allPlayers = await Database.from('clash_royale_players')
         .innerJoin('users', 'users.id', 'clash_royale_players.user_id')
+        .where('clash_royale_players.player_locked', '=', false)
         .where('clash_royale_players.group_id', '=', request.params.group_id)
 
       if (!allPlayers.length) return
@@ -623,6 +616,20 @@ class ClashRoyaleController {
         slack.sendMessage('Clash Royale Auth Failed: Auth Token: ' + TOKEN)
         return 'Auth Error'
       }
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+        method: 'kick_non_clashRoyale_players'
+      })
+    }
+  }
+  async clashRoyale_player_manager_create({ auth, request, response }) {
+    try {
+      //Create lock
+    } catch (error) {
       LoggingRepository.log({
         environment: process.env.NODE_ENV,
         type: 'error',

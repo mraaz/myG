@@ -155,3 +155,4 @@ database/migrations/1632546479303_clash_royale_transactions_schema.js
 database/migrations/1632774962511_game_stats_schema.js
 database/migrations/1633037198823_groups_schema.js
 database/migrations/1634302858045_users_schema.js
+database/migrations/1635079625006_clash_royale_players_schema.js
