@@ -321,7 +321,7 @@ const AddCommunity = ({
             <MyGInput
               value={mainSettingsState.community_name}
               type='text'
-              autocomplete='off'
+              autoComplete='off'
               maxLength={75}
               className={'community-input'}
               minLength={3}
@@ -368,7 +368,7 @@ const AddCommunity = ({
                   value={mainSettingsState.community_Clan_Tag}
                   type='text'
                   placeholder={clanTagProps.placeholder}
-                  autocomplete='off'
+                  autoComplete='off'
                   maxLength={18}
                   className={'community-input'}
                   minLength={3}

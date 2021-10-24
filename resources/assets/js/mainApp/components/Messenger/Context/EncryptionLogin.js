@@ -38,7 +38,7 @@ export default class EncryptionLogin extends React.Component {
         <input
           className='messenger-encryption-login-input'
           type='text'
-          autocomplete='off'
+          autoComplete='off'
           autoComplete='off'
           placeholder='Chat Password'
           value={this.state.pin}

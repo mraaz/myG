@@ -346,7 +346,7 @@ export default class GroupMain extends Component {
             <div className='community__search'>
               <input
                 type='text'
-                autocomplete='off'
+                autoComplete='off'
                 className='form-control'
                 placeholder='Search here ...'
                 onChange={this.getSearchGroup}

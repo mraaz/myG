@@ -127,6 +127,7 @@ const CommunityView = (props) => {
     )
   }
 
+
   return (
     <div className='communityName__container' ref={contentAreaRef}>
       <CoverImage {...communityDetails} handleModalStatus={handleModalStatus} {...props} />
@@ -145,7 +146,7 @@ const CommunityView = (props) => {
         <React.Fragment>
           <Channel community title={communityDetails.name} channelId={`community-${communityDetails.id}`} />
           <div style={{ margin: 32 }} />
-          <GamePosts {...props} group_id={communityDetails.id} current_user_permission={communityDetails.current_user_permission} />
+          <GamePosts {...props} group_id={communityDetails.id} current_user_permission={communityDetails.current_user_permission} stats_header={communityDetails.stats_header} />
         </React.Fragment>
       )}
       {modalStatus == true ? (

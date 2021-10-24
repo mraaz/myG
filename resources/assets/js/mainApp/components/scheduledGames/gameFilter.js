@@ -814,7 +814,7 @@ export default class ScheduleGames extends Component {
                         <div className='viewGame__label'>{this.filterGroup[k]}</div>
                         <input
                           type='text'
-                          autocomplete='off'
+                          autoComplete='off'
                           className='viewGame__name__input'
                           onChange={this.handleChange_description}
                           value={this.state.description_box || filterValueArray['description']}
@@ -890,7 +890,7 @@ export default class ScheduleGames extends Component {
                         <div className='viewGame__label'>{this.filterGroup[k]}</div>
                         <input
                           type='text'
-                          autocomplete='off'
+                          autoComplete='off'
                           className='viewGame__name__input'
                           onChange={this.handleChange_other}
                           value={this.state.other_box || filterValueArray['other']}
@@ -956,7 +956,7 @@ export default class ScheduleGames extends Component {
                       <div className='input__label'>Filter Name</div>
                       <input
                         type='text'
-                        autocomplete='off'
+                        autoComplete='off'
                         ref={this.filterNameRef}
                         value={filterName}
                         placeholder='Name your filter'
@@ -1012,7 +1012,7 @@ export default class ScheduleGames extends Component {
                             <div style={{ padding: '9px' }}>
                               <input
                                 type='text'
-                                autocomplete='off'
+                                autoComplete='off'
                                 id={k.id}
                                 className='filter__Input'
                                 onChange={(e) => this.handleSavefilterInputChnage(e, k.id, k.payload)}

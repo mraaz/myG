@@ -129,7 +129,7 @@ class GuestLink extends React.Component {
           className={`input ${this.state.aliasEmpty ? 'error' : ''}`}
           placeholder='e.g. Star-Lord'
           type='text'
-          autocomplete='off'
+          autoComplete='off'
           value={this.state.alias}
           onChange={(event) => this.setState({ alias: event.target.value, aliasEmpty: false })}
           onKeyPress={this.onKeyPressed}

@@ -21,6 +21,7 @@ export default class Posts extends Component {
   componentDidMount() {
     window.scrollTo({ top: 500, behavior: 'smooth' })
     this.fetchMoreData()
+    this.getClanTagGameData()
     document.addEventListener('scroll', this.handleScroll, { passive: true })
     document.addEventListener('wheel', this.handleScroll, { passive: true })
   }
@@ -66,6 +67,19 @@ export default class Posts extends Component {
         )
       })
     }
+  }
+
+  getClanTagGameData = () => {
+    const getData = async () => {
+      try {
+        const clanTag = '2UQ2VCCC';// this.props.stats_header;
+        const response = await axios.get(`/api/clashroyale/show/${clanTag}`)
+        console.log("response ",response.data);
+      } catch (error) {
+        logToElasticsearch('error', 'Clan Tag Game Stats', 'Failed at Clan Tag Game Stats' + ' ' + error)
+      }
+    }
+    getData();
   }
 
   fetchMoreData = () => {
