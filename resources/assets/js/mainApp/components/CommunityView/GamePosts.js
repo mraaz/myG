@@ -4,6 +4,7 @@ import Group_IndividualPost from './Group_IndividualPost'
 import ComposeSection from '../ComposeSection_v2'
 
 import { logToElasticsearch } from '../../../integration/http/logger'
+import TableComponent from '../common/TableComponent'
 
 export default class Posts extends Component {
   constructor() {
@@ -14,7 +15,9 @@ export default class Posts extends Component {
       moreplease: true,
       post_submit_loading: false,
       activeTab: 'All',
-      fetching: false
+      fetching: false,
+      clanTagDataFetching:false,
+      clanTagData:'',
     }
   }
 
@@ -72,11 +75,21 @@ export default class Posts extends Component {
   getClanTagGameData = () => {
     const getData = async () => {
       try {
-        const clanTag = '2UQ2VCCC';// this.props.stats_header;
+        this.setState({
+          clanTagDataFetching:true
+        })
+        const clanTag = this.props.stats_header;
         const response = await axios.get(`/api/clashroyale/show/${clanTag}`)
-        console.log("response ",response.data);
+        this.setState({
+          clanTagDataFetching:false,
+          clanTagData:response.data
+        })
       } catch (error) {
         logToElasticsearch('error', 'Clan Tag Game Stats', 'Failed at Clan Tag Game Stats' + ' ' + error)
+        this.setState({
+          clanTagDataFetching:false,
+          clanTagDataFetching:'',
+        })
       }
     }
     getData();
@@ -157,7 +170,11 @@ export default class Posts extends Component {
   }
 
   render() {
-    const { myPosts = [], moreplease, isFetching = false, post_submit_loading = false, activeTab } = this.state
+    const { myPosts = [], moreplease, isFetching = false, 
+      post_submit_loading = false, activeTab,
+      clanTagDataFetching=false,
+      clanTagData='',
+     } = this.state
     return (
       <Fragment>
         <div className='gamePost__tab'>
@@ -170,8 +187,11 @@ export default class Posts extends Component {
           <span className={activeTab == 'Featured' ? 'active' : ''} onClick={(e) => this.handleTabOption('Featured')}>
             Featured
           </span>
+          <span className={activeTab == 'Stats' ? 'active' : ''} onClick={(e) => this.handleTabOption('Stats')}>
+            Stats
+          </span>
         </div>
-        {[0, 1, 2, 3].includes(this.props.current_user_permission) && (
+        {[0, 1, 2, 3].includes(this.props.current_user_permission) && activeTab !== "Stats" && (
           <Fragment>
             <ComposeSection
               successCallback={this.composeSuccess}
@@ -201,11 +221,20 @@ export default class Posts extends Component {
           </div>
         )}
         <hr />
-        {myPosts.length > 0 && !post_submit_loading && (
+        {myPosts.length > 0 && !post_submit_loading  && activeTab !== "Stats" &&  (
           <section id='posts' className={isFetching ? '' : `active`}>
             {this.showLatestPosts()}
           </section>
         )}
+        { activeTab === "Stats" && 
+          <section id='posts' className={clanTagDataFetching ? '' : `active`}>
+            <div className="post__container">
+              <div className="postCompose__container">
+                <TableComponent data={clanTagData}/>
+              </div>
+            </div>
+          </section>
+         }
       </Fragment>
     )
   }
