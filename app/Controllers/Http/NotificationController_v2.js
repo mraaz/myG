@@ -1483,6 +1483,11 @@ class NotificationController_v2 {
         case 28:
           group_id = id
           break
+        case 29:
+        case 30:
+        case 31:
+          post_id = id
+          break
       }
 
       try {

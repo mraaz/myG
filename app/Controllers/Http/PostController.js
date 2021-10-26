@@ -12,6 +12,7 @@ const LoggingRepository = require('../../Repositories/Logging')
 const ApiController = use('./ApiController')
 const CommonController = use('./CommonController')
 const AchievementsRepository = require('../../Repositories/Achievements')
+const UserController = use('./UserController')
 const NotificationController_v2 = use('./NotificationController_v2')
 
 //const { validate } = use('Validator')
@@ -71,11 +72,22 @@ class PostController {
           }
 
           if (!!request.input('mentionsList')) {
+            const userCtrl = new UserController()
+            const noti = new NotificationController_v2()
             const mentions = JSON.parse(request.input('mentionsList'))
 
             if (mentions.length) {
               for (let mention of mentions) {
-                console.log(mention.name)
+                const mentionedUserId = await Database.table('users')
+                  .where({
+                    alias: mention.name
+                  })
+                  .select('id')
+                  .first()
+                if (mentionedUserId != undefined) {
+                  noti.addGenericNoti_({ auth }, newPost.id, mentionedUserId.id, 29)
+                  console.log('mentioned users name and id:: ', mention.name, mentionedUserId.id, newPost.id)
+                }
               }
             }
           }
