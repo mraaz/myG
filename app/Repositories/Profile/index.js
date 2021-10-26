@@ -50,6 +50,7 @@ class ProfileRepository {
     const team = profile.team;
     const regional = await EncryptionRepository.decryptField(profile.regional);
     const country = await EncryptionRepository.decryptField(profile.country);
+    const timeZone = profile.timeZone;
     const relationship = profile.relationship_status;
     const status = profile.status;
     const level = profile.level;
@@ -110,6 +111,7 @@ class ProfileRepository {
       languages,
       team,
       country: isSelf || visibilityCountry === 'public' || (visibilityCountry === 'friends' && isFriend) ? regional ? regional + ',' + country : country : '',
+      timeZone,
       relationship,
       status,
       level,
@@ -158,6 +160,7 @@ class ProfileRepository {
     const team = profile.team;
     const regional = await EncryptionRepository.decryptField(profile.regional);
     const country = await EncryptionRepository.decryptField(profile.country);
+    const timeZone = profile.timeZone;    
     const relationship = profile.relationship_status;
     const status = profile.status;
     const level = profile.level;
@@ -196,6 +199,7 @@ class ProfileRepository {
       languages,
       team,
       country: visibilityCountry === 'public' ? regional ? regional + ',' + country : country : '',
+      timeZone,
       relationship,
       status,
       level,
@@ -352,13 +356,14 @@ class ProfileRepository {
     return { commended, commender };
   }
 
-  async updateProfile({ requestingUserId, firstName, lastName, team, country, relationship, visibilityName, visibilityEmail, visibilityCountry, lookingForWork, hasMic, underage, languages, twitch, discord, steam, youtube, facebook, mostPlayedGames }) {
+  async updateProfile({ requestingUserId, firstName, lastName, team, country, relationship, visibilityName, visibilityEmail, visibilityCountry, lookingForWork, hasMic, underage, languages, twitch, discord, steam, youtube, facebook, mostPlayedGames, timeZone }) {
     const updates = {};
     if (firstName !== undefined) updates.first_name = await EncryptionRepository.encryptField(firstName.trim());
     if (lastName !== undefined) updates.last_name = await EncryptionRepository.encryptField(lastName.trim());
     if (team !== undefined) updates.team = team.trim();
     if (country !== undefined) updates.country = await EncryptionRepository.encryptField(country.split(',').slice(-1)[0].trim());
     if (country !== undefined && country.split(',').length >= 2) updates.regional = await EncryptionRepository.encryptField(country.split(',')[0].trim());
+    if (timeZone !== undefined) updates.timeZone = timeZone;
     if (relationship !== undefined) updates.relationship_status = relationship;
     if (visibilityName !== undefined) updates.name_visibility = visibilityName;
     if (visibilityEmail !== undefined) updates.email_visibility = visibilityEmail;

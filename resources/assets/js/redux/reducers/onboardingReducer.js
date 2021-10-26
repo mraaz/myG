@@ -1,8 +1,8 @@
 import logger from '../../common/logger'
 
 const initialState = {
-  step: 6,
-};
+  step: 6
+}
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
@@ -13,7 +13,7 @@ export default function reducer(state = initialState, action) {
       logger.log('ONBOARDING', `Redux -> Get Onboarding Step: `, action.payload, action.meta)
       return {
         ...state,
-        step: action.payload.step,
+        step: action.payload.step
       }
     }
 
@@ -21,7 +21,7 @@ export default function reducer(state = initialState, action) {
       logger.log('ONBOARDING', `Redux -> Set Onboarding Step: `, action.payload, action.meta)
       return {
         ...state,
-        step: action.payload.step,
+        step: action.payload.step
       }
     }
 

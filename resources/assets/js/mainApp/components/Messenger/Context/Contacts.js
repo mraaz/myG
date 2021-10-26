@@ -15,8 +15,8 @@ export default class Contacts extends React.Component {
       [STATUS_ENUM.ONLINE]: true,
       [STATUS_ENUM.PLAYING]: false,
       [STATUS_ENUM.AFK]: false,
-      [STATUS_ENUM.OFFLINE]: false,
-    },
+      [STATUS_ENUM.OFFLINE]: false
+    }
   }
 
   expandSection = (section) => {
@@ -26,10 +26,10 @@ export default class Contacts extends React.Component {
           [STATUS_ENUM.ONLINE]: false,
           [STATUS_ENUM.PLAYING]: false,
           [STATUS_ENUM.AFK]: false,
-          [STATUS_ENUM.OFFLINE]: false,
+          [STATUS_ENUM.OFFLINE]: false
         },
-        [section]: !previous.sectionExpanded[section],
-      },
+        [section]: !previous.sectionExpanded[section]
+      }
     }))
   }
 

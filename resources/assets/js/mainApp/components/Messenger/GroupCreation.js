@@ -26,7 +26,7 @@ class GroupCreation extends React.Component {
       gameInput: '',
       selectedGame: this.props.game || null,
       contactInput: '',
-      addedContacts: [],
+      addedContacts: []
     }
     this.inputRef = React.createRef()
   }
@@ -81,7 +81,7 @@ class GroupCreation extends React.Component {
         comments: '',
         status: 'Actively Gaming',
         link: '',
-        tags: '',
+        tags: ''
       })
     }
   }
@@ -103,7 +103,7 @@ class GroupCreation extends React.Component {
             className='chat-group-creation-header-icon clickable'
             style={{
               backgroundImage: `url(${this.state.icon || getAssetUrl('ic_chat_group_icon')}`,
-              backgroundSize: this.state.icon ? 'cover' : 'inherit',
+              backgroundSize: this.state.icon ? 'cover' : 'inherit'
             }}
           />
         </Uploader>
@@ -114,7 +114,8 @@ class GroupCreation extends React.Component {
             placeholder={'Group Name'}
             value={this.state.title}
             autoFocus={true}
-            onChange={(event) => this.setState({ title: event.target.value })}></input>
+            onChange={(event) => this.setState({ title: event.target.value })}
+          ></input>
         </div>
       </div>
     )
@@ -135,7 +136,7 @@ class GroupCreation extends React.Component {
   }
 
   renderGameInput = () => {
-    const hasGameIcon = this.state.selectedGame && this.state.selectedGame.icon;
+    const hasGameIcon = this.state.selectedGame && this.state.selectedGame.icon
     return (
       <div className='chat-group-creation-contact-input-container' onClick={() => this.inputRef.current.focus()}>
         <input
@@ -144,7 +145,8 @@ class GroupCreation extends React.Component {
           className={`chat-group-creation-contact-input`}
           placeholder={'Game Name'}
           value={this.state.selectedGame ? this.state.selectedGame.name : this.state.gameInput}
-          onChange={(event) => this.onGameSearch(event.target.value)}></input>
+          onChange={(event) => this.onGameSearch(event.target.value)}
+        ></input>
         {hasGameIcon && this.renderGameIcon(this.state.selectedGame)}
         <Dropdown
           show={this.state.gameInput.length}
@@ -172,7 +174,8 @@ class GroupCreation extends React.Component {
           className='chat-group-creation-contact-input'
           placeholder={'Gamer Name'}
           value={this.state.contactInput}
-          onChange={(event) => this.onContactSearch(event.target.value)}></input>
+          onChange={(event) => this.onContactSearch(event.target.value)}
+        ></input>
       </div>
     )
   }
@@ -194,9 +197,10 @@ class GroupCreation extends React.Component {
             className='chat-group-creation-contact-remove-button clickable'
             onClick={() =>
               this.setState((previous) => ({
-                addedContacts: previous.addedContacts.filter((existing) => existing.contactId !== contact.contactId),
+                addedContacts: previous.addedContacts.filter((existing) => existing.contactId !== contact.contactId)
               }))
-            }>
+            }
+          >
             Remove
           </div>
         ) : (
@@ -225,7 +229,10 @@ class GroupCreation extends React.Component {
   render() {
     logger.log('RENDER', 'GroupCreation')
     return (
-      <div className='chat-group-creation-container' style={this.props.mobile && { width: '100vw', height: 'calc(100vh - 132px)', right: '0', top: '80px' }}>
+      <div
+        className='chat-group-creation-container'
+        style={this.props.mobile && { width: '100vw', height: 'calc(100vh - 132px)', right: '0', top: '80px' }}
+      >
         {this.renderHeader()}
         {this.renderGameHint()}
         {this.renderGameInput()}
@@ -244,7 +251,7 @@ function mapStateToProps(state) {
     contacts: state.user.contacts,
     games: state.user.games,
     foundGames: state.game.foundGames,
-    foundContacts: state.pagination.foundContacts,
+    foundContacts: state.pagination.foundContacts
   }
 }
 
@@ -252,7 +259,7 @@ function mapDispatchToProps(dispatch) {
   return {
     searchGame: (name) => dispatch(searchGameAction(name)),
     fetchContactsPaginated: (page, status, gameId, search, refresh) =>
-      dispatch(fetchContactsPaginatedAction(page, status, gameId, search, refresh)),
+      dispatch(fetchContactsPaginatedAction(page, status, gameId, search, refresh))
   }
 }
 

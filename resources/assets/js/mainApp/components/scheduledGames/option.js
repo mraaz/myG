@@ -12,12 +12,12 @@ const region_options = [
   { value: 'Oceania', label: 'Oceania' },
   { value: 'Middle East', label: 'Middle East' },
   { value: 'Africa', label: 'Africa' },
-  { value: 'Central America', label: 'Central America' },
+  { value: 'Central America', label: 'Central America' }
 ]
 const experience_options = [
   { value: 'Casual', label: 'Casual' },
   { value: 'Semi Pro', label: 'Semi Pro' },
-  { value: 'Professional', label: 'Professional' },
+  { value: 'Professional', label: 'Professional' }
 ]
 const platform_options = [
   { value: 'PC', label: 'PC' },
@@ -25,29 +25,29 @@ const platform_options = [
   { value: 'PS', label: 'PS' },
   { value: 'Nintendo', label: 'Nintendo' },
   { value: 'Mobile', label: 'Mobile' },
-  { value: 'Tabletop', label: 'Tabletop' },
+  { value: 'Tabletop', label: 'Tabletop' }
 ]
 const date_options = [
   { value: 'Now-ish', label: 'Now-ish' },
   { value: '8 hours', label: 'Up to 8 hours' },
   { value: '2 days', label: 'Up to 2 days' },
   { value: '7 days', label: 'Up to 7 days' },
-  { value: '14 days', label: 'Up to 14 days' },
+  { value: '14 days', label: 'Up to 14 days' }
 ]
 const visibility_options = [
   { value: 1, label: 'Public' },
   { value: 2, label: 'Friends' },
-  { value: 3, label: 'Group' },
+  { value: 3, label: 'Group' }
 ]
 const prefilledFilter_option = [
   { value: 0, label: 'All myGames' },
   { value: 1, label: 'my Hosted Games' },
   { value: 2, label: 'myGames (Participating)' },
-  { value: 3, label: 'myGames (Awaiting Approval)' },
+  { value: 3, label: 'myGames (Awaiting Approval)' }
 ]
 const yes_no_options = [
   { value: 1, label: 'Fo sho!' },
-  { value: 0, label: 'Meh' },
+  { value: 0, label: 'Meh' }
 ]
 
 const language_options = [
@@ -94,7 +94,7 @@ const language_options = [
   { value: 'Turkish', label: 'Turkish' },
   { value: 'Ukrainian', label: 'Ukrainian' },
   { value: 'Urdu', label: 'Urdu' },
-  { value: 'Vietnamese', label: 'Vietnamese' },
+  { value: 'Vietnamese', label: 'Vietnamese' }
 ]
 
 const getExtraFilterOprion = (arg) => {
@@ -124,5 +124,5 @@ module.exports = {
   properCase,
   prefilledFilter_option,
   yes_no_options,
-  language_options,
+  language_options
 }

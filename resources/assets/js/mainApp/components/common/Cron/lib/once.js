@@ -26,7 +26,7 @@ export default class CustomCron extends Component {
     val[4] = (date.getMonth() + 1).toString()
     this.setState({
       startDate: date,
-      value: val,
+      value: val
     })
     this.props.onChange(val)
   }

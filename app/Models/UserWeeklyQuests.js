@@ -4,7 +4,7 @@
 const Model = use('Model')
 
 class UserWeeklyQuests extends Model {
-  static get table () {
+  static get table() {
     return 'user_weekly_quests'
   }
 }

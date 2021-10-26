@@ -11,7 +11,7 @@ import {
   clearChatAction,
   removeFromGroupAction,
   blockUserAction,
-  unblockUserAction,
+  unblockUserAction
 } from '../../../redux/actions/chatAction'
 import { searchUsersAction, addAsFriendAction, fetchFriendRequestsAction } from '../../../redux/actions/userAction'
 import { getAssetUrl } from '../../../common/assets'
@@ -31,7 +31,7 @@ class GroupMemberOptions extends React.Component {
     validInvite: false,
     settingAsOwner: false,
     kickingUser: false,
-    friendRequests: [],
+    friendRequests: []
   }
 
   componentDidMount() {
@@ -247,7 +247,8 @@ class GroupMemberOptions extends React.Component {
     return (
       <div
         className={`chat-group-member-${canKick ? 'kick' : 'unkickable'}-button ${canKick ? 'clickable' : ''}`}
-        onClick={() => canKick && this.setState({ kickingUser: contact })}>
+        onClick={() => canKick && this.setState({ kickingUser: contact })}
+      >
         expel
       </div>
     )
@@ -258,7 +259,8 @@ class GroupMemberOptions extends React.Component {
     return (
       <div
         className={`chat-group-member-${canAddFriend ? 'add' : 'added'}-button ${canAddFriend ? 'clickable' : ''}`}
-        onClick={() => canAddFriend && this.onAddFriendRequest(contactId)}>
+        onClick={() => canAddFriend && this.onAddFriendRequest(contactId)}
+      >
         {isAdded ? 'friend' : isRequested ? 'request sent' : isGuest ? 'guest' : 'add friend'}
       </div>
     )
@@ -276,7 +278,8 @@ class GroupMemberOptions extends React.Component {
               className='chat-group-ownership-input'
               placeholder={'Find new group member'}
               value={this.state.inviteInput}
-              onChange={(event) => this.onUserSearchRequest(event.target.value)}></input>
+              onChange={(event) => this.onUserSearchRequest(event.target.value)}
+            ></input>
             <Dropdown
               show={this.state.inviteInput && !this.state.validInvite}
               position={{ top: '-6px' }}
@@ -287,7 +290,8 @@ class GroupMemberOptions extends React.Component {
           </div>
           <div
             className={`chat-component-group-button clickable ${!this.state.validInvite && 'chat-component-group-button-inactive'}`}
-            onClick={() => this.inviteUser()}>
+            onClick={() => this.inviteUser()}
+          >
             add
           </div>
         </div>
@@ -310,7 +314,8 @@ class GroupMemberOptions extends React.Component {
               className='chat-group-ownership-input'
               placeholder={'Assign new owner'}
               value={this.state.ownerInput}
-              onChange={(event) => this.setState({ ownerInput: event.target.value, validOwner: false, settingAsOwner: false })}></input>
+              onChange={(event) => this.setState({ ownerInput: event.target.value, validOwner: false, settingAsOwner: false })}
+            ></input>
             <Dropdown
               show={this.state.ownerInput && !this.state.validOwner}
               position={{ top: '-6px' }}
@@ -321,7 +326,8 @@ class GroupMemberOptions extends React.Component {
           </div>
           <div
             className={`chat-component-group-button clickable ${!this.state.validOwner && 'chat-component-group-button-inactive'}`}
-            onClick={() => this.state.validOwner && this.setState({ settingAsOwner: true })}>
+            onClick={() => this.state.validOwner && this.setState({ settingAsOwner: true })}
+          >
             save
           </div>
         </div>
@@ -361,7 +367,7 @@ class GroupMemberOptions extends React.Component {
 }
 
 function mapStateToProps(state, props) {
-  const chat = state.chat.chats.find((chat) => chat.chatId === props.chatId) || { moderators: [], owners: [] };
+  const chat = state.chat.chats.find((chat) => chat.chatId === props.chatId) || { moderators: [], owners: [] }
   return {
     moderators: chat.moderators || [],
     owners: chat.owners || [],
@@ -369,7 +375,7 @@ function mapStateToProps(state, props) {
     friendRequests: state.user.friendRequests || [],
     foundUsers: state.user.foundUsers || [],
     blockedUsers: state.chat.blockedUsers || [],
-    userPrivateKey: state.encryption.privateKey,
+    userPrivateKey: state.encryption.privateKey
   }
 }
 
@@ -386,7 +392,7 @@ function mapDispatchToProps(dispatch) {
     clearChat: (chatId) => dispatch(clearChatAction(chatId)),
     removeFromGroup: (chatId, userId) => dispatch(removeFromGroupAction(chatId, userId)),
     blockUser: (blockedUserId) => dispatch(blockUserAction(blockedUserId)),
-    unblockUser: (blockedUserId) => dispatch(unblockUserAction(blockedUserId)),
+    unblockUser: (blockedUserId) => dispatch(unblockUserAction(blockedUserId))
   }
 }
 

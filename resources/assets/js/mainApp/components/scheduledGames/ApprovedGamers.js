@@ -30,7 +30,7 @@ const Approved_gamers = (props) => {
     async function fetchData() {
       const getAttendees = await axios.post('/api/attendees/role_call_ALL/', {
         schedule_games_id: props.schedule_games_id,
-        counter: 1,
+        counter: 1
       })
       if (getAttendees.data) {
         const { role_call_ALL = {} } = getAttendees.data
@@ -70,14 +70,14 @@ const Approved_gamers = (props) => {
                     </div>
                   </Link>
                 ) : (
-                <Fragment>
-                  <div className='gamer__image '>
-                    <img onError={addDefaultSrc} src={gamer.profile_img ? gamer.profile_img : defaultUserImage} />
-                  </div>
-                  <div className='gamer__alias ' title={gamer.alias}>
-                    {gamer.alias}
-                  </div>
-                </Fragment>
+                  <Fragment>
+                    <div className='gamer__image '>
+                      <img onError={addDefaultSrc} src={gamer.profile_img ? gamer.profile_img : defaultUserImage} />
+                    </div>
+                    <div className='gamer__alias ' title={gamer.alias}>
+                      {gamer.alias}
+                    </div>
+                  </Fragment>
                 )}
               </div>
             )

@@ -11,7 +11,7 @@ import {
   normalizeCommunitiesData,
   normalizeGroupsData,
   parseCommunitiesToSelectData,
-  parsePlayersToSelectData,
+  parsePlayersToSelectData
 } from '../../utils/InvitePlayersUtils'
 import '../../styles/AddGame/InvitePlayersStyles.scss'
 import '../../styles/AddGame/AddGameStyles.scss'
@@ -20,7 +20,7 @@ import SelectedInvites from './SelectedInvites'
 const MENU_OPTIONS = {
   PLAYERS: 'PLAYERS',
   GROUPS: 'GROUPS',
-  COMMUNITIES: 'COMMUNITIES',
+  COMMUNITIES: 'COMMUNITIES'
 }
 
 const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, scheduledGameId, scheduledGameGuid, gameTitle, startTime, gameId }) => {
@@ -28,13 +28,13 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, scheduledGameId,
   const [showOptions, updateShowOptions] = useState({
     'Selected Gamers': false,
     'Selected Groups': false,
-    'Selected Communities': false,
+    'Selected Communities': false
   })
   // Friends
   const [keywordSearchResults, updateKeywordSearchResults] = useState({
     searchResults: {},
     friendsList: [],
-    totalFriends: 0,
+    totalFriends: 0
   })
   const [moreplease, updateMorePlease] = useState(true)
   const [counter, updateCounter] = useState(1)
@@ -43,7 +43,7 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, scheduledGameId,
   const [groupsKeywordSearchResults, updateGroupsKeywordSearchResults] = useState({
     searchResults: {},
     groupsList: [],
-    totalGroups: 0,
+    totalGroups: 0
   })
   const [selectedGroups, updateSelectedGroups] = useState({})
   const [groupsSuggestions, updateGroupsSuggestions] = useState([])
@@ -53,7 +53,7 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, scheduledGameId,
   const [communitiesKeywordSearchResults, updateCommunitiesKeywordSearchResults] = useState({
     searchResults: {},
     communitiesList: [],
-    totalCommunities: 0,
+    totalCommunities: 0
   })
   const [selectedCommunities, updateSelectedCommunities] = useState({})
   const [morepleaseCommunities, updateMorePleaseCommunities] = useState(true)
@@ -111,7 +111,7 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, scheduledGameId,
         scheduledGameId,
         scheduledGameGuid,
         gameTitle,
-        startTime,
+        startTime
       })
     } catch (error) {
       // error submit invitation
@@ -159,10 +159,10 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, scheduledGameId,
 
   const fetchMoreData = async () => {
     await updateCounter(counter + 1)
-    const getKeywordSearchResults = async function() {
+    const getKeywordSearchResults = async function () {
       try {
         const response = await axios.post('/api/friends/allmyFriends', {
-          counter,
+          counter
         })
         if (response.data.showallMyFriends.length == 0) {
           updateMorePlease(false)
@@ -172,7 +172,7 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, scheduledGameId,
         await updateKeywordSearchResults((currentResults) => ({
           searchResults: { ...currentResults.searchResults, ...dataObj },
           friendsList: [...currentResults.friendsList, ...itemsArray],
-          totalFriends: response.data.myFriendsLength[0].total_friends,
+          totalFriends: response.data.myFriendsLength[0].total_friends
         }))
       } catch (error) {
         // error fetch more data
@@ -183,10 +183,10 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, scheduledGameId,
 
   const fetchCommunitiesData = async () => {
     await updateCommunitiesCounter(counterCommunities + 1)
-    const getmyGroups = async function() {
+    const getmyGroups = async function () {
       try {
         const {
-          data: { myGroups },
+          data: { myGroups }
         } = await axios.get(`/api/groups/view/${counterCommunities}`)
         return myGroups
       } catch (error) {
@@ -195,10 +195,10 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, scheduledGameId,
       }
     }
 
-    const getGroups_im_in = async function() {
+    const getGroups_im_in = async function () {
       try {
         const {
-          data: { groups_im_in },
+          data: { groups_im_in }
         } = await axios.get(`/api/usergroup/view/${counterCommunities}`)
         return groups_im_in
       } catch (error) {
@@ -218,20 +218,20 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, scheduledGameId,
     updateCommunitiesKeywordSearchResults((currentResults) => ({
       searchResults: { ...currentResults.searchResults, ...myGroupsItemObj, ...groupsImInItemObj },
       communitiesList: [...currentResults.communitiesList, ...myGroupsItemsArray, ...groupsImInItemsArray],
-      totalCommunities: (myGroups ? myGroups.length : 0) + (groupsImIn ? groupsImIn.length : 0),
+      totalCommunities: (myGroups ? myGroups.length : 0) + (groupsImIn ? groupsImIn.length : 0)
     }))
   }
 
   const fetchGroupsData = async () => {
     try {
       const {
-        data: { chats },
+        data: { chats }
       } = await axios.get('/api/chat?onlyGroups=true')
       const { itemsArray, dataObj } = normalizeGroupsData(chats)
       updateGroupsKeywordSearchResults({
         searchResults: { ...dataObj },
         groupsList: [...itemsArray],
-        totalGroups: chats.length,
+        totalGroups: chats.length
       })
     } catch (error) {
       // error getting groups data
@@ -244,7 +244,7 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, scheduledGameId,
         let dataClone = Object.assign({}, currentData)
         delete dataClone[playerId]
         return {
-          ...dataClone,
+          ...dataClone
         }
       })
     } else {
@@ -254,9 +254,9 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, scheduledGameId,
           ? {
               id: value.id,
               img: value.img,
-              name: value.name,
+              name: value.name
             }
-          : keywordSearchResults.searchResults[playerId],
+          : keywordSearchResults.searchResults[playerId]
       }))
     }
   }
@@ -267,7 +267,7 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, scheduledGameId,
         let dataClone = Object.assign({}, currentData)
         delete dataClone[communityId]
         return {
-          ...dataClone,
+          ...dataClone
         }
       })
     } else {
@@ -277,9 +277,9 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, scheduledGameId,
           ? {
               id: value.id,
               name: value.name,
-              img: value.img,
+              img: value.img
             }
-          : communitiesKeywordSearchResults.searchResults[communityId],
+          : communitiesKeywordSearchResults.searchResults[communityId]
       }))
     }
   }
@@ -290,13 +290,13 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, scheduledGameId,
         let dataClone = Object.assign({}, currentData)
         delete dataClone[groupId]
         return {
-          ...dataClone,
+          ...dataClone
         }
       })
     } else {
       updateSelectedGroups((currentData) => ({
         ...currentData,
-        [groupId]: groupsKeywordSearchResults.searchResults[groupId],
+        [groupId]: groupsKeywordSearchResults.searchResults[groupId]
       }))
     }
   }
@@ -309,7 +309,8 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, scheduledGameId,
           next={fetchMoreData}
           hasMore={moreplease}
           height={402}
-          style={{ scrollbarWidth: 'none' }}>
+          style={{ scrollbarWidth: 'none' }}
+        >
           <UserTab
             dataList={keywordSearchResults.friendsList}
             dataObject={keywordSearchResults.searchResults}
@@ -325,10 +326,10 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, scheduledGameId,
   const onPlayersSuggestionFetch = async (value) => {
     try {
       const {
-        data: { playerSearchResults },
+        data: { playerSearchResults }
       } = await axios.post(`/api/user/keywordSearchResults`, {
         keywords: value,
-        counter: 1,
+        counter: 1
       })
       const parsedData = parsePlayersToSelectData(playerSearchResults.data)
       return parsedData
@@ -340,7 +341,7 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, scheduledGameId,
   const onCommunitiesSuggestionFetch = async (value) => {
     try {
       const {
-        data: { groupSearchResults },
+        data: { groupSearchResults }
       } = await axios.get(`/api/groups/${value}/groupSearchResults`)
       const parsedData = parseCommunitiesToSelectData(groupSearchResults)
       return parsedData
@@ -352,7 +353,7 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, scheduledGameId,
   const onGroupsSuggestionFetch = async (value) => {
     try {
       const {
-        data: { groupSearchResults },
+        data: { groupSearchResults }
       } = await axios.get(`/api/groups?groupName=${value}`)
       const parsedData = parseGroupsToSelectData(groupSearchResults)
       return parsedData
@@ -366,14 +367,14 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, scheduledGameId,
       <MyGAsyncSelect
         styles={{
           container: {
-            marginTop: '20px',
+            marginTop: '20px'
           },
           control: {
-            width: '439px',
+            width: '439px'
           },
           menuList: {
-            backgroundColor: '#1d2326',
-          },
+            backgroundColor: '#1d2326'
+          }
         }}
         isValidNewOption={() => {
           return
@@ -393,11 +394,11 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, scheduledGameId,
       <MyGAsyncSelect
         styles={{
           container: {
-            marginTop: '20px',
+            marginTop: '20px'
           },
           control: {
-            width: '439px',
-          },
+            width: '439px'
+          }
         }}
         isValidNewOption={() => {
           return
@@ -418,11 +419,11 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, scheduledGameId,
       <MyGAsyncSelect
         styles={{
           container: {
-            marginTop: '20px',
+            marginTop: '20px'
           },
           control: {
-            width: '439px',
-          },
+            width: '439px'
+          }
         }}
         isValidNewOption={() => {
           return
@@ -445,7 +446,8 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, scheduledGameId,
           next={fetchGroupsData}
           hasMore={false}
           height={402}
-          style={{ scrollbarWidth: 'none' }}>
+          style={{ scrollbarWidth: 'none' }}
+        >
           <UserTab
             dataList={groupsKeywordSearchResults.groupsList}
             dataObject={groupsKeywordSearchResults.searchResults}
@@ -465,7 +467,8 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, scheduledGameId,
           next={fetchCommunitiesData}
           height={402}
           hasMore={morepleaseCommunities}
-          style={{ scrollbarWidth: 'none' }}>
+          style={{ scrollbarWidth: 'none' }}
+        >
           <UserTab
             dataList={communitiesKeywordSearchResults.communitiesList}
             dataObject={communitiesKeywordSearchResults.searchResults}

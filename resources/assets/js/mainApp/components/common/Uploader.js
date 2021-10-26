@@ -33,7 +33,7 @@ export default class Uploader extends React.Component {
       const post = await Upload_to_S3(file, name)
       this.setState({
         file_src: post.data.Location,
-        file_key: post.data.Key,
+        file_key: post.data.Key
       })
       this.props.onUpload(post.data.Location, post.data.Key)
     } catch (error) {
@@ -42,7 +42,7 @@ export default class Uploader extends React.Component {
     }
     this.state.submitButtonContent = 'Submit'
     this.setState({
-      uploading: false,
+      uploading: false
     })
   }
 
@@ -65,8 +65,8 @@ export default class Uploader extends React.Component {
   imageStyle = {
     dropzone: {
       display: 'flex',
-      border: 'none',
-    },
+      border: 'none'
+    }
   }
 
   backgroundStyle = {
@@ -78,8 +78,8 @@ export default class Uploader extends React.Component {
       width: 'inherit',
       height: '320px',
       overflow: 'unset',
-      border: 'none',
-    },
+      border: 'none'
+    }
   }
 
   render() {
@@ -90,7 +90,8 @@ export default class Uploader extends React.Component {
         activeStyle={this.uploadStyle()}
         accept='image/jpeg,image/jpg,image/png,image/gif,video/mp4,video/webm,video/ogg'
         minSize={0}
-        maxSize={10485760}>
+        maxSize={10485760}
+      >
         {this.props.children}
       </Dropzone>
     )

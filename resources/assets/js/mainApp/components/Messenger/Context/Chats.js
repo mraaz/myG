@@ -8,7 +8,7 @@ export default class Chats extends React.Component {
   }
 
   renderChat = (chat) => {
-    if (chat.channelId) return;
+    if (chat.channelId) return
     return (
       <Chat
         mobile={this.props.mobile}
@@ -24,12 +24,12 @@ export default class Chats extends React.Component {
   }
 
   render() {
-    const openChats = this.props.chats.filter((chat) => !chat.closed);
-    const chats = openChats.length ? this.props.mobile ? [openChats[0]] : openChats : [];
+    const openChats = this.props.chats.filter((chat) => !chat.closed)
+    const chats = openChats.length ? (this.props.mobile ? [openChats[0]] : openChats) : []
     return (
       <div className='messenger-chat-bar' style={this.props.mobile && { right: 0 }}>
         {chats.map(this.renderChat)}
       </div>
-    );
+    )
   }
 }

@@ -863,10 +863,7 @@ const AddGame = ({
             <React.Fragment>
               <div className='field-title'>Team Match</div>
               <div className='platform-select'>
-                <MyGTeamSelect
-                  team={advancedSettingsState.team}
-                  onChange={(team) => updateAdvancedSettings({ team })}
-                />
+                <MyGTeamSelect team={advancedSettingsState.team} onChange={(team) => updateAdvancedSettings({ team })} />
               </div>
             </React.Fragment>
           </FeatureEnabled>

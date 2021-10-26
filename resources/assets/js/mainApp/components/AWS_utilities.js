@@ -19,8 +19,8 @@ export async function Upload_to_S3(file, name, type = 0, id = null, chat = false
   try {
     const post = await axios.post('/api/uploadFile', formData, {
       headers: {
-        'Content-Type': 'multipart/form-data',
-      },
+        'Content-Type': 'multipart/form-data'
+      }
     })
     return post
   } catch (error) {
@@ -41,8 +41,8 @@ export async function Remove_file(key, aws_key_id) {
   try {
     const post = axios.post('/api/deleteFile', formData, {
       headers: {
-        'Content-Type': 'multipart/form-data',
-      },
+        'Content-Type': 'multipart/form-data'
+      }
     })
     return post
   } catch (error) {

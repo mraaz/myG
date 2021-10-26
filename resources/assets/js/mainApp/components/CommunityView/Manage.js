@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 
@@ -8,12 +8,6 @@ import { MyGTextarea, MyGAsyncSelect } from '../common'
 import { parsePlayersToSelectData } from '../../utils/InvitePlayersUtils'
 
 const MAX_INVITEES = 8
-
-const createOption = (label, hash_tag_id) => ({
-  label,
-  value: label,
-  hash_tag_id
-})
 
 export default class Manage extends React.Component {
   constructor() {
@@ -25,19 +19,21 @@ export default class Manage extends React.Component {
       privacy: 1,
       approval: 'true',
       description: '',
-      coHosts: null
+      coHosts: null,
+      stats_header: ''
     }
   }
 
   componentDidMount() {
-    const { routeProps = {}, community_Membership_Approval, community_type, community_grp_description } = this.props
+    const { routeProps = {}, community_Membership_Approval, community_type, community_grp_description, stats_header } = this.props
     const { match } = this.props.routeProps
 
     this.setState({
       communityName: match.params.name,
       privacy: community_type,
       approval: community_Membership_Approval == 1 ? 'true' : 'false',
-      description: community_grp_description
+      description: community_grp_description,
+      stats_header: stats_header
     })
   }
 
@@ -78,8 +74,15 @@ export default class Manage extends React.Component {
     })
   }
 
+  handleCommunityClanTagChange = (e) => {
+    const stats_header = e.target.value
+    this.setState({ stats_header }, () => {
+      this.props.onSettingsChange({ stats_header })
+    })
+  }
+
   handleCommunityNameSave = async () => {
-    const { communityName, description } = this.state
+    const { communityName } = this.state
     if (communityName.trim() == this.props.routeProps.match.params.name.trim()) {
       return
     }
@@ -148,27 +151,48 @@ export default class Manage extends React.Component {
   }
 
   render() {
-    const { modalStatus, communityName, isunique, saveButtonDisabled } = this.state
-    const { current_user_permission } = this.props
+    const { communityName, isunique, stats_header } = this.state
+    const { current_user_permission, community_game_names_id } = this.props
+    const isthisClash = community_game_names_id == 1014 ? true : false
 
+    console.log('stats_header ', stats_header)
     return (
       <div className='setting__container'>
         {[0, 1].includes(current_user_permission) && (
-          <div className='communityName__section row'>
-            <div className='community___label col-sm-4'>Change Community Name</div>
-            <div className='community___input col-sm-6'>
-              <input
-                type='text'
-                value={communityName}
-                onBlur={this.handleNameblur}
-                onChange={this.handleCommunityNameChange}
-                placeholder='Change Community Name'
-              />
-            </div>
-            <button disabled={isunique} className='community___button col-sm-2' onClick={this.handleCommunityNameSave}>
-              Save
-            </button>
+          <Fragment>
+              <div className='communityName__section row'>
+                  <div className='community___label col-sm-4'>Change Community Name</div>
+                  <div className='community___input col-sm-6'>
+                    <input
+                  type='text'
+                  autocomplete='off'
+                  value={communityName}
+                  onBlur={this.handleNameblur}
+                  onChange={this.handleCommunityNameChange}
+                  placeholder='Change Community Name'
+                />
+              </div>
+              <button disabled={isunique} className='community___button col-sm-2' onClick={this.handleCommunityNameSave}>
+                Save
+              </button>
           </div>
+          <div className='communityName__section clanTag row'>
+            {isthisClash && (
+              <Fragment>
+                <div className='community___label col-sm-4'>Clan Tag Name</div>
+                <div className='community___input col-sm-6'>
+                  <input
+                    type='text'
+                    autocomplete='off'
+                    value={stats_header}
+                    onChange={this.handleCommunityClanTagChange}
+                    placeholder='Change Clan Tag Name'
+                  />
+                </div>
+              </Fragment>
+            )}
+          </div>
+          </Fragment>
         )}
         <div className='group__privacy row'>
           <div className='label col-sm-4 col-xs-4'>Privacy</div>

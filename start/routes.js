@@ -127,6 +127,7 @@ Route.post('/api/ScheduleGame/myScheduledGames_Upcoming_Games/', 'ScheduleGameCo
 Route.get('/api/ScheduleGame/getHeader_ALL/:game_names_id', 'ScheduleGameController.getHeader_ALL')
 Route.get('/api/ScheduleGame/edit_game/:id', 'ScheduleGameController.edit_game')
 Route.post('/api/ScheduleGame/update', 'ScheduleGameController.update')
+Route.get('/api/ScheduleGame/getHeader_stats_header/:game_names_id', 'ScheduleGameController.getHeader_stats_header')
 
 Route.get('/api/ArchivemyScheduledGamesCount/:id', 'Archive_ScheduleGameController.myScheduledGamesCount')
 
@@ -250,6 +251,13 @@ Route.post('/api/friends/allmyFriends', 'FriendController.showallmyFriends')
 
 Route.get('/api/settings', 'SettingController.show')
 Route.post('/api/settings', 'SettingController.store')
+Route.get('/api/settings/siteMap', 'SettingController.siteMap')
+
+Route.get('/api/clashroyale/show/:clanTag', 'ClashRoyaleController.show')
+Route.post('/api/clashroyale/storePlayerDetails/', 'ClashRoyaleController.storePlayerDetails')
+Route.post('/api/clashroyale/getPlayerDetails/', 'ClashRoyaleController.getPlayerDetails')
+Route.delete('/api/clashroyale/deletePlayerDetails/:clash_royale_player_id', 'ClashRoyaleController.deletePlayerDetails')
+Route.get('/api/clashroyale/kick_non_clashRoyale_players/:group_id', 'ClashRoyaleController.kick_non_clashRoyale_players')
 
 Route.post('/api/commendations', 'CommendationController.store')
 Route.get('/api/commendations/user/:id', 'CommendationController.showUser')

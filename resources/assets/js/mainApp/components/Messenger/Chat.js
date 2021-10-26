@@ -22,7 +22,7 @@ import {
   addReactionAction,
   removeReactionAction,
   blockUserAction,
-  unblockUserAction,
+  unblockUserAction
 } from '../../../redux/actions/chatAction'
 import { withDatesAndLogsAndLastReads } from '../../../common/chat'
 import { encryptMessage, decryptMessage, deserializeKey, generateKeysSync } from '../../../integration/encryption'
@@ -52,7 +52,7 @@ export class Chat extends React.Component {
       messagePaginationPage: 1,
       attachment: null,
       loadedAllMessages: false,
-      hasScrolledToLastRead: false,
+      hasScrolledToLastRead: false
     }
     this.messageListRef = React.createRef()
   }
@@ -62,11 +62,11 @@ export class Chat extends React.Component {
     document.addEventListener('wheel', this.handleMessageListScroll, { passive: true })
     this.props.prepareChat(this.props.chatId, this.props.userId, this.props.contactId, this.props.isGroup)
     clearChatNotifications(this.props.chatId).then(() => {
-      const chatNotification = document.querySelector("[chat-notification-id='2']");
-      if (chatNotification) chatNotification.remove();
-    });
+      const chatNotification = document.querySelector("[chat-notification-id='2']")
+      if (chatNotification) chatNotification.remove()
+    })
     if (!this.props.isGuest) this.props.checkSelfDestruct(this.props.chatId)
-    if (this.props.isGroup && !this.props.privateKey && this.props.isGroupOwner && this.props.messages.length <= 1) this.resetGroupKey();
+    if (this.props.isGroup && !this.props.privateKey && this.props.isGroupOwner && this.props.messages.length <= 1) this.resetGroupKey()
   }
 
   componentWillUnmount() {
@@ -95,11 +95,7 @@ export class Chat extends React.Component {
 
   scrollMessagesIfNeeded() {
     const isValidMessage = (message) => !message.isLastRead && !message.isEntryLog && !message.isDateDivisor
-    const lastMessage =
-      this.props.messages
-        .slice()
-        .reverse()
-        .find(isValidMessage) || {}
+    const lastMessage = this.props.messages.slice().reverse().find(isValidMessage) || {}
     const lastMessageTime = lastMessage.createdAt
     const lastMessageId = lastMessage.messageId
     const lastReadMessageId = this.props.lastRead
@@ -134,12 +130,7 @@ export class Chat extends React.Component {
 
   markAsRead = () => {
     const isValidMessage = (message) => !message.isLastRead && !message.isEntryLog && !message.isDateDivisor
-    const lastMessageId = (
-      this.props.messages
-        .slice()
-        .reverse()
-        .find(isValidMessage) || {}
-    ).messageId
+    const lastMessageId = (this.props.messages.slice().reverse().find(isValidMessage) || {}).messageId
     if (this.props.minimised || !this.props.privateKey || !this.props.windowFocused) return
     if (!lastMessageId || lastMessageId <= this.props.lastRead || lastMessageId <= this.state.lastRead) return
     this.setState({ lastRead: lastMessageId })
@@ -252,7 +243,8 @@ export class Chat extends React.Component {
           className={`chat-component-header-info ${this.props.isGuest ? '' : 'clickable'}`}
           onClick={() =>
             !this.props.isGuest && this.props.updateChatState(this.props.chatId, { minimised: !this.props.minimised, maximised: false })
-          }>
+          }
+        >
           {titleTooLong ? (
             <WithTooltip position={{ bottom: '24px', left: '-12px' }} text={this.props.title}>
               <div className='chat-component-header-title'>{this.props.title.slice(0, 17) + '...'}</div>
@@ -268,8 +260,9 @@ export class Chat extends React.Component {
                 text={[
                   'You',
                   ...this.props.contacts.slice(0, 10).map((contact) => contact.name),
-                  ...(this.props.group.guests || []).map((id) => `Guest #${id}`),
-                ].join('\n')}>
+                  ...(this.props.group.guests || []).map((id) => `Guest #${id}`)
+                ].join('\n')}
+              >
                 <div className='chat-component-header-subtitle'>{this.props.subtitle}</div>
               </WithTooltip>
             ) : (
@@ -301,7 +294,7 @@ export class Chat extends React.Component {
                 />
               </div>
             )}
-            <div className="chat-component-header-settings-container">
+            <div className='chat-component-header-settings-container'>
               <div
                 className='chat-component-header-settings clickable'
                 style={{ backgroundImage: `url(${getAssetUrl('ic_chat_settings')})` }}
@@ -423,7 +416,8 @@ export class Chat extends React.Component {
           showMessengerAlert(
             'End to End Encryption (E2E) means that no one outside of the chat can read your messages (not even myG). Most E2E apps store a secret key on a device. This means you need a device to access your messages. myG emails you this secret key which we call chat password. This allows you to get E2E without additional gadgets. With great power, comes great responsibility. If you lose your chat password unfortunately, you will also lose your chat history, not even the god-like nerds @ myG can recover your chat password.'
           )
-        }>
+        }
+      >
         <p>Messages you send to this chat are secured with end-to-end encryption.</p>
         <p>Please keep your chat password safe, otherwise you will LOSE your chat history. Click for more info.</p>
       </div>
@@ -464,7 +458,8 @@ export class Chat extends React.Component {
         onClick={() => {
           this.setState({ oldMessages: false })
           this.messageListRef.current.scrollTo(0, this.messageListRef.current.scrollHeight)
-        }}>
+        }}
+      >
         You are viewing old messages, jump to recent ones?
       </div>
     )
@@ -532,8 +527,8 @@ export class Chat extends React.Component {
     const noGroupKeySubtext = this.props.isGuest
       ? 'Alternatively, create an account @ myG.gg'
       : this.props.isGroupOwner
-        ? 'Alternatively, click here to reset the encryption key.'
-        : ''
+      ? 'Alternatively, click here to reset the encryption key.'
+      : ''
     const canResetKey = isGroupWithoutKey && this.props.isGroupOwner
     return (
       <div key={this.props.chatId} className='chat-component-base'>
@@ -548,7 +543,8 @@ export class Chat extends React.Component {
               null,
               'Reset Key'
             )
-          }>
+          }
+        >
           <p>{isGroupWithoutKey ? noGroupKeyText : noUserKeyText}</p>
           <p>{noGroupKeySubtext}</p>
         </div>
@@ -640,7 +636,7 @@ export function mapStateToProps(state, props) {
     userPrivateKey: state.encryption.privateKey,
     publicKey: isGroup ? chat.publicKey : contact.publicKey,
     privateKey: isGroup ? chat.privateKey : state.encryption.privateKey,
-    disconnected: state.socket.disconnected,
+    disconnected: state.socket.disconnected
   }
 }
 
@@ -673,7 +669,7 @@ function mapDispatchToProps(dispatch) {
     unblockUser: (blockedUserId) => dispatch(unblockUserAction(blockedUserId)),
     checkSelfDestruct: (chatId) => dispatch(checkSelfDestructAction(chatId)),
     clearChat: (chatId) => dispatch(clearChatAction(chatId)),
-    setTyping: (chatId, isTyping) => dispatch(setTypingAction(chatId, isTyping)),
+    setTyping: (chatId, isTyping) => dispatch(setTypingAction(chatId, isTyping))
   }
 }
 

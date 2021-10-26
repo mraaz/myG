@@ -21,7 +21,7 @@ const ReportPost = (props) => {
     SetRequesting(true)
     const data = await axios.post('/api/report/create', {
       report_description: sub__content,
-      ...props,
+      ...props
     })
     if (data) {
       toast.success(<Toast_style text={"Thanks for reporting! You're helping to make this is a better place."} />)
@@ -55,7 +55,8 @@ const ReportPost = (props) => {
         <div
           key={reason}
           className={`report__message ${reason == sub__content ? 'active' : ''}`}
-          onClick={(e) => handleSubReasonClick(reason)}>
+          onClick={(e) => handleSubReasonClick(reason)}
+        >
           <div className='main__content'>{mainReason}</div>
           <div className='sub__content'> {reportMessage}</div>
         </div>
@@ -69,11 +70,7 @@ const ReportPost = (props) => {
         <div className='modal__header'>
           <h1>
             {showReason && (
-              <img
-                src='https://myG.gg/platform_images/Communities/Group+971.svg'
-                onClick={handleBackButton}
-                alt='arrow-left'
-              />
+              <img src='https://myG.gg/platform_images/Communities/Group+971.svg' onClick={handleBackButton} alt='arrow-left' />
             )}
 
             <span>Why are you reporting this?</span>

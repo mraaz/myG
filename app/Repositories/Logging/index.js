@@ -1,7 +1,7 @@
 const elasticsearch = use('elasticsearch');
 
 class LoggingRepository {
-  async log({ type, source, context, browser, system, message, error }) {
+  async log({ type, source, context, browser, system, message, error, method }) {
     if (!error) error = '';
     return new elasticsearch.Client({
       host: process.env.ELASTICSEARCH,
@@ -20,6 +20,7 @@ class LoggingRepository {
         message,
         error,
         date: Date.now(),
+        method,
       }
     }).then(() => ({ success: true, error: null })).catch(error => ({ success: false, error }));
   }

@@ -48,7 +48,7 @@ class SponsorController {
           user_id: auth.user.id,
           group_id: request.input('group_id'),
           media_url: request.input('media_url'),
-          link: request.input('link'),
+          link: request.input('link')
         })
 
         let tmpArr = request.input('aws_key_id')
@@ -67,7 +67,7 @@ class SponsorController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     }
@@ -81,7 +81,7 @@ class SponsorController {
 
         const byebyebye = await Database.table('sponsors')
           .where({
-            id: request.params.id,
+            id: request.params.id
           })
           .delete()
 
@@ -92,7 +92,7 @@ class SponsorController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     } else {
@@ -118,7 +118,7 @@ class SponsorController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     }
@@ -146,7 +146,7 @@ class SponsorController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     }
@@ -178,7 +178,7 @@ class SponsorController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     }
@@ -221,16 +221,14 @@ class SponsorController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
       }
     }
   }
 
   async security_check({ auth }) {
-    const security_check = await Database.from('admins')
-      .where({ user_id: auth.user.id, permission_level: 1 })
-      .first()
+    const security_check = await Database.from('admins').where({ user_id: auth.user.id, permission_level: 1 }).first()
 
     if (security_check == undefined) {
       return false

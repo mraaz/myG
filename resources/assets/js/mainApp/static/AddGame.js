@@ -1,7 +1,7 @@
 const SETTINGS_ENUMS = {
   MAIN: 'MAIN',
   ADVANCED: 'ADVANCED',
-  INGAMEFIELD: 'INGAMEFIELD',
+  INGAMEFIELD: 'INGAMEFIELD'
 }
 
 const styles = {
@@ -36,13 +36,13 @@ const styles = {
   sideBall: 'add-game__side-ball',
   sideLine: 'add-game__side-line',
   sideLineContainer: 'add-game__side-line-container',
-  m: 'add-game__',
+  m: 'add-game__'
 }
 
 const EXPERIENCE_OPTIONS = [
   { value: 'Casual', label: 'Casual' },
   { value: 'Semi Pro', label: 'Semi Pro' },
-  { value: 'Professional', label: 'Professional' },
+  { value: 'Professional', label: 'Professional' }
 ]
 
 const TIME_EXPERIENCE_OPTIONS = [
@@ -51,7 +51,7 @@ const TIME_EXPERIENCE_OPTIONS = [
   { value: 'Less than 3 years', label: 'Less than 3 years' },
   { value: 'Less than 4 years', label: 'Less than 4 years' },
   { value: 'Less than 5 years', label: 'Less than 5 years' },
-  { value: '5+ years', label: '5+ years' },
+  { value: '5+ years', label: '5+ years' }
 ]
 
 const REGION_OPTIONS = [
@@ -63,7 +63,7 @@ const REGION_OPTIONS = [
   { value: 'Oceania', label: 'Oceania' },
   { value: 'Middle East', label: 'Middle East' },
   { value: 'Africa', label: 'Africa' },
-  { value: 'Central America', label: 'Central America' },
+  { value: 'Central America', label: 'Central America' }
 ]
 
 const PLATFORM_OPTIONS = [
@@ -72,12 +72,12 @@ const PLATFORM_OPTIONS = [
   { value: 'PS', label: 'PS' },
   { value: 'Nintendo', label: 'Nintendo' },
   { value: 'Mobile', label: 'Mobile' },
-  { value: 'Tabletop', label: 'Tabletop' },
+  { value: 'Tabletop', label: 'Tabletop' }
 ]
 
 const VISIBILITY_OPTIONS = [
   { value: 1, label: 'Public' },
-  { value: 4, label: 'Private' },
+  { value: 4, label: 'Private' }
 ]
 const LIMIT_OPTIONS = [
   { value: 5, label: '5' },
@@ -88,7 +88,7 @@ const LIMIT_OPTIONS = [
   { value: 40, label: '40' },
   { value: 50, label: '50' },
   { value: 100, label: '100' },
-  { value: 42, label: 'Unlimited' },
+  { value: 42, label: 'Unlimited' }
 ]
 
 const LEVEL_OPTIONS = [
@@ -116,7 +116,7 @@ const LEVEL_OPTIONS = [
   { value: '22', label: '22' },
   { value: '23', label: '23' },
   { value: '24', label: '24' },
-  { value: '25', label: '25' },
+  { value: '25', label: '25' }
 ]
 
 const LANGUAGE_OPTIONS = [
@@ -163,7 +163,7 @@ const LANGUAGE_OPTIONS = [
   { value: 'Turkish', label: 'Turkish' },
   { value: 'Ukrainian', label: 'Ukrainian' },
   { value: 'Urdu', label: 'Urdu' },
-  { value: 'Vietnamese', label: 'Vietnamese' },
+  { value: 'Vietnamese', label: 'Vietnamese' }
 ]
 
 export {
@@ -176,5 +176,5 @@ export {
   VISIBILITY_OPTIONS,
   LIMIT_OPTIONS,
   LANGUAGE_OPTIONS,
-  LEVEL_OPTIONS,
+  LEVEL_OPTIONS
 }

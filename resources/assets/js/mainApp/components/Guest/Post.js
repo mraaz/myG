@@ -9,26 +9,38 @@ export default class GuestPost extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     return ignoreFunctions(nextProps, nextState, this.props, this.state)
   }
-
   state = {
     loading: true,
     post: null,
-    showModal: false,
+    showModal: false
   }
 
   componentDidMount() {
     fetchPost(this.props.id).then((post) => this.setState({ post, loading: false }))
   }
 
+  handleGuestModal = () => {
+    this.setState({ showModal: !this.state.showModal })
+  }
+
   render() {
     if (this.state.loading || !this.state.post) return null
     return (
       <div id='post' className='guest-page active' style={{ backgroundColor: '#000' }}>
-        <GuestBanner />
-        {this.state.showModal && <SignUpModal onClick={() => this.setState({ showModal: false })} />}
+        <GuestBanner handleGuestModal={this.handleGuestModal} />
+        {this.state.showModal && (
+          <SignUpModal handleGuestModal={this.handleGuestModal} onClick={() => this.setState({ showModal: false })} />
+        )}
         <div id='guest-content' className='app-container home-page'>
-          <section id='posts' className='active' onClick={() => this.setState({ showModal: true })}>
-            <IndividualPost guest post={this.state.post} user={{}} source={'news_feed'} />
+          <section id='posts' className='active'>
+            <IndividualPost
+              refreshme={this.props.refreshme}
+              guest
+              post={this.state.post}
+              handleGuestModal={this.handleGuestModal}
+              user={{}}
+              source={'news_feed'}
+            />
           </section>
         </div>
       </div>

@@ -29,7 +29,7 @@ const getAnimationContainer = (key) => {
 class Bubbles extends React.Component {
   state = {
     animationIds: [],
-    animations: [],
+    animations: []
   }
 
   componentDidUpdate(previous) {
@@ -58,7 +58,7 @@ class Bubbles extends React.Component {
       () =>
         this.setState((previous) => ({
           animations: previous.animations.filter(({ id }) => id !== animationId),
-          animationIds: [...previous.animationIds.filter((id) => id !== animationId)],
+          animationIds: [...previous.animationIds.filter((id) => id !== animationId)]
         })),
       5000
     )
@@ -70,7 +70,7 @@ class Bubbles extends React.Component {
       renderer: 'svg',
       loop: false,
       autoplay: true,
-      path: path,
+      path: path
     })
   }
 
@@ -81,7 +81,7 @@ class Bubbles extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    experience: (state.user.userTransactionStates || {}).user_experience,
+    experience: (state.user.userTransactionStates || {}).user_experience
   }
 }
 

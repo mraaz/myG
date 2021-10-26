@@ -9,7 +9,7 @@ export default class Games extends React.Component {
   }
 
   state = {
-    expandedGame: null,
+    expandedGame: null
   }
 
   renderGame(id, name, icon, color, expanded) {
@@ -24,7 +24,8 @@ export default class Games extends React.Component {
               (previous) => ({ expandedGame: previous.expandedGame === name ? null : name }),
               () => this.props.onExpand(this.state.expandedGame ? false : this.props.expanded)
             )
-          }>
+          }
+        >
           <div className='messenger-body-game-section' style={{ backgroundColor: color }}>
             <div className='messenger-game-icon' style={{ backgroundImage: `url('${icon}')` }} />
             <p className='messenger-body-section-header-name'>{name}</p>
@@ -75,20 +76,14 @@ export default class Games extends React.Component {
         id: game.gameId,
         name: game.name,
         icon: game.icon,
-        color: colors[index],
+        color: colors[index]
       })
     })
 
     return (
       <div className='messenger-body-section'>
         {sections.map((section) =>
-          this.renderGame(
-            section.id,
-            section.name,
-            section.icon,
-            section.color,
-            this.state.expandedGame === section.name
-          )
+          this.renderGame(section.id, section.name, section.icon, section.color, this.state.expandedGame === section.name)
         )}
       </div>
     )

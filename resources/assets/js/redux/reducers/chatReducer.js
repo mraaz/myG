@@ -4,11 +4,11 @@ import { reEncryptMessages, sendGroupKeys } from '../../common/encryption'
 import { encryptMessage, decryptMessage, deserializeKey, getPublicKey } from '../../integration/encryption'
 import {
   requestGroupPrivateKey as guestRequestGroupPrivateKey,
-  confirmGroupPrivateKey as guestConfirmGroupPrivateKey,
+  confirmGroupPrivateKey as guestConfirmGroupPrivateKey
 } from '../../integration/http/guest'
 import {
   requestGroupPrivateKey as userRequestGroupPrivateKey,
-  confirmGroupPrivateKey as userConfirmGroupPrivateKey,
+  confirmGroupPrivateKey as userConfirmGroupPrivateKey
 } from '../../integration/http/chat'
 import notifyToast from '../../common/toast'
 import { getAssetUrl } from '../../common/assets'
@@ -25,7 +25,7 @@ const initialState = {
   guestLink: null,
   notificationSoundsDisabled: false,
   autoSelfDestruct: false,
-  pushNotificationsEnabled: true,
+  pushNotificationsEnabled: true
 }
 
 const emptyChat = {
@@ -54,8 +54,8 @@ const emptyChat = {
   status: '',
   lastRead: '',
   publicKey: '',
-  privateKey: '',
-};
+  privateKey: ''
+}
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
@@ -70,14 +70,14 @@ export default function reducer(state = initialState, action) {
         alias: action.payload.alias,
         icon: action.payload.profile_img,
         notificationSoundsDisabled: !!action.payload.notification_sounds_disabled,
-        autoSelfDestruct: !!action.payload.chat_auto_self_destruct,
+        autoSelfDestruct: !!action.payload.chat_auto_self_destruct
       }
     }
 
     case 'PREPARE_MESSENGER_PENDING': {
       return {
         ...state,
-        preparingMessenger: true,
+        preparingMessenger: true
       }
     }
 
@@ -94,7 +94,7 @@ export default function reducer(state = initialState, action) {
         alias,
         blockedUsers,
         ...settings,
-        ...encryption,
+        ...encryption
       }
     }
 
@@ -104,7 +104,7 @@ export default function reducer(state = initialState, action) {
         const chats = JSON.parse(JSON.stringify(state.chats))
         return {
           ...state,
-          chats: chats.filter((chat) => chat.chatId !== action.meta.chatId),
+          chats: chats.filter((chat) => chat.chatId !== action.meta.chatId)
         }
       }
       const { chatId, userId } = action.meta
@@ -157,7 +157,7 @@ export default function reducer(state = initialState, action) {
       return {
         ...state,
         chats,
-        contacts,
+        contacts
       }
     }
 
@@ -169,7 +169,7 @@ export default function reducer(state = initialState, action) {
       chat.loadingMessages = true
       return {
         ...state,
-        chats,
+        chats
       }
     }
 
@@ -192,7 +192,7 @@ export default function reducer(state = initialState, action) {
       chat.messages = messages
       return {
         ...state,
-        chats,
+        chats
       }
     }
 
@@ -205,7 +205,7 @@ export default function reducer(state = initialState, action) {
       )
       return {
         ...state,
-        unreadMessages,
+        unreadMessages
       }
     }
 
@@ -217,7 +217,7 @@ export default function reducer(state = initialState, action) {
       else contacts.push(action.payload.contact)
       return {
         ...state,
-        contacts,
+        contacts
       }
     }
 
@@ -227,7 +227,7 @@ export default function reducer(state = initialState, action) {
       unreadMessages.forEach((unreadMessage) => (unreadMessage.read = true))
       return {
         ...state,
-        unreadMessages,
+        unreadMessages
       }
     }
 
@@ -247,7 +247,7 @@ export default function reducer(state = initialState, action) {
       if (openChats.length > 3) Array.from(Array(openChats.length - 3)).forEach((_, index) => (openChats[index].closed = true))
       return {
         ...state,
-        chats,
+        chats
       }
     }
 
@@ -266,11 +266,11 @@ export default function reducer(state = initialState, action) {
         .sort((m1, m2) => parseInt(m1.messageId) - parseInt(m2.messageId))
         .map((message) => prepareMessage(state, chat, message))
       chat.closed = true
-      channels[action.payload.chat.channelId] = chatId;
+      channels[action.payload.chat.channelId] = chatId
       return {
         ...state,
         chats,
-        channels,
+        channels
       }
     }
 
@@ -279,7 +279,7 @@ export default function reducer(state = initialState, action) {
       const notifications = JSON.parse(JSON.stringify(state.notifications || [])) || []
       return {
         ...state,
-        notifications: notifications.filter((notification) => notification.notificationId !== action.payload.notificationId),
+        notifications: notifications.filter((notification) => notification.notificationId !== action.payload.notificationId)
       }
     }
 
@@ -297,12 +297,13 @@ export default function reducer(state = initialState, action) {
       chat.minimised = false
       chat.maximised = false
       const openChats = chats.filter((candidate) => !candidate.closed && candidate.chatId !== chatId)
-      const maxOpenedChats = window.innerWidth <= 1365 ? 0 : 3;
-      if (openChats.length > maxOpenedChats) Array.from(Array(openChats.length - maxOpenedChats)).forEach((_, index) => (openChats[index].closed = true))
+      const maxOpenedChats = window.innerWidth <= 1365 ? 0 : 3
+      if (openChats.length > maxOpenedChats)
+        Array.from(Array(openChats.length - maxOpenedChats)).forEach((_, index) => (openChats[index].closed = true))
       return {
         ...state,
         chats,
-        notifications: notifications.filter((notification) => notification.chatId !== chatId),
+        notifications: notifications.filter((notification) => notification.chatId !== chatId)
       }
     }
 
@@ -314,7 +315,7 @@ export default function reducer(state = initialState, action) {
       chat.closed = true
       return {
         ...state,
-        chats,
+        chats
       }
     }
 
@@ -337,7 +338,7 @@ export default function reducer(state = initialState, action) {
       }
       return {
         ...state,
-        chats,
+        chats
       }
     }
 
@@ -355,7 +356,7 @@ export default function reducer(state = initialState, action) {
       }
       return {
         ...state,
-        chats,
+        chats
       }
     }
 
@@ -378,12 +379,12 @@ export default function reducer(state = initialState, action) {
         createdAt: Date.now(),
         updatedAt: Date.now(),
         messageId: `pending-${uuid}`,
-        isPending: true,
+        isPending: true
       }
       chat.messages.push(prepareMessage(state, chat, message))
       return {
         ...state,
-        chats,
+        chats
       }
     }
 
@@ -395,7 +396,7 @@ export default function reducer(state = initialState, action) {
       const chatId = message.chatId
       const chats = JSON.parse(JSON.stringify(state.chats))
       const existingChat = chats.find((candidate) => candidate.chatId === chatId)
-      const chat = existingChat || { ...emptyChat, chatId, contacts: [message.senderId].filter(Boolean), title: message.senderName  }
+      const chat = existingChat || { ...emptyChat, chatId, contacts: [message.senderId].filter(Boolean), title: message.senderName }
       if (!existingChat) chats.push(chat)
       const decryptedMessage = prepareMessage(state, chat, message)
 
@@ -414,32 +415,32 @@ export default function reducer(state = initialState, action) {
         }
         return {
           ...state,
-          chats,
+          chats
         }
       }
 
       const openChats = chats.filter((candidate) => !candidate.closed && candidate.chatId !== chatId)
       const shouldShowMessage = !chat.muted && !message.senderId !== userId && !message.keyReceiver
       const isNotActivelyLooking = !window.focused
-      const isFromChannel = !!message.channelId;
-      const cannotOpenChat = window.innerWidth > 1365 ? openChats.length >= 4 : openChats.length > 0 || !window.location.href.includes('mobile-chat');
-      const notifications = JSON.parse(JSON.stringify(state.notifications || [])) || [];
-      decryptedMessage.unread = shouldShowMessage && cannotOpenChat;
+      const isFromChannel = !!message.channelId
+      const cannotOpenChat =
+        window.innerWidth > 1365 ? openChats.length >= 4 : openChats.length > 0 || !window.location.href.includes('mobile-chat')
+      const notifications = JSON.parse(JSON.stringify(state.notifications || [])) || []
+      decryptedMessage.unread = shouldShowMessage && cannotOpenChat
 
       if (shouldShowMessage) {
-
         if (!cannotOpenChat) {
-          chat.closed = false;
+          chat.closed = false
         }
 
         if (cannotOpenChat && !isFromChannel) {
           const title = decryptedMessage.senderName
           const content = decryptedMessage.content
           notifyToast(content, title, () => {
-            openChat(chatId, chat);
+            openChat(chatId, chat)
             const requiresRedirect = window.innerWidth <= 1365 && !window.location.href.includes('mobile-chat')
-            if (requiresRedirect) window.router.push('/mobile-chat');
-          });
+            if (requiresRedirect) window.router.push('/mobile-chat')
+          })
         }
 
         if (isNotActivelyLooking) {
@@ -447,18 +448,17 @@ export default function reducer(state = initialState, action) {
           showNotification(state, chat, message)
           showNewMessageIndicator()
         }
-
       }
 
       if (!chat.messages) chat.messages = []
       const mustClearPendingMessages = message.senderId === userId
       if (mustClearPendingMessages) chat.messages = chat.messages.filter((existing) => existing.uuid !== message.uuid)
-      chat.messages.push(decryptedMessage);
+      chat.messages.push(decryptedMessage)
 
       return {
         ...state,
         chats,
-        notifications,
+        notifications
       }
     }
 
@@ -481,7 +481,7 @@ export default function reducer(state = initialState, action) {
       chat.messages = chat.messages.sort((m1, m2) => parseInt(m1.messageId) - parseInt(m2.messageId))
       return {
         ...state,
-        chats,
+        chats
       }
     }
 
@@ -495,7 +495,7 @@ export default function reducer(state = initialState, action) {
       chat.links.splice(index, 1, action.payload.link)
       return {
         ...state,
-        chats,
+        chats
       }
     }
 
@@ -512,7 +512,7 @@ export default function reducer(state = initialState, action) {
       })
       return {
         ...state,
-        chats,
+        chats
       }
     }
 
@@ -525,7 +525,7 @@ export default function reducer(state = initialState, action) {
       if (message) message.reactions.push(action.payload)
       return {
         ...state,
-        chats,
+        chats
       }
     }
 
@@ -538,19 +538,18 @@ export default function reducer(state = initialState, action) {
       if (message) message.reactions = message.reactions.filter((reaction) => reaction.id !== action.payload.id)
       return {
         ...state,
-        chats,
+        chats
       }
     }
 
     case 'ON_CHAT_DELETED': {
       logger.log('CHAT', `Redux -> On Chat Deleted: `, action.payload)
       const chatId = parseInt(action.payload.chatId)
-      const chats = JSON.parse(JSON.stringify(state.chats))
-        .filter((chat) => parseInt(chat.chatId) !== parseInt(chatId))
+      const chats = JSON.parse(JSON.stringify(state.chats)).filter((chat) => parseInt(chat.chatId) !== parseInt(chatId))
       if (state.guestId) notifyToast('This Group has been deleted.')
       return {
         ...state,
-        chats,
+        chats
       }
     }
 
@@ -577,7 +576,7 @@ export default function reducer(state = initialState, action) {
       }
       return {
         ...state,
-        chats,
+        chats
       }
     }
 
@@ -586,7 +585,7 @@ export default function reducer(state = initialState, action) {
       const blockedUsers = action.payload.blockedUsers
       return {
         ...state,
-        blockedUsers,
+        blockedUsers
       }
     }
 
@@ -595,7 +594,7 @@ export default function reducer(state = initialState, action) {
       const blockedUsers = action.payload.blockedUsers
       return {
         ...state,
-        blockedUsers,
+        blockedUsers
       }
     }
 
@@ -604,7 +603,7 @@ export default function reducer(state = initialState, action) {
       const blockedUsers = action.payload.blockedUsers
       return {
         ...state,
-        blockedUsers,
+        blockedUsers
       }
     }
 
@@ -621,7 +620,7 @@ export default function reducer(state = initialState, action) {
       if (isPrivate !== undefined) chat.isPrivate = isPrivate
       return {
         ...state,
-        chats,
+        chats
       }
     }
 
@@ -636,7 +635,7 @@ export default function reducer(state = initialState, action) {
       if (!chat.fullContacts.map((contact) => contact.contactId).includes(contacts[0].contactId)) chat.fullContacts.push(contacts[0])
       return {
         ...state,
-        chats,
+        chats
       }
     }
 
@@ -648,7 +647,7 @@ export default function reducer(state = initialState, action) {
       chat.messages = []
       return {
         ...state,
-        chats,
+        chats
       }
     }
 
@@ -661,7 +660,7 @@ export default function reducer(state = initialState, action) {
       chat.messages = chat.messages.filter((message) => message.messageId !== messageId)
       return {
         ...state,
-        chats,
+        chats
       }
     }
 
@@ -682,18 +681,17 @@ export default function reducer(state = initialState, action) {
       if (!isTyping && isUserAlreadyTyping) chat.typing.splice(userTypingIndex, 1)
       return {
         ...state,
-        chats,
+        chats
       }
     }
 
     case 'EXIT_GROUP_FULFILLED': {
       logger.log('CHAT', `Redux -> User Exited Group: `, action.meta)
       const { chatId } = action.meta
-      const chats = JSON.parse(JSON.stringify(state.chats))
-        .filter((chat) => parseInt(chat.chatId) !== parseInt(chatId))
+      const chats = JSON.parse(JSON.stringify(state.chats)).filter((chat) => parseInt(chat.chatId) !== parseInt(chatId))
       return {
         ...state,
-        chats,
+        chats
       }
     }
 
@@ -713,7 +711,7 @@ export default function reducer(state = initialState, action) {
       if (contact) sendGroupKeys(chatId, parseInt(thisUserId), contacts, chat.privateKey, state.privateKey)
       return {
         ...state,
-        chats,
+        chats
       }
     }
 
@@ -722,11 +720,10 @@ export default function reducer(state = initialState, action) {
       const { chatId, userId, entryLog } = action.payload
       const { userId: thisUserId } = action.meta
       if (parseInt(userId) === parseInt(thisUserId)) {
-        const chats = JSON.parse(JSON.stringify(state.chats))
-          .filter((chat) => parseInt(chat.chatId) !== parseInt(chatId))
+        const chats = JSON.parse(JSON.stringify(state.chats)).filter((chat) => parseInt(chat.chatId) !== parseInt(chatId))
         return {
           ...state,
-          chats,
+          chats
         }
       }
       const chats = JSON.parse(JSON.stringify(state.chats))
@@ -738,7 +735,7 @@ export default function reducer(state = initialState, action) {
       chat.fullContacts = chat.fullContacts.filter((contact) => parseInt(contact.contactId) !== parseInt(userId))
       return {
         ...state,
-        chats,
+        chats
       }
     }
 
@@ -755,7 +752,7 @@ export default function reducer(state = initialState, action) {
       sendGroupKeys(chatId, thisUserId, [guest], chat.privateKey, state.privateKey)
       return {
         ...state,
-        chats,
+        chats
       }
     }
 
@@ -770,7 +767,7 @@ export default function reducer(state = initialState, action) {
       chat.guests = chat.guests.filter((thisGuestId) => thisGuestId !== guestId)
       return {
         ...state,
-        chats,
+        chats
       }
     }
 
@@ -801,13 +798,13 @@ export default function reducer(state = initialState, action) {
         edited: false,
         selfDestruct: false,
         createdAt: new Date(),
-        updatedAt: new Date(),
+        updatedAt: new Date()
       }
       chat.messages.push(gameStarting)
       chat.gameStarting = gameStarting
       return {
         ...state,
-        chats,
+        chats
       }
     }
 
@@ -817,7 +814,7 @@ export default function reducer(state = initialState, action) {
       const { guestId, userId, chatId, lastRead } = action.payload
       const chats = JSON.parse(JSON.stringify(state.chats))
       const chat = chats.find((candidate) => candidate.chatId === chatId)
-      if (!chat) return state;
+      if (!chat) return state
       if (userId === thisUserId) chat.lastRead = lastRead
       else {
         if (!chat.lastReads) chat.lastReads = {}
@@ -826,7 +823,7 @@ export default function reducer(state = initialState, action) {
       }
       return {
         ...state,
-        chats,
+        chats
       }
     }
 
@@ -838,7 +835,7 @@ export default function reducer(state = initialState, action) {
       chat.selfDestruct = selfDestruct
       return {
         ...state,
-        chats,
+        chats
       }
     }
 
@@ -873,7 +870,7 @@ export default function reducer(state = initialState, action) {
       }
       return {
         ...state,
-        chats,
+        chats
       }
     }
 
@@ -888,7 +885,7 @@ export default function reducer(state = initialState, action) {
       if (maximised !== undefined) chat.maximised = maximised
       return {
         ...state,
-        chats,
+        chats
       }
     }
 
@@ -897,7 +894,7 @@ export default function reducer(state = initialState, action) {
       const {
         guest: { guestId },
         chat,
-        chat: { chatId },
+        chat: { chatId }
       } = action.payload
       const { publicKey, privateKey } = action.meta
       const chats = JSON.parse(JSON.stringify(state.chats))
@@ -909,7 +906,7 @@ export default function reducer(state = initialState, action) {
         guestId,
         publicKey,
         privateKey,
-        chats,
+        chats
       }
     }
 
@@ -919,7 +916,7 @@ export default function reducer(state = initialState, action) {
         ...state,
         guestLink: null,
         publicKey: action.payload.encryption.publicKey,
-        privateKey: action.payload.encryption.privateKey,
+        privateKey: action.payload.encryption.privateKey
       }
     }
 
@@ -929,7 +926,7 @@ export default function reducer(state = initialState, action) {
         ...state,
         guestLink: null,
         publicKey: action.payload.encryption.publicKey,
-        privateKey: action.payload.encryption.privateKey,
+        privateKey: action.payload.encryption.privateKey
       }
     }
 
@@ -937,7 +934,7 @@ export default function reducer(state = initialState, action) {
       logger.log('CHAT', `Redux -> Setting Guest Link: `, action.payload)
       return {
         ...state,
-        guestLink: action.payload,
+        guestLink: action.payload
       }
     }
 
@@ -945,7 +942,7 @@ export default function reducer(state = initialState, action) {
       logger.log('CHAT', `Redux -> Toggle Notification Sounds: `, action.meta)
       return {
         ...state,
-        notificationSoundsDisabled: action.meta.disabled,
+        notificationSoundsDisabled: action.meta.disabled
       }
     }
 
@@ -953,7 +950,7 @@ export default function reducer(state = initialState, action) {
       logger.log('CHAT', `Redux -> Toggle Auto Self Destruct: `, action.meta)
       return {
         ...state,
-        autoSelfDestruct: action.meta.enabled,
+        autoSelfDestruct: action.meta.enabled
       }
     }
 
@@ -962,7 +959,7 @@ export default function reducer(state = initialState, action) {
       const { pushNotificationsEnabled } = action.payload.settings
       return {
         ...state,
-        pushNotificationsEnabled,
+        pushNotificationsEnabled
       }
     }
 
@@ -971,7 +968,7 @@ export default function reducer(state = initialState, action) {
       const { pushNotificationsEnabled } = action.payload.settings
       return {
         ...state,
-        pushNotificationsEnabled,
+        pushNotificationsEnabled
       }
     }
 
@@ -1045,5 +1042,5 @@ function contactPublicKeyUpdated(state, contactId, publicKey) {
 }
 
 function closeLastOpenedChats(chats) {
-  if (chats.length > 3) Array.from(Array(chats.length - 3)).forEach((_, index) => (chats[index].closed = true));
+  if (chats.length > 3) Array.from(Array(chats.length - 3)).forEach((_, index) => (chats[index].closed = true))
 }

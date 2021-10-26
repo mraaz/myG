@@ -34,11 +34,11 @@ export default class ChatInput extends React.Component {
     if (props.selectedEmoji && props.selectedEmoji !== state.selectedEmoji) {
       return {
         input: state.input + props.selectedEmoji,
-        selectedEmoji: props.selectedEmoji,
+        selectedEmoji: props.selectedEmoji
       }
     }
     return {
-      selectedEmoji: props.selectedEmoji,
+      selectedEmoji: props.selectedEmoji
     }
   }
 
@@ -53,7 +53,7 @@ export default class ChatInput extends React.Component {
     if (code === enterKeyCode) {
       event.preventDefault()
       if (event.shiftKey) {
-        return this.setState(previous => ({ input: previous.input + "\n" }), this.refreshInput)
+        return this.setState((previous) => ({ input: previous.input + '\n' }), this.refreshInput)
       }
       this.sendMessage()
     }
@@ -72,6 +72,7 @@ export default class ChatInput extends React.Component {
   }
 
   sendMessage = () => {
+    if (this.state.disabled) return
     if (!this.state.input.trim()) return
     GoogleAnalytics.chatMessageSent({ chatId: this.props.chatId })
     this.props.sendMessage(convertEmojisToColons(this.state.input.trim()))
@@ -81,7 +82,7 @@ export default class ChatInput extends React.Component {
   }
 
   onTyping = (input) => {
-    if (input.length > 2000) input = input.slice(0, 2000);
+    if (input.length > 2000) input = input.slice(0, 2000)
     if (!this.state.isTyping) this.props.setTyping(true)
     this.setState({ input, isTyping: true, lastTyped: Date.now() })
     setTimeout(() => this.clearTyping(), 2000)
@@ -126,11 +127,13 @@ export default class ChatInput extends React.Component {
       : this.props.blocked
       ? 'Unblock to send messages'
       : 'Type your message here'
-    const lineHeight = 20;
-    const height = this.state.input.split('\n').length * lineHeight;
+    const lineHeight = 20
+    const height = this.state.input.split('\n').length * lineHeight
     return (
       <div className='chat-component-input-with-reply-container'>
-        {this.props.replyingTo && <p className='chat-component-message-reply-no-margin'>replying to {this.renderMessage(this.props.replyingTo.content)}</p>}
+        {this.props.replyingTo && (
+          <p className='chat-component-message-reply-no-margin'>replying to {this.renderMessage(this.props.replyingTo.content)}</p>
+        )}
         <div className='chat-component-input-container'>
           <textarea
             style={{ height: height === 20 ? '40px' : `${height > 100 ? 100 : height}px`, lineHeight: `${lineHeight}px` }}
@@ -138,19 +141,21 @@ export default class ChatInput extends React.Component {
             rows={1}
             maxLength={2000}
             className='chat-component-input'
-            disabled={disabled || this.state.disabled}
-            placeholder={this.state.disabled ? 'Slowmode - a message every 3s' : placeholderText}
+            disabled={disabled}
+            placeholder={placeholderText}
             value={this.state.input}
             onChange={(event) => this.onTyping(event.target.value)}
             onKeyPress={this.onKeyPressed}
             onKeyDown={this.onKeyDown}
-            onBlur={this.props.onBlur}></textarea>
+            onBlur={this.props.onBlur}
+          ></textarea>
           <div
             className='chat-component-send-button clickable'
             style={{ backgroundImage: `url(${getAssetUrl('ic_chat_send')})` }}
             onClick={() => !disabled && this.sendMessage()}
           />
         </div>
+        {this.state.disabled ? <span className='slowmode'>Slowmode - a message every 3s</span> : ''}
       </div>
     )
   }

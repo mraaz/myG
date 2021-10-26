@@ -22,7 +22,7 @@ export default class IndividualSponsoredPost extends Component {
       media_urls: [],
       galleryItems: [],
       showmore: false,
-      showPostExtraOption: false,
+      showPostExtraOption: false
     }
   }
 
@@ -49,13 +49,13 @@ export default class IndividualSponsoredPost extends Component {
 
     this.setState({
       content: this.props.post.content,
-      galleryItems,
+      galleryItems
     })
   }
 
   clickedDropdown = () => {
     this.setState({
-      dropdown: !this.state.dropdown,
+      dropdown: !this.state.dropdown
     })
   }
 
@@ -64,14 +64,14 @@ export default class IndividualSponsoredPost extends Component {
     const getAlert = () => <ReportPost post_id={id} hideModal={this.hideAlert} />
 
     this.setState({
-      alert: getAlert(),
+      alert: getAlert()
     })
   }
 
   hideAlert = (text) => {
     this.setState({
       alert: null,
-      dropdown: false,
+      dropdown: false
     })
   }
 
@@ -113,7 +113,7 @@ export default class IndividualSponsoredPost extends Component {
 
     try {
       axios.post('/api/sponsoredPost/update_clicks/', {
-        sponsoredPost_id: this.props.post.id,
+        sponsoredPost_id: this.props.post.id
       })
     } catch (error) {
       logToElasticsearch('error', 'IndividualSponsoredPost', 'Failed follow_link:' + ' ' + error)
@@ -150,8 +150,9 @@ export default class IndividualSponsoredPost extends Component {
                 className='profile__image__sponsored'
                 style={{
                   backgroundImage: `url('${profile_img}'), url('https://myG.gg/logos/myG_transparent.svg')`,
-                  backgroundSize: 'cover',
-                }}>
+                  backgroundSize: 'cover'
+                }}
+              >
                 {/* <div className='online__status'></div>*/}
               </div>
             </div>

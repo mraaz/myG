@@ -6,7 +6,7 @@ const initialState = {
   publicKey: null,
   privateKey: null,
   chat: null,
-  kicked: false,
+  kicked: false
 }
 
 export default function reducer(state = initialState, action) {
@@ -19,7 +19,7 @@ export default function reducer(state = initialState, action) {
       const {
         guest: { guestId },
         chat,
-        chat: { chatId },
+        chat: { chatId }
       } = action.payload
       const { publicKey, privateKey } = action.meta
       return {
@@ -28,7 +28,7 @@ export default function reducer(state = initialState, action) {
         chatId,
         publicKey,
         privateKey,
-        chat,
+        chat
       }
     }
 
@@ -42,7 +42,7 @@ export default function reducer(state = initialState, action) {
         publicKey: null,
         privateKey: null,
         chat: null,
-        kicked: true,
+        kicked: true
       }
     }
 

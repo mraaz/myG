@@ -12,7 +12,7 @@ import '@babel/polyfill'
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 import { Redirect } from 'react-router'
-import { Router, Route, Switch } from 'react-router-dom'
+import { Router, Route, Switch ,BrowserRouter } from 'react-router-dom'
 import { createBrowserHistory } from 'history'
 import axios from 'axios'
 import { ToastContainer } from 'react-toastify'
@@ -63,8 +63,12 @@ import {
   Channel,
   HashTagList,
   CreateTeam,
+  GuestFeeds,
 } from './AsyncComponent'
 import { fetchShortLink } from '../integration/http/links'
+import { Fragment } from 'react'
+
+const guestRoutes = ['/link', '/scheduledGames', '/find-gamers/search', '/profile', '/post', '/community', '/s/','/guest'];
 
 class Layout extends Component {
   constructor() {
@@ -74,7 +78,12 @@ class Layout extends Component {
       once: false,
       hasLink: false,
       link: null,
+      refreshGuestLink:false
     }
+  }
+
+  refreshme = () =>{
+this.setState({refreshGuestLink:true})
   }
   componentDidMount() {
     window.localStorage.removeItem("unlockedByCheatCode");
@@ -84,17 +93,19 @@ class Layout extends Component {
       try {
         const initialData = await axios.get('/api/initialApp')
 
-        if (!this.state.once)
+        if (!this.state.once){
           this.setState({ once: true })
-
+          localStorage.removeItem('selectedGame');
+        }
+          
         const loggedOut = initialData.data.userInfo == 1981;
-        const guestRoutes = ['/link', '/scheduledGames', '/find-gamers/search', '/profile', '/post', '/community', '/s/'];
+        
         const isOnGuestRoute = guestRoutes.some((route) => window.location.href.includes(route));
         if (loggedOut && !isOnGuestRoute) {
           window.location.href = '/logout'
         }
 
-        const shortLinkCode = window.location.href.split('/s/')[1];
+        const shortLinkCode = window.location.pathname.split('/s/')[1];
         if (shortLinkCode) {
           this.setState({ hasLink: true });
           const link = await fetchShortLink(shortLinkCode);
@@ -136,9 +147,13 @@ class Layout extends Component {
     getInitialData();
     window.addEventListener('focus', this.onFocus);
     this.registerServiceWorker();
-
+    window.history.pushState(null, null, window.location.pathname);
+    window.addEventListener('popstate', this.onBackButtonEvent);
   }
-
+  onBackButtonEvent = (e) => {
+    e.preventDefault();
+    this.refreshme()
+  }
   componentWilUnmount() {
     window.removeEventListener('focus', this.onFocus)
   }
@@ -157,10 +172,8 @@ class Layout extends Component {
   }
 
   renderRouter = () => {
-    if (!window.router) window.router = createBrowserHistory();
     if (this.state.hasLink && !this.state.link) return null;
     return (
-      <Router history={window.router}>
         <div className='app-container home-page'>
           <div className='dashboard-main-container'>
             <LeftMenu initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData} />
@@ -172,6 +185,17 @@ class Layout extends Component {
                   path='/'
                   component={(props) => (
                     <Home
+                      routeProps={props}
+                      initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
+                      key={Math.random()}
+                    />
+                  )}
+                />
+                <Route
+                  exact
+                  path='/guest'
+                  component={(props) => (
+                    <GuestFeeds
                       routeProps={props}
                       initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
                       key={Math.random()}
@@ -433,7 +457,6 @@ class Layout extends Component {
 
           </div>
         </div>
-      </Router>
     )
   }
 
@@ -441,33 +464,36 @@ class Layout extends Component {
     const uuidMatcher = new RegExp(/[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}/)
     const url = window.location.href
     const uuid = Array.isArray(url.match(uuidMatcher)) ? url.match(uuidMatcher)[0] : null
-    return <GuestLink uuid={uuid} />
+    return <GuestLink uuid={uuid} refreshme={this.refreshme}  />
   }
 
   renderGuestGame = () => {
     const uuidMatcher = new RegExp(/[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}/)
     const url = window.location.href
     const uuid = Array.isArray(url.match(uuidMatcher)) ? url.match(uuidMatcher)[0] : null
-    return <GuestGame uuid={uuid} />
+    return <GuestGame uuid={uuid} refreshme={this.refreshme}  />
   }
 
   renderGuestProfile = () => {
     const alias = location.pathname.split('/profile/')[1];
-    return <GuestProfile alias={alias} />;
+    return <GuestProfile alias={alias} refreshme={this.refreshme}  />;
   }
 
   renderGuestPost = () => {
     const id = location.pathname.split('/post/')[1];
-    return <GuestPost id={id} />;
+    return <GuestPost id={id} refreshme={this.refreshme} />;
   }
 
   renderGuestCommunity = () => {
     const id = location.pathname.split('/community/')[1];
-    return <GuestCommunity id={id} />;
+    return <GuestCommunity id={id} refreshme={this.refreshme}  />;
   }
 
   renderGuestFindGamers = () => {
-    return <GuestFindGamers />;
+    return <GuestFindGamers refreshme={this.refreshme}  />;
+  }
+  renderGuestFeeds = () => {
+    return <GuestFeeds refreshme={this.refreshme} />;
   }
 
   renderGuestRouter = () => {
@@ -477,27 +503,31 @@ class Layout extends Component {
     const guestPost = window.location.href.includes('/post');
     const guestCommunity = window.location.href.includes('/community');
     const guestFindGamers = window.location.href.includes('/find-gamers/search');
+    const guest = window.location.href.includes('/guest');
+    if (!window.router) window.router = createBrowserHistory();
     if (this.state.hasLink && !this.state.link) return null;
     return (
-      <Router history={window.router}>
+      <Fragment>
         {guestLink && this.renderGuestLink()}
         {guestGame && this.renderGuestGame()}
         {guestProfile && this.renderGuestProfile()}
         {guestPost && this.renderGuestPost()}
         {guestCommunity && this.renderGuestCommunity()}
         {guestFindGamers && this.renderGuestFindGamers()}
-      </Router>
+        {guest && this.renderGuestFeeds()}
+      </Fragment>
     );
   }
 
   render() {
-    const guestRoutes = ['/link', '/scheduledGames', '/find-gamers/search', '/profile', '/post', '/community'];
     const isGuest = this.state.initialData && this.state.initialData.userInfo === 1981;
     const isOnGuestRoute = isGuest && guestRoutes.some((route) => window.location.href.includes(route));
+    if (!window.router) window.router = createBrowserHistory();
     return (
       <ErrorHandler>
         <Provider store={store}>
           <PersistGate persistor={persistor}>
+          <BrowserRouter history={window.router} >
             <LanguageProvider>
               <PopupAlert />
               <ToastContainer
@@ -507,12 +537,15 @@ class Layout extends Component {
                 className='toast-container'
                 toastClassName='dark-toast'
               />
+              
               {!isOnGuestRoute && <Onboarding />}
               {!isOnGuestRoute && <Bubbles />}
               {!isOnGuestRoute && <LevelUp />}
               {!isOnGuestRoute && this.renderRouter()}
               {isOnGuestRoute && this.renderGuestRouter()}
+              
             </LanguageProvider>
+            </BrowserRouter>
           </PersistGate>
         </Provider>
       </ErrorHandler>

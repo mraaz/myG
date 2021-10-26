@@ -5,7 +5,7 @@ import { checkedLevelAction } from '../../redux/actions/userAction'
 
 class LevelUp extends React.Component {
   state = {
-    leveledUp: false,
+    leveledUp: false
   }
 
   componentDidMount() {
@@ -30,7 +30,7 @@ class LevelUp extends React.Component {
       renderer: 'svg',
       loop: false,
       autoplay: true,
-      path: path,
+      path: path
     })
   }
 
@@ -43,7 +43,8 @@ class LevelUp extends React.Component {
           className='next-button clickable'
           onClick={() => {
             this.props.checkedLevel().then(() => this.setState({ leveledUp: false }))
-          }}>
+          }}
+        >
           Nice!
         </div>
       </div>
@@ -55,13 +56,13 @@ function mapStateToProps(state) {
   return {
     levelUpWhileOffline: !!state.user.leveled_up_offline,
     statsUpdatedFromWebsocket: !!state.user.statsUpdatedFromWebsocket,
-    level: (state.user.userTransactionStates || {}).user_level,
+    level: (state.user.userTransactionStates || {}).user_level
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    checkedLevel: () => dispatch(checkedLevelAction()),
+    checkedLevel: () => dispatch(checkedLevelAction())
   }
 }
 

@@ -19,7 +19,8 @@ class ProfileController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error
+        message: (error && error.message) || error,
+        method: 'fetchProfileInfo'
       })
       return response.send({ error })
     }
@@ -41,7 +42,7 @@ class ProfileController {
         source: 'backend',
         context: __filename,
         message: (error && error.message) || error,
-        error
+        method: 'updateProfile'
       })
       return response.send({ error })
     }
@@ -61,7 +62,8 @@ class ProfileController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error
+        message: (error && error.message) || error,
+        method: 'updateGame'
       })
       return response.send({ error })
     }
@@ -80,7 +82,8 @@ class ProfileController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error
+        message: (error && error.message) || error,
+        method: 'fetchGamerSuggestions'
       })
       return response.send({ error })
     }
@@ -92,7 +95,13 @@ class ProfileController {
       if (!requestingUserId) return
       const gameId = params.gameId
       log('PROFILE', `User ${requestingUserId} requesting dynamic fields for game ${gameId}`)
-      const fields = await ProfileRepository.fetchDynamicFields({ gameId })
+      let fields = await ProfileRepository.fetchDynamicFields({ gameId })
+
+      //Decided to loop thru the array again. Could look into this as a refactor
+      for (let index = 0; index < fields.length; index++) {
+        if (fields[index].id == 'stats_header') fields.splice(index, 1)
+      }
+
       return response.send(fields)
     } catch (error) {
       LoggingRepository.log({
@@ -100,7 +109,8 @@ class ProfileController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error
+        message: (error && error.message) || error,
+        method: 'fetchDynamicFields'
       })
       return response.send({ error })
     }
@@ -122,7 +132,8 @@ class ProfileController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error
+        message: (error && error.message) || error,
+        method: 'commendUser'
       })
       return response.send({ error })
     }
@@ -142,7 +153,8 @@ class ProfileController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error
+        message: (error && error.message) || error,
+        method: 'deleteGameExperience'
       })
       return response.send({ error })
     }
@@ -168,7 +180,8 @@ class ProfileController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error
+        message: (error && error.message) || error,
+        method: 'fetchFriends'
       })
       return response.send({ friends: [], error })
     }
@@ -186,7 +199,8 @@ class ProfileController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error
+        message: (error && error.message) || error,
+        method: 'fetchGuestProfile'
       })
       return response.send({ error })
     }

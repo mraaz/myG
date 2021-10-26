@@ -27,7 +27,7 @@ const styles = {
   clickable: 'my-left-menu__clickable',
   line: 'my-left-menu__line',
   notificationArea: 'my-left-menu__notification-area',
-  logoutArea: 'my-left-menu__logout-area',
+  logoutArea: 'my-left-menu__logout-area'
 }
 
 const sideBarItems = {
@@ -40,13 +40,13 @@ const sideBarItems = {
     subItems: [
       {
         header: 'Looking for <b>Games (LFG)</b>',
-        cta: '/scheduledGames',
+        cta: '/scheduledGames'
       },
       {
         header: 'Find <b>Gamers</b>',
-        cta: '/find-gamers/search',
-      },
-    ],
+        cta: '/find-gamers/search'
+      }
+    ]
   },
   NEW_GAME: {
     id: 'NEW_GAME',
@@ -57,35 +57,35 @@ const sideBarItems = {
     subItems: [
       {
         header: 'Schedule <b>Game</b>',
-        cta: '/addScheduleGames',
+        cta: '/addScheduleGames'
       },
       {
         header: 'Create <b>Community</b>',
-        cta: '/community/create',
-      },
-    ],
+        cta: '/community/create'
+      }
+    ]
   },
   FEED: {
     id: 'FEED',
     header: 'Dashboard',
     icon: 'https://myG.gg/platform_images/Dashboard/btn_Feed.svg',
     cta: '/',
-    expanded: false,
+    expanded: false
   },
   PROFILE: {
     id: 'PROFILE',
     header: 'Profile',
     icon: 'https://myG.gg/platform_images/Dashboard/btn_Profile.svg',
     cta: '/profile',
-    expanded: false,
+    expanded: false
   },
   ACHIEVEMENTS: {
     id: 'ACHIEVEMENTS',
     header: 'Achievements',
     icon: 'https://myG.gg/platform_images/Dashboard/btn_Network.svg',
     cta: '/achievements/badges',
-    expanded: false,
-  },
+    expanded: false
+  }
 }
 
 const sideBarItemsOrder = ['SEARCH', 'NEW_GAME', 'FEED', 'PROFILE', 'ACHIEVEMENTS']
@@ -96,7 +96,7 @@ if (checkFlag(CHANNEL)) {
     header: 'myG Chat',
     icon: 'https://myG.gg/platform_images/Dashboard/Viw.svg',
     cta: '/myg-chat',
-    expanded: false,
+    expanded: false
   }
   sideBarItemsOrder.push('CHANNEL')
 }
@@ -109,13 +109,13 @@ const logoutButton = {
   subItems: [
     {
       header: '',
-      cta: '',
+      cta: ''
     },
     {
       header: '',
-      cta: '',
-    },
-  ],
+      cta: ''
+    }
+  ]
 }
 
 export { styles, sideBarItems, logoutButton, sideBarItemsOrder }

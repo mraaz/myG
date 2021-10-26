@@ -23,7 +23,7 @@ class GuestLink extends React.Component {
     loaded: false,
     alias: '',
     aliasEmpty: false,
-    windowFocused: false,
+    windowFocused: false
   }
 
   componentDidMount() {
@@ -129,9 +129,11 @@ class GuestLink extends React.Component {
           className={`input ${this.state.aliasEmpty ? 'error' : ''}`}
           placeholder='e.g. Star-Lord'
           type='text'
+          autocomplete='off'
           value={this.state.alias}
           onChange={(event) => this.setState({ alias: event.target.value, aliasEmpty: false })}
-          onKeyPress={this.onKeyPressed}></input>
+          onKeyPress={this.onKeyPressed}
+        ></input>
         <div className='join clickable' onClick={this.registerGuest}>
           JOIN CHAT
         </div>
@@ -141,7 +143,7 @@ class GuestLink extends React.Component {
             style={{
               backgroundImage: `url('https://myG.gg/platform_images/Dashboard/logo.svg')`,
               backgroundSize: 'inherit',
-              backgroundColor: '#000',
+              backgroundColor: '#000'
             }}
           />
           Login
@@ -180,7 +182,7 @@ function mapStateToProps(state) {
     chatId: state.guest.chatId,
     publicKey: state.guest.publicKey,
     privateKey: state.guest.privateKey,
-    kicked: state.guest.kicked,
+    kicked: state.guest.kicked
   }
 }
 
@@ -188,7 +190,7 @@ function mapDispatchToProps(dispatch) {
   return {
     setGuestLink: (guestLink) => dispatch(setGuestLinkAction(guestLink)),
     registerGuest: (chatId, alias, uuid) => dispatch(registerGuestAction(chatId, alias, uuid)),
-    logout: () => dispatch(logoutAction()),
+    logout: () => dispatch(logoutAction())
   }
 }
 

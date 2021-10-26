@@ -79,7 +79,7 @@ export default class Members extends React.Component {
   }
 
   handleSave = (e) => {
-    let { approval, privacy, description, tags, coHosts } = this.state
+    let { approval, privacy, description, tags, coHosts, stats_header } = this.state
 
     if (coHosts) {
       coHosts = Convert_to_comma_delimited_value(coHosts)
@@ -103,7 +103,8 @@ export default class Members extends React.Component {
       privacy: privacy,
       mApprovals: approval,
       description: description,
-      tags: tags
+      tags: tags,
+      stats_header: stats_header
     })
 
     if (this.props.community_Name == '') {
@@ -124,16 +125,62 @@ export default class Members extends React.Component {
       dropdown: false
     })
     if (text == 'true') {
-      const delete_group = await axios.post('/api/groups/delete', {
-        group_id: this.props.group_id
-      })
-      if (delete_group) {
-        toast.error(<Toast_style text={'Hmmmm, Group has been deleted successfully.'} />)
-      } else {
-        toast.error(<Toast_style text={'Hmmmm, Something went wrong. Please try again.'} />)
+      try {
+        const delete_group = await axios.post('/api/groups/delete', {
+          group_id: this.props.group_id
+        })
+        if (delete_group) {
+          toast.error(<Toast_style text={'Hmmmm, Group has been deleted successfully.'} />)
+        } else {
+          toast.error(<Toast_style text={'Hmmmm, Something went wrong. Please try again.'} />)
+        }
+      } catch (error) {
+        logToElasticsearch('error', 'CommunityView/Members.js', 'Failed handleDelete:' + ' ' + error)
       }
+
       this.props.routeProps.history.push('/?at=communities')
     }
+  }
+
+  kick_non_clashRoyale_players = async (text) => {
+    this.setState({
+      showKickAlert: ''
+    })
+    if (text == 'true') {
+      try {
+        const data = await axios.get(`/api/clashroyale/kick_non_clashRoyale_players/${this.props.group_id}`)
+        console.log(data, '<<<Child chose')
+      } catch (error) {
+        logToElasticsearch('error', 'CommunityView/Members.js', 'Failed clashRoyale_kick:' + ' ' + error)
+      }
+    }
+  }
+
+  showAlert_for_kick() {
+    const getAlert = () => (
+      <SweetAlert
+        danger
+        showCancel
+        title='Are you sure you wish to remove ALL players from this community who are not in the Clash Royale CLAN?'
+        confirmBtnText='Make it so!'
+        focusCancelBtn={true}
+        focusConfirmBtn={false}
+        showCloseButton={false}
+        btnSize='lg'
+        style={{
+          display: 'flex',
+          whiteSpace: 'pre',
+          width: '41%'
+        }}
+        onConfirm={() => this.kick_non_clashRoyale_players('true')}
+        onCancel={() => this.kick_non_clashRoyale_players('false')}
+      >
+        Will not remove admins, moderators or locked myG players
+      </SweetAlert>
+    )
+    this.setState({
+      showKickAlert: getAlert()
+    })
   }
 
   showAlert() {
@@ -162,6 +209,7 @@ export default class Members extends React.Component {
       alert: getAlert()
     })
   }
+
   showExpelAlert(member) {
     const getAlert = () => (
       <SweetAlert
@@ -317,7 +365,14 @@ export default class Members extends React.Component {
   }
 
   renderSettingComponent = () => {
-    return <Manage {...this.props} onSettingsChange={this.onSettingsChange} group_id={this.props.group_id} />
+    return (
+      <Manage
+        {...this.props}
+        onSettingsChange={this.onSettingsChange}
+        group_id={this.props.group_id}
+        community_game_names_id={this.props.community_game_names_id}
+      />
+    )
   }
 
   handleMemberSearch = async (e) => {
@@ -356,12 +411,16 @@ export default class Members extends React.Component {
   }
 
   render() {
+    console.log(this.props)
     const { modalStatus, isActive, saveButtonDisabled, searchMemberValue = '' } = this.state
-    const { current_user_permission } = this.props
+    const { current_user_permission, community_game_names_id } = this.props
+    const isthisClash = community_game_names_id == 1014 ? true : false
+
     return (
       <div className={`modal-container View__Member__modal ${modalStatus ? 'modal--show' : ''}`}>
         {this.state.alert}
         {this.state.userExpelAlert}
+        {this.state.showKickAlert}
         <div className='modal-wrap'>
           <div className='modal__header'>
             <div className='tabs___header'>
@@ -380,7 +439,13 @@ export default class Members extends React.Component {
           </div>
           {isActive != 'setting' && (
             <div className='manage__searchBar'>
-              <input type='text' value={searchMemberValue} onChange={(e) => this.handleMemberSearch(e)} placeholder='Search members here' />
+              <input
+                type='text'
+                autocomplete='off'
+                value={searchMemberValue}
+                onChange={(e) => this.handleMemberSearch(e)}
+                placeholder='Search members here'
+              />
             </div>
           )}
           <div className='modal__body'>{isActive == 'setting' ? this.renderSettingComponent() : this.renderGroupMember()}</div>
@@ -412,6 +477,13 @@ export default class Members extends React.Component {
               <button type='button' disabled={saveButtonDisabled} onClick={() => this.handleSave(true)}>
                 Save
               </button>
+              {isthisClash && (
+                <MyGButton
+                  customStyles={{ color: '#000', background: '#e5c746' }}
+                  onClick={() => this.showAlert_for_kick()}
+                  text='Remove non CR members'
+                />
+              )}
             </div>
           )}
         </div>

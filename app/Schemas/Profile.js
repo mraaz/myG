@@ -14,6 +14,7 @@ class Profile {
     this.mostPlayedGames = forceArray(data.mostPlayedGames)
     this.team = forceString(data.team)
     this.country = forceString(data.country)
+    this.timeZone = forceString(data.timeZone)
     this.twitch = forceString(data.twitch)
     this.discord = forceString(data.discord)
     this.steam = forceString(data.steam)

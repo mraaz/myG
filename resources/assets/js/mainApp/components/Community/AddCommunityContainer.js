@@ -30,7 +30,7 @@ const AddCommunityContainer = ({ level }) => {
     grp_name_unique: true,
     type: 1,
     uploading: false,
-    preview_files: [],
+    preview_files: []
   })
   const [mainSettingsState, updateMainSettingsState] = useState({
     gameTitlesList: [],
@@ -38,10 +38,10 @@ const AddCommunityContainer = ({ level }) => {
     autoAccept: true,
     community_name: '',
     community_id: '',
+    community_Clan_Tag: ''
   })
 
   const contentAreaRef = useRef()
-  let lastScrollY = 0
 
   const [gameLink, updateGameLink] = useState('')
   const gameLinkRef = useRef(null)
@@ -109,6 +109,7 @@ const AddCommunityContainer = ({ level }) => {
         autoAccept: mainSettingsState.autoAccept,
         type: advancedSettingsState.type,
         preview_files: advancedSettingsState.preview_files,
+        community_Clan_Tag: mainSettingsState.community_Clan_Tag
       })
       updateGameLink(encodeURI(data.name.trim()))
       updateMainSettingsState({ community_id: data.id, community_name: data.name.trim() })
@@ -123,7 +124,8 @@ const AddCommunityContainer = ({ level }) => {
       <div className={styles.footerContainer} id={styles.footerContainer}>
         <div
           className={classNames([styles.footerSubmitButton, isButtonDisabled() ? styles.footerSubmitButtonLight : ''])}
-          onClick={isSubmitting ? null : onAddGameSubmit}>
+          onClick={isSubmitting ? null : onAddGameSubmit}
+        >
           Create Community
         </div>
       </div>
@@ -161,7 +163,8 @@ const AddCommunityContainer = ({ level }) => {
             onClick={() => {
               window.open(`https://myG.gg/community/${gameLink}`, '_blank')
             }}
-            readOnly>
+            readOnly
+          >
             <div style={{ marginTop: '9px', marginLeft: '15px', cursor: 'pointer' }} onClick={copyToClipboard}>
               <img src='https://myG.gg/platform_images/Dashboard/Link.svg' height='18' width='18' />
             </div>
@@ -261,7 +264,7 @@ const AddCommunityContainer = ({ level }) => {
 
 function mapStateToProps(state) {
   return {
-    level: (state.user.userTransactionStates || {}).user_level,
+    level: (state.user.userTransactionStates || {}).user_level
   }
 }
 

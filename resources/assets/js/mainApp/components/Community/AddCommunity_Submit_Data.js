@@ -38,6 +38,9 @@ export async function SubmitDataFunction(myG) {
     toast.success(<Toast_style text={'Whhaatttt! Community name can not have myG official'} />)
     return
   }
+  if (myG.community_Clan_Tag) {
+    myG.community_Clan_Tag = myG.community_Clan_Tag.replace(/#/g, '')
+  }
 
   try {
     const post = await axios.post('/api/groups/create', {
@@ -50,6 +53,7 @@ export async function SubmitDataFunction(myG) {
       type: myG.type,
       group_img: group_img,
       aws_key_id: aws_key_id,
+      stats_header:myG.community_Clan_Tag
     })
     return post
   } catch (error) {

@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://myG.gg/default_user/sitemap.xml

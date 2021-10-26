@@ -23,7 +23,7 @@ export default class ChatMessage extends React.Component {
       editing: false,
       audio: null,
       reaction: null,
-      input: props.message.content,
+      input: props.message.content
     }
     this.messageRef = React.createRef()
   }
@@ -78,7 +78,8 @@ export default class ChatMessage extends React.Component {
                   hasReaction(reactionId)
                     ? this.props.removeReaction(this.props.chatId, this.props.userId, this.props.messageId, reactionId)
                     : this.props.addReaction(this.props.chatId, this.props.userId, this.props.messageId, reactionId, this.props.alias)
-                }>
+                }
+              >
                 <div
                   className='chat-component-message-reaction'
                   style={{ backgroundImage: `url(${getAssetUrl(`ic_reaction_${reactionId}`)})` }}
@@ -174,7 +175,8 @@ export default class ChatMessage extends React.Component {
                 this.setState({ showOptionsMenu: false })
                 copyToClipboard(this.props.message.content)
               }
-            }}>
+            }}
+          >
             <p className='chat-component-message-options-label'>{origin === 'sent' ? 'edit' : 'copy'}</p>
           </div>
         )}
@@ -185,7 +187,8 @@ export default class ChatMessage extends React.Component {
 
         <div
           className='chat-component-message-options-row clickable'
-          onClick={() => this.props.replyToMessage(this.props.encryptedMessage)}>
+          onClick={() => this.props.replyToMessage(this.props.encryptedMessage)}
+        >
           <p className='chat-component-message-options-label'>reply</p>
         </div>
 
@@ -196,7 +199,8 @@ export default class ChatMessage extends React.Component {
         {this.props.message.isAttachment && (
           <div
             className='chat-component-message-options-row clickable'
-            onClick={() => window.open(this.getAttachment(this.props.message.content))}>
+            onClick={() => window.open(this.getAttachment(this.props.message.content))}
+          >
             <p className='chat-component-message-options-label'>download</p>
           </div>
         )}
@@ -208,7 +212,8 @@ export default class ChatMessage extends React.Component {
         {!!this.props.canDelete && (
           <div
             className='chat-component-message-options-row clickable'
-            onClick={() => this.props.deleteMessage(this.props.chatId, this.props.userId, this.props.messageId, origin)}>
+            onClick={() => this.props.deleteMessage(this.props.chatId, this.props.userId, this.props.messageId, origin)}
+          >
             <p className='chat-component-message-options-label'>delete</p>
           </div>
         )}
@@ -227,7 +232,8 @@ export default class ChatMessage extends React.Component {
           value={this.state.input}
           onKeyDown={this.handleKeyPress}
           onBlur={() => this.setState({ editing: false })}
-          onChange={(event) => this.setState({ input: event.target.value })}></textarea>
+          onChange={(event) => this.setState({ input: event.target.value })}
+        ></textarea>
       </div>
     )
   }
@@ -271,7 +277,7 @@ export default class ChatMessage extends React.Component {
             <div
               className='chat-component-read-indicator-icon-image'
               style={{
-                backgroundImage: `url(${icon}), url(https://myG.gg/default_user/new-user-profile-picture.png)`,
+                backgroundImage: `url(${icon}), url(https://myG.gg/default_user/new-user-profile-picture.png)`
               }}
             />
           </div>
@@ -281,17 +287,19 @@ export default class ChatMessage extends React.Component {
   }
 
   colorMessage = (id, senderName) => {
-    if (senderName === 'myG') return '#e6c846';
+    if (senderName === 'myG') return '#e6c846'
     const colors = ['#F99', '#9F9', '#99F', '#FF9', '#9FF', '#F9F']
     return colors[parseInt(id % colors.length)]
   }
 
   getAttachment = (content) => {
-    return (content && content.split('myg-image|')[1]) || content.split('myg-sound|')[1] || content.split('myg-video|')[1] || null
+    if (!content) return null
+    return content.split('myg-image|')[1] || content.split('myg-sound|')[1] || content.split('myg-video|')[1] || null
   }
 
   getAttachmentName = (content) => {
     const attachment = this.getAttachment(content)
+    if (!attachment) return ''
     return attachment.split('chat_images/')[1]
   }
 
@@ -305,7 +313,7 @@ export default class ChatMessage extends React.Component {
     if (isImage) return this.renderImage(content, expirationDate)
     if (isSound) return this.renderSound(content, expirationDate)
     if (isVideo) return this.renderVideo(content, expirationDate)
-    const url = content.match(/((http|ftp|https):\/\/)?([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?/);
+    const url = content.match(/((http|ftp|https):\/\/)?([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?/)
     if (shouldConvertToUrl && url) return this.renderUrl(url[0], convertColonsToEmojis(content))
     return convertColonsToEmojis(content)
   }
@@ -364,7 +372,8 @@ export default class ChatMessage extends React.Component {
                 audio.play()
                 this.setState({ audio })
               }
-            }}>
+            }}
+          >
             Click to play this audio
           </p>
         ) : (
@@ -417,11 +426,16 @@ export default class ChatMessage extends React.Component {
         id='chat-component-message'
         className={`${originStyle} ${deletedStyle} ${selfDestructStyle} ${pendingStyle}`}
         onMouseEnter={() => this.setState({ showOptionsButton: true })}
-        onMouseLeave={() => this.setState({ showOptionsButton: false, showOptionsMenu: false })}>
+        onMouseLeave={() => this.setState({ showOptionsButton: false, showOptionsMenu: false })}
+      >
         <div className='chat-component-message-container'>
           <div className='chat-component-message-content-body'>
             {(message.senderId !== this.props.userId || !!this.props.channel) && !!this.props.isGroup && (
-              <p onClick={() => window.router.push(`/profile/${message.senderName}`)} style={{ color: this.colorMessage(parseInt(message.senderId), message.senderName) }} className={`clickable chat-component-message-sender-name`}>
+              <p
+                onClick={() => window.router.push(`/profile/${message.senderName}`)}
+                style={{ color: this.colorMessage(parseInt(message.senderId), message.senderName) }}
+                className={`clickable chat-component-message-sender-name`}
+              >
                 {message.senderName}
               </p>
             )}
@@ -449,7 +463,7 @@ export default class ChatMessage extends React.Component {
                   !this.state.showOptionsMenu && !this.props.message.deleted && `${!!this.state.showOptionsButton && 'clickable'}`
                 }`}
                 style={{
-                  backgroundImage: this.state.showOptionsButton && !this.props.message.deleted && `url(${getAssetUrl('ic_chat_options')})`,
+                  backgroundImage: this.state.showOptionsButton && !this.props.message.deleted && `url(${getAssetUrl('ic_chat_options')})`
                 }}
               />
               <div className='chat-component-message-options-menu-container'>

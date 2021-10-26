@@ -326,8 +326,8 @@
       .modal__body {
         background: #171a1c 0% 0% no-repeat padding-box;
         min-height: 400px;
-        max-height: 400px;
-        overflow: scroll;
+        max-height: 100vh;
+        overflow: auto;
         width: 100%;
         padding: 2em 5em;
         display: flex;
@@ -582,6 +582,10 @@
   .setting__container {
     width: 100%;
     .communityName__section {
+      &.clanTag{
+        justify-content: left;
+        margin-top: 10px;
+      }
       display: flex;
       justify-content: center;
       align-items: center;

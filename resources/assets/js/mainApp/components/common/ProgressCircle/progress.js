@@ -22,8 +22,9 @@ function _Progress({ progress, reduction = 0, borderColor, value, label, labelSt
         textColor: '#fff',
         trailColor: '#fff',
         backgroundColor: borderColor,
-        strokeWidth: 2,
-      })}>
+        strokeWidth: 2
+      })}
+    >
       <div style={{ fontSize: 14, marginTop: 0, ...(labelStyle || {}) }}>
         <strong>{label || `Level`}</strong>
       </div>

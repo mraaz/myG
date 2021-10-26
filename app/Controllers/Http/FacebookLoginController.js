@@ -8,10 +8,7 @@ const LoggingRepository = require('../../Repositories/Logging')
 
 class FacebookLoginController {
   async redirect({ ally }) {
-    await ally
-      .driver('facebook')
-      .stateless()
-      .redirect()
+    await ally.driver('facebook').stateless().redirect()
   }
 
   async callback({ ally, auth, request, response, view, session }) {
@@ -24,16 +21,16 @@ class FacebookLoginController {
         const authUser = await User.query()
           .where({
             provider: provider,
-            provider_id: userData.getId(),
+            provider_id: userData.getId()
           })
           .first()
         if (!(authUser === null)) {
           await auth.loginViaId(authUser.id)
           const connections = new ConnectionController()
           connections.master_controller({ auth })
-          const onlineQueryResponse = await Database.from('users').where('status', 'online').count();
-          const onlineUsers = onlineQueryResponse[0]['count(*)'];
-          if (onlineUsers < 10) await ChatRepository.publishOnMainChannel(`Welcome ${authUser.alias} !!`);
+          const onlineQueryResponse = await Database.from('users').where('status', 'online').count()
+          const onlineUsers = onlineQueryResponse[0]['count(*)']
+          if (onlineUsers < 10) await ChatRepository.publishOnMainChannel(`Welcome ${authUser.alias} !!`)
           return response.redirect('/')
         } else {
           session.put('provider', 'facebook')
@@ -48,7 +45,7 @@ class FacebookLoginController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error,
+          message: (error && error.message) || error
         })
         return response.redirect('/auth/' + provider)
       }

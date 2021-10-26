@@ -15,7 +15,7 @@ export const GoogleAnalytics = {
     pushEvent({
       event: 'caughtReactError',
       message,
-      context,
+      context
     })
   },
 
@@ -23,7 +23,7 @@ export const GoogleAnalytics = {
   chatRecentMessageClicked({ messageId }) {
     pushEvent({
       event: 'chatRecentMessageClicked',
-      messageId,
+      messageId
     })
   },
 
@@ -31,7 +31,7 @@ export const GoogleAnalytics = {
   chatContactClicked({ contactId }) {
     pushEvent({
       event: 'chatContactClicked',
-      contactId,
+      contactId
     })
   },
 
@@ -39,14 +39,14 @@ export const GoogleAnalytics = {
   chatGroupClicked({ chatId }) {
     pushEvent({
       event: 'chatGroupClicked',
-      chatId,
+      chatId
     })
   },
 
   // A chat group was created
   chatGroupCreated() {
     pushEvent({
-      event: 'chatGroupCreated',
+      event: 'chatGroupCreated'
     })
   },
 
@@ -54,14 +54,14 @@ export const GoogleAnalytics = {
   chatMessageSent({ chatId }) {
     pushEvent({
       event: 'chatMessageSent',
-      chatId,
+      chatId
     })
   },
 
   // An user was accepted into a game
   gameAccepted() {
     pushEvent({
-      event: 'gameAccepted',
+      event: 'gameAccepted'
     })
   },
 
@@ -70,7 +70,7 @@ export const GoogleAnalytics = {
     pushEvent({
       event: 'userFriendMade',
       userId,
-      alias,
+      alias
     })
-  },
+  }
 }

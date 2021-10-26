@@ -6,6 +6,7 @@
   "settings.languages.select": "Select a Language",
   "settings.languages.english": "English",
   "settings.languages.spanish": "Spanish",
+  "settings.languages.hindi": "Hindi",
   "individual-post.show-like": "Be the first to like this!",
   "teams.create.title": "Create Team",
   "teams.create.name": "Team Name",
@@ -45,5 +46,9 @@
   "myg.cancel": "Cancel",
   "myg.create": "Create",
   "myg.select.hint": "Select...",
-  "myg.team-select.hint": "Select which team will play this match"
+  "myg.team-select.hint": "Select which team will play this match",
+  "achievements.headers.Badges":"Badges",
+  "achievements.headers.Daily":"Daily",
+  "achievements.headers.Weekly":"Weekly",
+  "achievements.headers.Monthly":"Monthly"
 }

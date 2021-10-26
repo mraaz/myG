@@ -17,7 +17,7 @@ export default class EncryptionSettings extends React.Component {
     editingPin: false,
     pinError: false,
     reEncryptingMessages: false,
-    reEncryptionState: '',
+    reEncryptionState: ''
   }
 
   onKeyPressed = (event) => {
@@ -71,7 +71,7 @@ export default class EncryptionSettings extends React.Component {
         for (const message of chat.messages) {
           ++messagesProcessed
           this.setState({
-            reEncryptionState: `(2/5) We are decrypting your messages (${chatsProcessed} of ${chats.length} chats \n and ${messagesProcessed} of ${chat.messages.length} messages)...`,
+            reEncryptionState: `(2/5) We are decrypting your messages (${chatsProcessed} of ${chats.length} chats \n and ${messagesProcessed} of ${chat.messages.length} messages)...`
           })
           const { content } = this.decryptMessage(message, this.props.privateKey)
           message.content = content
@@ -82,8 +82,8 @@ export default class EncryptionSettings extends React.Component {
     this.setState({ reEncryptionState: '(3/5) We are changing your encryption key...' })
     const {
       value: {
-        encryption: { privateKey, publicKey },
-      },
+        encryption: { privateKey, publicKey }
+      }
     } = await this.props.generateKeys(this.state.pinInput.trim())
 
     chatsProcessed = 0
@@ -95,7 +95,7 @@ export default class EncryptionSettings extends React.Component {
         for (const message of chat.messages) {
           ++messagesProcessed
           this.setState({
-            reEncryptionState: `(4/5) We are re-encrypting your messages (${chatsProcessed} of ${chats.length} chats \n and ${messagesProcessed} of ${chat.messages.length} messages)...`,
+            reEncryptionState: `(4/5) We are re-encrypting your messages (${chatsProcessed} of ${chats.length} chats \n and ${messagesProcessed} of ${chat.messages.length} messages)...`
           })
           const { content, backup } = this.encryptInput(message.content, message, privateKey, publicKey)
           message.content = content
@@ -113,7 +113,7 @@ export default class EncryptionSettings extends React.Component {
         for (const message of chat.messages) {
           ++messagesProcessed
           this.setState({
-            reEncryptionState: `(5/5) We are uploading your messages (${chatsProcessed} of ${chats.length} chats \n and ${messagesProcessed} of ${chat.messages.length} messages)...`,
+            reEncryptionState: `(5/5) We are uploading your messages (${chatsProcessed} of ${chats.length} chats \n and ${messagesProcessed} of ${chat.messages.length} messages)...`
           })
           const { content, backup } = message
           await editMessage(chat.chatId, this.props.userId, message.messageId, { content, backup }, true)
@@ -158,6 +158,7 @@ export default class EncryptionSettings extends React.Component {
       <input
         className='messenger-settings-encryption-key'
         type='text'
+        autocomplete='off'
         placeholder='New Encryption Key'
         autoFocus
         disabled={!this.state.editingPin}
@@ -174,7 +175,8 @@ export default class EncryptionSettings extends React.Component {
       <div className='messenger-settings-encryption-footer'>
         <div
           className='messenger-settings-encryption-footer-button clickable'
-          onClick={() => (this.state.editingPin ? this.confirmPinEdit() : this.requestPinEdit())}>
+          onClick={() => (this.state.editingPin ? this.confirmPinEdit() : this.requestPinEdit())}
+        >
           CHANGE YOUR CHAT PASSWORD
         </div>
       </div>

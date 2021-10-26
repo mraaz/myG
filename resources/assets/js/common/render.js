@@ -25,8 +25,8 @@ export function ignoreFunctions(nextProps, nextState, currentProps, currentState
 
 function stringifyProp(prop) {
   try {
-    return JSON.stringify(prop);
-  } catch(_) {
-    return prop;
+    return JSON.stringify(prop)
+  } catch (_) {
+    return prop
   }
 }

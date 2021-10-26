@@ -15,7 +15,7 @@ export default class GuestCommunity extends React.Component {
   state = {
     loading: true,
     community: null,
-    showModal: false,
+    showModal: false
   }
 
   componentDidMount() {
@@ -32,7 +32,12 @@ export default class GuestCommunity extends React.Component {
           <div className='guest-community-image' style={{ backgroundImage: `url(${this.state.community.group_img})` }} />
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div className='guest-community-name'>{this.state.community.name}</div>
-            <div className="share-community-button clickable" onClick={async () => copyToClipboard(await createShortLink(window.location.href))}>Share</div>
+            <div
+              className='share-community-button clickable'
+              onClick={async () => copyToClipboard(await createShortLink(window.location.href))}
+            >
+              Share
+            </div>
           </div>
           <div className='guest-community-description'>{this.state.community.grp_description}</div>
           <div className='guest-community-game'>Game - {this.state.community.game_name}</div>
@@ -45,10 +50,10 @@ export default class GuestCommunity extends React.Component {
                   post.media_url = ''
                 }
                 return (
-                  <div onClick={() => this.setState({ showModal: true })} key={index} >
+                  <div onClick={() => this.setState({ showModal: true })} key={index}>
                     <Group_IndividualPost guest post={post} user={{}} source={'news_feed'} />
                   </div>
-                );
+                )
               })}
             </section>
           </div>

@@ -28,8 +28,8 @@ export default class PostsFromUser extends Component {
     }
     if (this.props.guest) {
       return (
-        <div onClick={this.props.onPostClick}>
-          <IndividualPost guest post={item} key={item.id} user={this.props.profile} />
+        <div>
+          <IndividualPost handleGuestModal={this.props.handleGuestModal} guest post={item} key={item.id} user={this.props.profile} />
         </div>
       )
     }

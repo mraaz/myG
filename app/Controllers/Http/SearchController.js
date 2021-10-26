@@ -9,7 +9,7 @@ class SearchController {
     try {
       const requestingUserId = auth && auth.user && auth.user.id
       const { query, online, from, size } = request.only(['query', 'online', 'from', 'size'])
-      log('PROFILE', `User ${requestingUserId ? requestingUserId : "Guest"} searching gamer with ${query}`)
+      log('PROFILE', `User ${requestingUserId ? requestingUserId : 'Guest'} searching gamer with ${query}`)
       const { gamers, total } = await SearchRepository.searchGamers({ requestingUserId, query, online, from, size })
       return response.send({ gamers, total })
     } catch (error) {
@@ -19,7 +19,7 @@ class SearchController {
         source: 'backend',
         context: __filename,
         message: (error && error.message) || error,
-        error,
+        error
       })
       return response.send({ error })
     }

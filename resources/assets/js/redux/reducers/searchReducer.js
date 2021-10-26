@@ -1,4 +1,4 @@
-import uniqBy from 'lodash.uniqby';
+import uniqBy from 'lodash.uniqby'
 import logger from '../../common/logger'
 
 const initialState = {
@@ -6,7 +6,7 @@ const initialState = {
   total: 0,
   gamers: [],
   gamersLoading: false,
-  gamersError: false,
+  gamersError: false
 }
 
 export default function reducer(state = initialState, action) {
@@ -19,20 +19,22 @@ export default function reducer(state = initialState, action) {
         ...state,
         query: action.meta.input,
         gamersLoading: true,
-        gamersError: false,
+        gamersError: false
       }
     }
 
     case 'SEARCH_GAMERS_FULFILLED': {
       logger.log('SEARCH', `Redux -> Searched Gamers for ${action.meta.input}: `, action.payload)
-      const gamers = JSON.parse(JSON.stringify(uniqBy(!action.meta.from ? action.payload.gamers : [...state.gamers, ...action.payload.gamers], 'profileId'))); 
+      const gamers = JSON.parse(
+        JSON.stringify(uniqBy(!action.meta.from ? action.payload.gamers : [...state.gamers, ...action.payload.gamers], 'profileId'))
+      )
       return {
         ...state,
         gamers,
         query: action.meta.input,
         total: action.payload.total,
         gamersLoading: false,
-        gamersError: false,
+        gamersError: false
       }
     }
 
@@ -44,7 +46,7 @@ export default function reducer(state = initialState, action) {
         total: 0,
         gamers: [],
         gamersLoading: false,
-        gamersError: true,
+        gamersError: true
       }
     }
 

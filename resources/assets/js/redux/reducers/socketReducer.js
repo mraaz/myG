@@ -2,7 +2,7 @@ import logger from '../../common/logger'
 
 export default function reducer(
   state = {
-    disconnected: false,
+    disconnected: false
   },
   action
 ) {
@@ -11,7 +11,7 @@ export default function reducer(
       logger.log('SOCKET', `Redux -> Socket ${action.payload.disconnected ? 'Disconnected' : 'Connected'}`)
       return {
         ...state,
-        disconnected: action.payload.disconnected,
+        disconnected: action.payload.disconnected
       }
     }
 

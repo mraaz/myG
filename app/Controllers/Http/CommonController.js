@@ -14,21 +14,21 @@ class CommonController {
   async get_permission({ auth }, group_id) {
     let current_user_permission = -1
     try {
-      const permission_query_current_user = await Database.from('usergroups').where({
+      const owner_query = await Database.from('groups').where({
         user_id: auth.user.id,
-        group_id: group_id,
+        id: group_id
       })
 
-      if (permission_query_current_user.length > 0) {
-        current_user_permission = permission_query_current_user[0].permission_level
+      if (owner_query.length > 0) {
+        current_user_permission = 0
       } else {
-        const owner_query = await Database.from('groups').where({
+        const permission_query_current_user = await Database.from('usergroups').where({
           user_id: auth.user.id,
-          id: group_id,
+          group_id: group_id
         })
 
-        if (owner_query.length > 0) {
-          current_user_permission = 0
+        if (permission_query_current_user.length > 0) {
+          current_user_permission = permission_query_current_user[0].permission_level
         }
       }
       return current_user_permission
@@ -39,6 +39,7 @@ class CommonController {
         source: 'backend',
         context: __filename,
         message: (error && error.message) || error,
+        method: 'get_permission'
       })
     }
   }
@@ -46,11 +47,11 @@ class CommonController {
   async add_approved_attendee_left({ auth }, schedule_games_id, other_user_id) {
     if (auth.user) {
       try {
-        const add_approved_attendee_left = await Notification.create({
+        await Notification.create({
           other_user_id: other_user_id,
           user_id: auth.user.id,
           activity_type: 16,
-          schedule_games_id: schedule_games_id,
+          schedule_games_id: schedule_games_id
         })
         const userId = other_user_id
         const notifications = await NotificationsRepository.count({ auth: { user: { id: userId } }, request: null })
@@ -66,6 +67,7 @@ class CommonController {
           source: 'backend',
           context: __filename,
           message: (error && error.message) || error,
+          method: 'add_approved_attendee_left'
         })
       }
     } else {
@@ -76,11 +78,11 @@ class CommonController {
   async addScheduleGame_attendance({ auth }, schedule_games_id, other_user_id, activity_type) {
     if (auth.user) {
       try {
-        const addScheduleGame_attendance = await Notification.create({
+        await Notification.create({
           other_user_id: other_user_id,
           user_id: auth.user.id,
           activity_type: activity_type,
-          schedule_games_id: schedule_games_id,
+          schedule_games_id: schedule_games_id
         })
         const userId = other_user_id
         const notifications = await NotificationsRepository.count({ auth: { user: { id: userId } }, request: null })
@@ -93,6 +95,7 @@ class CommonController {
           source: 'backend',
           context: __filename,
           message: (error && error.message) || error,
+          method: 'addScheduleGame_attendance'
         })
       }
     } else {
@@ -103,11 +106,11 @@ class CommonController {
   async addGameApproved({ auth }, schedule_games_id, other_user_id) {
     if (auth.user) {
       try {
-        const addGameApproved = await Notification.create({
+        await Notification.create({
           other_user_id: other_user_id,
           user_id: auth.user.id,
           activity_type: 14,
-          schedule_games_id: schedule_games_id,
+          schedule_games_id: schedule_games_id
         })
         const userId = other_user_id
         const notifications = await NotificationsRepository.count({ auth: { user: { id: userId } }, request: null })
@@ -120,6 +123,7 @@ class CommonController {
           source: 'backend',
           context: __filename,
           message: (error && error.message) || error,
+          method: 'addGameApproved'
         })
       }
     } else {
@@ -130,10 +134,10 @@ class CommonController {
   async remove_schedule_game_attendees({ auth }, schedule_games_id, activity_type) {
     if (auth.user) {
       try {
-        const remove_schedule_game_attendees = await Database.table('notifications')
+        await Database.table('notifications')
           .where({
             schedule_games_id: schedule_games_id,
-            activity_type: activity_type,
+            activity_type: activity_type
           })
           .delete()
         const userId = auth.user.id
@@ -147,6 +151,7 @@ class CommonController {
           source: 'backend',
           context: __filename,
           message: (error && error.message) || error,
+          method: 'remove_schedule_game_attendees'
         })
       }
     } else {
@@ -157,11 +162,11 @@ class CommonController {
   async remove_schedule_game_individual_attendees({ auth }, schedule_games_id, activity_type, user_id) {
     if (auth.user) {
       try {
-        const remove_schedule_game_attendees = await Database.table('notifications')
+        await Database.table('notifications')
           .where({
             schedule_games_id: schedule_games_id,
             activity_type: activity_type,
-            user_id: user_id,
+            user_id: user_id
           })
           .delete()
         const userId = auth.user.id
@@ -175,6 +180,7 @@ class CommonController {
           source: 'backend',
           context: __filename,
           message: (error && error.message) || error,
+          method: 'remove_schedule_game_individual_attendees'
         })
       }
     } else {
@@ -183,23 +189,33 @@ class CommonController {
   }
 
   async shuffle(array) {
-    var currentIndex = array.length,
-      temporaryValue,
-      randomIndex
+    try {
+      var currentIndex = array.length,
+        temporaryValue,
+        randomIndex
 
-    // While there remain elements to shuffle...
-    while (0 != currentIndex) {
-      // Pick a remaining element...
-      randomIndex = Math.floor(Math.random() * currentIndex)
-      currentIndex -= 1
+      // While there remain elements to shuffle...
+      while (0 != currentIndex) {
+        // Pick a remaining element...
+        randomIndex = Math.floor(Math.random() * currentIndex)
+        currentIndex -= 1
 
-      // And swap it with the current element.
-      temporaryValue = array[currentIndex]
-      array[currentIndex] = array[randomIndex]
-      array[randomIndex] = temporaryValue
+        // And swap it with the current element.
+        temporaryValue = array[currentIndex]
+        array[currentIndex] = array[randomIndex]
+        array[randomIndex] = temporaryValue
+      }
+      return array
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+        method: 'shuffle'
+      })
     }
-
-    return array
   }
 }
 

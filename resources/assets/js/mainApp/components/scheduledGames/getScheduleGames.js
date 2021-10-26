@@ -11,11 +11,11 @@ const queryMapping = {
   1: 'two',
   2: 'three',
   3: 'four',
-  4: 'five',
+  4: 'five'
 }
 
 export async function PullDataFunction(myG) {
-  const now = moment().utc();
+  const now = moment().utc()
   let myGame_name_box = null,
     myRegion = null,
     myExperience = null,
@@ -127,7 +127,7 @@ export async function PullDataFunction(myG) {
       mic: myG.mic ? myG.mic.value : null,
       eighteen_plus: myG.eighteen_plus ? myG.eighteen_plus.value : null,
       game_languages: myLanguage,
-      onlyTeamMatches: myG.onlyTeamMatches,
+      onlyTeamMatches: myG.onlyTeamMatches
     })
     return allscheduledGames
   } catch (error) {

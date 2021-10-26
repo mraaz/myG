@@ -438,6 +438,37 @@
       align-items: unset !important;
     }
 
+    .timezone {
+      display: flex;
+      flex-direction: column;
+      min-height: 40px;
+      z-index: 1;
+      align-items: unset !important;
+      background-color: #1d2326;
+      color: #93a4a5;
+
+      .css-1hb7zxy-IndicatorsContainer {
+        background-color: #1d2326;
+      }
+      .css-g1d714-ValueContainer {
+        background-color: #1d2326;
+      }
+      .css-2613qy-menu {
+        background-color: #1d2326;
+      }
+      .css-1uccc91-singleValue {
+        color: #93a4a5;
+      }
+
+      .css-yk16xz-control {
+        background-color: #1d2326;
+      }
+
+      .css-1wy0on6 {
+        background-color: #1d2326;
+      }
+    }
+
     .input {
       display: flex;
       flex: 1;
@@ -1719,6 +1750,7 @@
     #profile-game-experiences .game-experience {
       width: 90%;
     }
+
     #profile-info .row {
       margin: 4px 12px;
     }

@@ -8,21 +8,18 @@ const initialState = {
   publicKey: null,
   privateKey: null,
   invalidPin: false,
-  persist: false,
-};
+  persist: false
+}
 
-export default function reducer(
-  state = initialState,
-  action
-) {
+export default function reducer(state = initialState, action) {
   switch (action.type) {
     case 'LOAD_USER_INFO': {
       logger.log('USER', `Redux -> Loading User Info (Encryption): `, state, action.payload)
-      const userId = action.payload.id;
+      const userId = action.payload.id
       if (state.userId && state.userId !== userId) return { ...initialState, userId }
       return {
         ...state,
-        userId,
+        userId
       }
     }
 
@@ -37,7 +34,7 @@ export default function reducer(
         pin,
         publicKey,
         privateKey,
-        invalidPin: false,
+        invalidPin: false
       }
     }
 
@@ -51,7 +48,7 @@ export default function reducer(
         pin,
         publicKey,
         privateKey,
-        invalidPin: false,
+        invalidPin: false
       }
     }
 
@@ -68,7 +65,7 @@ export default function reducer(
         pin,
         publicKey,
         privateKey,
-        invalidPin: false,
+        invalidPin: false
       }
     }
 
@@ -78,7 +75,7 @@ export default function reducer(
       return {
         ...state,
         publicKey,
-        privateKey,
+        privateKey
       }
     }
 
@@ -87,15 +84,15 @@ export default function reducer(
       return {
         ...state,
         pin: action.payload.pin,
-        persist: action.payload.persist,
+        persist: action.payload.persist
       }
     }
-    
+
     case 'SET_PERSIST_ENCRYPTION': {
       logger.log('USER', `Redux -> Set Persist Encryption `, action.payload, action.meta)
       return {
         ...state,
-        persist: action.payload,
+        persist: action.payload
       }
     }
 
@@ -110,7 +107,7 @@ export default function reducer(
         ...state,
         pin: null,
         privateKey: null,
-        publicKey,
+        publicKey
       }
     }
 

@@ -10,11 +10,17 @@ class TagController {
       try {
         const newGameTag = await Tags.create({
           game_names_id: request.input('game_names_id'),
-          tag: request.input('tag').trim(),
+          tag: request.input('tag').trim()
         })
         return 'Saved item'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error
+        })
       }
     }
   }
@@ -24,11 +30,17 @@ class TagController {
       try {
         const newGameTag = await Tags.create({
           game_names_id: request.params.game_names_id,
-          tag: request.params.tag.trim(),
+          tag: request.params.tag.trim()
         })
         return newGameTag
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error
+        })
       }
     }
   }
@@ -37,10 +49,16 @@ class TagController {
     try {
       const allTags = await Tags.query().fetch()
       return {
-        allTags,
+        allTags
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error
+      })
     }
   }
 
@@ -52,10 +70,16 @@ class TagController {
         .limit(88)
 
       return {
-        allTags,
+        allTags
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error
+      })
     }
   }
 
@@ -67,10 +91,16 @@ class TagController {
         .limit(18)
 
       return {
-        allTags,
+        allTags
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error
+      })
     }
   }
 

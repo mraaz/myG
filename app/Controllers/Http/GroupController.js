@@ -15,6 +15,8 @@ const LoggingRepository = require('../../Repositories/Logging')
 
 const MAX_INVITEES = 9
 
+//permission_level = 1 Admin, 2 Moderator, 3 User, 42 Pending
+
 class GroupController {
   async store({ auth, request, response }) {
     if (auth.user) {
@@ -77,7 +79,8 @@ class GroupController {
           group_img: request.input('group_img') ? request.input('group_img') : null,
           type: request.input('type'),
           all_accept: request.input('all_accept'),
-          grp_description: request.input('grp_description')
+          grp_description: request.input('grp_description'),
+          stats_header: request.input('stats_header')
         })
 
         if (request.input('aws_key_id') != undefined && request.input('aws_key_id') != null) {
@@ -458,16 +461,16 @@ class GroupController {
 
   async update_img({ auth, request, response }) {
     if (auth.user) {
+      if (request.input('group_id') == undefined || request.input('group_id') == '') return
       const commonController = new CommonController()
-
-      let current_user_permission = await commonController.get_permission({ auth }, request.input('group_id'))
+      const current_user_permission = await commonController.get_permission({ auth }, request.input('group_id'))
 
       try {
         if (current_user_permission != 0 && current_user_permission != 1 && current_user_permission != 2) {
           return
         }
 
-        const update_img = await Group.query()
+        await Group.query()
           .where({ id: request.input('group_id') })
           .update({ group_img: request.input('group_img') })
         return 'Saved successfully'
@@ -486,19 +489,20 @@ class GroupController {
   async update_settings({ auth, request, response }) {
     if (auth.user) {
       try {
+        if (request.input('group_id') == undefined || request.input('group_id') == '') return
         const commonController = new CommonController()
-
-        let current_user_permission = await commonController.get_permission({ auth }, request.input('group_id'))
+        const current_user_permission = await commonController.get_permission({ auth }, request.input('group_id'))
 
         if (current_user_permission != 0 && current_user_permission != 1 && current_user_permission != 2) {
           return
         }
-        const update_group_type = await Group.query()
+        await Group.query()
           .where({ id: request.input('group_id') })
           .update({
             type: request.input('privacy'),
             all_accept: request.input('mApprovals') == 'true' ? 1 : 0,
-            grp_description: request.input('description')
+            grp_description: request.input('description'),
+            stats_header: request.input('stats_header')
           })
 
         // if (request.input('tags') != null && request.input('tags').length > 0) {
@@ -544,14 +548,15 @@ class GroupController {
         if (/['/.%#$,;`\\]/.test(request.input('name'))) {
           return false
         }
-        const commonController = new CommonController()
 
-        let current_user_permission = await commonController.get_permission({ auth }, request.input('group_id'))
+        if (request.input('group_id') == undefined || request.input('group_id') == '') return
+        const commonController = new CommonController()
+        const current_user_permission = await commonController.get_permission({ auth }, request.input('group_id'))
 
         if (current_user_permission != 0 && current_user_permission != 1) {
           return
         }
-        const update_img = await Group.query()
+        await Group.query()
           .where({ id: request.input('group_id') })
           .update({ name: request.input('name').trim() })
 

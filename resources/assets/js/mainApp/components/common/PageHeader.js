@@ -11,8 +11,8 @@ const PageHeader = ({ headerText }) => {
       color: '#fff',
       fontWeight: 'bold',
       borderBottom: '2px solid #344953',
-      borderLeft: '1px solid #344953',
-    },
+      borderLeft: '1px solid #344953'
+    }
   }
 
   return <div style={styles.container}>{headerText}</div>

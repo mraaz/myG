@@ -1,0 +1,46 @@
+{
+  "short_name": "myG",
+  "name": "myG",
+  "theme_color": "#e7bb30",
+  "background_color": "#2d363a",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "https://myg.gg/stock_images/logo_final_black.PNG",
+      "sizes": "36x36",
+      "type": "image/png",
+      "density": "0.75"
+    },
+    {
+      "src": "https://myg.gg/stock_images/logo_final_black.PNG",
+      "type": "image/png",
+      "sizes": "48x48"
+    },
+    {
+      "src": "https://myg.gg/stock_images/logo_final_black.PNG",
+      "sizes": "72x72",
+      "type": "image/png",
+      "density": "1.5"
+    },
+
+    {
+      "src": "https://myg.gg/stock_images/logo_final_black.PNG",
+      "sizes": "96x96",
+      "type": "image/png",
+      "density": "2.0"
+    },
+    {
+      "src": "https://myg.gg/stock_images/logo_final_black.PNG",
+      "sizes": "144x144",
+      "type": "image/png",
+      "density": "3.0"
+    },
+    {
+      "src": "https://myg.gg/stock_images/logo_final_black.PNG",
+      "sizes": "192x192",
+      "type": "image/png",
+      "density": "4.0"
+    }
+  ],
+  "start_url": "/index.html"
+}

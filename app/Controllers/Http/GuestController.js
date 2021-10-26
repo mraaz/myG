@@ -61,7 +61,7 @@ class GuestController {
       replyId,
       replyContent,
       replyBackup,
-      uuid,
+      uuid
     })
     return response.send({ message })
   }

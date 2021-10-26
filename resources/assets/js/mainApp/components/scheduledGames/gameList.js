@@ -21,7 +21,7 @@ export default class GameList extends Component {
     super()
     this.state = {
       activeItemId: '',
-      prefilledFilter: { value: 0, label: 'All myGames' },
+      prefilledFilter: { value: 0, label: 'All myGames' }
     }
     this.myRef = React.createRef()
   }
@@ -40,7 +40,7 @@ export default class GameList extends Component {
     let hostname = window.location.hostname
     if (hostname == 'localhost') hostname = 'localhost:3333'
     const link = `${window.location.protocol}//${hostname}/scheduledGames/${guid}`
-    const shortLink = await createShortLink(link);
+    const shortLink = await createShortLink(link)
     navigator.clipboard.writeText(shortLink)
     toast.error(<Toast_style text={'Link copied mate!'} />)
   }
@@ -99,7 +99,8 @@ export default class GameList extends Component {
                 <div
                   className={`mygames ${activeItemId == game.id ? 'active' : ''}`}
                   key={game.id}
-                  onClick={(e) => this.handleSingleGameDetails(e, game.id, game)}>
+                  onClick={(e) => this.handleSingleGameDetails(e, game.id, game)}
+                >
                   <div className={`gameImage ${game_artwork ? '' : 'active'}`}>{scheduledGamePicture}</div>
                   <div className='game__attributes'>
                     <div className='first__row'>
@@ -143,7 +144,8 @@ export default class GameList extends Component {
                               <WithTooltip
                                 position={{ bottom: '24px', left: '-12px' }}
                                 style={{ height: '24px', display: 'inline-block' }}
-                                text={tag.content}>
+                                text={tag.content}
+                              >
                                 <p className='game__tag'>{tag.content}</p>
                               </WithTooltip>
                             )

@@ -5,7 +5,7 @@ class PageController {
     if (auth.user) {
       return view.render('pages/react')
     } else {
-      return view.render('pages/welcome')
+      return response.redirect('/guest') //view.render('pages/welcome')
     }
   }
   async redirectHome({ response, request, view, auth }) {

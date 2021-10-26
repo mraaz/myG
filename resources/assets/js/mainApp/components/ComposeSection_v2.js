@@ -5,13 +5,12 @@ import { toast } from 'react-toastify'
 import { EditorState } from 'draft-js'
 
 const buckectBaseUrl = 'https://myG.gg/platform_images/'
-
+import { MyGCreateableSelect ,MyGGameSelect} from './common'
 import PostFileModal from './PostFileModal'
-import { Hash_Tags } from './Utility_Function'
+import { Disable_keys, Hash_Tags,Toast_style,Game_name_values } from './Utility_Function'
 import { Upload_to_S3, Remove_file } from './AWS_utilities'
 
 import ImageGallery from './common/ImageGallery/ImageGallery.js'
-import { Toast_style } from './Utility_Function'
 import { logToElasticsearch } from '../../integration/http/logger'
 import { DraftComposer } from './common/Draftjs'
 import { prepareDraftsEditorForSave, isEmptyDraftJs, MAX_HASH_TAGS, POST_COMPOSER } from '../../common/draftjs'
@@ -47,7 +46,9 @@ export default class ComposeSection extends Component {
       isShowAllGroup: false,
       postContent: EditorState.createEmpty(),
       postContentHashtags: [],
-      postContentMentions: []
+      postContentMentions: [],
+      game_names_id:'',
+      games:[]
     }
 
     this.openPhotoPost = this.openPhotoPost.bind(this)
@@ -111,11 +112,15 @@ export default class ComposeSection extends Component {
       group_id: [],
       value_tags: [],
       visibility: 1,
-      video: ''
+      video: '',
+      game_names_id:''
     })
   }
 
   submitForm = async () => {
+    //const content = this.state.post_content.trim()
+    // const userLang = navigator.language || navigator.userLanguage
+
     let media_url = []
     let aws_key_id = []
 
@@ -128,7 +133,6 @@ export default class ComposeSection extends Component {
 
     let hash_tags = []
     let data = null
-
     const { content, hashtags, mentions } = prepareDraftsEditorForSave(
       this.state.postContent,
       this.state.postContentHashtags,
@@ -165,7 +169,8 @@ export default class ComposeSection extends Component {
       media_url: media_url.length > 0 ? JSON.stringify(media_url) : '',
       aws_key_id: aws_key_id.length > 0 ? aws_key_id : '',
       hash_tags,
-      mentionsList: JSON.stringify(mentions)
+      mentionsList: JSON.stringify(mentions),
+      game_names_id: this.state.game_names_id ?this.state.game_names_id.value :''
     }
 
     try {
@@ -174,7 +179,6 @@ export default class ComposeSection extends Component {
         toast.success(<Toast_style text={`Strewth mate! Invalid video link`} />)
         return
       }
-
       this.setState(
         {
           bFileModalOpen: false,
@@ -196,7 +200,7 @@ export default class ComposeSection extends Component {
         () => {
           media_url = []
           aws_key_id = []
-          this.props.successCallback(post)
+          if (post.data != '') this.props.successCallback(post)
         }
       )
     } catch (error) {
@@ -257,7 +261,27 @@ export default class ComposeSection extends Component {
         logToElasticsearch('error', 'ComposeSection_v2', 'Failed getGamers_you_might_know:' + ' ' + error)
       }
     }
+    const getGames = async function () {
+      try {
+        //const gamers_you_might_know = await axios.get('/api/user/gamers_you_might_know')
+
+        let results = await Game_name_values()
+        // if(results.data && results.data.allmyGameExperiences && results.data.allmyGameExperiences.length > 0 ){
+        //   const gameData = results.data.allmyGameExperiences.map(d=>{
+        //     return {
+        //       ...d,
+        //       label:d.game_name,
+        //       value:d.game_names_id
+        //     }
+        //   });
+          self.setState({ games: results })
+        // }
+      } catch (error) {
+        logToElasticsearch('error', 'ComposeSection_v2', 'Failed get Games list:' + ' ' + error)
+      }
+    }
     getHash_tags()
+    getGames()
   }
 
   togglePostTypeTab = (label) => {
@@ -361,6 +385,9 @@ export default class ComposeSection extends Component {
   handleChange_Hash_tags = (value_tags) => {
     this.setState({ value_tags })
   }
+  handleGameChange = (value) => {
+    this.setState({ game_names_id:value })
+  }
 
   handlePreviewRemove = (e, src, key, id) => {
     e.preventDefault()
@@ -386,6 +413,44 @@ export default class ComposeSection extends Component {
   toggleShowAllGroup = () => {
     this.setState({ isShowAllGroup: !this.state.isShowAllGroup })
   }
+
+  handleCreateGame = (inputValue) => {
+    if (inputValue.length > 88) {
+      toast.success(<Toast_style text={'Sorry mate! Game Title is too long.'} />)
+      return
+    }
+
+    let { games } = this.state
+    if (games == null) games = ''
+
+    const newOption = this.createGameOption(inputValue, null)
+    this.setState({ games: [...games, newOption], game_names_id: newOption })
+  }
+
+  getOptionsGames = (inputValue) => {
+    const getInitialData = async function (inputValue) {
+      try {
+        const results = await Game_name_values(inputValue)
+        this.setState({ games: results })
+      } catch (error) {
+        // Error get option tags
+      }
+    }
+
+    if (inputValue.length > 88) {
+      toast.success(<Toast_style text={'Sorry mate! Game Title is too long.'} />)
+      return
+    }
+    getInitialData(inputValue)
+  }
+
+
+  createGameOption = (label, game_names_id) => ({
+    label,
+    value: label,
+    game_names_id
+  })
+
 
   render() {
     const {
@@ -516,6 +581,28 @@ export default class ComposeSection extends Component {
               <div className='button video-btn' onClick={() => this.openAudioPost()}>
                 <i className='far fa-volume-up' />
               </div> */}
+            </div>
+          )}
+          {open_compose_textTab && (
+            <div className='hashTag_section'>
+              <div className='hashtag_label'>Game Title</div>
+              <div className='hashtag_input'>
+            <MyGCreateableSelect
+              isClearable
+              onCreateOption={this.handleCreateGame}
+              onInputChange={this.getOptionsGames}
+              onChange={(value) => {
+                this.handleGameChange(value)
+              }}
+              getNewOptionData={this.getNewOptionData}
+              value={this.state.game_names_id }
+              placeholder='Search, Select or create Game Title'
+              options={this.state.games}
+              onKeyDown={Disable_keys}
+              classNamePrefix='filter'
+              className='viewGame__name'
+            />
+              </div>
             </div>
           )}
           {open_compose_textTab && !communityBox && (

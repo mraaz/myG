@@ -7,7 +7,7 @@ const normalizePlayersData = (data) => {
   if (!data) {
     return {
       itemsArray,
-      dataObj,
+      dataObj
     }
   }
   data.map((item) => {
@@ -16,12 +16,12 @@ const normalizePlayersData = (data) => {
       ...item,
       id: item.friend_id,
       name: item.alias,
-      img: item.profile_img,
+      img: item.profile_img
     }
   })
   return {
     itemsArray,
-    dataObj,
+    dataObj
   }
 }
 
@@ -32,19 +32,19 @@ const normalizeCommunitiesData = (data) => {
   if (!data) {
     return {
       itemsArray,
-      dataObj,
+      dataObj
     }
   }
   data.map((item) => {
     itemsArray.push(item.id)
     dataObj[item.id] = {
       ...item,
-      img: item.group_img,
+      img: item.group_img
     }
   })
   return {
     itemsArray,
-    dataObj,
+    dataObj
   }
 }
 
@@ -55,7 +55,7 @@ const normalizeGroupsData = (data) => {
   if (!data) {
     return {
       itemsArray,
-      dataObj,
+      dataObj
     }
   }
   data.map((item) => {
@@ -64,12 +64,12 @@ const normalizeGroupsData = (data) => {
       ...item,
       id: item.chatId,
       name: item.title,
-      img: item.icon,
+      img: item.icon
     }
   })
   return {
     itemsArray,
-    dataObj,
+    dataObj
   }
 }
 
@@ -87,7 +87,7 @@ const parsePlayersToSelectData = (data, customStyles) => {
         id: player.id,
         value: player.id,
         name: player.alias || player.first,
-        img: player.profile_img,
+        img: player.profile_img
       })
     })
   }
@@ -114,7 +114,7 @@ const parseCommunitiesToSelectData = (data) => {
         id: community.id,
         value: community.name,
         name: community.name,
-        img: community.group_img,
+        img: community.group_img
       })
     })
   }
@@ -134,7 +134,7 @@ const parseGroupsToSelectData = (data) => {
           </div>
         ),
         id: group.chatId,
-        value: group.title,
+        value: group.title
       })
     })
   }
@@ -148,5 +148,5 @@ export {
   normalizeGroupsData,
   parseCommunitiesToSelectData,
   parsePlayersToSelectData,
-  parseGroupsToSelectData,
+  parseGroupsToSelectData
 }

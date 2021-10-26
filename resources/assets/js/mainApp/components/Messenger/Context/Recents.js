@@ -71,8 +71,8 @@ class Recents extends React.Component {
           from {message.senderId === this.props.userId ? 'you' : message.senderName} on {message.title}
         </p>
         <div className='content'>
-          <div className="message-content-container">
-            {!!decryptedMessage.isUnread && <div className="unread-indicator" />}
+          <div className='message-content-container'>
+            {!!decryptedMessage.isUnread && <div className='unread-indicator' />}
             <span className='message'>{this.renderContent(decryptedMessage.content)}</span>
           </div>
           <span className='time'>at {formatAMPM(new Date(message.createdAt))}</span>
@@ -102,15 +102,15 @@ class Recents extends React.Component {
 
   render() {
     const unreadMessages = (this.props.chats || [])
-      .map((chat) => (chat.messages || []))
+      .map((chat) => chat.messages || [])
       .reduce((prev, acc) => [...prev, ...acc], [])
-      .filter((message) => (message || {}).unread);
+      .filter((message) => (message || {}).unread)
     const chevronType = this.props.messages.length && this.props.expanded ? 'down' : 'right'
     return (
       <div className='messenger-body-section' key='recents'>
         <div className='messenger-body-section-header clickable' onClick={this.expand}>
           <div className='messenger-body-section-header-info'>
-            {!!unreadMessages.length && <div className="unread-indicator" />}
+            {!!unreadMessages.length && <div className='unread-indicator' />}
             <p className='messenger-body-section-header-name'>recents</p>
           </div>
           <div className='messenger-body-section-header-info'>
@@ -134,13 +134,13 @@ export function mapStateToProps(state) {
   return {
     chats: state.chat.chats,
     loading: state.pagination.recentsLoading,
-    messages: state.pagination.recents,
+    messages: state.pagination.recents
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    fetchRecents: () => dispatch(fetchRecentsAction()),
+    fetchRecents: () => dispatch(fetchRecentsAction())
   }
 }
 

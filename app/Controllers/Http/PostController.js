@@ -129,7 +129,8 @@ class PostController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error
+        message: (error && error.message) || error,
+        method: 'store'
       })
     }
   }
@@ -312,7 +313,8 @@ class PostController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error
+        message: (error && error.message) || error,
+        method: 'show'
       })
     }
   }
@@ -338,7 +340,8 @@ class PostController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error
+        message: (error && error.message) || error,
+        method: 'myshow'
       })
     }
   }
@@ -361,7 +364,8 @@ class PostController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error
+        message: (error && error.message) || error,
+        method: 'showpost'
       })
     }
   }
@@ -381,7 +385,8 @@ class PostController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error
+        message: (error && error.message) || error,
+        method: 'fetchGuestPost'
       })
     }
   }
@@ -414,7 +419,8 @@ class PostController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error
+        message: (error && error.message) || error,
+        method: 'fetchGuestPostsForUser'
       })
       return { myPosts: [] }
     }
@@ -462,7 +468,8 @@ class PostController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error
+        message: (error && error.message) || error,
+        method: 'showPosts'
       })
     }
   }
@@ -488,7 +495,8 @@ class PostController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error
+        message: (error && error.message) || error,
+        method: 'get_group_posts_internal'
       })
     }
   }
@@ -537,7 +545,8 @@ class PostController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error
+        message: (error && error.message) || error,
+        method: 'get_group_posts'
       })
     }
   }
@@ -580,7 +589,8 @@ class PostController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error
+        message: (error && error.message) || error,
+        method: 'get_game_data'
       })
     }
   }
@@ -600,7 +610,8 @@ class PostController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error
+        message: (error && error.message) || error,
+        method: 'posts_count'
       })
     }
   }
@@ -617,7 +628,7 @@ class PostController {
         const apiController = new ApiController()
         await apiController.internal_deleteFile({ auth }, '3', request.params.id)
 
-        const delete_post = await Database.table('posts')
+        await Database.table('posts')
           .where({
             id: request.params.id
           })
@@ -631,7 +642,8 @@ class PostController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error
+          message: (error && error.message) || error,
+          method: 'destroy'
         })
       }
     } else {
@@ -659,7 +671,8 @@ class PostController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error
+          message: (error && error.message) || error,
+          method: 'update'
         })
       }
     }
@@ -691,7 +704,8 @@ class PostController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error
+          message: (error && error.message) || error,
+          method: 'update_allow_comments'
         })
       }
     }
@@ -743,7 +757,8 @@ class PostController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error
+        message: (error && error.message) || error,
+        method: 'get_additional_info'
       })
       return post
     }
@@ -763,7 +778,8 @@ class PostController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error
+          message: (error && error.message) || error,
+          method: 'featureToggle'
         })
       }
     }
@@ -797,7 +813,8 @@ class PostController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error
+        message: (error && error.message) || error,
+        method: 'showHashTagPosts'
       })
     }
   }
@@ -838,7 +855,8 @@ class PostController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error
+        message: (error && error.message) || error,
+        method: 'shuffle_sponsored_posts'
       })
     }
   }
@@ -866,11 +884,13 @@ class PostController {
         counterValue = 10
       }
 
+      if (parseInt(request.input('counter')) == 1) counterValue = 4
+
       const trendingPosts_likes = await Database.from('posts')
         .innerJoin('likes', 'likes.post_id', 'posts.id')
         .whereIn('posts.visibility', [1])
         .where((builder) => {
-          if (game_names != null) builder.whereIn('posts.game_names_id', [game_names])
+          if (game_names != null) builder.whereIn('posts.game_names_id', game_names)
         })
         .groupBy('posts.id')
         .count('* as no_of_likes')
@@ -879,7 +899,6 @@ class PostController {
         .paginate(request.input('counter'), counterValue)
 
       let array_ = []
-
       trendingPosts_likes.data.map((posts) => {
         array_.push(posts.id)
       })
@@ -889,7 +908,7 @@ class PostController {
           .innerJoin('groups', 'groups.id', 'posts.group_id')
           .innerJoin('likes', 'likes.post_id', 'posts.id')
           .whereIn('posts.visibility', [1])
-          .whereIn('groups.game_names_id', [game_names])
+          .whereIn('groups.game_names_id', game_names)
           .groupBy('posts.id')
           .count('* as no_of_likes')
           .orderBy('no_of_likes', 'desc')
@@ -913,7 +932,8 @@ class PostController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error
+        message: (error && error.message) || error,
+        method: 'guestShow'
       })
     }
   }
@@ -941,7 +961,8 @@ class PostController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error
+        message: (error && error.message) || error,
+        method: 'guestBody'
       })
     }
   }

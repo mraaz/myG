@@ -1,6 +1,5 @@
 'use strict'
 
-class ExperiencePointController {
-}
+class ExperiencePointController {}
 
 module.exports = ExperiencePointController

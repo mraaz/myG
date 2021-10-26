@@ -10,7 +10,7 @@ export default class GameSettings extends React.Component {
 
   state = {
     favoriteGameInput: '',
-    editingSlot: null,
+    editingSlot: null
   }
 
   renderGame = (game, index) => {
@@ -26,7 +26,7 @@ export default class GameSettings extends React.Component {
             <div
               className='messenger-favorite-game-change-icon-button clickable'
               style={{
-                backgroundImage: `url(${getAssetUrl('ic_chat_group_icon')})`,
+                backgroundImage: `url(${getAssetUrl('ic_chat_group_icon')})`
               }}
             />
           </Uploader>
@@ -38,7 +38,7 @@ export default class GameSettings extends React.Component {
           <div
             className='messenger-favorite-game-close-button clickable'
             style={{
-              backgroundImage: `url(${getAssetUrl('ic_chat_close')})`,
+              backgroundImage: `url(${getAssetUrl('ic_chat_close')})`
             }}
             onClick={() => this.props.unfavoriteGame(game.gameId)}
           />
@@ -51,12 +51,16 @@ export default class GameSettings extends React.Component {
     const search = (name) => name.toLowerCase().includes(this.state.favoriteGameInput.toLowerCase())
     const games = this.props.games.slice(0).filter((game) => search(game.name))
     return (
-      <div className='messenger-settings-game-input' style={this.props.mobile && { top: '80px', bottom: '110px', right: '0', width: '100%' }}>
+      <div
+        className='messenger-settings-game-input'
+        style={this.props.mobile && { top: '80px', bottom: '110px', right: '0', width: '100%' }}
+      >
         <p className='messenger-settings-game-input-hint'>Search for your added games to favourite</p>
         <div className='messenger-settings-game-input-header'>
           <input
             className='messenger-settings-game-input-field'
             type='text'
+            autocomplete='off'
             placeholder='Search for Games...'
             value={this.state.favoriteGameInput}
             onChange={(event) => this.setState({ favoriteGameInput: event.target.value })}
@@ -64,7 +68,7 @@ export default class GameSettings extends React.Component {
           <div
             className='messenger-favorite-game-close-button clickable'
             style={{
-              backgroundImage: `url(${getAssetUrl('ic_chat_close')})`,
+              backgroundImage: `url(${getAssetUrl('ic_chat_close')})`
             }}
             onClick={() => this.setState({ editingSlot: null })}
           />
