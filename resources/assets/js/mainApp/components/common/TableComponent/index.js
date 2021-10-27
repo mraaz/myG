@@ -4,13 +4,14 @@ import TableHeader from "./TableHeader";
 
 
 
-export default function TableComponent () {
-
-
+export default function TableComponent ({data}) {
+    if(data.items == "undefined"){
+        return 'No Data Found !'
+    }
     return (
         <table>
-            <TableHeader />
-            <TableBody />
+            <TableHeader header = {data.header} />
+            <TableBody header = {data.header} body = {data.items} />
         </table>
     );
 }

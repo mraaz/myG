@@ -1,11 +1,18 @@
 import React from "react";
 
-export default function TableComponent () {
+export default function TableBody ({header,body}) {
 
 
     return (
         <tbody>
-           body
+           {body && body.length && body.map(bItem=>{
+               return (<tr>
+                    {Object.keys(header).map(head=>{
+                            return <td>{bItem[head]}</td>
+                    })}
+                    </tr>
+                )
+           })}
         </tbody>
     );
 }

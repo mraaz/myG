@@ -24,7 +24,7 @@ export default class Posts extends Component {
   componentDidMount() {
     window.scrollTo({ top: 500, behavior: 'smooth' })
     this.fetchMoreData()
-    this.getClanTagGameData()
+    // this.getClanTagGameData()
     document.addEventListener('scroll', this.handleScroll, { passive: true })
     document.addEventListener('wheel', this.handleScroll, { passive: true })
   }
@@ -82,13 +82,13 @@ export default class Posts extends Component {
         const response = await axios.get(`/api/clashroyale/show/${clanTag}`)
         this.setState({
           clanTagDataFetching:false,
-          clanTagData:response.data
+          clanTagData:response.data ? response.data : ''
         })
       } catch (error) {
         logToElasticsearch('error', 'Clan Tag Game Stats', 'Failed at Clan Tag Game Stats' + ' ' + error)
         this.setState({
           clanTagDataFetching:false,
-          clanTagDataFetching:'',
+          clanTagData:'',
         })
       }
     }
@@ -167,6 +167,9 @@ export default class Posts extends Component {
         myPosts: [...myPosts.data.groupPosts.groupPosts]
       })
     })
+    if( activeTab== "Stats"){
+      this.getClanTagGameData()
+    }
   }
 
   render() {
@@ -175,6 +178,7 @@ export default class Posts extends Component {
       clanTagDataFetching=false,
       clanTagData='',
      } = this.state
+     console.log(   " clanTagDataFetching   ",activeTab === "Stats" &&  !clanTagData && clanTagDataFetching );
     return (
       <Fragment>
         <div className='gamePost__tab'>
@@ -226,14 +230,21 @@ export default class Posts extends Component {
             {this.showLatestPosts()}
           </section>
         )}
-        { activeTab === "Stats" && 
-          <section id='posts' className={clanTagDataFetching ? '' : `active`}>
-            <div className="post__container">
-              <div className="postCompose__container">
+        { activeTab === "Stats" &&  clanTagData && !clanTagDataFetching && (
+          <section  className={` stats_section_main ${clanTagDataFetching ? '' : 'active'}`}>
+              <div className="stats_section__container">
                 <TableComponent data={clanTagData}/>
               </div>
-            </div>
           </section>
+        )
+         }
+         { activeTab === "Stats" &&  !clanTagData && clanTagDataFetching && (
+          <section  className={` stats_section_main ${clanTagDataFetching ? '' : 'active'}`}>
+              <div className="stats_section__container">
+                No Data Found !
+              </div>
+          </section>
+         )
          }
       </Fragment>
     )

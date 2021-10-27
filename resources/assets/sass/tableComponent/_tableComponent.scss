@@ -1,0 +1,104 @@
+.stats_section_main{
+    visibility: hidden;
+    opacity: 0;
+    transition: all 1s ease-in-out;
+    &.active {
+      visibility: visible;
+      opacity: 1;
+    }
+    .stats_section__container{
+        margin: 40px 25px;
+      font-family: 'Montserrat' !important;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+      @media screen and (max-width: $mobile) {
+        margin: 40px 20px;
+      }
+    }
+    table {
+        border: 1px solid #384952;
+        border-collapse: collapse;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        table-layout: fixed;
+        
+       tr {
+        background-color: #1d2326;
+        border: 1px solid #384952;
+        padding: .35em;
+      }
+      thead {
+        tr {
+            background-color: #171a1c;
+          }
+      }
+    
+      
+       th,
+       td {
+        padding: .625em;
+        text-align: center;
+        border: 1px solid #384952;
+      }
+      
+       th {
+        font-size: .85em;
+        letter-spacing: .1em;
+        text-transform: uppercase;
+      }
+    }
+      
+      @media screen and (max-width: 600px) {
+        table {
+          border: 0;
+        
+      
+         caption {
+          font-size: 1.3em;
+        }
+        
+         thead {
+          border: none;
+          clip: rect(0 0 0 0);
+          height: 1px;
+          margin: -1px;
+          overflow: hidden;
+          padding: 0;
+          position: absolute;
+          width: 1px;
+        }
+        
+         tr {
+          border-bottom: 3px solid #ddd;
+          display: block;
+          margin-bottom: .625em;
+        }
+        
+         td {
+          border-bottom: 1px solid #ddd;
+          display: block;
+          font-size: .8em;
+          text-align: right;
+        }
+        
+         td::before {
+          /*
+          * aria-label has no advantage, it won't be read inside a 
+          content: attr(aria-label);
+          */
+          content: attr(data-label);
+          float: left;
+          font-weight: bold;
+          text-transform: uppercase;
+        }
+        
+         td:last-child {
+          border-bottom: 0;
+        }
+      }
+    }
+}

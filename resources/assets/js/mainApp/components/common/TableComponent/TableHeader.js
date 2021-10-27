@@ -2,12 +2,17 @@ import React from "react";
 
 
 
-export default function TableComponent () {
+export default function TableHeader ({header=[]}) {
 
-
+console.log("header   ",header);
     return (
         <thead>
-            dsds
+            <tr>
+                {Object.keys(header).map(head=>{
+                    return <th>{header[head]}</th>
+                })}
+                
+            </tr>
         </thead>
     );
 }
