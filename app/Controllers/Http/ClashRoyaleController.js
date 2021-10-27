@@ -2,6 +2,9 @@
 
 const ClashRoyaleReminder = use('App/Models/ClashRoyaleReminder')
 const ClashRoyalePlayers = use('App/Models/ClashRoyalePlayers')
+const PlayerGameActivity = use('App/Models/PlayerGameActivity')
+const PlayerGameActivityTran = use('App/Models/PlayerGameActivityTran')
+
 const Database = use('Database')
 
 const CommonController = use('./CommonController')
@@ -16,7 +19,7 @@ const axios = use('axios')
 
 //Decided to leave token in code, as each token is restricted to an IP
 const TOKEN =
-  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6IjEyNjQ5ZGU3LTNjMzMtNDM2Yy04ZTk0LWI4MDE0YjdlN2EwOCIsImlhdCI6MTYzNDYyOTI2MCwic3ViIjoiZGV2ZWxvcGVyL2I5OWJkYTY4LTdhYjktNTE0OS0wYTVkLWExYTdkZWNkYTg2MiIsInNjb3BlcyI6WyJyb3lhbGUiXSwibGltaXRzIjpbeyJ0aWVyIjoiZGV2ZWxvcGVyL3NpbHZlciIsInR5cGUiOiJ0aHJvdHRsaW5nIn0seyJjaWRycyI6WyI0NS4xMjcuMTM3LjEzNyJdLCJ0eXBlIjoiY2xpZW50In1dfQ.3W0QynByezVyzY4TYdITV_KRi13_YM28CVwdmO5xXfCkQBIEOOPyDlfFOUopTKmCbYrMj7xhCvRVODLyxmkNIg'
+  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6ImM5ZGJmYzczLWJiY2UtNDg2ZC1hYTcwLWMxZWE1Y2I4NWQxYyIsImlhdCI6MTYzNDg4NTM4Mywic3ViIjoiZGV2ZWxvcGVyL2U0ZjA1ZjI4LWJmOGMtNDJmNS0yY2I1LTU0ZTZlNjA2N2QxMiIsInNjb3BlcyI6WyJyb3lhbGUiXSwibGltaXRzIjpbeyJ0aWVyIjoiZGV2ZWxvcGVyL3NpbHZlciIsInR5cGUiOiJ0aHJvdHRsaW5nIn0seyJjaWRycyI6WyIxMjAuMjMuMzEuMjM0Il0sInR5cGUiOiJjbGllbnQifV19.zKt4Sf6aodPfLfopTZiwuJqjiD4C-jkcZo3aouV_DMID3ut2EUz4Sz-mzENBDZv3vQ78IBIckf0O1M86xlFYLg'
 
 const CONFIG = {
   headers: { Authorization: `Bearer ${TOKEN}` }
@@ -79,18 +82,30 @@ class ClashRoyaleController {
 
       if (isWarToday) {
         headerStruct = {
+          name: 'Player',
           myG_alias: 'myG Alias',
           decksUsed: 'Total decks used',
+          donations: 'Donated',
+          donationsReceived: 'Received',
           decksUsedToday: 'Total decks used today',
           fame: 'Fame',
           repairPoints: 'Repair Points',
-          boatAttacks: 'Boat Attacks'
+          boatAttacks: 'Boat Attacks',
+          trophies: 'Trophies',
+          lastSeen: 'Last logged into CR',
+          tag: 'Tag'
         }
       } else {
         headerStruct = {
+          name: 'Player',
           myG_alias: 'myG Alias',
           decksUsed: 'Total decks used',
-          decksUsedToday: 'Total decks used today'
+          donations: 'Donated',
+          donationsReceived: 'Received',
+          decksUsedToday: 'Total decks used today',
+          trophies: 'Trophies',
+          lastSeen: 'Last logged into CR',
+          tag: 'Tag'
         }
       }
       header.push(headerStruct)
@@ -133,6 +148,10 @@ class ClashRoyaleController {
         return 'Throttled Error'
       }
 
+      if (error.message == 'Request failed with status code 503') {
+        return '503'
+      }
+
       LoggingRepository.log({
         environment: process.env.NODE_ENV,
         type: 'error',
@@ -162,6 +181,8 @@ class ClashRoyaleController {
 
         if (request.input('group_id') == undefined || request.input('group_id') == '') return
 
+        if (request.input('user_id') == undefined || request.input('user_id') == '') return
+
         const get_player = await Database.from('clash_royale_players')
           .where({
             player_tag: request.input('player_tag'),
@@ -188,7 +209,8 @@ class ClashRoyaleController {
           group_id: request.input('group_id'),
           clan_tag: request.input('clanTag'),
           player_tag: request.input('player_tag'),
-          user_id: request.input('user_id')
+          user_id: request.input('user_id'),
+          player_locked: request.input('player_locked')
         })
 
         if (request.input('reminder_one') != undefined) {
@@ -303,6 +325,14 @@ class ClashRoyaleController {
   }
 
   async deletePlayerDetails({ request }) {
+    // const commonController = new CommonController()
+    // const current_user_permission = await commonController.get_permission({ auth }, request.params.group_id)
+
+    //Allow Admins to set multiple myG Accounts to player tags
+    // if (current_user_permission != 0 && current_user_permission != 1) {
+    //   await Database.table('clash_royale_players').where({ user_id: auth.user.id }).delete()
+    // }
+
     try {
       await Database.table('clash_royale_players')
         .where({
@@ -310,9 +340,6 @@ class ClashRoyaleController {
         })
         .delete()
     } catch (error) {
-      if (error.response.data.reason == 'notFound') {
-        return 'Clan not found'
-      }
       LoggingRepository.log({
         environment: process.env.NODE_ENV,
         type: 'error',
@@ -543,94 +570,202 @@ class ClashRoyaleController {
   }
 
   async kick_non_clashRoyale_players({ auth, request, response }) {
-    try {
-      console.log('Starting')
+    if (auth.user) {
+      try {
+        if (request.params.group_id == undefined || request.params.group_id == '') return
 
-      //break this down
-      //break this down
+        const commonController = new CommonController()
+        const current_user_permission = await commonController.get_permission({ auth }, request.params.group_id)
 
-      //kick all members out of this community which are not in the clan
-      // Get all members in this group n their clan tags n not locked
-      // Get all clan tags
+        //Allow Admins to set multiple myG Accounts to player tags
+        // if (current_user_permission != 0 && current_user_permission != 1) {
+        //   await Database.table('clash_royale_players').where({ user_id: auth.user.id }).delete()
+        // }
 
-      //Loop thru all community members and remove if not in clan
+        let tmpArr = [],
+          playerNames = [],
+          user_ids = []
 
-      if (request.params.group_id == undefined || request.params.group_id == '') return
+        const allPlayers_gensis = Database.from('clash_royale_players')
+          .where('clash_royale_players.group_id', '=', request.params.group_id)
+          .select('user_id')
 
-      let tmpArr = [],
-        playerNames = [],
-        user_ids = []
+        const allPlayersinGroup = await Database.from('usergroups')
+          .innerJoin('users', 'users.id', 'usergroups.user_id')
+          .where('usergroups.group_id', '=', request.params.group_id)
+          .whereNot('usergroups.permission_level', '=', 1)
+          .whereNot('usergroups.permission_level', '=', 2)
+          .whereNot('usergroups.permission_level', '=', 42)
+          .whereNotIn('usergroups.user_id', allPlayers_gensis)
+          .select('usergroups.id', 'users.alias', 'usergroups.user_id')
 
-      const allPlayers_gensis = Database.from('clash_royale_players')
-        .where('clash_royale_players.group_id', '=', request.params.group_id)
-        .select('user_id')
-
-      const allPlayersinGroup = await Database.from('usergroups')
-        .innerJoin('users', 'users.id', 'usergroups.user_id')
-        .where('usergroups.group_id', '=', 32)
-        .whereNot('usergroups.permission_level', '=', 32)
-        .whereNot('usergroups.permission_level', '=', 2)
-        .whereNot('usergroups.permission_level', '=', 42)
-        .whereNotIn('usergroups.user_id', allPlayers_gensis)
-        .select('usergroups.id', 'users.alias')
-
-      for (let index = 0; index < allPlayersinGroup.length; index++) {
-        playerNames.push(allPlayersinGroup[index].alias)
-        //await Database.table('usergroups').where('id', allPlayersinGroup[index].id).delete()
-      }
-      return playerNames
-      const allPlayers = await Database.from('clash_royale_players')
-        .innerJoin('users', 'users.id', 'clash_royale_players.user_id')
-        .where('clash_royale_players.group_id', '=', request.params.group_id)
-
-      if (!allPlayers.length) return
-
-      const getClanURL = 'clans/' + '%23' + allPlayers[0].clan_tag + '/members'
-
-      const getClanInfo = await axios.get(`https://api.clashroyale.com/v1/${getClanURL}`, CONFIG)
-
-      let clanStruct = {}
-      for (let index = 0; index < getClanInfo.data.items.length; index++) {
-        const remove_hash = getClanInfo.data.items[index].tag.replace(/#/g, '')
-        clanStruct[remove_hash] = true
-      }
-
-      for (let index = 0; index < allPlayers.length; index++) {
-        if (!clanStruct[allPlayers[index].player_tag]) {
-          tmpArr.push(allPlayers[index].id)
-          playerNames.push(allPlayers[index].alias)
-          user_ids.push(allPlayers[index].user_id)
+        for (let index = 0; index < allPlayersinGroup.length; index++) {
+          playerNames.push(allPlayersinGroup[index].alias)
+          //await Database.table('usergroups').where('id', allPlayersinGroup[index].id).delete()
         }
-      }
 
-      //ToDo: UPDATE TO TEAMS USERGROUPS
-      if (user_ids) {
-        //await Database.table('usergroups').whereIn('user_id', user_ids).andWhere('group_id', '=', request.params.group_id).delete()
-      }
+        const allPlayers = await Database.from('clash_royale_players')
+          .innerJoin('users', 'users.id', 'clash_royale_players.user_id')
+          .where('clash_royale_players.player_locked', '=', false)
+          .where('clash_royale_players.group_id', '=', request.params.group_id)
 
-      //ToDo: REMOVE ONCE WE CREATE THE DB RELATIONSHIP WITH TEAMS
-      if (tmpArr) {
-        //await Database.table('clash_royale_players').whereIn('id', tmpArr).delete()
-      }
+        if (!allPlayers.length) return
 
-      return playerNames
-    } catch (error) {
-      if (error.message == 'Request failed with  status code 404') {
-        return 'Clan not found'
+        const getClanURL = 'clans/' + '%23' + allPlayers[0].clan_tag + '/members'
+
+        const getClanInfo = await axios.get(`https://api.clashroyale.com/v1/${getClanURL}`, CONFIG)
+
+        let clanStruct = {}
+        for (let index = 0; index < getClanInfo.data.items.length; index++) {
+          const remove_hash = getClanInfo.data.items[index].tag.replace(/#/g, '')
+          clanStruct[remove_hash] = true
+        }
+
+        for (let index = 0; index < allPlayers.length; index++) {
+          if (!clanStruct[allPlayers[index].player_tag]) {
+            tmpArr.push(allPlayers[index].id)
+            playerNames.push(allPlayers[index].alias)
+            user_ids.push(allPlayers[index].user_id)
+          }
+        }
+
+        //ToDo: UPDATE TO TEAMS USERGROUPS
+        if (user_ids) {
+          //await Database.table('usergroups').whereIn('user_id', user_ids).andWhere('group_id', '=', request.params.group_id).delete()
+        }
+
+        //ToDo: REMOVE ONCE WE CREATE THE DB RELATIONSHIP WITH TEAMS
+        if (tmpArr) {
+          //await Database.table('clash_royale_players').whereIn('id', tmpArr).delete()
+        }
+
+        return playerNames
+      } catch (error) {
+        if (error.message == 'Request failed with  status code 404') {
+          return 'Clan not found'
+        }
+        if (error.message == 'Request failed with status code 403') {
+          const slack = new SlackController()
+          slack.sendMessage('Clash Royale Auth Failed: Auth Token: ' + TOKEN)
+          return 'Auth Error'
+        }
+        if (error.message == 'Request failed with status code 503') {
+          return '503'
+        }
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+          method: 'kick_non_clashRoyale_players'
+        })
       }
-      if (error.message == 'Request failed with status code 403') {
-        const slack = new SlackController()
-        slack.sendMessage('Clash Royale Auth Failed: Auth Token: ' + TOKEN)
-        return 'Auth Error'
+    }
+  }
+  async clashRoyale_player_manager_create({ auth, request, response }) {
+    if (auth.user) {
+      try {
+        if (request.input('group_id') == undefined || request.input('group_id') == '') return
+
+        const commonController = new CommonController()
+        const current_user_permission = await commonController.get_permission({ auth }, request.input('group_id'))
+
+        //Allow Admins to set multiple myG Accounts to player tags
+        // if (current_user_permission != 0 && current_user_permission != 1) {
+        //   await Database.table('clash_royale_players').where({ user_id: auth.user.id }).delete()
+        // }
+
+        const cr_pm_id = await PlayerGameActivity.create({
+          user_id: request.input('user_id'),
+          group_id: request.input('group_id'),
+          notes: request.input('notes').trim()
+        })
+
+        return 'Saved successfully'
+      } catch (error) {
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+          method: 'clashRoyale_player_manager_create'
+        })
       }
-      LoggingRepository.log({
-        environment: process.env.NODE_ENV,
-        type: 'error',
-        source: 'backend',
-        context: __filename,
-        message: (error && error.message) || error,
-        method: 'kick_non_clashRoyale_players'
-      })
+    }
+  }
+
+  async clashRoyale_player_manager_show({ auth, request, response }) {
+    if (auth.user) {
+      try {
+        if (request.input('player_game_activity_id') == undefined || request.input('player_game_activity_id') == '') return
+
+        const commonController = new CommonController()
+        const current_user_permission = await commonController.get_permission({ auth }, request.input('group_id'))
+
+        //Allow Admins to set multiple myG Accounts to player tags
+        // if (current_user_permission != 0 && current_user_permission != 1) {
+        //   await Database.table('clash_royale_players').where({ user_id: auth.user.id }).delete()
+        // }
+
+        const get_player_record = await Database.from('player_game_activities').where(
+          'player_game_activities.id',
+          '=',
+          request.input('player_game_activity_id')
+        )
+
+        const get_history = await Database.from('player_game_activity_trans')
+          .where('player_game_activity_trans.player_game_activity_id', '=', request.input('player_game_activity_id'))
+          .limit(50)
+
+        return {
+          player_details: get_player_record,
+          history_details: get_history
+        }
+      } catch (error) {
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+          method: 'clashRoyale_player_manager_show'
+        })
+      }
+    }
+  }
+
+  async clashRoyale_player_manager_update({ auth, request, response }) {
+    if (auth.user) {
+      try {
+        if (request.input('player_game_activity_id') == undefined || request.input('player_game_activity_id') == '') return
+
+        const commonController = new CommonController()
+        const current_user_permission = await commonController.get_permission({ auth }, request.input('group_id'))
+
+        //Allow Admins to set multiple myG Accounts to player tags
+        // if (current_user_permission != 0 && current_user_permission != 1) {
+        //   await Database.table('clash_royale_players').where({ user_id: auth.user.id }).delete()
+        // }
+
+        await PlayerGameActivity.query()
+          .where('id', '=', request.input('player_game_activity_id'))
+          .update({
+            notes: request.input('notes').trim()
+          })
+
+        return 'Saved successfully'
+      } catch (error) {
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+          method: 'clashRoyale_player_manager_update'
+        })
+      }
     }
   }
 }
