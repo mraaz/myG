@@ -178,7 +178,7 @@ export default class Posts extends Component {
       clanTagDataFetching=false,
       clanTagData='',
      } = this.state
-     console.log(   " clanTagDataFetching   ",activeTab === "Stats" &&  !clanTagData && clanTagDataFetching );
+     console.log(   " clanTagDataFetching   ",activeTab === "Stats" &&  clanTagDataFetching );
     return (
       <Fragment>
         <div className='gamePost__tab'>
@@ -239,9 +239,19 @@ export default class Posts extends Component {
         )
          }
          { activeTab === "Stats" &&  !clanTagData && clanTagDataFetching && (
-          <section  className={` stats_section_main ${clanTagDataFetching ? '' : 'active'}`}>
-              <div className="stats_section__container">
-                No Data Found !
+          <section  className={`stats_section_main ${!clanTagDataFetching ? '' : 'active'}`}>
+              <div className="stats_section__container table__loader">
+              <table>
+                  <tbody>
+                    <tr>
+                      <td class="td-1"><span></span></td>
+                      <td class="td-2"><span></span></td>
+                      <td class="td-3"><span></span></td>
+                      <td class="td-4"></td>
+                      <td class="td-5"><span></span></td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
           </section>
          )
