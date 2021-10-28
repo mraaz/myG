@@ -108,9 +108,30 @@ class Settings extends Component {
 
     const clash_royale_player_id = 1
     const game_names_id = 1014
+    const notes = 'Befoore434 you walk out of my life             '
 
     try {
-      const tmp = await axios.get(`/api/clashroyale/show/${clanTag}`)
+      //const tmp = await axios.get(`/api/clashroyale/show/${clanTag}`)
+
+      //Create player Module
+      // const tmp = await axios.post('/api/clashroyale/cr_player_manager_create/', {
+      //   user_id: 1,
+      //   group_id: 1,
+      //   notes: notes
+      // })
+
+      //Get player Module
+      // const tmp = await axios.post('/api/clashroyale/cr_player_manager_show/', {
+      //   user_id: 1,
+      //   group_id: 1
+      // })
+
+      //Update player Module
+      const tmp = await axios.post('/api/clashroyale/cr_player_manager_update/', {
+        player_details_id: 1,
+        group_id: 1,
+        notes: notes
+      })
 
       //const tmp = await axios.get(`/api/ScheduleGame/getHeader_stats_header/${game_names_id}`)
 
