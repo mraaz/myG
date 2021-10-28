@@ -19,7 +19,7 @@ const axios = use('axios')
 
 //Decided to leave token in code, as each token is restricted to an IP
 const TOKEN =
-  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6ImM5ZGJmYzczLWJiY2UtNDg2ZC1hYTcwLWMxZWE1Y2I4NWQxYyIsImlhdCI6MTYzNDg4NTM4Mywic3ViIjoiZGV2ZWxvcGVyL2U0ZjA1ZjI4LWJmOGMtNDJmNS0yY2I1LTU0ZTZlNjA2N2QxMiIsInNjb3BlcyI6WyJyb3lhbGUiXSwibGltaXRzIjpbeyJ0aWVyIjoiZGV2ZWxvcGVyL3NpbHZlciIsInR5cGUiOiJ0aHJvdHRsaW5nIn0seyJjaWRycyI6WyIxMjAuMjMuMzEuMjM0Il0sInR5cGUiOiJjbGllbnQifV19.zKt4Sf6aodPfLfopTZiwuJqjiD4C-jkcZo3aouV_DMID3ut2EUz4Sz-mzENBDZv3vQ78IBIckf0O1M86xlFYLg'
+  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6IjQxNDE3MGNiLWVkYjUtNDBlYS1hZjE0LWMzZGY1ZmY1ZjZjYSIsImlhdCI6MTYzNTQ0MTIyNywic3ViIjoiZGV2ZWxvcGVyL2U0ZjA1ZjI4LWJmOGMtNDJmNS0yY2I1LTU0ZTZlNjA2N2QxMiIsInNjb3BlcyI6WyJyb3lhbGUiXSwibGltaXRzIjpbeyJ0aWVyIjoiZGV2ZWxvcGVyL3NpbHZlciIsInR5cGUiOiJ0aHJvdHRsaW5nIn0seyJjaWRycyI6WyIxMDEuMTE1LjE3Ny4xNjAiXSwidHlwZSI6ImNsaWVudCJ9XX0.070FV3aVENzn_1hff4BpShy6yKaqbpE2CZZHyV_inNNr4H0wdlwkhYmRUdXSufaWSP9lR38K_doQ0YQ9kq3e7g'
 
 const CONFIG = {
   headers: { Authorization: `Bearer ${TOKEN}` }
@@ -73,7 +73,8 @@ class ClashRoyaleController {
       for (let index = 0; index < get_clan.length; index++) {
         let tmpStruct = {
           user_id: get_clan[index].user_id,
-          alias: get_clan[index].alias
+          alias: get_clan[index].alias,
+          profile_img: get_clan[index].profile_img
         }
         myGUsers[get_clan[index].player_tag] = tmpStruct
       }
@@ -113,11 +114,15 @@ class ClashRoyaleController {
 
       for (let index = 0; index < getClanInfo.data.items.length; index++) {
         const player_tag_without_hash = getClanInfo.data.items[index].tag.substring(1)
+
         if (myGUsers[player_tag_without_hash] && myGUsers[player_tag_without_hash].user_id != undefined)
           getClanInfo.data.items[index].myG_user_id = myGUsers[player_tag_without_hash].user_id
 
         if (myGUsers[player_tag_without_hash] && myGUsers[player_tag_without_hash].alias != undefined)
           getClanInfo.data.items[index].myG_alias = myGUsers[player_tag_without_hash].alias
+
+        if (myGUsers[player_tag_without_hash] && myGUsers[player_tag_without_hash].profile_img != undefined)
+          getClanInfo.data.items[index].myG_profile_img = myGUsers[player_tag_without_hash].profile_img
 
         if (isWarToday) {
           getClanInfo.data.items[index].decksUsed = riverRaceStruct[getClanInfo.data.items[index].tag].decksUsed
@@ -663,7 +668,7 @@ class ClashRoyaleController {
       }
     }
   }
-  async clashRoyale_player_manager_create({ auth, request, response }) {
+  async cr_player_manager_create({ auth, request, response }) {
     if (auth.user) {
       try {
         if (request.input('group_id') == undefined || request.input('group_id') == '') return
@@ -696,11 +701,9 @@ class ClashRoyaleController {
     }
   }
 
-  async clashRoyale_player_manager_show({ auth, request, response }) {
+  async cr_player_manager_show({ auth, request, response }) {
     if (auth.user) {
       try {
-        if (request.input('player_game_activity_id') == undefined || request.input('player_game_activity_id') == '') return
-
         const commonController = new CommonController()
         const current_user_permission = await commonController.get_permission({ auth }, request.input('group_id'))
 
@@ -709,15 +712,21 @@ class ClashRoyaleController {
         //   await Database.table('clash_royale_players').where({ user_id: auth.user.id }).delete()
         // }
 
-        const get_player_record = await Database.from('player_game_activities').where(
-          'player_game_activities.id',
-          '=',
-          request.input('player_game_activity_id')
-        )
+        let get_player_record
 
-        const get_history = await Database.from('player_game_activity_trans')
-          .where('player_game_activity_trans.player_game_activity_id', '=', request.input('player_game_activity_id'))
-          .limit(50)
+        get_player_record = await Database.from('player_game_activities')
+          .where({
+            user_id: request.input('user_id'),
+            group_id: request.input('group_id')
+          })
+          .first()
+
+        let get_history = null
+        if (get_player_record != undefined) {
+          get_history = await Database.from('player_game_activity_trans')
+            .where('player_game_activity_trans.player_game_activity_id', '=', get_player_record.id)
+            .limit(50)
+        } else get_player_record = null
 
         return {
           player_details: get_player_record,
@@ -736,10 +745,10 @@ class ClashRoyaleController {
     }
   }
 
-  async clashRoyale_player_manager_update({ auth, request, response }) {
+  async cr_player_manager_update({ auth, request, response }) {
     if (auth.user) {
       try {
-        if (request.input('player_game_activity_id') == undefined || request.input('player_game_activity_id') == '') return
+        if (request.input('player_details_id') == undefined || request.input('player_details_id') == '') return
 
         const commonController = new CommonController()
         const current_user_permission = await commonController.get_permission({ auth }, request.input('group_id'))
@@ -750,7 +759,7 @@ class ClashRoyaleController {
         // }
 
         await PlayerGameActivity.query()
-          .where('id', '=', request.input('player_game_activity_id'))
+          .where('id', '=', request.input('player_details_id'))
           .update({
             notes: request.input('notes').trim()
           })
