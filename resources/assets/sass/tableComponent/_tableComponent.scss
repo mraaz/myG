@@ -2,17 +2,16 @@
     visibility: hidden;
     opacity: 0;
     transition: all 1s ease-in-out;
+    overflow-x: auto;
+    max-width: 850px;
+    margin: 0 auto;
     &.active {
       visibility: visible;
       opacity: 1;
     }
     .stats_section__container{
-        margin: 40px 25px;
       font-family: 'Montserrat' !important;
       position: relative;
-      display: flex;
-      justify-content: center;
-      align-items: center;
       color: #fff;
       @media screen and (max-width: $mobile) {
         margin: 40px 20px;
@@ -24,7 +23,7 @@
         margin: 0;
         padding: 0;
         width: 100%;
-        table-layout: fixed;
+        // table-layout: fixed;
         
        tr {
         background-color: #1d2326;
@@ -43,12 +42,14 @@
         padding: .625em;
         text-align: center;
         border: 1px solid #384952;
+        height: 46px;
       }
       
        th {
         font-size: .85em;
         letter-spacing: .1em;
         text-transform: uppercase;
+        cursor: pointer;
       }
     }
 
@@ -166,3 +167,53 @@
 }
     
 }
+
+
+.Table {
+    border-spacing: 0px;
+    background: #fff;
+    box-shadow: 0 1px 0 0 rgba(22, 29, 37, 0.05);
+    width: 100%;
+  }
+  
+  .DataTable {
+    position: relative;
+    max-width: 100vw;
+  }
+  
+  .Cell {
+    border: 1px solid #f4f6f8;
+    padding: 4px;
+    text-align: left;
+    vertical-align: top;
+  }
+  
+  .Cell-fixed {
+    &.Cell-header{
+      height: 100px !important;
+    }
+    position: absolute;
+    top: auto;
+    left: 0;
+    width: 145px;
+    white-space: unset;
+    text-align: left;
+    backface-visibility: hidden;
+    background: #171a1c;
+    word-wrap: break-word;
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+   .Cell-fixed:nth-of-type(1){
+    left: 0;
+  }
+   .Cell-fixed:nth-of-type(2){
+    left: 145px;
+  }
+   .Cell-fixed:nth-of-type(3){
+    left: 290px;
+  }
+  .ScrollContainer {
+    overflow-x: auto;
+    margin-left: 290px;
+  }

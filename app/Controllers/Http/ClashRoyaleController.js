@@ -83,7 +83,7 @@ class ClashRoyaleController {
 
       if (isWarToday) {
         headerStruct = {
-          name: 'Player',
+          name:'Player',
           myG_alias: 'myG Alias',
           decksUsed: 'Total decks used',
           donations: 'Donated',
@@ -98,7 +98,7 @@ class ClashRoyaleController {
         }
       } else {
         headerStruct = {
-          name: 'Player',
+          name:'Player',
           myG_alias: 'myG Alias',
           decksUsed: 'Total decks used',
           donations: 'Donated',
