@@ -28,11 +28,20 @@ export default class DataTable extends React.Component {
       const {rows,sortableStatus} = this.state;
       const data = [...rows];
       data.sort((a,b)=>{
+        if(typeof b[header] == "string" || typeof a[header] == "string" || typeof b[header] == "undefined" || typeof a[header] == "undefined"){
           if(sortableStatus){
-              return b[header]-a[header];
+            return b[header] > a[header] ? 1 : -1;
           } else {
-              return a[header]-b[header];
+              return a[header] < b[header] ? -1: 1;
           }
+        } else {
+          if(sortableStatus){
+            return b[header] - a[header];
+          } else {
+              return a[header]- b[header];
+          }
+        }
+          
       })
       this.setState({rows:data,sortableStatus:!this.state.sortableStatus})
   }
