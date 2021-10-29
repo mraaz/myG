@@ -4,10 +4,17 @@ export default function Cell({
     content,
     fixed,
     header,
+    handleSortable,
+    headerkey,
   }) {
   
     const fixedClass = fixed ? ' Cell-fixed' : '';
     const headerClass = header ? ' Cell-header' : '';
+    const handleSortableFn = (e,head)=>{
+      if(typeof handleSortable =="function"){
+        handleSortable(e,head)
+      }
+    }
     
     const className = (
       `Cell${fixedClass}${headerClass}`
@@ -15,7 +22,7 @@ export default function Cell({
   
     const cellMarkup = header ? (
       // Add scope="col" to thead cells
-      <th scope="col" className={className}>
+      <th onClick={e=>handleSortableFn(e,headerkey)} scope="col" className={className}>
         {content}
       </th>
     ) : (
@@ -25,7 +32,7 @@ export default function Cell({
           {content}
         </th>
       ) : (
-        <td className={className}>
+        <td  className={className}>
           {content}
         </td>
       )
