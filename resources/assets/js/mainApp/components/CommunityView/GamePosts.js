@@ -194,7 +194,6 @@ export default class Posts extends Component {
       clanTagDataFetching=false,
       clanTagData='',
      } = this.state
-     console.log(   " clanTagDataFetching   ",activeTab === "Stats" &&  clanTagDataFetching );
     return (
       <Fragment>
         <div className='gamePost__tab'>
