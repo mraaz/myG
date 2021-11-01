@@ -23,7 +23,7 @@ export default function Cell({
     const cellMarkup = header ? (
       // Add scope="col" to thead cells
       <th onClick={e=>handleSortableFn(e,headerkey)} scope="col" className={className}>
-        {content}
+        {content} <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
       </th>
     ) : (
       fixed ? (

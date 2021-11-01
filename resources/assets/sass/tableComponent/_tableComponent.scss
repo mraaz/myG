@@ -184,6 +184,8 @@
   .DataTable {
     position: relative;
     max-width: 100vw;
+    height: 400px;
+    overflow-y:auto;
   }
   
   .Cell {
