@@ -44,12 +44,13 @@ export default class GuestCommunity extends React.Component {
   }
 
   handleTabOption = (activeTab) => {
-    this.setState({ activeTab}, async () => {
-      fetchCommunity(this.props.id).then((community) => this.setState({ community, loading: false }))
-    })
-    if( activeTab== "Stats"){
-      this.getClanTagGameData()
-    }
+      this.setState({ activeTab}, async () => {
+        if( activeTab== "Stats"){
+          this.getClanTagGameData()
+          return 
+        }
+        fetchCommunity(this.props.id).then((community) => this.setState({ community, loading: false }))
+      })
   }
 
   getClanTagGameData = () => {

@@ -51,7 +51,9 @@
        th {
         font-size: .85em;
         letter-spacing: .1em;
-        text-transform: uppercase;
+        &:first-letter {
+          text-transform: uppercase;
+        } 
         cursor: pointer;
       }
     }
@@ -99,7 +101,9 @@
           content: attr(data-label);
           float: left;
           font-weight: bold;
-          text-transform: uppercase;
+          &:first-letter {
+            text-transform: uppercase;
+          } 
         }
         
          td:last-child {
@@ -153,8 +157,6 @@
               animation-timing-function: linear;
               animation-fill-mode: forwards;
             }
-          }
-          &.td-4 {
           }
           &.td-5 {
             width: 100px;

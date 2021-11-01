@@ -167,6 +167,10 @@ export default class Posts extends Component {
 
   handleTabOption = (activeTab) => {
     this.setState({ activeTab, counter: 1 }, async () => {
+      if( activeTab== "Stats"){
+        this.getClanTagGameData()
+        return 
+      }
       const myPosts = await axios.post('/api/get_group_posts', {
         counter: this.state.counter,
         group_id: this.props.group_id,
