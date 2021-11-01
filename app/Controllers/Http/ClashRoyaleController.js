@@ -19,7 +19,7 @@ const axios = use('axios')
 
 //Decided to leave token in code, as each token is restricted to an IP
 const TOKEN =
-  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6IjQxNDE3MGNiLWVkYjUtNDBlYS1hZjE0LWMzZGY1ZmY1ZjZjYSIsImlhdCI6MTYzNTQ0MTIyNywic3ViIjoiZGV2ZWxvcGVyL2U0ZjA1ZjI4LWJmOGMtNDJmNS0yY2I1LTU0ZTZlNjA2N2QxMiIsInNjb3BlcyI6WyJyb3lhbGUiXSwibGltaXRzIjpbeyJ0aWVyIjoiZGV2ZWxvcGVyL3NpbHZlciIsInR5cGUiOiJ0aHJvdHRsaW5nIn0seyJjaWRycyI6WyIxMDEuMTE1LjE3Ny4xNjAiXSwidHlwZSI6ImNsaWVudCJ9XX0.070FV3aVENzn_1hff4BpShy6yKaqbpE2CZZHyV_inNNr4H0wdlwkhYmRUdXSufaWSP9lR38K_doQ0YQ9kq3e7g'
+  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6ImIxZTE4MGJkLTQ2N2YtNGRiYy05MjNkLWJmNDNjMmQ1NjE3MSIsImlhdCI6MTYzNTczMDgyMiwic3ViIjoiZGV2ZWxvcGVyL2U0ZjA1ZjI4LWJmOGMtNDJmNS0yY2I1LTU0ZTZlNjA2N2QxMiIsInNjb3BlcyI6WyJyb3lhbGUiXSwibGltaXRzIjpbeyJ0aWVyIjoiZGV2ZWxvcGVyL3NpbHZlciIsInR5cGUiOiJ0aHJvdHRsaW5nIn0seyJjaWRycyI6WyIxMjAuMjMuMjcuMzEiXSwidHlwZSI6ImNsaWVudCJ9XX0.paryXpMAqdtFBmt3SaGi563bmlFbLwT9nOi-BQbJuPTgCSZhSuP5u6_IRHpZkPNL03dxsQUQ4NHbi2ua2qHs9A'
 
 const CONFIG = {
   headers: { Authorization: `Bearer ${TOKEN}` }
@@ -83,7 +83,7 @@ class ClashRoyaleController {
 
       if (isWarToday) {
         headerStruct = {
-          name:'Player',
+          name: 'Player',
           myG_alias: 'myG Alias',
           decksUsed: 'Total decks used',
           donations: 'Donated',
@@ -98,7 +98,7 @@ class ClashRoyaleController {
         }
       } else {
         headerStruct = {
-          name:'Player',
+          name: 'Player',
           myG_alias: 'myG Alias',
           decksUsed: 'Total decks used',
           donations: 'Donated',
@@ -139,8 +139,8 @@ class ClashRoyaleController {
       //return getCurrentriverraceInfo.data
       return getClanInfo.data
     } catch (error) {
-      if (error.message == 'Request failed with  status code 404') {
-        return 'Clan not found'
+      if (error.message == 'Request failed with status code 404') {
+        return '404'
       }
       if (error.message == 'Request failed with status code 403') {
         const slack = new SlackController()
@@ -150,13 +150,12 @@ class ClashRoyaleController {
       if (error.message == 'Request failed with status code 429') {
         const slack = new SlackController()
         slack.sendMessage('Clash Royale request was throttled! Auth Token: ' + TOKEN)
-        return 'Throttled Error'
+        return 'Auth Error'
       }
 
       if (error.message == 'Request failed with status code 503') {
         return '503'
       }
-
       LoggingRepository.log({
         environment: process.env.NODE_ENV,
         type: 'error',
