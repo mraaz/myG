@@ -40,8 +40,8 @@ class ClashRoyaleController {
       const strClanTag = request.params.clanTag
       const clanTag = strClanTag.replace(/#/g, '').trim()
 
-      //const getClanURL = 'clans/' + '%23' + clanTag + '/members'
-      const getClanURL = 'clans/' + '%23' + 'QG8UQCV0' + '/members'
+      const getClanURL = 'clans/' + '%23' + clanTag + '/members'
+      //const getClanURL = 'clans/' + '%23' + 'QG8UQCV0' + '/members'
       //const getRiverRaceLogURL = 'clans/' + '%23' + clanTag + '/riverracelog'
       const getCurrentriverraceURL = 'clans/' + '%23' + clanTag + '/currentriverrace'
 
@@ -61,10 +61,10 @@ class ClashRoyaleController {
             repairPoints: getCurrentriverraceInfo.data.clan.participants[index].repairPoints,
             boatAttacks: getCurrentriverraceInfo.data.clan.participants[index].boatAttacks
           }
-
           riverRaceStruct[getCurrentriverraceInfo.data.clan.participants[index].tag] = playerRiverDetails
         }
       }
+
       const get_clan = await Database.from('clash_royale_players').innerJoin('users', 'users.id', 'clash_royale_players.user_id').where({
         clan_tag: clanTag
       })
@@ -83,7 +83,7 @@ class ClashRoyaleController {
 
       if (isWarToday) {
         headerStruct = {
-          name:'Player',
+          name: 'Player',
           myG_alias: 'myG Alias',
           decksUsed: 'Total decks used',
           donations: 'Donated',
@@ -98,7 +98,7 @@ class ClashRoyaleController {
         }
       } else {
         headerStruct = {
-          name:'Player',
+          name: 'Player',
           myG_alias: 'myG Alias',
           decksUsed: 'Total decks used',
           donations: 'Donated',
@@ -125,6 +125,11 @@ class ClashRoyaleController {
           getClanInfo.data.items[index].myG_profile_img = myGUsers[player_tag_without_hash].profile_img
 
         if (isWarToday) {
+          if (riverRaceStruct[getClanInfo.data.items[index].tag] == undefined) {
+            getClanInfo.data.items[index].decksUsed = 0
+            getClanInfo.data.items[index].decksUsedToday = 0
+            continue
+          }
           getClanInfo.data.items[index].decksUsed = riverRaceStruct[getClanInfo.data.items[index].tag].decksUsed
           getClanInfo.data.items[index].decksUsedToday = riverRaceStruct[getClanInfo.data.items[index].tag].decksUsedToday
           getClanInfo.data.items[index].fame = riverRaceStruct[getClanInfo.data.items[index].tag].fame
@@ -139,8 +144,8 @@ class ClashRoyaleController {
       //return getCurrentriverraceInfo.data
       return getClanInfo.data
     } catch (error) {
-      if (error.message == 'Request failed with  status code 404') {
-        return 'Clan not found'
+      if (error.message == 'Request failed with status code 404') {
+        return '404'
       }
       if (error.message == 'Request failed with status code 403') {
         const slack = new SlackController()
@@ -150,13 +155,12 @@ class ClashRoyaleController {
       if (error.message == 'Request failed with status code 429') {
         const slack = new SlackController()
         slack.sendMessage('Clash Royale request was throttled! Auth Token: ' + TOKEN)
-        return 'Throttled Error'
+        return 'Auth Error'
       }
 
       if (error.message == 'Request failed with status code 503') {
         return '503'
       }
-
       LoggingRepository.log({
         environment: process.env.NODE_ENV,
         type: 'error',
