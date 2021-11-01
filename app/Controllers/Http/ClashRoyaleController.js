@@ -31,6 +31,7 @@ class ClashRoyaleController {
     // periodType: "warDay"
     // periodType: "colosseum"
     let header = []
+    var passedClan = false
 
     try {
       if (request.params.clanTag == undefined || request.params.clanTag == '') {
@@ -46,6 +47,8 @@ class ClashRoyaleController {
       const getCurrentriverraceURL = 'clans/' + '%23' + clanTag + '/currentriverrace'
 
       const getClanInfo = await axios.get(`https://api.clashroyale.com/v1/${getClanURL}`, CONFIG)
+      passedClan = true
+      console.log('Hitting API')
       const getCurrentriverraceInfo = await axios.get(`https://api.clashroyale.com/v1/${getCurrentriverraceURL}`, CONFIG)
       //const getRiverRaceLogInfo = await axios.get(`https://api.clashroyale.com/v1/${getRiverRaceLogURL}`, CONFIG)
 
@@ -64,7 +67,6 @@ class ClashRoyaleController {
           riverRaceStruct[getCurrentriverraceInfo.data.clan.participants[index].tag] = playerRiverDetails
         }
       }
-
       const get_clan = await Database.from('clash_royale_players').innerJoin('users', 'users.id', 'clash_royale_players.user_id').where({
         clan_tag: clanTag
       })
@@ -145,7 +147,8 @@ class ClashRoyaleController {
       return getClanInfo.data
     } catch (error) {
       if (error.message == 'Request failed with status code 404') {
-        return '404'
+        if (passedClan) return '404b'
+        else return '404a'
       }
       if (error.message == 'Request failed with status code 403') {
         const slack = new SlackController()
