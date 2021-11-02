@@ -177,7 +177,8 @@ export default class Posts extends Component {
 
   renderStats = (clanTagData) =>{
     switch (clanTagData) {
-      case 404:
+      case '404a':
+      case '404':
         return ( 
             <div className="stats_section__container">
               <h1>Sorry mate, Clan Tag not found.</h1>

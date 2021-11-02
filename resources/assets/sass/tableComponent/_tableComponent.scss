@@ -1,41 +1,5 @@
 .stats_section_main{
-  table {
-    width: 100%;
-  }
   
-  table, td {
-    border-collapse: collapse;
-    border: 1px solid #000;
-  }
-  
-  thead {
-    display: table; /* to take the same width as tr */
-    width: calc(100% - 17px); /* - 17px because of the scrollbar width */
-  }
-  
-  tbody {
-    display: block; /* to enable vertical scrolling */
-    max-height: 200px; /* e.g. */
-    overflow-y: scroll; /* keeps the scrollbar even if it doesn't need it; display purpose */
-  }
-  
-  th, td {
-    width: 33.33%; /* to enable "word-break: break-all" */
-    padding: 5px;
-    word-break: break-all; /* 4. */
-  }
-  
-  tr {
-    display: table; /* display purpose; th's border */
-    width: 100%;
-    box-sizing: border-box; /* because of the border (Chrome needs this line, but not FF) */
-  }
-  
-  td {
-    text-align: center;
-    border-bottom: none;
-    border-left: none;
-  }
     visibility: hidden;
     opacity: 0;
     transition: all 1s ease-in-out;
@@ -97,57 +61,57 @@
 
 
       
-      @media screen and (max-width: 600px) {
-        table {
-          border: 0;
+    //   @media screen and (max-width: 600px) {
+    //     table {
+    //       border: 0;
         
       
-         caption {
-          font-size: 1.3em;
-        }
+    //      caption {
+    //       font-size: 1.3em;
+    //     }
         
-         thead {
-          border: none;
-          clip: rect(0 0 0 0);
-          height: 1px;
-          margin: -1px;
-          overflow: hidden;
-          padding: 0;
-          position: absolute;
-          width: 1px;
-        }
+    //      thead {
+    //       border: none;
+    //       clip: rect(0 0 0 0);
+    //       height: 1px;
+    //       margin: -1px;
+    //       overflow: hidden;
+    //       padding: 0;
+    //       position: absolute;
+    //       width: 1px;
+    //     }
         
-         tr {
-          border-bottom: 3px solid #ddd;
-          display: block;
-          margin-bottom: .625em;
-        }
+    //      tr {
+    //       border-bottom: 3px solid #ddd;
+    //       display: block;
+    //       margin-bottom: .625em;
+    //     }
         
-         td {
-          border-bottom: 1px solid #ddd;
-          display: block;
-          font-size: .8em;
-          text-align: right;
-        }
+    //      td {
+    //       border-bottom: 1px solid #ddd;
+    //       display: block;
+    //       font-size: .8em;
+    //       text-align: right;
+    //     }
         
-         td::before {
-          /*
-          * aria-label has no advantage, it won't be read inside a 
-          content: attr(aria-label);
-          */
-          content: attr(data-label);
-          float: left;
-          font-weight: bold;
-          &:first-letter {
-            text-transform: uppercase;
-          } 
-        }
+    //      td::before {
+    //       /*
+    //       * aria-label has no advantage, it won't be read inside a 
+    //       content: attr(aria-label);
+    //       */
+    //       content: attr(data-label);
+    //       float: left;
+    //       font-weight: bold;
+    //       &:first-letter {
+    //         text-transform: uppercase;
+    //       } 
+    //     }
         
-         td:last-child {
-          border-bottom: 0;
-        }
-      }
-    }
+    //      td:last-child {
+    //       border-bottom: 0;
+    //     }
+    //   }
+    // }
 }
 .table__loader{
     @-webkit-keyframes moving-gradient {
