@@ -1,0 +1,255 @@
+.stats_section_main{
+  
+    visibility: hidden;
+    opacity: 0;
+    transition: all 1s ease-in-out;
+    overflow-x: auto;
+    max-width: 850px;
+    margin: 0 auto;
+    &.guest{
+      max-width: 100%;
+    }
+    &.active {
+      visibility: visible;
+      opacity: 1;
+    }
+    .stats_section__container{
+      font-family: 'Montserrat' !important;
+      position: relative;
+      color: #fff;
+      @media screen and (max-width: $mobile) {
+        margin: 40px 20px;
+      }
+   
+    table {
+        border: 1px solid #384952;
+        border-collapse: collapse;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        // table-layout: fixed;
+        
+       tr {
+        background-color: #1d2326;
+        border: 1px solid #384952;
+        padding: .35em;
+      }
+      thead {
+        tr {
+            background-color: #171a1c;
+          }
+      }
+    
+      
+       th,
+       td {
+        padding: .625em;
+        text-align: center;
+        border: 1px solid #384952;
+        height: 46px;
+      }
+      
+       th {
+        font-size: .85em;
+        letter-spacing: .1em;
+        &:first-letter {
+          text-transform: uppercase;
+        } 
+        cursor: pointer;
+      }
+    }
+
+    
+
+
+      
+    //   @media screen and (max-width: 600px) {
+    //     table {
+    //       border: 0;
+        
+      
+    //      caption {
+    //       font-size: 1.3em;
+    //     }
+        
+    //      thead {
+    //       border: none;
+    //       clip: rect(0 0 0 0);
+    //       height: 1px;
+    //       margin: -1px;
+    //       overflow: hidden;
+    //       padding: 0;
+    //       position: absolute;
+    //       width: 1px;
+    //     }
+        
+    //      tr {
+    //       border-bottom: 3px solid #ddd;
+    //       display: block;
+    //       margin-bottom: .625em;
+    //     }
+        
+    //      td {
+    //       border-bottom: 1px solid #ddd;
+    //       display: block;
+    //       font-size: .8em;
+    //       text-align: right;
+    //     }
+        
+    //      td::before {
+    //       /*
+    //       * aria-label has no advantage, it won't be read inside a 
+    //       content: attr(aria-label);
+    //       */
+    //       content: attr(data-label);
+    //       float: left;
+    //       font-weight: bold;
+    //       &:first-letter {
+    //         text-transform: uppercase;
+    //       } 
+    //     }
+        
+    //      td:last-child {
+    //       border-bottom: 0;
+    //     }
+    //   }
+    // }
+}
+.table__loader{
+    @-webkit-keyframes moving-gradient {
+        0% { background-position: -250px 0; }
+        100% { background-position: 250px 0; }
+    }
+    
+    table {
+      width: 100%;
+      tr {
+        border-bottom: 1px solid rgba(0,0,0,.1);
+        td {
+          height: 50px;
+          vertical-align: middle;
+          padding: 8px;
+          span {
+            display: block;
+          }
+          &.td-1 {
+            width: 20px;
+            span {
+              width: 20px;
+              height: 20px;
+            }
+          }
+          &.td-2 {
+            width: 50px;
+            span {
+              background-color: rgba(0,0,0,.15);
+              width: 50px;
+              height: 50px;
+            }
+          }
+          &.td-3 {
+            width: 400px;
+            // padding-right: 100px;
+            span {
+              height: 12px;
+              background: linear-gradient(to right, #eee 20%, #ddd 50%, #eee 80%);
+              background-size: 500px 100px;
+              animation-name: moving-gradient;
+              animation-duration: 1s;
+              animation-iteration-count: infinite;
+              animation-timing-function: linear;
+              animation-fill-mode: forwards;
+            }
+          }
+          &.td-5 {
+            width: 100px;
+            span {
+              background-color: rgba(0,0,0,.15);
+              width: 100%;
+              height: 30px
+            }
+          }
+        }
+      }
+    }
+}
+    
+}
+
+
+.Table {
+    border-spacing: 0px;
+    background: #fff;
+    box-shadow: 0 1px 0 0 rgba(22, 29, 37, 0.05);
+    width: 100%;
+  }
+  
+  .DataTable {
+    position: relative;
+    max-width: 100vw;
+    height: 400px;
+    overflow-y:auto;
+  }
+  
+  .Cell {
+    border: 1px solid #f4f6f8;
+    padding: 4px;
+    text-align: left;
+    vertical-align: top;
+  }
+  
+  .Cell-fixed {
+    &.Cell-header{
+      height: 100px !important;
+    }
+    position: absolute;
+    top: auto;
+    left: 0;
+    width: 145px;
+    white-space: unset;
+    text-align: left;
+    backface-visibility: hidden;
+    background: #171a1c;
+    word-wrap: break-word;
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+   .Cell-fixed:nth-of-type(1){
+    left: 0;
+  }
+   .Cell-fixed:nth-of-type(2){
+    left: 145px;
+  }
+   .Cell-fixed:nth-of-type(3){
+    left: 290px;
+  }
+  .ScrollContainer {
+    overflow-x: auto;
+    margin-left: 290px;
+    
+  }
+
+  .gamePost__tab {
+    display: flex;
+    margin-left: 6em;
+    margin-right: 6em;
+    margin-bottom: 35px;
+    justify-content: space-around;
+    color: #fff;
+    font: normal normal medium 14px/14px Montserrat;
+    letter-spacing: 0px;
+    border-bottom: 1px solid #1d2326;
+    @media screen and (max-width: 998px) {
+      margin-left: 1em;
+      margin-right: 1em;
+    }
+    span {
+      width: 220px;
+      text-align: center;
+      padding-bottom: 10px;
+      cursor: pointer;
+      &.active {
+        border-bottom: 2px solid #e5c746;
+      }
+    }
+  }

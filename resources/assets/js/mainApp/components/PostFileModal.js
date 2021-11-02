@@ -200,7 +200,7 @@ export default class PostFileModal extends Component {
                   <label htmlFor='searchInput'>Search</label>
                   <input
                     type='text'
-                    autocomplete='off'
+                    autoComplete='off'
                     id='searchInput'
                     onChange={this.getSearchGroup}
                     value={searchText}

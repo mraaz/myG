@@ -441,7 +441,7 @@ export default class Members extends React.Component {
             <div className='manage__searchBar'>
               <input
                 type='text'
-                autocomplete='off'
+                autoComplete='off'
                 value={searchMemberValue}
                 onChange={(e) => this.handleMemberSearch(e)}
                 placeholder='Search members here'

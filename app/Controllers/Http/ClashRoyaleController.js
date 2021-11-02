@@ -3,7 +3,7 @@
 const ClashRoyaleReminder = use('App/Models/ClashRoyaleReminder')
 const ClashRoyalePlayers = use('App/Models/ClashRoyalePlayers')
 const PlayerGameActivity = use('App/Models/PlayerGameActivity')
-const PlayerGameActivityTran = use('App/Models/PlayerGameActivityTran')
+//const PlayerGameActivityTran = use('App/Models/PlayerGameActivityTran')
 
 const Database = use('Database')
 
@@ -19,7 +19,10 @@ const axios = use('axios')
 
 //Decided to leave token in code, as each token is restricted to an IP
 const TOKEN =
-  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6IjQxNDE3MGNiLWVkYjUtNDBlYS1hZjE0LWMzZGY1ZmY1ZjZjYSIsImlhdCI6MTYzNTQ0MTIyNywic3ViIjoiZGV2ZWxvcGVyL2U0ZjA1ZjI4LWJmOGMtNDJmNS0yY2I1LTU0ZTZlNjA2N2QxMiIsInNjb3BlcyI6WyJyb3lhbGUiXSwibGltaXRzIjpbeyJ0aWVyIjoiZGV2ZWxvcGVyL3NpbHZlciIsInR5cGUiOiJ0aHJvdHRsaW5nIn0seyJjaWRycyI6WyIxMDEuMTE1LjE3Ny4xNjAiXSwidHlwZSI6ImNsaWVudCJ9XX0.070FV3aVENzn_1hff4BpShy6yKaqbpE2CZZHyV_inNNr4H0wdlwkhYmRUdXSufaWSP9lR38K_doQ0YQ9kq3e7g'
+  // 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6ImIxZTE4MGJkLTQ2N2YtNGRiYy05MjNkLWJmNDNjMmQ1NjE3MSIsImlhdCI6MTYzNTczMDgyMiwic3ViIjoiZGV2ZWxvcGVyL2U0ZjA1ZjI4LWJmOGMtNDJmNS0yY2I1LTU0ZTZlNjA2N2QxMiIsInNjb3BlcyI6WyJyb3lhbGUiXSwibGltaXRzIjpbeyJ0aWVyIjoiZGV2ZWxvcGVyL3NpbHZlciIsInR5cGUiOiJ0aHJvdHRsaW5nIn0seyJjaWRycyI6WyIxMjAuMjMuMjcuMzEiXSwidHlwZSI6ImNsaWVudCJ9XX0.paryXpMAqdtFBmt3SaGi563bmlFbLwT9nOi-BQbJuPTgCSZhSuP5u6_IRHpZkPNL03dxsQUQ4NHbi2ua2qHs9A'
+//eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6ImIxZTE4MGJkLTQ2N2YtNGRiYy05MjNkLWJmNDNjMmQ1NjE3MSIsImlhdCI6MTYzNTczMDgyMiwic3ViIjoiZGV2ZWxvcGVyL2U0ZjA1ZjI4LWJmOGMtNDJmNS0yY2I1LTU0ZTZlNjA2N2QxMiIsInNjb3BlcyI6WyJyb3lhbGUiXSwibGltaXRzIjpbeyJ0aWVyIjoiZGV2ZWxvcGVyL3NpbHZlciIsInR5cGUiOiJ0aHJvdHRsaW5nIn0seyJjaWRycyI6WyIxMjAuMjMuMjcuMzEiXSwidHlwZSI6ImNsaWVudCJ9XX0.paryXpMAqdtFBmt3SaGi563bmlFbLwT9nOi-BQbJuPTgCSZhSuP5u6_IRHpZkPNL03dxsQUQ4NHbi2ua2qHs9A
+
+'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6IjA5MjNkOGNiLWEyZjQtNDBlNy1hMWVhLWFmN2ExYjE0MjAxOCIsImlhdCI6MTYzNTQ1NDAxOCwic3ViIjoiZGV2ZWxvcGVyL2I5OWJkYTY4LTdhYjktNTE0OS0wYTVkLWExYTdkZWNkYTg2MiIsInNjb3BlcyI6WyJyb3lhbGUiXSwibGltaXRzIjpbeyJ0aWVyIjoiZGV2ZWxvcGVyL3NpbHZlciIsInR5cGUiOiJ0aHJvdHRsaW5nIn0seyJjaWRycyI6WyI0NS4xMjcuMTM3LjEzNyJdLCJ0eXBlIjoiY2xpZW50In1dfQ.ZPfSV7WwO6fTNc4v8aRNofd7WMlk6YxIqfOVbSV0GbNRtMSQRdh4R1IsUUt1SfF3gl4U951Ytms_2sM96FnOCw'
 
 const CONFIG = {
   headers: { Authorization: `Bearer ${TOKEN}` }
@@ -40,16 +43,18 @@ class ClashRoyaleController {
       const strClanTag = request.params.clanTag
       const clanTag = strClanTag.replace(/#/g, '').trim()
 
-      //const getClanURL = 'clans/' + '%23' + clanTag + '/members'
-      const getClanURL = 'clans/' + '%23' + 'QG8UQCV0' + '/members'
+      const getClanURL = 'clans/' + '%23' + clanTag + '/members'
+      //const getClanURL = 'clans/' + '%23' + 'QG8UQCV0' + '/members'
       //const getRiverRaceLogURL = 'clans/' + '%23' + clanTag + '/riverracelog'
       const getCurrentriverraceURL = 'clans/' + '%23' + clanTag + '/currentriverrace'
 
       const getClanInfo = await axios.get(`https://api.clashroyale.com/v1/${getClanURL}`, CONFIG)
-      const getCurrentriverraceInfo = await axios.get(`https://api.clashroyale.com/v1/${getCurrentriverraceURL}`, CONFIG)
+      const getCurrentriverraceInfo = this.getRiverLog(getCurrentriverraceURL)
+
       //const getRiverRaceLogInfo = await axios.get(`https://api.clashroyale.com/v1/${getRiverRaceLogURL}`, CONFIG)
 
-      const isWarToday = getCurrentriverraceInfo.data.periodType == 'training' ? false : true
+      const isData = getCurrentriverraceInfo.data ? true : false
+      const isWarToday = isData ? (getCurrentriverraceInfo.data.periodType == 'training' ? false : true) : false
       let riverRaceStruct = {}
 
       if (isWarToday) {
@@ -61,7 +66,6 @@ class ClashRoyaleController {
             repairPoints: getCurrentriverraceInfo.data.clan.participants[index].repairPoints,
             boatAttacks: getCurrentriverraceInfo.data.clan.participants[index].boatAttacks
           }
-
           riverRaceStruct[getCurrentriverraceInfo.data.clan.participants[index].tag] = playerRiverDetails
         }
       }
@@ -125,6 +129,11 @@ class ClashRoyaleController {
           getClanInfo.data.items[index].myG_profile_img = myGUsers[player_tag_without_hash].profile_img
 
         if (isWarToday) {
+          if (riverRaceStruct[getClanInfo.data.items[index].tag] == undefined) {
+            getClanInfo.data.items[index].decksUsed = 0
+            getClanInfo.data.items[index].decksUsedToday = 0
+            continue
+          }
           getClanInfo.data.items[index].decksUsed = riverRaceStruct[getClanInfo.data.items[index].tag].decksUsed
           getClanInfo.data.items[index].decksUsedToday = riverRaceStruct[getClanInfo.data.items[index].tag].decksUsedToday
           getClanInfo.data.items[index].fame = riverRaceStruct[getClanInfo.data.items[index].tag].fame
@@ -139,8 +148,8 @@ class ClashRoyaleController {
       //return getCurrentriverraceInfo.data
       return getClanInfo.data
     } catch (error) {
-      if (error.message == 'Request failed with  status code 404') {
-        return 'Clan not found'
+      if (error.message == 'Request failed with status code 404') {
+        return '404'
       }
       if (error.message == 'Request failed with status code 403') {
         const slack = new SlackController()
@@ -150,13 +159,12 @@ class ClashRoyaleController {
       if (error.message == 'Request failed with status code 429') {
         const slack = new SlackController()
         slack.sendMessage('Clash Royale request was throttled! Auth Token: ' + TOKEN)
-        return 'Throttled Error'
+        return 'Auth Error'
       }
 
       if (error.message == 'Request failed with status code 503') {
         return '503'
       }
-
       LoggingRepository.log({
         environment: process.env.NODE_ENV,
         type: 'error',
@@ -164,6 +172,25 @@ class ClashRoyaleController {
         context: __filename,
         message: (error && error.message) || error,
         method: 'show'
+      })
+    }
+  }
+
+  async getRiverLog(getCurrentriverraceURL) {
+    try {
+      const getCurrentriverraceInfo = await axios.get(`https://api.clashroyale.com/v1/${getCurrentriverraceURL}`, CONFIG)
+      return getCurrentriverraceInfo
+    } catch (error) {
+      if (error.message == 'Request failed with status code 404') {
+        return false
+      }
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+        method: 'getRiverLog'
       })
     }
   }
@@ -499,11 +526,15 @@ class ClashRoyaleController {
           }
         } catch (error) {
           if (error.message == 'Request failed with status code 404') {
-            await Database.table('clash_royale_players')
+            const players_in_clan = Database.table('clash_royale_players')
               .where({
                 clan_tag: curClanTag
               })
-              .delete()
+              .select('id')
+
+            await ClashRoyaleReminder.query().whereIn('clash_royale_players_id', players_in_clan).update({
+              number_of_wars_remaining: 0
+            })
             continue
           }
           if (error.message == 'Request failed with status code 403') {

@@ -165,7 +165,7 @@ export default class Manage extends React.Component {
                   <div className='community___input col-sm-6'>
                     <input
                   type='text'
-                  autocomplete='off'
+                  autoComplete='off'
                   value={communityName}
                   onBlur={this.handleNameblur}
                   onChange={this.handleCommunityNameChange}
@@ -183,7 +183,7 @@ export default class Manage extends React.Component {
                 <div className='community___input col-sm-6'>
                   <input
                     type='text'
-                    autocomplete='off'
+                    autoComplete='off'
                     value={stats_header}
                     onChange={this.handleCommunityClanTagChange}
                     placeholder='Change Clan Tag Name'

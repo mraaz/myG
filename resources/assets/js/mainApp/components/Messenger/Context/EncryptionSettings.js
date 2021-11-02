@@ -158,7 +158,7 @@ export default class EncryptionSettings extends React.Component {
       <input
         className='messenger-settings-encryption-key'
         type='text'
-        autocomplete='off'
+        autoComplete='off'
         placeholder='New Encryption Key'
         autoFocus
         disabled={!this.state.editingPin}

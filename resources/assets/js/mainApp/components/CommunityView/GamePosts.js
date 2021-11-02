@@ -4,6 +4,8 @@ import Group_IndividualPost from './Group_IndividualPost'
 import ComposeSection from '../ComposeSection_v2'
 
 import { logToElasticsearch } from '../../../integration/http/logger'
+// import TableComponent from '../common/TableComponent'
+import TableComponent from '../common/TableComponent/table'
 
 export default class Posts extends Component {
   constructor() {
@@ -14,13 +16,16 @@ export default class Posts extends Component {
       moreplease: true,
       post_submit_loading: false,
       activeTab: 'All',
-      fetching: false
+      fetching: false,
+      clanTagDataFetching: false,
+      clanTagData: ''
     }
   }
 
   componentDidMount() {
     window.scrollTo({ top: 500, behavior: 'smooth' })
     this.fetchMoreData()
+    // this.getClanTagGameData()
     document.addEventListener('scroll', this.handleScroll, { passive: true })
     document.addEventListener('wheel', this.handleScroll, { passive: true })
   }
@@ -66,6 +71,30 @@ export default class Posts extends Component {
         )
       })
     }
+  }
+
+  getClanTagGameData = () => {
+    const getData = async () => {
+      try {
+        this.setState({
+          clanTagDataFetching: true
+        })
+        const clanTag = this.props.stats_header
+        const response = await axios.get(`/api/clashroyale/show/${clanTag}`)
+        console.log(response)
+        this.setState({
+          clanTagDataFetching: false,
+          clanTagData: response.data ? response.data : ''
+        })
+      } catch (error) {
+        logToElasticsearch('error', 'Clan Tag Game Stats', 'Failed at Clan Tag Game Stats' + ' ' + error)
+        this.setState({
+          clanTagDataFetching: false,
+          clanTagData: data
+        })
+      }
+    }
+    getData()
   }
 
   fetchMoreData = () => {
@@ -124,6 +153,10 @@ export default class Posts extends Component {
 
   handleTabOption = (activeTab) => {
     this.setState({ activeTab, counter: 1 }, async () => {
+      if( activeTab== "Stats"){
+        this.getClanTagGameData()
+        return 
+      }
       const myPosts = await axios.post('/api/get_group_posts', {
         counter: this.state.counter,
         group_id: this.props.group_id,
@@ -142,8 +175,55 @@ export default class Posts extends Component {
     })
   }
 
+  renderStats = (clanTagData) =>{
+    switch (clanTagData) {
+      case '404a':
+      case '404':
+        return ( 
+            <div className="stats_section__container">
+              <h1>Sorry mate, Clan Tag not found.</h1>
+            </div>
+        );
+        case '404b':
+        return ( 
+                  <div className="stats_section__container">
+                    <h1>Sorry mate, River Race not found.</h1>
+                  </div>
+        );
+        case 'Auth Error':
+        return ( 
+          <div className="stats_section__container">
+            <h1>Sorry mate, error! Its not you, its us! We'll get this fixed shortly.</h1>
+          </div>
+        );
+        case 'Auth Error':
+        return ( 
+          <div className="stats_section__container">
+                    <h1>Supercell servers cannot be reached (503).</h1>
+                    
+<span>Clash Royale may be on maintenance break. Please check status on Twitter @ClashRoyale (https://twitter.com/ClashRoyale) and try again later.</span>
+                  </div>
+        );
+    
+      default:
+        return (
+          <div className="stats_section__container">
+                    <TableComponent data={clanTagData}/>
+                  </div>
+        )
+    }
+  }
+
   render() {
-    const { myPosts = [], moreplease, isFetching = false, post_submit_loading = false, activeTab } = this.state
+    const {
+      myPosts = [],
+      moreplease,
+      isFetching = false,
+      post_submit_loading = false,
+      activeTab,
+      clanTagDataFetching = false,
+      clanTagData = ''
+    } = this.state
     return (
       <Fragment>
         <div className='gamePost__tab'>
@@ -156,8 +236,11 @@ export default class Posts extends Component {
           <span className={activeTab == 'Featured' ? 'active' : ''} onClick={(e) => this.handleTabOption('Featured')}>
             Featured
           </span>
+          <span className={activeTab == 'Stats' ? 'active' : ''} onClick={(e) => this.handleTabOption('Stats')}>
+            Stats
+          </span>
         </div>
-        {[0, 1, 2, 3].includes(this.props.current_user_permission) && (
+        {[0, 1, 2, 3].includes(this.props.current_user_permission) && activeTab !== 'Stats' && (
           <Fragment>
             <ComposeSection
               successCallback={this.composeSuccess}
@@ -187,9 +270,40 @@ export default class Posts extends Component {
           </div>
         )}
         <hr />
-        {myPosts.length > 0 && !post_submit_loading && (
+        {myPosts.length > 0 && !post_submit_loading && activeTab !== 'Stats' && (
           <section id='posts' className={isFetching ? '' : `active`}>
             {this.showLatestPosts()}
+          </section>
+        )}
+        { activeTab === "Stats" &&  clanTagData && !clanTagDataFetching && (
+              <section  className={` stats_section_main ${clanTagDataFetching ? '' : 'active'}`}>
+                 {this.renderStats(clanTagData)}
+              </section>
+            )
+            }
+        {activeTab === 'Stats' && !clanTagData && clanTagDataFetching && (
+          <section className={`stats_section_main ${!clanTagDataFetching ? '' : 'active'}`}>
+            <div className='stats_section__container table__loader'>
+              <table>
+                <tbody>
+                  <tr>
+                    <td class='td-1'>
+                      <span></span>
+                    </td>
+                    <td class='td-2'>
+                      <span></span>
+                    </td>
+                    <td class='td-3'>
+                      <span></span>
+                    </td>
+                    <td class='td-4'></td>
+                    <td class='td-5'>
+                      <span></span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </section>
         )}
       </Fragment>
