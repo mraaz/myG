@@ -48,6 +48,7 @@ export default class DataTable extends React.Component {
   
     renderHeadingRow = (_cell, cellIndex) => {
       const {data={}} = this.props;
+      const {sortableStatus} = this.state;
       const {header} = data;
       const headings =  Object.values(header)
       const headingsKey =  Object.keys(header)
@@ -60,6 +61,7 @@ export default class DataTable extends React.Component {
           header={true}
           fixed={cellIndex < 2}
           handleSortable={this.handleSortable} 
+          sortableStatus={sortableStatus}
         />
       );
     };

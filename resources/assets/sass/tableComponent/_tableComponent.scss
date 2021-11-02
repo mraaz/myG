@@ -6,6 +6,10 @@
     overflow-x: auto;
     max-width: 850px;
     margin: 0 auto;
+    max-width: 1080px !important;
+    all: unset!important;
+    width: 80%!important;
+    margin: auto!important;
     &.guest{
       max-width: 100%;
     }
@@ -56,6 +60,9 @@
           text-transform: uppercase;
         } 
         cursor: pointer;
+        .up{
+          transform: rotate(180deg);
+        }
       }
     }
 
@@ -123,6 +130,11 @@
     
     table {
       width: 100%;
+      max-width: 1080px!important;
+          all: unset!important;
+          width: 80%!important;
+          margin: auto!important;
+          display: flex!important;
       tr {
         border-bottom: 1px solid rgba(0,0,0,.1);
         td {
@@ -200,7 +212,7 @@
   
   .Cell-fixed {
     &.Cell-header{
-      height: 100px !important;
+      height: 125px !important;
     }
     position: absolute;
     top: auto;
