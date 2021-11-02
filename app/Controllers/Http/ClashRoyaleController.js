@@ -3,6 +3,9 @@
 const ClashRoyaleReminder = use('App/Models/ClashRoyaleReminder')
 const ClashRoyalePlayers = use('App/Models/ClashRoyalePlayers')
 const PlayerGameActivity = use('App/Models/PlayerGameActivity')
+const ClashRoyalePlayerBase = use('App/Models/ClashRoyalePlayerBase')
+const CrPlayerBaseTran = use('App/Models/CrPlayerBaseTran')
+
 //const PlayerGameActivityTran = use('App/Models/PlayerGameActivityTran')
 
 const Database = use('Database')
@@ -19,10 +22,7 @@ const axios = use('axios')
 
 //Decided to leave token in code, as each token is restricted to an IP
 const TOKEN =
-  // 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6ImIxZTE4MGJkLTQ2N2YtNGRiYy05MjNkLWJmNDNjMmQ1NjE3MSIsImlhdCI6MTYzNTczMDgyMiwic3ViIjoiZGV2ZWxvcGVyL2U0ZjA1ZjI4LWJmOGMtNDJmNS0yY2I1LTU0ZTZlNjA2N2QxMiIsInNjb3BlcyI6WyJyb3lhbGUiXSwibGltaXRzIjpbeyJ0aWVyIjoiZGV2ZWxvcGVyL3NpbHZlciIsInR5cGUiOiJ0aHJvdHRsaW5nIn0seyJjaWRycyI6WyIxMjAuMjMuMjcuMzEiXSwidHlwZSI6ImNsaWVudCJ9XX0.paryXpMAqdtFBmt3SaGi563bmlFbLwT9nOi-BQbJuPTgCSZhSuP5u6_IRHpZkPNL03dxsQUQ4NHbi2ua2qHs9A'
-//eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6ImIxZTE4MGJkLTQ2N2YtNGRiYy05MjNkLWJmNDNjMmQ1NjE3MSIsImlhdCI6MTYzNTczMDgyMiwic3ViIjoiZGV2ZWxvcGVyL2U0ZjA1ZjI4LWJmOGMtNDJmNS0yY2I1LTU0ZTZlNjA2N2QxMiIsInNjb3BlcyI6WyJyb3lhbGUiXSwibGltaXRzIjpbeyJ0aWVyIjoiZGV2ZWxvcGVyL3NpbHZlciIsInR5cGUiOiJ0aHJvdHRsaW5nIn0seyJjaWRycyI6WyIxMjAuMjMuMjcuMzEiXSwidHlwZSI6ImNsaWVudCJ9XX0.paryXpMAqdtFBmt3SaGi563bmlFbLwT9nOi-BQbJuPTgCSZhSuP5u6_IRHpZkPNL03dxsQUQ4NHbi2ua2qHs9A
-
-'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6IjA5MjNkOGNiLWEyZjQtNDBlNy1hMWVhLWFmN2ExYjE0MjAxOCIsImlhdCI6MTYzNTQ1NDAxOCwic3ViIjoiZGV2ZWxvcGVyL2I5OWJkYTY4LTdhYjktNTE0OS0wYTVkLWExYTdkZWNkYTg2MiIsInNjb3BlcyI6WyJyb3lhbGUiXSwibGltaXRzIjpbeyJ0aWVyIjoiZGV2ZWxvcGVyL3NpbHZlciIsInR5cGUiOiJ0aHJvdHRsaW5nIn0seyJjaWRycyI6WyI0NS4xMjcuMTM3LjEzNyJdLCJ0eXBlIjoiY2xpZW50In1dfQ.ZPfSV7WwO6fTNc4v8aRNofd7WMlk6YxIqfOVbSV0GbNRtMSQRdh4R1IsUUt1SfF3gl4U951Ytms_2sM96FnOCw'
+  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6ImIxZTE4MGJkLTQ2N2YtNGRiYy05MjNkLWJmNDNjMmQ1NjE3MSIsImlhdCI6MTYzNTczMDgyMiwic3ViIjoiZGV2ZWxvcGVyL2U0ZjA1ZjI4LWJmOGMtNDJmNS0yY2I1LTU0ZTZlNjA2N2QxMiIsInNjb3BlcyI6WyJyb3lhbGUiXSwibGltaXRzIjpbeyJ0aWVyIjoiZGV2ZWxvcGVyL3NpbHZlciIsInR5cGUiOiJ0aHJvdHRsaW5nIn0seyJjaWRycyI6WyIxMjAuMjMuMjcuMzEiXSwidHlwZSI6ImNsaWVudCJ9XX0.paryXpMAqdtFBmt3SaGi563bmlFbLwT9nOi-BQbJuPTgCSZhSuP5u6_IRHpZkPNL03dxsQUQ4NHbi2ua2qHs9A'
 
 const CONFIG = {
   headers: { Authorization: `Bearer ${TOKEN}` }
@@ -117,6 +117,43 @@ class ClashRoyaleController {
       getClanInfo.data.header = header[0]
 
       for (let index = 0; index < getClanInfo.data.items.length; index++) {
+        const get_player_info = await Database.from('clash_royale_player_bases')
+          .where({
+            player_tag: getClanInfo.data.items[index].tag
+          })
+          .first()
+
+        if (get_player_info == undefined) {
+          const cr_player_base_id = await ClashRoyalePlayerBase.create({
+            player_tag: getClanInfo.data.items[index].tag,
+            clan_tag: clanTag
+          })
+
+          await CrPlayerBaseTran.create({
+            cr_player_base_id: cr_player_base_id.id,
+            clan_tag: clanTag,
+            activity: 'Joined Clan'
+          })
+        } else {
+          if (get_player_info.clan_tag != clanTag) {
+            await ClashRoyalePlayerBase.query().where('id', get_player_info.id).update({
+              clan_tag: clanTag
+            })
+
+            await CrPlayerBaseTran.create({
+              cr_player_base_id: cr_player_base_id.id,
+              clan_tag: get_player_info.clan_tag,
+              activity: 'Left Clan'
+            })
+
+            await CrPlayerBaseTran.create({
+              cr_player_base_id: cr_player_base_id.id,
+              clan_tag: clanTag,
+              activity: 'Joined Clan'
+            })
+          }
+        }
+
         const player_tag_without_hash = getClanInfo.data.items[index].tag.substring(1)
 
         if (myGUsers[player_tag_without_hash] && myGUsers[player_tag_without_hash].user_id != undefined)
