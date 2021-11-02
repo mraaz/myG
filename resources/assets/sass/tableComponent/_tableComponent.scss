@@ -4,10 +4,8 @@
     opacity: 0;
     transition: all 1s ease-in-out;
     overflow-x: auto;
-    max-width: 850px;
     margin: 0 auto;
     max-width: 1080px !important;
-    all: unset!important;
     width: 80%!important;
     margin: auto!important;
     &.guest{
@@ -21,8 +19,20 @@
       font-family: 'Montserrat' !important;
       position: relative;
       color: #fff;
+      text-align: right;
       @media screen and (max-width: $mobile) {
         margin: 40px 20px;
+      }
+      .csv__download-button{
+        font-family: Montserrat!important;
+    font-size: 12px;
+    font-weight: 700;
+    color: #000;
+    background: #e5c746;
+    padding: 4px 8px;
+    border: 0;
+    cursor: pointer;
+    margin-bottom: 10px;
       }
    
     table {
@@ -201,6 +211,7 @@
     max-width: 100vw;
     height: 400px;
     overflow-y:auto;
+    margin-top: 20px;
   }
   
   .Cell {

@@ -1,5 +1,7 @@
 import React from "react";
 import Cell from './Cell';
+import { CSVLink } from "react-csv";
+import { Fragment } from "react";
 // import TableBody from "./TableBody";
 // import TableHeader from "./TableHeader";
 
@@ -87,7 +89,7 @@ export default class DataTable extends React.Component {
   
     render() {
     const {data={}} = this.props;
-    const {rows={}} = this.state;
+    const {rows=[]} = this.state;
       const {header={}} = data;
       const headings =  Object.keys(header)
       const theadMarkup = (
@@ -97,18 +99,29 @@ export default class DataTable extends React.Component {
       );
   
       const tbodyMarkup = rows.map(this.renderRow);
+    const h = [
+      { label: "Player", key: "name" },
+      { label: "myG Alias", key: "myG_alias" },
+      { label: "Total decks used", key: "decksUsed" },
+    ];
     
       return (
-        <div className="DataTable">
-          <div className="ScrollContainer">
-            <table className="Table" ref={this.tableRef}>
-              {/* // Add a caption */}
-              {/* <caption>{title}</caption> */}
-              <thead>{theadMarkup}</thead>
-              <tbody>{tbodyMarkup}</tbody>
-            </table>
+        <Fragment>
+          {(rows && rows.length ) ? <CSVLink data={rows} headers={h} filename={`download.csv`}>
+                <span className="csv__download-button">Download CSV </span>
+            </CSVLink> : ''}
+          <div className="DataTable">
+            <div className="ScrollContainer">
+            
+              <table className="Table" ref={this.tableRef}>
+                {/* // Add a caption */}
+                {/* <caption>{title}</caption> */}
+                <thead>{theadMarkup}</thead>
+                <tbody>{tbodyMarkup}</tbody>
+              </table>
+            </div>
           </div>
-        </div>
+        </Fragment>
       );
     }
   }
