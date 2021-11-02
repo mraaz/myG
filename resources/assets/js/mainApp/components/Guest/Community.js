@@ -62,9 +62,10 @@ export default class GuestCommunity extends React.Component {
         const {stats_header = ''} = this.state.community
         const clanTag = stats_header;
         const response = await axios.get(`/api/clashroyale/show/${clanTag}`)
+        console.log("response   ",response);
         this.setState({
           clanTagDataFetching:false,
-          clanTagData:data //response.data ? response.data : ''
+          clanTagData:response.data ? response.data : ''
         })
       } catch (error) {
         logToElasticsearch('error', 'Clan Tag Game Stats for guest', 'Failed at Clan Tag Game Stats for guest' + ' ' + error)
@@ -75,6 +76,44 @@ export default class GuestCommunity extends React.Component {
       }
     }
     getData();
+  }
+
+  renderStats = (clanTagData) =>{
+    switch (clanTagData) {
+      case 404:
+        return ( 
+            <div className="stats_section__container">
+              <h1>Sorry mate, Clan Tag not found.</h1>
+            </div>
+        );
+        case '404b':
+        return ( 
+                  <div className="stats_section__container">
+                    <h1>Sorry mate, River Race not found.</h1>
+                  </div>
+        );
+        case 'Auth Error':
+        return ( 
+          <div className="stats_section__container">
+            <h1>Sorry mate, error! Its not you, its us! We'll get this fixed shortly.</h1>
+          </div>
+        );
+        case 'Auth Error':
+        return ( 
+          <div className="stats_section__container">
+                    <h1>Supercell servers cannot be reached (503).</h1>
+                    
+<span>Clash Royale may be on maintenance break. Please check status on Twitter @ClashRoyale (https://twitter.com/ClashRoyale) and try again later.</span>
+                  </div>
+        );
+    
+      default:
+        return (
+          <div className="stats_section__container">
+                    <TableComponent data={clanTagData}/>
+                  </div>
+        )
+    }
   }
 
   render() {
@@ -126,9 +165,7 @@ export default class GuestCommunity extends React.Component {
             }
             { activeTab === "Stats" &&  clanTagData && !clanTagDataFetching && (
               <section  className={` guest stats_section_main ${clanTagDataFetching ? '' : 'active'}`}>
-                  <div className="stats_section__container">
-                    <TableComponent data={clanTagData}/>
-                  </div>
+                 {this.renderStats(clanTagData)}
               </section>
             )
             }

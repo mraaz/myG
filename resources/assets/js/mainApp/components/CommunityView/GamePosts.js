@@ -173,8 +173,43 @@ export default class Posts extends Component {
         myPosts: [...myPosts.data.groupPosts.groupPosts]
       })
     })
-    if (activeTab == 'Stats') {
-      this.getClanTagGameData()
+  }
+
+  renderStats = (clanTagData) =>{
+    switch (clanTagData) {
+      case 404:
+        return ( 
+            <div className="stats_section__container">
+              <h1>Sorry mate, Clan Tag not found.</h1>
+            </div>
+        );
+        case '404b':
+        return ( 
+                  <div className="stats_section__container">
+                    <h1>Sorry mate, River Race not found.</h1>
+                  </div>
+        );
+        case 'Auth Error':
+        return ( 
+          <div className="stats_section__container">
+            <h1>Sorry mate, error! Its not you, its us! We'll get this fixed shortly.</h1>
+          </div>
+        );
+        case 'Auth Error':
+        return ( 
+          <div className="stats_section__container">
+                    <h1>Supercell servers cannot be reached (503).</h1>
+                    
+<span>Clash Royale may be on maintenance break. Please check status on Twitter @ClashRoyale (https://twitter.com/ClashRoyale) and try again later.</span>
+                  </div>
+        );
+    
+      default:
+        return (
+          <div className="stats_section__container">
+                    <TableComponent data={clanTagData}/>
+                  </div>
+        )
     }
   }
 
@@ -239,13 +274,12 @@ export default class Posts extends Component {
             {this.showLatestPosts()}
           </section>
         )}
-        {activeTab === 'Stats' && clanTagData && !clanTagDataFetching && (
-          <section className={` stats_section_main ${clanTagDataFetching ? '' : 'active'}`}>
-            <div className='stats_section__container'>
-              <TableComponent data={clanTagData} />
-            </div>
-          </section>
-        )}
+        { activeTab === "Stats" &&  clanTagData && !clanTagDataFetching && (
+              <section  className={` stats_section_main ${clanTagDataFetching ? '' : 'active'}`}>
+                 {this.renderStats(clanTagData)}
+              </section>
+            )
+            }
         {activeTab === 'Stats' && !clanTagData && clanTagDataFetching && (
           <section className={`stats_section_main ${!clanTagDataFetching ? '' : 'active'}`}>
             <div className='stats_section__container table__loader'>
