@@ -116,6 +116,8 @@ class ClashRoyaleController {
       header.push(headerStruct)
       getClanInfo.data.header = header[0]
 
+      let list_of_players = []
+
       for (let index = 0; index < getClanInfo.data.items.length; index++) {
         const get_player_info = await Database.from('clash_royale_player_bases')
           .where({
@@ -135,16 +137,20 @@ class ClashRoyaleController {
             activity: 'Joined Clan'
           })
         } else {
+          list_of_players.push(cr_player_base_id.id)
+
           if (get_player_info.clan_tag != clanTag) {
             await ClashRoyalePlayerBase.query().where('id', get_player_info.id).update({
               clan_tag: clanTag
             })
 
-            await CrPlayerBaseTran.create({
-              cr_player_base_id: cr_player_base_id.id,
-              clan_tag: get_player_info.clan_tag,
-              activity: 'Left Clan'
-            })
+            if (!get_player_info.clan_tag) {
+              await CrPlayerBaseTran.create({
+                cr_player_base_id: cr_player_base_id.id,
+                clan_tag: get_player_info.clan_tag,
+                activity: 'Left Clan'
+              })
+            }
 
             await CrPlayerBaseTran.create({
               cr_player_base_id: cr_player_base_id.id,
@@ -180,6 +186,22 @@ class ClashRoyaleController {
           getClanInfo.data.items[index].decksUsed = 0
           getClanInfo.data.items[index].decksUsedToday = 0
         }
+      }
+
+      const lost_players = await Database.table('clash_royale_player_bases')
+        .whereNotIn('id', list_of_players)
+        .andWhere({ clan_tag: clanTag })
+
+      for (let index = 0; index < lost_players.length; index++) {
+        await CrPlayerBaseTran.create({
+          cr_player_base_id: lost_players[index].id,
+          clan_tag: clanTag,
+          activity: 'Left Clan'
+        })
+
+        await ClashRoyalePlayerBase.query().where('id', lost_players[index].id).update({
+          clan_tag: null
+        })
       }
 
       //return getCurrentriverraceInfo.data
