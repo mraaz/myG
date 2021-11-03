@@ -3,7 +3,7 @@
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const Model = use('Model')
 
-class PlayerGameActivityTran extends Model {
+class CrPlayerBaseTran extends Model {
 }
 
-module.exports = PlayerGameActivityTran
+module.exports = CrPlayerBaseTran
