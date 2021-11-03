@@ -3,6 +3,9 @@
 const ClashRoyaleReminder = use('App/Models/ClashRoyaleReminder')
 const ClashRoyalePlayers = use('App/Models/ClashRoyalePlayers')
 const PlayerGameActivity = use('App/Models/PlayerGameActivity')
+const ClashRoyalePlayerBase = use('App/Models/ClashRoyalePlayerBase')
+const CrPlayerBaseTran = use('App/Models/CrPlayerBaseTran')
+
 //const PlayerGameActivityTran = use('App/Models/PlayerGameActivityTran')
 
 const Database = use('Database')
@@ -19,10 +22,7 @@ const axios = use('axios')
 
 //Decided to leave token in code, as each token is restricted to an IP
 const TOKEN =
-  // 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6ImIxZTE4MGJkLTQ2N2YtNGRiYy05MjNkLWJmNDNjMmQ1NjE3MSIsImlhdCI6MTYzNTczMDgyMiwic3ViIjoiZGV2ZWxvcGVyL2U0ZjA1ZjI4LWJmOGMtNDJmNS0yY2I1LTU0ZTZlNjA2N2QxMiIsInNjb3BlcyI6WyJyb3lhbGUiXSwibGltaXRzIjpbeyJ0aWVyIjoiZGV2ZWxvcGVyL3NpbHZlciIsInR5cGUiOiJ0aHJvdHRsaW5nIn0seyJjaWRycyI6WyIxMjAuMjMuMjcuMzEiXSwidHlwZSI6ImNsaWVudCJ9XX0.paryXpMAqdtFBmt3SaGi563bmlFbLwT9nOi-BQbJuPTgCSZhSuP5u6_IRHpZkPNL03dxsQUQ4NHbi2ua2qHs9A'
-//eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6ImIxZTE4MGJkLTQ2N2YtNGRiYy05MjNkLWJmNDNjMmQ1NjE3MSIsImlhdCI6MTYzNTczMDgyMiwic3ViIjoiZGV2ZWxvcGVyL2U0ZjA1ZjI4LWJmOGMtNDJmNS0yY2I1LTU0ZTZlNjA2N2QxMiIsInNjb3BlcyI6WyJyb3lhbGUiXSwibGltaXRzIjpbeyJ0aWVyIjoiZGV2ZWxvcGVyL3NpbHZlciIsInR5cGUiOiJ0aHJvdHRsaW5nIn0seyJjaWRycyI6WyIxMjAuMjMuMjcuMzEiXSwidHlwZSI6ImNsaWVudCJ9XX0.paryXpMAqdtFBmt3SaGi563bmlFbLwT9nOi-BQbJuPTgCSZhSuP5u6_IRHpZkPNL03dxsQUQ4NHbi2ua2qHs9A
-
-'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6IjA5MjNkOGNiLWEyZjQtNDBlNy1hMWVhLWFmN2ExYjE0MjAxOCIsImlhdCI6MTYzNTQ1NDAxOCwic3ViIjoiZGV2ZWxvcGVyL2I5OWJkYTY4LTdhYjktNTE0OS0wYTVkLWExYTdkZWNkYTg2MiIsInNjb3BlcyI6WyJyb3lhbGUiXSwibGltaXRzIjpbeyJ0aWVyIjoiZGV2ZWxvcGVyL3NpbHZlciIsInR5cGUiOiJ0aHJvdHRsaW5nIn0seyJjaWRycyI6WyI0NS4xMjcuMTM3LjEzNyJdLCJ0eXBlIjoiY2xpZW50In1dfQ.ZPfSV7WwO6fTNc4v8aRNofd7WMlk6YxIqfOVbSV0GbNRtMSQRdh4R1IsUUt1SfF3gl4U951Ytms_2sM96FnOCw'
+  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6ImIxZTE4MGJkLTQ2N2YtNGRiYy05MjNkLWJmNDNjMmQ1NjE3MSIsImlhdCI6MTYzNTczMDgyMiwic3ViIjoiZGV2ZWxvcGVyL2U0ZjA1ZjI4LWJmOGMtNDJmNS0yY2I1LTU0ZTZlNjA2N2QxMiIsInNjb3BlcyI6WyJyb3lhbGUiXSwibGltaXRzIjpbeyJ0aWVyIjoiZGV2ZWxvcGVyL3NpbHZlciIsInR5cGUiOiJ0aHJvdHRsaW5nIn0seyJjaWRycyI6WyIxMjAuMjMuMjcuMzEiXSwidHlwZSI6ImNsaWVudCJ9XX0.paryXpMAqdtFBmt3SaGi563bmlFbLwT9nOi-BQbJuPTgCSZhSuP5u6_IRHpZkPNL03dxsQUQ4NHbi2ua2qHs9A'
 
 const CONFIG = {
   headers: { Authorization: `Bearer ${TOKEN}` }
@@ -86,37 +86,79 @@ class ClashRoyaleController {
       let headerStruct = {}
 
       if (isWarToday) {
-        headerStruct = {
-          name: 'Player',
-          myG_alias: 'myG Alias',
-          decksUsed: 'Total decks used',
-          donations: 'Donated',
-          donationsReceived: 'Received',
-          decksUsedToday: 'Total decks used today',
-          fame: 'Fame',
-          repairPoints: 'Repair Points',
-          boatAttacks: 'Boat Attacks',
-          trophies: 'Trophies',
-          lastSeen: 'Last logged into CR',
-          tag: 'Tag'
-        }
+        headerStruct = [
+          { label: 'Player', key: 'name', type: 'text' },
+          { label: 'myG Alias', key: 'myG_alias', type: 'text' },
+          { label: 'Total decks used', key: 'decksUsed', type: 'text' },
+          { label: 'Donated', key: 'donations', type: 'text' },
+          { label: 'Total decks used today', key: 'decksUsedToday', type: 'text' },
+          { label: 'Fame', key: 'fame', type: 'text' },
+          { label: 'Repair Points', key: 'repairPoints', type: 'text' },
+          { label: 'Boat Attacks', key: 'boatAttacks', type: 'text' },
+          { label: 'Received', key: 'donationsReceived', type: 'text' },
+          { label: 'Trophies', key: 'trophies', type: 'text' },
+          { label: 'Last logged into CR', key: 'lastSeen', type: 'date' },
+          { label: 'Tag', key: 'tag', type: 'text' }
+        ]
       } else {
-        headerStruct = {
-          name: 'Player',
-          myG_alias: 'myG Alias',
-          decksUsed: 'Total decks used',
-          donations: 'Donated',
-          donationsReceived: 'Received',
-          decksUsedToday: 'Total decks used today',
-          trophies: 'Trophies',
-          lastSeen: 'Last logged into CR',
-          tag: 'Tag'
-        }
+        headerStruct = [
+          { label: 'Player', key: 'name', type: 'text' },
+          { label: 'myG Alias', key: 'myG_alias', type: 'text' },
+          { label: 'Total decks used', key: 'decksUsed', type: 'text' },
+          { label: 'Donated', key: 'donations', type: 'text' },
+          { label: 'Received', key: 'donationsReceived', type: 'text' },
+          { label: 'Trophies', key: 'trophies', type: 'text' },
+          { label: 'Last logged into CR', key: 'lastSeen', type: 'date' },
+          { label: 'Tag', key: 'tag', type: 'text' }
+        ]
       }
       header.push(headerStruct)
       getClanInfo.data.header = header[0]
 
+      let list_of_players = []
+
       for (let index = 0; index < getClanInfo.data.items.length; index++) {
+        const get_player_info = await Database.from('clash_royale_player_bases')
+          .where({
+            player_tag: getClanInfo.data.items[index].tag
+          })
+          .first()
+
+        if (get_player_info == undefined) {
+          const cr_player_base_id = await ClashRoyalePlayerBase.create({
+            player_tag: getClanInfo.data.items[index].tag,
+            clan_tag: clanTag
+          })
+
+          await CrPlayerBaseTran.create({
+            cr_player_base_id: cr_player_base_id.id,
+            clan_tag: clanTag,
+            activity: 'Joined Clan'
+          })
+        } else {
+          list_of_players.push(cr_player_base_id.id)
+
+          if (get_player_info.clan_tag != clanTag) {
+            await ClashRoyalePlayerBase.query().where('id', get_player_info.id).update({
+              clan_tag: clanTag
+            })
+
+            if (!get_player_info.clan_tag) {
+              await CrPlayerBaseTran.create({
+                cr_player_base_id: cr_player_base_id.id,
+                clan_tag: get_player_info.clan_tag,
+                activity: 'Left Clan'
+              })
+            }
+
+            await CrPlayerBaseTran.create({
+              cr_player_base_id: cr_player_base_id.id,
+              clan_tag: clanTag,
+              activity: 'Joined Clan'
+            })
+          }
+        }
+
         const player_tag_without_hash = getClanInfo.data.items[index].tag.substring(1)
 
         if (myGUsers[player_tag_without_hash] && myGUsers[player_tag_without_hash].user_id != undefined)
@@ -143,6 +185,22 @@ class ClashRoyaleController {
           getClanInfo.data.items[index].decksUsed = 0
           getClanInfo.data.items[index].decksUsedToday = 0
         }
+      }
+
+      const lost_players = await Database.table('clash_royale_player_bases')
+        .whereNotIn('id', list_of_players)
+        .andWhere({ clan_tag: clanTag })
+
+      for (let index = 0; index < lost_players.length; index++) {
+        await CrPlayerBaseTran.create({
+          cr_player_base_id: lost_players[index].id,
+          clan_tag: clanTag,
+          activity: 'Left Clan'
+        })
+
+        await ClashRoyalePlayerBase.query().where('id', lost_players[index].id).update({
+          clan_tag: null
+        })
       }
 
       //return getCurrentriverraceInfo.data
