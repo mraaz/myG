@@ -86,20 +86,6 @@ class ClashRoyaleController {
       let headerStruct = {}
 
       if (isWarToday) {
-        headerStruct = {
-          name: 'Player',
-          myG_alias: 'myG Alias',
-          decksUsed: 'Total decks used',
-          donations: 'Donated',
-          donationsReceived: 'Received',
-          decksUsedToday: 'Total decks used today',
-          fame: 'Fame',
-          repairPoints: 'Repair Points',
-          boatAttacks: 'Boat Attacks',
-          trophies: 'Trophies',
-          lastSeen: 'Last logged into CR',
-          tag: 'Tag'
-        }
         headerStruct = [
           { label: 'Player', key: 'name', type: 'text' },
           { label: 'myG Alias', key: 'myG_alias', type: 'text' },
