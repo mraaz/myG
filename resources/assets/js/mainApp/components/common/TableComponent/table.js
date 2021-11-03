@@ -49,17 +49,13 @@ export default class DataTable extends React.Component {
   }
   
     renderHeadingRow = (_cell, cellIndex) => {
-      const {data={}} = this.props;
       const {sortableStatus} = this.state;
-      const {header} = data;
-      const headings =  Object.values(header)
-      const headingsKey =  Object.keys(header)
   
       return (
         <Cell
           key={`heading-${cellIndex}`}
-          content={headings[cellIndex]}
-          headerkey={headingsKey[cellIndex]}
+          content={_cell.label}
+          headerkey={_cell.key}
           header={true}
           fixed={cellIndex < 2}
           handleSortable={this.handleSortable} 
@@ -70,15 +66,15 @@ export default class DataTable extends React.Component {
     
     renderRow = (_row, rowIndex) => {
       const {data={}} = this.props;
-      const {header} = data;
+      const {header=[]} = data;
   
       return (
         <tr key={`row-${rowIndex}`}>
-          {Object.keys(header).map((_cell, cellIndex) => {
+          {header.map((_cell, cellIndex) => {
             return (
               <Cell
                 key={`${rowIndex}-${cellIndex}`}
-                content={_row[_cell]}
+                content={_row[_cell.key]}
                 fixed={cellIndex < 2}
               />
             )
@@ -90,24 +86,18 @@ export default class DataTable extends React.Component {
     render() {
     const {data={}} = this.props;
     const {rows=[]} = this.state;
-      const {header={}} = data;
-      const headings =  Object.keys(header)
+      const {header=[]} = data;
       const theadMarkup = (
         <tr key="heading">
-          {headings.map(this.renderHeadingRow)}
+          {header.map(this.renderHeadingRow)}
         </tr>
       );
   
       const tbodyMarkup = rows.map(this.renderRow);
-    const h = [
-      { label: "Player", key: "name" },
-      { label: "myG Alias", key: "myG_alias" },
-      { label: "Total decks used", key: "decksUsed" },
-    ];
     
       return (
         <Fragment>
-          {(rows && rows.length ) ? <CSVLink data={rows} headers={h} filename={`download.csv`}>
+          {(rows && rows.length ) ? <CSVLink data={rows} headers={header} filename={`download.csv`}>
                 <span className="csv__download-button">Download CSV </span>
             </CSVLink> : ''}
           <div className="DataTable">
