@@ -100,18 +100,31 @@ class ClashRoyaleController {
           lastSeen: 'Last logged into CR',
           tag: 'Tag'
         }
+        headerStruct = [
+          { label: 'Player', key: 'name', type: 'text' },
+          { label: 'myG Alias', key: 'myG_alias', type: 'text' },
+          { label: 'Total decks used', key: 'decksUsed', type: 'text' },
+          { label: 'Donated', key: 'donations', type: 'text' },
+          { label: 'Total decks used today', key: 'decksUsedToday', type: 'text' },
+          { label: 'Fame', key: 'fame', type: 'text' },
+          { label: 'Repair Points', key: 'repairPoints', type: 'text' },
+          { label: 'Boat Attacks', key: 'boatAttacks', type: 'text' },
+          { label: 'Received', key: 'donationsReceived', type: 'text' },
+          { label: 'Trophies', key: 'trophies', type: 'text' },
+          { label: 'Last logged into CR', key: 'lastSeen', type: 'date' },
+          { label: 'Tag', key: 'tag', type: 'text' }
+        ]
       } else {
-        headerStruct = {
-          name: 'Player',
-          myG_alias: 'myG Alias',
-          decksUsed: 'Total decks used',
-          donations: 'Donated',
-          donationsReceived: 'Received',
-          decksUsedToday: 'Total decks used today',
-          trophies: 'Trophies',
-          lastSeen: 'Last logged into CR',
-          tag: 'Tag'
-        }
+        headerStruct = [
+          { label: 'Player', key: 'name', type: 'text' },
+          { label: 'myG Alias', key: 'myG_alias', type: 'text' },
+          { label: 'Total decks used', key: 'decksUsed', type: 'text' },
+          { label: 'Donated', key: 'donations', type: 'text' },
+          { label: 'Received', key: 'donationsReceived', type: 'text' },
+          { label: 'Trophies', key: 'trophies', type: 'text' },
+          { label: 'Last logged into CR', key: 'lastSeen', type: 'date' },
+          { label: 'Tag', key: 'tag', type: 'text' }
+        ]
       }
       header.push(headerStruct)
       getClanInfo.data.header = header[0]
