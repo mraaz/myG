@@ -195,9 +195,52 @@
       }
     }
 }
-    
+   
 }
 
+ 
+
+.sortable-Container__container{
+  display: flex;
+  .modal-wrap {
+    border: 1px solid #273137;
+  border-radius: 4px;
+  z-index: 2;
+  position: relative;
+  background: #171a1c 0 0 no-repeat padding-box;
+  height: auto;
+  .modal__header{
+    background: #1d2326 0 0 no-repeat padding-box;
+    height: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    color: #fff;
+    }
+    .modal__body{
+      background: #171a1c 0 0 no-repeat padding-box;
+      min-height: 400px;
+      max-height: 100vh;
+      overflow: auto;
+      width: 100%;
+      padding: 2em 5em;
+      display: flex;
+      flex-direction: column;
+      color: #fff;
+      ul{
+        li{
+          &::before {content: "•"; color: #e7bc2f;
+            display: inline-block; width: 1em;
+            margin-left: -1em}
+        }
+      }
+    }
+  .modal__close{
+    width:32px;height:32px;background:#1d2326 0 0 no-repeat padding-box;border-radius:50%;position:absolute;right:-15px;top:-15px;cursor:pointer
+  }
+  }
+}
 
 .Table {
     border-spacing: 0px;

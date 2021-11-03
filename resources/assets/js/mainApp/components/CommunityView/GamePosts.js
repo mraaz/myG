@@ -96,11 +96,11 @@ export default class Posts extends Component {
           clanTagDataFetching: true
         })
         const clanTag = this.props.stats_header
-        const response = await axios.get(`/api/clashroyale/show/${clanTag}`)
+        // const response = await axios.get(`/api/clashroyale/show/${clanTag}`)
         // console.log(response)
         this.setState({
           clanTagDataFetching: false,
-          clanTagData: response.data ? response.data : ''
+          clanTagData: data // response.data ? response.data : ''
         })
       } catch (error) {
         logToElasticsearch('error', 'Clan Tag Game Stats', 'Failed at Clan Tag Game Stats' + ' ' + error)

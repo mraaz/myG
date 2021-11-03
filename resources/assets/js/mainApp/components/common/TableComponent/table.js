@@ -2,7 +2,8 @@ import React from "react";
 import Cell from './Cell';
 import { CSVLink } from "react-csv";
 import { Fragment } from "react";
-// import TableBody from "./TableBody";
+import SortTableHeader from "./SortTableHeader";
+
 // import TableHeader from "./TableHeader";
 
 export default class DataTable extends React.Component {
@@ -13,17 +14,22 @@ export default class DataTable extends React.Component {
       this.state = {
         cellHeights: [],
         rows:[],
-        sortableStatus:false
+        header:[],
+        sortableStatus:false,
+        isOpen:false
       };
       
       this.tableRef = React.createRef();
-      this.renderHeadingRow = this.renderHeadingRow.bind(this);
-      this.renderRow = this.renderRow.bind(this);
     }
   
     componentDidMount() {
       const {data={}} = this.props;
-      this.setState({rows:data.items})
+      const HeaderItem =  window.localStorage.getItem("statsHeaderOrder");
+      if(HeaderItem){
+          this.setState({rows:data.items,header:JSON.parse(HeaderItem)})
+      } else {
+        this.setState({rows:data.items,header:data.header})
+      }
     }
 
     handleSortable = (e,header) =>{
@@ -65,8 +71,7 @@ export default class DataTable extends React.Component {
     };
     
     renderRow = (_row, rowIndex) => {
-      const {data={}} = this.props;
-      const {header=[]} = data;
+      const {header=[]} = this.state;
   
       return (
         <tr key={`row-${rowIndex}`}>
@@ -82,11 +87,17 @@ export default class DataTable extends React.Component {
         </tr>
       )
     };
+
+    handleModalToggle = () =>{
+      const {isOpen} = this.state
+      this.setState({isOpen:!isOpen})
+    }
+    saveHeaderOrder = (data) =>{
+      window.localStorage.setItem("statsHeaderOrder",JSON.stringify(data))
+    }
   
     render() {
-    const {data={}} = this.props;
-    const {rows=[]} = this.state;
-      const {header=[]} = data;
+      const {rows=[],isOpen,header=[]} = this.state;
       const theadMarkup = (
         <tr key="heading">
           {header.map(this.renderHeadingRow)}
@@ -94,10 +105,12 @@ export default class DataTable extends React.Component {
       );
   
       const tbodyMarkup = rows.map(this.renderRow);
-    
+
       return (
         <Fragment>
-          {(rows && rows.length ) ? <CSVLink data={rows} headers={header} filename={`download.csv`}>
+            <SortTableHeader  saveHeaderOrder={this.saveHeaderOrder} isOpen ={isOpen} items={header} handleModalToggle={this.handleModalToggle}/>
+            <span className="csv__download-button " onClick={e=>this.handleModalToggle()} style={{marginRight:"10px"}}>Edit Sort Header </span>
+            {(rows && rows.length ) ? <CSVLink data={rows} headers={header} filename={`download.csv`}>
                 <span className="csv__download-button">Download CSV </span>
             </CSVLink> : ''}
           <div className="DataTable">
