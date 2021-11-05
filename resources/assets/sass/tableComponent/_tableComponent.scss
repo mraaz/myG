@@ -319,3 +319,29 @@
       }
     }
   }
+
+  .stats_section__container{
+    .rt-thead{
+      height: 90px;
+    }
+    .ReactTable .rt-thead .rt-th, .ReactTable .rt-thead .rt-td{
+      background: #1d2326;
+      border: 1px solid #181a1c;
+    }
+    .ReactTable .rt-tbody.rt-th, .ReactTable .rt-tbody .rt-td{
+      background: #1d2326;
+      border: 1px solid #181a1c;
+    }
+    .rthfc .rt-tr.-odd .rt-td{
+      background: #1d2326;
+    }
+    .rthfc .rt-tr.-even .rt-td{
+      background: #1d2326;
+    }
+    .rt-td,.rt-th{
+      text-align: center  !important;;
+    }
+    .rt-th{
+      padding: 30px 5px  !important;
+    }
+  }
