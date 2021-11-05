@@ -77,7 +77,7 @@ export default class NewTabe extends React.Component {
     const columns = this.renderColumns(header);
     return (
       <div>
-            {this.props.guest && <Fragment><SortTableHeader  saveHeaderOrder={this.saveHeaderOrder} isOpen ={isOpen} items={header} handleModalToggle={this.handleModalToggle}/>
+            {!this.props.guest && <Fragment><SortTableHeader  saveHeaderOrder={this.saveHeaderOrder} isOpen ={isOpen} items={header} handleModalToggle={this.handleModalToggle}/>
             <span className="csv__download-button " onClick={e=>this.handleModalToggle()} style={{marginRight:"10px"}}>Edit Sort Header </span>
             {(rows && rows.length ) ? <CSVLink data={rows} headers={header} filename={`download.csv`}>
                 <span className="csv__download-button">Download CSV </span>
