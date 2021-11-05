@@ -1,6 +1,7 @@
 import React from "react";
 import { CSVLink } from "react-csv";
 import SortTableHeader from "./SortTableHeader";
+import moment from 'moment'
 
 // Import React Table
 import ReactTable from "react-table-6";  
@@ -59,6 +60,15 @@ export default class NewTabe extends React.Component {
                       <div onClick={e=>alert(row.value)}>{row.value}</div>
                     )
                   }
+            } else if(head.type == "date"){
+                return {
+                    Header: head.label,
+                    accessor: head.key,
+                    width: 150,
+                    Cell: row => (
+                      <div>{moment(row.value).format('MM/DD/YYYY')}</div>
+                    )
+                  }
             } else{
                 return {
                     Header: head.label,
@@ -77,12 +87,13 @@ export default class NewTabe extends React.Component {
     const columns = this.renderColumns(header);
     return (
       <div>
-            {!this.props.guest && <Fragment><SortTableHeader  saveHeaderOrder={this.saveHeaderOrder} isOpen ={isOpen} items={header} handleModalToggle={this.handleModalToggle}/>
-            <span className="csv__download-button " onClick={e=>this.handleModalToggle()} style={{marginRight:"10px"}}>Edit Sort Header </span>
-            {(rows && rows.length ) ? <CSVLink data={rows} headers={header} filename={`download.csv`}>
-                <span className="csv__download-button">Download CSV </span>
-            </CSVLink> : ''}
-            </Fragment>}
+        {!this.props.guest && <Fragment><SortTableHeader  saveHeaderOrder={this.saveHeaderOrder} isOpen ={isOpen} items={header} handleModalToggle={this.handleModalToggle}/>
+        <span className="csv__download-button " onClick={e=>this.handleModalToggle()} style={{marginRight:"10px"}}>Edit Sort Header </span>
+        {(rows && rows.length ) ? <CSVLink data={rows} headers={header} filename={`download.csv`}>
+            <span className="csv__download-button">Download CSV </span>
+        </CSVLink> : ''}
+        </Fragment>
+        }
         <ReactTableFixedColumns
             showPaginationBottom={false}
             data={rows}
