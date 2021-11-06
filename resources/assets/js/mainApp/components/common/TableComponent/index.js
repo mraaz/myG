@@ -1,45 +1,116 @@
-import React,{useState,useEffect} from "react";
-import Cell from './Cell';
-import TableBody from "./TableBody";
-import TableHeader from "./TableHeader";
+/*
+ * Author : Nitin Tyagi
+ * github  : https://github.com/realinit
+ * Email : nitin.1992tyagi@gmail.com
+ */ 
+import React from "react";
+import { CSVLink } from "react-csv";
+import SortTableHeader from "./SortTableHeader";
+import moment from 'moment'
+
+// Import React Table
+import ReactTable from "react-table-6";  
+import "react-table-6/react-table.css"  
+
+// Import React Table HOC Fixed columns
+import withFixedColumns from "react-table-hoc-fixed-columns";
+import "react-table-hoc-fixed-columns/lib/styles.css";
+import { Fragment } from "react";
+
+const ReactTableFixedColumns = withFixedColumns(ReactTable);
+
+export default class NewTabe extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+        cellHeights: [],
+        rows:[],
+        header:[],
+        sortableStatus:false,
+        isOpen:false
+      };
+  }
 
 
-
-export default function TableComponent ({data}) {
-    const [rows,setRows] = useState([]);
-    const [sortableStatus,SetSortableStatus] = useState(false);
-    if(data.items == "undefined"){
-        return 'No Data Found !'
+  componentDidMount() {
+    const {data={}} = this.props;
+    const HeaderItem =  window.localStorage.getItem("statsHeaderOrder");
+    if(HeaderItem){
+        this.setState({rows:data.items,header:JSON.parse(HeaderItem)})
+    } else {
+      this.setState({rows:data.items,header:data.header})
     }
+  }
 
-    useEffect(()=>{
-        setRows(data.items)
-    },[])
+  handleModalToggle = () =>{
+    const {isOpen} = this.state
+    this.setState({isOpen:!isOpen})
+  }
+  saveHeaderOrder = (data) =>{
+    window.localStorage.setItem("statsHeaderOrder",JSON.stringify(data))
+  }
 
-const handleSortable = (e,header) =>{
-    const data = [...rows];
-    data.sort((a,b)=>{
-        if(sortableStatus){
-            return b[header]-a[header];
-        } else {
-            return a[header]-b[header];
-        }
-    })
-    setRows(data)
-    SetSortableStatus(!sortableStatus)
-}
 
+  renderColumns = (header) => {
+      return (
+        header.map(head=>{
+            if(head.fixed){
+                return {
+                    Header: head.label,
+                    accessor: head.key,
+                    width: 150,
+                    fixed: "left",
+                    Cell: row => (
+                      <div onClick={e=>alert(row.value)}>{row.value}</div>
+                    )
+                  }
+            } else if(head.type == "date"){
+                return {
+                    Header: head.label,
+                    accessor: head.key,
+                    width: 150,
+                    Cell: row => (
+                      <div>{moment(row.value).format('MM/DD/YYYY')}</div>
+                    )
+                  }
+            } else{
+                return {
+                    Header: head.label,
+                    accessor: head.key,
+                    width: 150,
+                  }
+            }
+            
+        })
+      )
+  }
+  render() {
+    const { data } = this.state;
+    console.log("data   ",data);
+    const {rows=[],isOpen,header=[]} = this.state;
+    const columns = this.renderColumns(header);
     return (
-        <table>
-            <TableHeader 
-                header = {data.header} 
-                handleSortable={handleSortable} 
-                sortableStatus={sortableStatus}
-            />
-            <TableBody 
-                header = {data.header} 
-                body = {rows} 
-            />
-        </table>
+      <div>
+        {!this.props.guest && <Fragment><SortTableHeader  saveHeaderOrder={this.saveHeaderOrder} isOpen ={isOpen} items={header} handleModalToggle={this.handleModalToggle}/>
+        <span className="csv__download-button " onClick={e=>this.handleModalToggle()} style={{marginRight:"10px"}}>Edit Sort Header </span>
+        {(rows && rows.length ) ? <CSVLink data={rows} headers={header} filename={`download.csv`}>
+            <span className="csv__download-button">Download CSV </span>
+        </CSVLink> : ''}
+        </Fragment>
+        }
+        <ReactTableFixedColumns
+            showPaginationBottom={false}
+            data={rows}
+            columns={columns}
+            defaultPageSize={50}
+            style={{
+                height: "400px"
+              }}
+            className=""
+        />
+        <br />
+      </div>
     );
+  }
 }
+

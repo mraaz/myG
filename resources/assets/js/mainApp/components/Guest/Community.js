@@ -7,8 +7,7 @@ import SignUpModal from './SignUpModal'
 import Group_IndividualPost from '../CommunityView/Group_IndividualPost'
 import { copyToClipboard } from '../../../common/clipboard'
 import { createShortLink } from '../../../integration/http/links'
-import NewTable from '../common/TableComponent/newTable'
-import TableComponent from '../common/TableComponent/table'
+import TableComponent from '../common/TableComponent'
 import { logToElasticsearch } from '../../../integration/http/logger'
 
 
@@ -111,7 +110,7 @@ export default class GuestCommunity extends React.Component {
       default:
         return (
           <div className="stats_section__container">
-                    <NewTable guest={true} data={clanTagData}/>
+                    <TableComponent guest={true} data={clanTagData}/>
                   </div>
         )
     }

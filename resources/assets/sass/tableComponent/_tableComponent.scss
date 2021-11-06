@@ -321,6 +321,10 @@
   }
 
   .stats_section__container{
+    .ReactTable{
+      scrollbar-width: 1em !important; /* Firefox */
+    -ms-overflow-style: 1em !important;
+    }
     .rt-thead{
       height: 90px;
     }

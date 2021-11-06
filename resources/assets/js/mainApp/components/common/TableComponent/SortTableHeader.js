@@ -1,5 +1,9 @@
 
-   
+   /*
+ * Author : Nitin Tyagi
+ * github  : https://github.com/realinit
+ * Email : nitin.1992tyagi@gmail.com
+ */ 
 import React, {Component} from 'react';
 import {sortableContainer, sortableElement} from 'react-sortable-hoc';
 import { MyGModal } from '../../common'
