@@ -56,9 +56,29 @@ class AliasModal extends Component {
                           console.log("value ",value);
                         }}
                         value={''}
-                        placeholder='Enter your alias'
+                        placeholder='Enter your alias' 
                         className='test'
-                      />
+                      /> 
+                      <div className='option'>
+                      <div className='title'>Lock player in this clan</div>
+                      <div className='button__switch browser__notification'>
+                        <label
+                          className={`switchLabel ${this.props.onlineNotificationsEnabled ? 'on' : 'off'}`}
+                          // onClick={() => this.props.toggleOnlineNotifications(this.props.userId)}
+                        >
+                          {this.props.onlineNotificationsEnabled ? 'on' : 'off'}
+                        </label>
+                        <input
+                          id='switch-orange'
+                          type='checkbox'
+                          className='switch'
+                          value={this.props.onlineNotificationsEnabled}
+                          checked={this.props.onlineNotificationsEnabled}
+                          // onChange={() => this.props.toggleOnlineNotifications(this.props.userId)}
+                        />
+                      </div>
+                    </div>  
+                    
                     </div>
                     <div className='modal__footer'>
                     <MyGButton
