@@ -121,13 +121,15 @@ export default class GuestCommunity extends React.Component {
     const { activeTab,
       clanTagDataFetching=false,
       clanTagData='',
+      community={}
      } = this.state
+     const {stats_header = ''} = community;
     if (this.state.loading || !this.state.community) return null
     return (
       <div id='community' className='guest-page' style={{ backgroundColor: '#000' }}>
         {this.state.showModal && <SignUpModal handleGuestModal={() => this.setState({ showModal: false })} />}
         <GuestBanner handleGuestModal={() => this.setState({ showModal: true })} />
-        <div className='gamePost__tab'>
+        {stats_header && <div className='gamePost__tab'>
           <span className={activeTab == 'All' ? 'active' : ''} onClick={(e) => this.handleTabOption('All')}>
             All
           </span>
@@ -135,6 +137,7 @@ export default class GuestCommunity extends React.Component {
             Stats
           </span>
         </div>
+        }
         <div id='guest-content' className='communityName__container'>
           <div className='guest-community-image' style={{ backgroundImage: `url(${this.state.community.group_img})` }} />
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>

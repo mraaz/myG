@@ -99,7 +99,9 @@ export default class NewTabe extends React.Component {
             data={rows}
             columns={columns}
             defaultPageSize={50}
-            style={{ height: 400 }}
+            style={{
+                height: "400px"
+              }}
             className=""
         />
         <br />
