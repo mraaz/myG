@@ -236,6 +236,33 @@
         }
       }
     }
+    .modal__footer {
+      height: 90px;
+      background: #1d2326 0% 0% no-repeat padding-box;
+      border-radius: 0px 0px 10px 10px;
+      opacity: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      button {
+        width: 93px;
+        height: 39px;
+        background: #e5c746 0% 0% no-repeat padding-box;
+        border-radius: 8px;
+        opacity: 1;
+        font-weight: bold;
+        font-size: 16px;
+        line-height: 14px;
+        font-family: Montserrat, sans-serif;
+        letter-spacing: 0px;
+        color: #000000;
+        &:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+      }
+    }
+  
   .modal__close{
     width:32px;height:32px;background:#1d2326 0 0 no-repeat padding-box;border-radius:50%;position:absolute;right:-15px;top:-15px;cursor:pointer
   }

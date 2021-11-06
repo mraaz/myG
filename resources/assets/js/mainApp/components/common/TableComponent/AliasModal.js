@@ -5,12 +5,37 @@
  * Email : nitin.1992tyagi@gmail.com
  */ 
 import React, {Component} from 'react';
-import { MyGModal } from '../../common'
+import axios from 'axios'
+import { MyGModal,MyGAsyncSelect,MyGButton } from '../../common'
+import { parsePlayersToSelectData } from '../../../utils/InvitePlayersUtils'
 
-class SortTableHeader extends Component {
+
+class AliasModal extends Component {
   state = {
     items: ''
   };
+
+  onPlayersSuggestionFetch = async (value) => {
+    try {
+      const {
+        data: { playerSearchResults }
+      } = await axios.post(`/api/user/playerSearchResults`, {
+        alias: value
+      })
+      const parsedData = parsePlayersToSelectData(playerSearchResults)
+      return parsedData
+    } catch (error) {
+      // error player suggestion fetch
+    }
+  }
+
+  handleClose = (e) => {
+    this.props.handleModalToggle()
+  }
+
+  handleSave = (e) => {
+    this.props.handleModalToggle()
+  }
 
   render() {
     const {isOpen=false,handleModalToggle} = this.props;
@@ -20,8 +45,31 @@ class SortTableHeader extends Component {
                 <div className="modal-wrap">
                     <div className="modal__header">War reminders will be sent only if battles are remaining.</div>
                     <div className="modal__body">
-                      content area 
+                      <div className='field-title'>MyG Alias</div>
+                      <MyGAsyncSelect
+                        isClearable
+                        isValidNewOption={() => {
+                          return
+                        }}
+                        loadOptions={this.onPlayersSuggestionFetch}
+                        onChange={(value) => {
+                          console.log("value ",value);
+                        }}
+                        value={''}
+                        placeholder='Enter your alias'
+                        className='test'
+                      />
                     </div>
+                    <div className='modal__footer'>
+                    <MyGButton
+                      customStyles={{ color: '#fff', border: '2px solid #fff', background: '#000' }}
+                      onClick={() => this.handleClose()}
+                      text='Cancel'
+                    />
+                    <button type='button'  onClick={() => this.handleSave(true)}>
+                      Save
+                    </button>
+                  </div>
                     <div class="modal__close" onClick={handleModalToggle}><img src="https://myG.gg/platform_images/Dashboard/X_icon.svg" /></div>
                 </div>
             </div>
@@ -31,4 +79,4 @@ class SortTableHeader extends Component {
 }
 
 
-export default SortTableHeader;
+export default AliasModal;

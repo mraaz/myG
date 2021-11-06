@@ -56,12 +56,11 @@ export default class NewTabe extends React.Component {
     window.localStorage.setItem("statsHeaderOrder",JSON.stringify(data))
   }
 
-  handleAliasModal = (data) =>{
+  handleAliasModal = (data,key) =>{
     if(this.props.guest){
       this.setState({showLoginModal:true})
       return
     }
-    console.log("handleAliasModal data  ",data);
     const { isAliasModal } = this.state
     this.setState({isAliasModal:!isAliasModal})
   }
