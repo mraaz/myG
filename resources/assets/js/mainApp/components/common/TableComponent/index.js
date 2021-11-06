@@ -6,6 +6,7 @@
 import React from "react";
 import { CSVLink } from "react-csv";
 import SortTableHeader from "./SortTableHeader";
+import AliasModal from "./AliasModal";
 import moment from 'moment'
 import GuestBanner from './../../Guest/Banner'
 import SignUpModal from './../../Guest/SignUpModal'
@@ -50,6 +51,7 @@ export default class NewTabe extends React.Component {
     const {isOpen} = this.state
     this.setState({isOpen:!isOpen})
   }
+  
   saveHeaderOrder = (data) =>{
     window.localStorage.setItem("statsHeaderOrder",JSON.stringify(data))
   }
@@ -109,13 +111,14 @@ export default class NewTabe extends React.Component {
   }
   render() {
     const { data } = this.state;
-    const {rows=[],isOpen,header=[]} = this.state;
+    const {rows=[],isOpen,header=[],isAliasModal} = this.state;
     const columns = this.renderColumns(header);
     return (
       <div>
-        {this.state.showLoginModal && <SignUpModal handleGuestModal={() => this.setState({ showLoginModal: false })} />}
-        <GuestBanner handleGuestModal={() => this.setState({ showLoginModal: true })} />
+        {this.state.showLoginModal && this.props.guest && <SignUpModal handleGuestModal={() => this.setState({ showLoginModal: false })} />}
+        {this.props.guest && <GuestBanner handleGuestModal={() => this.setState({ showLoginModal: true })} />}
         {!this.props.guest && <Fragment><SortTableHeader  saveHeaderOrder={this.saveHeaderOrder} isOpen ={isOpen} items={header} handleModalToggle={this.handleModalToggle}/>
+        <AliasModal  isOpen ={isAliasModal}  handleModalToggle={this.handleAliasModal}/>
         <span className="csv__download-button " onClick={e=>this.handleModalToggle()} style={{marginRight:"10px"}}>Edit Sort Header </span>
         {(rows && rows.length ) ? <CSVLink data={rows} headers={header} filename={`download.csv`}>
             <span className="csv__download-button">Download CSV </span>
