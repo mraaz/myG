@@ -321,6 +321,11 @@
   }
 
   .stats_section__container{
+    .stats_hyperlink{
+      cursor: pointer;
+      color: #e5c745;
+      text-decoration: underline;
+    }
     .ReactTable{
       scrollbar-width: 1em !important; /* Firefox */
     -ms-overflow-style: 1em !important;

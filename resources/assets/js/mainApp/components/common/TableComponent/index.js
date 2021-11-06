@@ -7,6 +7,8 @@ import React from "react";
 import { CSVLink } from "react-csv";
 import SortTableHeader from "./SortTableHeader";
 import moment from 'moment'
+import GuestBanner from './../../Guest/Banner'
+import SignUpModal from './../../Guest/SignUpModal'
 
 // Import React Table
 import ReactTable from "react-table-6";  
@@ -27,7 +29,9 @@ export default class NewTabe extends React.Component {
         rows:[],
         header:[],
         sortableStatus:false,
-        isOpen:false
+        isOpen:false,
+        isAliasModal:false,
+        showLoginModal:false
       };
   }
 
@@ -50,6 +54,16 @@ export default class NewTabe extends React.Component {
     window.localStorage.setItem("statsHeaderOrder",JSON.stringify(data))
   }
 
+  handleAliasModal = (data) =>{
+    if(this.props.guest){
+      this.setState({showLoginModal:true})
+      return
+    }
+    console.log("handleAliasModal data  ",data);
+    const { isAliasModal } = this.state
+    this.setState({isAliasModal:!isAliasModal})
+  }
+
 
   renderColumns = (header) => {
       return (
@@ -58,26 +72,35 @@ export default class NewTabe extends React.Component {
                 return {
                     Header: head.label,
                     accessor: head.key,
-                    width: 150,
+                    width: 100,
                     fixed: "left",
                     Cell: row => (
-                      <div onClick={e=>alert(row.value)}>{row.value}</div>
+                      <div 
+                        className={(head.key=="name" || head.key=="myG_alias")  ? "stats_hyperlink" : ''}  
+                        onClick={e=>this.handleAliasModal(row.value,head.key)}
+                        title={row.value}
+                        >
+                        {row.value}
+                        </div>
                     )
                   }
             } else if(head.type == "date"){
                 return {
                     Header: head.label,
                     accessor: head.key,
-                    width: 150,
+                    width: 100,
                     Cell: row => (
-                      <div>{moment(row.value).format('MM/DD/YYYY')}</div>
+                      <div title={row.value}>{moment(row.value).format('MM/DD/YYYY')}</div>
                     )
                   }
             } else{
                 return {
                     Header: head.label,
                     accessor: head.key,
-                    width: 150,
+                    width: 100,
+                    Cell: row => (
+                      <div title={row.value}>{row.value}</div>
+                    )
                   }
             }
             
@@ -86,11 +109,12 @@ export default class NewTabe extends React.Component {
   }
   render() {
     const { data } = this.state;
-    console.log("data   ",data);
     const {rows=[],isOpen,header=[]} = this.state;
     const columns = this.renderColumns(header);
     return (
       <div>
+        {this.state.showLoginModal && <SignUpModal handleGuestModal={() => this.setState({ showLoginModal: false })} />}
+        <GuestBanner handleGuestModal={() => this.setState({ showLoginModal: true })} />
         {!this.props.guest && <Fragment><SortTableHeader  saveHeaderOrder={this.saveHeaderOrder} isOpen ={isOpen} items={header} handleModalToggle={this.handleModalToggle}/>
         <span className="csv__download-button " onClick={e=>this.handleModalToggle()} style={{marginRight:"10px"}}>Edit Sort Header </span>
         {(rows && rows.length ) ? <CSVLink data={rows} headers={header} filename={`download.csv`}>

@@ -35,7 +35,8 @@ export default class GuestCommunity extends React.Component {
     loading: true,
     community: null,
     showModal: false,
-    activeTab:'All'
+    activeTab:'All',
+    community:{}
   }
 
   componentDidMount() {
