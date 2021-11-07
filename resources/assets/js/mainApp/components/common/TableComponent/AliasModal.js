@@ -12,7 +12,8 @@ import { parsePlayersToSelectData } from '../../../utils/InvitePlayersUtils'
 
 class AliasModal extends Component {
   state = {
-    items: ''
+    items: '',
+    lockPlayerEnabled:false
   };
 
   onPlayersSuggestionFetch = async (value) => {
@@ -31,6 +32,9 @@ class AliasModal extends Component {
 
   handleClose = (e) => {
     this.props.handleModalToggle()
+  }
+  togglelockPlayerEnabled = (e) => {
+    this.setState({lockPlayerEnabled:!this.state.lockPlayerEnabled})
   }
 
   handleSave = (e) => {
@@ -63,18 +67,18 @@ class AliasModal extends Component {
                       <div className='title'>Lock player in this clan</div>
                       <div className='button__switch browser__notification'>
                         <label
-                          className={`switchLabel ${this.props.onlineNotificationsEnabled ? 'on' : 'off'}`}
-                          // onClick={() => this.props.toggleOnlineNotifications(this.props.userId)}
+                          className={`switchLabel ${this.state.lockPlayerEnabled ? 'on' : 'off'}`}
+                          onClick={() => this.togglelockPlayerEnabled()}
                         >
-                          {this.props.onlineNotificationsEnabled ? 'on' : 'off'}
+                          {this.state.lockPlayerEnabled ? 'on' : 'off'}
                         </label>
                         <input
                           id='switch-orange'
                           type='checkbox'
                           className='switch'
-                          value={this.props.onlineNotificationsEnabled}
-                          checked={this.props.onlineNotificationsEnabled}
-                          // onChange={() => this.props.toggleOnlineNotifications(this.props.userId)}
+                          value={this.state.lockPlayerEnabled}
+                          checked={this.state.lockPlayerEnabled}
+                          onChange={() => this.togglelockPlayerEnabled()}
                         />
                       </div>
                     </div>  
