@@ -391,8 +391,14 @@
       text-decoration: underline;
     }
     .ReactTable{
-      scrollbar-width: 1em !important; /* Firefox */
-    -ms-overflow-style: 1em !important;
+      ::-webkit-scrollbar {
+        width: 5px !important;
+        height: 8px!important;
+        background: #2d363a;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #e5c745;
+      }
     }
     .rt-thead{
       height: 90px;

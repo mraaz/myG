@@ -59,7 +59,7 @@ class AliasModal extends Component {
                         placeholder='Enter your alias' 
                         className='test'
                       /> 
-                      <div className='option'>
+                      <div className='option'> 
                       <div className='title'>Lock player in this clan</div>
                       <div className='button__switch browser__notification'>
                         <label

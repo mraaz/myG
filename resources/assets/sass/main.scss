@@ -235,9 +235,9 @@ a:visited {
 .gray-scaled {
   filter: grayscale(1);
 }
-// ::-webkit-scrollbar {
-//   width: 1em;
-// }
+::-webkit-scrollbar {
+  width: 0;
+}
 
 .links {
   display: flex;
