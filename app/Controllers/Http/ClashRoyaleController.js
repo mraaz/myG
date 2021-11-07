@@ -87,10 +87,10 @@ class ClashRoyaleController {
 
       if (isWarToday) {
         headerStruct = [
-          { label: 'Player', key: 'name', type: 'text',fixed:true },
-          { label: 'myG Alias', key: 'myG_alias', type: 'text',fixed:true  },
-          { label: 'Total decks used', key: 'decksUsed', type: 'text',fixed:true  },
-          { label: 'Donated', key: 'donations', type: 'text',fixed:true  },
+          { label: 'Player', key: 'name', type: 'text', fixed: true },
+          { label: 'myG Alias', key: 'myG_alias', type: 'text', fixed: true },
+          { label: 'Total decks used', key: 'decksUsed', type: 'text', fixed: true },
+          { label: 'Donated', key: 'donations', type: 'text', fixed: true },
           { label: 'Total decks used today', key: 'decksUsedToday', type: 'text' },
           { label: 'Fame', key: 'fame', type: 'text' },
           { label: 'Repair Points', key: 'repairPoints', type: 'text' },
@@ -102,9 +102,9 @@ class ClashRoyaleController {
         ]
       } else {
         headerStruct = [
-          { label: 'Player', key: 'name', type: 'text',fixed:true  },
-          { label: 'myG Alias', key: 'myG_alias', type: 'text',fixed:true  },
-          { label: 'Total decks used', key: 'decksUsed', type: 'text',fixed:true  },
+          { label: 'Player', key: 'name', type: 'text', fixed: true },
+          { label: 'myG Alias', key: 'myG_alias', type: 'text', fixed: true },
+          { label: 'Total decks used', key: 'decksUsed', type: 'text', fixed: true },
           { label: 'Donated', key: 'donations', type: 'text' },
           { label: 'Received', key: 'donationsReceived', type: 'text' },
           { label: 'Trophies', key: 'trophies', type: 'text' },
@@ -538,6 +538,7 @@ class ClashRoyaleController {
                   reminderPlayers[index].id,
                   reminderPlayers[index].alias
                 )
+                this.createSentEmailLog(reminderPlayers[index].player_tag)
               }
 
               riverRaceStruct[reminderPlayers[index].player_tag].sent = true
@@ -559,6 +560,7 @@ class ClashRoyaleController {
                       reminderPlayers[index].id,
                       reminderPlayers[index].alias
                     )
+                    this.createSentEmailLog(reminderPlayers[index].player_tag)
                   }
                   let playerRiverDetails = {
                     decksUsedToday: getCurrentriverraceInfo.data.clan.participants[innerindex].decksUsedToday,
@@ -659,6 +661,33 @@ class ClashRoyaleController {
         context: __filename,
         message: (error && error.message) || error,
         method: 'sendEmail'
+      })
+    }
+  }
+
+  async createSentEmailLog(player_tag) {
+    try {
+      const get_player_info = await Database.from('clash_royale_player_bases')
+        .where({
+          player_tag: player_tag
+        })
+        .first()
+
+      if (get_player_info == undefined) return
+
+      await CrPlayerBaseTran.create({
+        cr_player_base_id: get_player_info.id,
+        clan_tag: get_player_info.clan_tag,
+        activity: 'Reminder email sent'
+      })
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+        method: 'createSentEmailLog'
       })
     }
   }
