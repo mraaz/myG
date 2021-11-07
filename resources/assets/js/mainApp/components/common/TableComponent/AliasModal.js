@@ -157,8 +157,8 @@ class AliasModal extends Component {
                                     </div>
                               </div>
                         })}
-                      {alias && <MyGButton
-                        customStyles={{ color: '#fff', background: '#e5c746' }}
+                      {Object.keys(alias).length > 0  && <MyGButton
+                        customStyles={{ color: '#000', background: '#e5c746',width:"220px",marginTop:'10px' }}
                         onClick={() => this.handleAddReminderTime()}
                         text='+ Add Reminder Time'
                       />  
