@@ -271,6 +271,13 @@
           }
         }
       }
+      .reminderTime_section{
+        .reminderTime_row{
+          display: flex;
+          align-items: center;
+          justify-content: space-around;
+        }
+      }
     }
     .modal__footer {
       height: 90px;
