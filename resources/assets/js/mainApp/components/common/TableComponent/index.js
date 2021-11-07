@@ -33,7 +33,8 @@ export default class NewTabe extends React.Component {
         sortableStatus:false,
         isOpen:false,
         isAliasModal:false,
-        showLoginModal:false
+        showLoginModal:false,
+        group_id:this.props?.group_id ? this.props.group_id : ''
       };
   }
 
@@ -135,7 +136,7 @@ export default class NewTabe extends React.Component {
       )
   }
   render() {
-    const { data } = this.state;
+    const { group_id } = this.state;
     const {rows=[],isOpen,header=[],isAliasModal} = this.state;
     const columns = this.renderColumns(header);
     return (
@@ -143,7 +144,7 @@ export default class NewTabe extends React.Component {
         {this.state.showLoginModal && this.props.guest && <SignUpModal handleGuestModal={() => this.setState({ showLoginModal: false })} />}
         {this.props.guest && <GuestBanner handleGuestModal={() => this.setState({ showLoginModal: true })} />}
         {!this.props.guest && <Fragment><SortTableHeader  saveHeaderOrder={this.saveHeaderOrder} isOpen ={isOpen} items={header} handleModalToggle={this.handleModalToggle}/>
-        <AliasModal  isOpen ={isAliasModal}  handleModalToggle={this.handleAliasModal}/>
+        <AliasModal group_id={group_id}  isOpen ={isAliasModal}  handleModalToggle={this.handleAliasModal}/>
         <span className="csv__download-button " onClick={e=>this.handleModalToggle()} style={{marginRight:"10px"}}>Edit Sort Header </span>
         {(rows && rows.length ) ? <CSVLink data={rows} headers={header} filename={`download.csv`}>
             <span className="csv__download-button">Download CSV </span>

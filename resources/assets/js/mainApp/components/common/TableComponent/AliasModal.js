@@ -20,6 +20,13 @@ class AliasModal extends Component {
     reminder:0
   };
 
+  async componentDidMount () {
+    const tmp = await axios.post('/api/clashroyale/getPlayerDetails/', {
+      group_id: this.props.group_id
+      })
+      console.log("getPlayerDetails >>>>> ",tmp);
+  } 
+
   createOption = (label) => ({
     label,
     value: label,
@@ -181,7 +188,7 @@ class AliasModal extends Component {
                       Save
                     </button>
                   </div>
-                    <div class="modal__close" onClick={handleModalToggle}><img src="https://myG.gg/platform_images/Dashboard/X_icon.svg" /></div>
+                    <div className="modal__close" onClick={handleModalToggle}><img src="https://myG.gg/platform_images/Dashboard/X_icon.svg" /></div>
                 </div>
             </div>
         </MyGModal>

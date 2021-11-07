@@ -51,7 +51,7 @@ class SortTableHeader extends Component {
                             ))}
                         </SortableContainer>    
                     </div>
-                    <div class="modal__close" onClick={handleModalToggle}><img src="https://myG.gg/platform_images/Dashboard/X_icon.svg" /></div>
+                    <div className="modal__close" onClick={handleModalToggle}><img src="https://myG.gg/platform_images/Dashboard/X_icon.svg" /></div>
                 </div>
             </div>
         </MyGModal>
