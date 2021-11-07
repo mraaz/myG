@@ -34,7 +34,6 @@ export default class NewTabe extends React.Component {
         isOpen:false,
         isAliasModal:false,
         showLoginModal:false,
-        group_id:this.props?.group_id ? this.props.group_id : ''
       };
   }
 
@@ -58,13 +57,13 @@ export default class NewTabe extends React.Component {
     window.localStorage.setItem("statsHeaderOrder",JSON.stringify(data))
   }
 
-  handleAliasModal = (data,key) =>{
+  handleAliasModal = (data,key,tag) =>{
     if(this.props.guest){
       this.setState({showLoginModal:true})
       return
     }
     const { isAliasModal } = this.state
-    this.setState({isAliasModal:!isAliasModal})
+    this.setState({isAliasModal:!isAliasModal,player_tag:tag})
   }
 
 
@@ -83,7 +82,7 @@ export default class NewTabe extends React.Component {
                         return (
                               <div 
                               className={(head.key=="name" || head.key=="myG_alias")  ? "stats_hyperlink" : ''}  
-                              onClick={e=>this.handleAliasModal(row.value,head.key)}
+                              onClick={e=>this.handleAliasModal(row.value,head.key,row.original.tag)}
                               title={row.value}
                               >
                               {row.value}
@@ -104,7 +103,7 @@ export default class NewTabe extends React.Component {
                     return (
                           <div 
                           className={'stats_hyperlink'}  
-                          onClick={e=>this.handleAliasModal(row.value,head.key)}
+                          onClick={e=>this.handleAliasModal(row.value,head.key,row.original.tag)}
                           title={row.value}
                           >
                           {row.value}
@@ -136,15 +135,14 @@ export default class NewTabe extends React.Component {
       )
   }
   render() {
-    const { group_id } = this.state;
-    const {rows=[],isOpen,header=[],isAliasModal} = this.state;
+    const {rows=[],isOpen,header=[],isAliasModal,player_tag=''} = this.state;
     const columns = this.renderColumns(header);
     return (
       <div>
         {this.state.showLoginModal && this.props.guest && <SignUpModal handleGuestModal={() => this.setState({ showLoginModal: false })} />}
         {this.props.guest && <GuestBanner handleGuestModal={() => this.setState({ showLoginModal: true })} />}
         {!this.props.guest && <Fragment><SortTableHeader  saveHeaderOrder={this.saveHeaderOrder} isOpen ={isOpen} items={header} handleModalToggle={this.handleModalToggle}/>
-        <AliasModal group_id={group_id}  isOpen ={isAliasModal}  handleModalToggle={this.handleAliasModal}/>
+        <AliasModal {...this.props} player_tag ={player_tag} isOpen ={isAliasModal}  handleModalToggle={this.handleAliasModal}/>
         <span className="csv__download-button " onClick={e=>this.handleModalToggle()} style={{marginRight:"10px"}}>Edit Sort Header </span>
         {(rows && rows.length ) ? <CSVLink data={rows} headers={header} filename={`download.csv`}>
             <span className="csv__download-button">Download CSV </span>

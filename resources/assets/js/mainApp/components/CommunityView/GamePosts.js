@@ -191,6 +191,7 @@ export default class Posts extends Component {
   }
 
   renderStats = (clanTagData,group_id) =>{
+    
     switch (clanTagData) {
       case '404a':
       case '404':
@@ -223,7 +224,7 @@ export default class Posts extends Component {
       default:
         return (
           <div className="stats_section__container">
-                    <TableComponent data={clanTagData} group_id = {group_id}/>
+                    <TableComponent data={clanTagData} group_id = {group_id} clanTag={this.props.stats_header}/>
                   </div>
         )
     }

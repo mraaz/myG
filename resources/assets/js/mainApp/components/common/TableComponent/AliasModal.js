@@ -9,6 +9,7 @@ import axios from 'axios'
 import { MyGModal,MyGAsyncSelect,MyGButton,MyGSelect,MyGDatePicker } from '../../common'
 import { parsePlayersToSelectData } from '../../../utils/InvitePlayersUtils'
 import moment from 'moment';
+import notifyToast from '../../../../common/toast';
 
 
 class AliasModal extends Component {
@@ -21,10 +22,16 @@ class AliasModal extends Component {
   };
 
   async componentDidMount () {
-    const tmp = await axios.post('/api/clashroyale/getPlayerDetails/', {
-      group_id: this.props.group_id
-      })
-      console.log("getPlayerDetails >>>>> ",tmp);
+    try {
+      const tmp = await axios.post('/api/clashroyale/getPlayerDetails/', {
+        group_id: this.props.group_id,
+        player_tag: this.props.player_tag
+        })
+        console.log("getPlayerDetails >>>>> ",tmp);
+    } catch (error) {
+      console.log("getPlayerDetails error  >>  ",error);
+    }
+    
   } 
 
   createOption = (label) => ({
@@ -58,8 +65,23 @@ class AliasModal extends Component {
     this.setState({lockPlayerEnabled:!this.state.lockPlayerEnabled})
   }
 
-  handleSave = (e) => {
-    this.props.handleModalToggle()
+  handleSave = async (e) => {
+    if(this.state.alias.id){
+      const tmp = await axios.post('/api/clashroyale/storePlayerDetails/', {
+        group_id: this.props.group_id,
+        player_tag: this.props.player_tag,
+        clanTag: this.props.clanTag,
+        user_id: this.state.alias.id,
+        player_locked: this.state.lockPlayerEnabled,
+        reminder_one: '01:00',
+        reminder_two: '01:00',
+        reminder_three: '01:00'
+      })
+      this.props.handleModalToggle()
+    } else {
+      notifyToast('Oops ! Please select a user first!');
+    }
+    
   }
   handleAliasOnChange = (alias) => {
     this.setState({alias})
