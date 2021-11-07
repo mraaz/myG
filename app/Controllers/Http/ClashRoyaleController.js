@@ -349,7 +349,7 @@ class ClashRoyaleController {
         .select('clash_royale_players.*', 'clash_royale_reminders.reminder_time', 'users.timeZone')
       //.options({ nestTables: true })
 
-      switch (playerDetails.length) {
+      switch (playerDetails && playerDetails.length) {
         case 1:
           playerDetails[0].reminder_time_1 = await this.converttoLocalHours(
             playerDetails[0].reminder_time.substr(playerDetails[0].reminder_time.length - 2),
