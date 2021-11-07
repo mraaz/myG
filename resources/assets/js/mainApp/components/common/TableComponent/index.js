@@ -10,6 +10,7 @@ import AliasModal from "./AliasModal";
 import moment from 'moment'
 import GuestBanner from './../../Guest/Banner'
 import SignUpModal from './../../Guest/SignUpModal'
+import { detectMob } from '../../../utils/utils'
 
 // Import React Table
 import ReactTable from "react-table-6";  
@@ -67,25 +68,50 @@ export default class NewTabe extends React.Component {
 
 
   renderColumns = (header) => {
+    const isMobile = detectMob()
       return (
         header.map(head=>{
-            if(head.fixed){
+            if(head.fixed && !isMobile){
                 return {
                     Header: head.label,
                     accessor: head.key,
                     width: 100,
                     fixed: "left",
-                    Cell: row => (
-                      <div 
-                        className={(head.key=="name" || head.key=="myG_alias")  ? "stats_hyperlink" : ''}  
-                        onClick={e=>this.handleAliasModal(row.value,head.key)}
-                        title={row.value}
-                        >
-                        {row.value}
-                        </div>
-                    )
+                    Cell: row => {
+                      if(head.key=="name" || head.key=="myG_alias"){
+                        return (
+                              <div 
+                              className={(head.key=="name" || head.key=="myG_alias")  ? "stats_hyperlink" : ''}  
+                              onClick={e=>this.handleAliasModal(row.value,head.key)}
+                              title={row.value}
+                              >
+                              {row.value}
+                            </div>
+                          )
+                      } else {
+                        return  <div  title={row.value} > {row.value} </div>
+                      }
+                    }
                   }
-            } else if(head.type == "date"){
+            } else if(head.fixed && isMobile && head.key=="name"){
+              return {
+                  Header: head.label,
+                  accessor: head.key,
+                  width: 100,
+                  fixed: "left",
+                  Cell: row => {
+                    return (
+                          <div 
+                          className={'stats_hyperlink'}  
+                          onClick={e=>this.handleAliasModal(row.value,head.key)}
+                          title={row.value}
+                          >
+                          {row.value}
+                        </div>
+                      )
+                  }
+                }
+          }else if(head.type == "date"){
                 return {
                     Header: head.label,
                     accessor: head.key,
