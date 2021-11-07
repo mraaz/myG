@@ -123,7 +123,6 @@ class AliasModal extends Component {
                       </div> 
                       <div className="reminderTime_section">
                         {[...new Array(reminder)].map((rem,index)=>{
-                          console.log("reminderTime[`reminderTime_${index+1}`]  ",reminderTime[`reminderTime_${index+1}`]);
                           return <div className="reminderTime_row" key={`reminderTime_${index+1}`}>
                                     <div className='field-title'>{`Reminder Time ${index+1}`}</div>
                                     <MyGDatePicker 
@@ -158,11 +157,12 @@ class AliasModal extends Component {
                                     </div>
                               </div>
                         })}
-                      <MyGButton
+                      {alias && <MyGButton
                         customStyles={{ color: '#fff', background: '#e5c746' }}
                         onClick={() => this.handleAddReminderTime()}
                         text='+ Add Reminder Time'
                       />  
+                      }
                       </div> 
                     
                     </div>
