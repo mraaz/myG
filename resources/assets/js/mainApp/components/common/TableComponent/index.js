@@ -155,9 +155,15 @@ export default class NewTabe extends React.Component {
             columns={columns}
             defaultPageSize={50}
             style={{
-                height: "400px"
+                height: "100vh"
               }}
             className=""
+            getCellProps={cellInfo => ({
+              style: {
+                backgroundColor: `hsl(${120 * ((120 - cellInfo.value) / 120) * -1 +
+                  120}, 100%, 67%)`,
+              },
+            })}
         />
         <br />
       </div>

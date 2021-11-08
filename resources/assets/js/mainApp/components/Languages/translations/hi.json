@@ -51,5 +51,8 @@
   "achievements.headers.Badges":"बैज",
   "achievements.headers.Daily":"दैनिक",
   "achievements.headers.Weekly":"साप्ताहिक",
-  "achievements.headers.Monthly":"मासिक"
+  "achievements.headers.Monthly":"मासिक",
+  "stats.player.title":"युद्ध के रिमाइंडर तभी भेजे जाएंगे जब लड़ाई बाकी हो।",
+  "stats.player.alias":"MyG उपनाम",
+  "stats.player.clanSwitch":"इस कबीले में खिलाड़ी को लॉक करें"
 }

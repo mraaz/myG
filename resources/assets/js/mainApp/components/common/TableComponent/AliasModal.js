@@ -5,6 +5,7 @@
  * Email : nitin.1992tyagi@gmail.com
  */ 
 import React, {Component} from 'react';
+import { FormattedMessage, injectIntl } from 'react-intl'
 import axios from 'axios'
 import { MyGModal,MyGAsyncSelect,MyGButton,MyGSelect,MyGDatePicker } from '../../common'
 import { parsePlayersToSelectData } from '../../../utils/InvitePlayersUtils'
@@ -88,9 +89,14 @@ class AliasModal extends Component {
   }
   handleAddReminderTime = () => {
     const {reminderTime={},reminder=0} = this.state;
-    reminderTime[`reminderTime_${reminder+1}`] = ""
+    if(reminder < 3){
+      reminderTime[`reminderTime_${reminder+1}`] = ""
     const rem  = reminder < 1 ? 0 : reminder;
     this.setState({reminderTime,reminder:rem+1})
+    } else {
+      notifyToast('Sorry Mate ! You can not add more then 3 reminder.');
+    }
+    
   }
   handleRemoveReminderTime = (index) => {
     const {reminderTime={},reminder=0} = this.state;
@@ -115,9 +121,13 @@ class AliasModal extends Component {
         <MyGModal isOpen={isOpen} ariaHideApp={false}>
             <div className='modal-container sortable-Container__container'>
                 <div className="modal-wrap">
-                    <div className="modal__header">War reminders will be sent only if battles are remaining.</div>
+                    <div className="modal__header">
+                      <FormattedMessage id='stats.player.title' defaultMessage='War reminders will be sent only if battles are remaining.' />
+                    </div>
                     <div className="modal__body">
-                      <div className='field-title'>MyG Alias</div>
+                      <div className='field-title'>
+                        <FormattedMessage id='stats.player.alias' defaultMessage='MyG Alias' />
+                      </div>
                       <MyGAsyncSelect
                         isClearable
                         isValidNewOption={() => {
@@ -132,7 +142,9 @@ class AliasModal extends Component {
                         className='test'
                       /> 
                       <div className='option'> 
-                        <div className='title'>Lock player in this clan</div>
+                        <div className='title'>
+                          <FormattedMessage id='stats.player.clanSwitch' defaultMessage='Lock player in this clan' />
+                        </div>
                         <div className='button__switch browser__notification'>
                           <label
                             className={`switchLabel ${lockPlayerEnabled ? 'on' : 'off'}`}
@@ -186,7 +198,7 @@ class AliasModal extends Component {
                                     </div>
                               </div>
                         })}
-                      {Object.keys(alias).length > 0  && <MyGButton
+                      {Object.keys(alias).length > 0 && reminder < 3 && <MyGButton
                         customStyles={{ color: '#000', background: '#e5c746',width:"220px",marginTop:'10px' }}
                         onClick={() => this.handleAddReminderTime()}
                         text='+ Add Reminder Time'
@@ -218,5 +230,4 @@ class AliasModal extends Component {
   }
 }
 
-
-export default AliasModal;
+export default (injectIntl(AliasModal))

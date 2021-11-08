@@ -50,5 +50,8 @@
   "achievements.headers.Badges":"Badges",
   "achievements.headers.Daily":"Daily",
   "achievements.headers.Weekly":"Weekly",
-  "achievements.headers.Monthly":"Monthly"
+  "achievements.headers.Monthly":"Monthly",
+  "stats.player.title":"War reminders will be sent only if battles are remaining.",
+  "stats.player.alias":"MyG Alias",
+  "stats.player.clanSwitch":"Lock player in this clan"
 }
