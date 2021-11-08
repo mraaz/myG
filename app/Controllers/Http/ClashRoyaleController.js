@@ -88,9 +88,9 @@ class ClashRoyaleController {
       if (isWarToday) {
         headerStruct = [
           { label: 'Player', key: 'name', type: 'text', fixed: true },
-          { label: 'myG Alias', key: 'myG_alias', type: 'text', fixed: true },
-          { label: 'Total decks used', key: 'decksUsed', type: 'text', fixed: true },
-          { label: 'Donated', key: 'donations', type: 'text', fixed: true },
+          { label: 'myG Alias', key: 'myG_alias', type: 'text' },
+          { label: 'Total decks used', key: 'decksUsed', type: 'text' },
+          { label: 'Donated', key: 'donations', type: 'text' },
           { label: 'Total decks used today', key: 'decksUsedToday', type: 'text' },
           { label: 'Fame', key: 'fame', type: 'text' },
           { label: 'Repair Points', key: 'repairPoints', type: 'text' },
@@ -103,8 +103,8 @@ class ClashRoyaleController {
       } else {
         headerStruct = [
           { label: 'Player', key: 'name', type: 'text', fixed: true },
-          { label: 'myG Alias', key: 'myG_alias', type: 'text', fixed: true },
-          { label: 'Total decks used', key: 'decksUsed', type: 'text', fixed: true },
+          { label: 'myG Alias', key: 'myG_alias', type: 'text' },
+          { label: 'Total decks used', key: 'decksUsed', type: 'text' },
           { label: 'Donated', key: 'donations', type: 'text' },
           { label: 'Received', key: 'donationsReceived', type: 'text' },
           { label: 'Trophies', key: 'trophies', type: 'text' },
@@ -349,7 +349,7 @@ class ClashRoyaleController {
         .select('clash_royale_players.*', 'clash_royale_reminders.reminder_time', 'users.timeZone')
       //.options({ nestTables: true })
 
-      switch (playerDetails.length) {
+      switch (playerDetails && playerDetails.length) {
         case 1:
           playerDetails[0].reminder_time_1 = await this.converttoLocalHours(
             playerDetails[0].reminder_time.substr(playerDetails[0].reminder_time.length - 2),
