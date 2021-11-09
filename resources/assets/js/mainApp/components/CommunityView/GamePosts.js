@@ -227,7 +227,8 @@ export default class Posts extends Component {
               <TableComponent 
                 current_user_permission={this.props.current_user_permission} 
                 data={clanTagData} 
-                group_id = {group_id} clanTag={this.props.stats_header}
+                group_id = {group_id} 
+                clanTag={this.props.stats_header}
               />
           </div>
         )

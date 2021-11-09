@@ -10,7 +10,14 @@ import { parsePlayersToSelectData } from '../../../utils/InvitePlayersUtils'
 import notifyToast from '../../../../common/toast'
 import { logToElasticsearch } from '../../../../integration/http/logger'
 
+const nm = {
+  1:"one",
+  2:"two",
+  3:"three"
+}
+
 import axios from 'axios'
+import moment from 'moment'
 class AliasModal extends Component {
   state = {
     items: '',
@@ -78,6 +85,7 @@ class AliasModal extends Component {
   }
 
   handleSave = async (e) => {
+    const {reminderTime ={}} = this.state;
     if (this.state.alias.id) {
       const tmp = await axios.post('/api/clashroyale/storePlayerDetails/', {
         group_id: this.props.group_id,
@@ -85,9 +93,9 @@ class AliasModal extends Component {
         clanTag: this.props.clanTag,
         user_id: this.state.alias.id,
         player_locked: this.state.lockPlayerEnabled,
-        reminder_one: '01:00',
-        reminder_two: '01:00',
-        reminder_three: '01:00'
+        reminder_one:reminderTime['reminderTime_one'] ? moment(reminderTime['reminderTime_one']).format('HH:mm') :'',
+        reminder_two:reminderTime['reminderTime_two'] ? moment(reminderTime['reminderTime_two']).format('HH:mm'):'',
+        reminder_three:reminderTime['reminderTime_three'] ? moment(reminderTime['reminderTime_three']).format('HH:mm'):''
       })
       this.setState({
         lockPlayerEnabled:false,
@@ -108,7 +116,7 @@ class AliasModal extends Component {
   handleAddReminderTime = () => {
     const { reminderTime = {}, reminder = 0 } = this.state
     if (reminder < 3) {
-      reminderTime[`reminderTime_${reminder + 1}`] = ''
+      reminderTime[`reminderTime_${nm[reminder + 1]}`] = ''
       const rem = reminder < 1 ? 0 : reminder
       this.setState({ reminderTime, reminder: rem + 1 })
     } else {
@@ -118,13 +126,13 @@ class AliasModal extends Component {
   handleRemoveReminderTime = (index) => {
     const { reminderTime = {}, reminder = 0 } = this.state
     const data = { ...reminderTime }
-    const key = `reminderTime_${index + 1}`
+    const key = `reminderTime_${nm[index + 1]}`
     delete data[key]
     const rem = reminder < 1 ? 0 : reminder - 1
     this.setState({ reminderTime: data, reminder: rem })
   }
   handleDateChange = (val, index) => {
-    const key = `reminderTime_${index + 1}`
+    const key = `reminderTime_${nm[index + 1]}`
     // const value = moment(val).format('HH:mm')
     const { reminderTime = {} } = this.state
     reminderTime[key] = val
@@ -189,7 +197,7 @@ class AliasModal extends Component {
                         timeIntervals={60}
                         style={false}
                         onChange={(e) => this.handleDateChange(e, index)}
-                        selected={reminderTime[`reminderTime_${index + 1}`]}
+                        selected={reminderTime[`reminderTime_${nm[index + 1]}`]}
                       />
                       {/* <MyGSelect
                                       isClearable
@@ -234,7 +242,7 @@ class AliasModal extends Component {
                 onClick={() => this.handleDelete()}
                 text='Delete'
               />
-              <button type='button' onClick={() => this.handleSave(true)}>
+              <button type='button' disabled={reminder == 0} onClick={() => this.handleSave(true)}>
                 Save
               </button>
             </div>
