@@ -224,8 +224,12 @@ export default class Posts extends Component {
       default:
         return (
           <div className="stats_section__container">
-                    <TableComponent data={clanTagData} group_id = {group_id} clanTag={this.props.stats_header}/>
-                  </div>
+              <TableComponent 
+                current_user_permission={this.props.current_user_permission} 
+                data={clanTagData} 
+                group_id = {group_id} clanTag={this.props.stats_header}
+              />
+          </div>
         )
     }
   }

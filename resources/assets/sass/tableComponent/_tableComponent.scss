@@ -5,7 +5,9 @@
     transition: all 1s ease-in-out;
     overflow-x: auto;
     margin: 0 auto;
-    max-width: 1080px !important;
+    @media screen and (max-width: 1200px) {
+      max-width: 1080px !important;
+    }
     width: 80%!important;
     margin: auto!important;
     &.guest{
@@ -399,6 +401,7 @@
       text-decoration: underline;
     }
     .ReactTable{
+      margin-top: 10px;
       ::-webkit-scrollbar {
         width: 5px !important;
         height: 8px!important;

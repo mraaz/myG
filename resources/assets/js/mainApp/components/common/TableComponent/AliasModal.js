@@ -55,7 +55,15 @@ class AliasModal extends Component {
   }
 
   handleClose = (e) => {
-    this.props.handleModalToggle()
+    this.setState({
+      lockPlayerEnabled:false,
+      alias:{},
+      reminderTime:{},
+      reminder:0
+    },()=> {
+        this.props.handleModalToggle()
+      }
+    )
   }
 
   handleDelete = (e) => {
@@ -78,7 +86,15 @@ class AliasModal extends Component {
         reminder_two: '01:00',
         reminder_three: '01:00'
       })
-      this.props.handleModalToggle()
+      this.setState({
+        lockPlayerEnabled:false,
+        alias:{},
+        reminderTime:{},
+        reminder:0
+      },()=> {
+          this.props.handleModalToggle()
+        }
+      )
     } else {
       notifyToast('Oops ! Please select a user first!');
     }
