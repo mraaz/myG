@@ -414,10 +414,9 @@ class ClashRoyaleController {
       if (playerDetails.length) return playerDetails[0]
       else return playerDetails
     } catch (error) {
-      console.log(error)
-      // if (error.response.data.reason == 'notFound') {
-      //   return 'Clan not found'
-      // }
+      if (error.response.data.reason == 'notFound') {
+        return 'Clan not found'
+      }
       LoggingRepository.log({
         environment: process.env.NODE_ENV,
         type: 'error',
