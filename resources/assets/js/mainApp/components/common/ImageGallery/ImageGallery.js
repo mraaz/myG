@@ -1,5 +1,4 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 import ImageGallery from 'react-image-gallery'
 
 export default class CustomImageGallery extends React.Component {

@@ -400,7 +400,7 @@ export default class Members extends React.Component {
           self.setState({ group_members: [] })
         }
       } catch (error) {
-        logToElasticsearch('error', 'CommunityView/Members.js', 'Failed handleMemberSearch:' + ' ' + error)
+        logToElasticsearch('error', 'CommunityView/Members.js', 'Failed getSearchInfo:' + ' ' + error)
       }
     }
 
@@ -411,7 +411,6 @@ export default class Members extends React.Component {
   }
 
   render() {
-    console.log(this.props)
     const { modalStatus, isActive, saveButtonDisabled, searchMemberValue = '' } = this.state
     const { current_user_permission, community_game_names_id } = this.props
     const isthisClash = community_game_names_id == 1014 ? true : false
