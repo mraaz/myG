@@ -18,6 +18,7 @@ const nm = {
 
 import axios from 'axios'
 import moment from 'moment'
+import momentTimeZone  from 'moment-timezone';
 class AliasModal extends Component {
   state = {
     items: '',
@@ -186,6 +187,8 @@ class AliasModal extends Component {
   render() {
     const { isOpen = false, handleModalToggle } = this.props
     const { reminder, reminderTime, lockPlayerEnabled, alias } = this.state
+    const d = new Date()
+    const gmtHours = -d.getTimezoneOffset()/60;
     return (
       <MyGModal isOpen={isOpen} ariaHideApp={false}>
         <div className='modal-container sortable-Container__container'>
@@ -231,6 +234,16 @@ class AliasModal extends Component {
                 </div>
               </div>
               <div className='reminderTime_section'>
+              <div className='title'>
+                  <FormattedMessage 
+                    id='stats.player.reminderTimeLabel' 
+                    defaultMessage={`"Please select when you want the reminder to be sent out. Currently using GMT : ${gmtHours} timezone" You can update this on the user's @${this.state.alias.username}`} 
+                    values={{
+                      timezone: gmtHours,
+                      username:this.state.alias.username
+                    }}
+                  />
+                </div>
                 {[...new Array(reminder)].map((rem, index) => {
                   return (
                     <div className='reminderTime_row' key={`reminderTime_${index + 1}`}>
