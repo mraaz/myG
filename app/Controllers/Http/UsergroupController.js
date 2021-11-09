@@ -661,14 +661,14 @@ class UsergroupController {
         .where('usergroups.group_id', '=', request.input('group_id'))
         .andWhere('users.alias', 'like', '%' + request.input('alias') + '%')
         .whereNot('usergroups.permission_level', 42)
-        .select('users.id as user_id', 'users.profile_img', 'users.alias')
+        .select('users.id as id', 'users.profile_img', 'users.alias')
         .limit(24)
 
       const group_owner = await Database.from('groups')
         .innerJoin('users', 'users.id', 'groups.user_id')
         .where('groups.id', '=', request.input('group_id'))
         .andWhere('users.alias', 'like', '%' + request.input('alias') + '%')
-        .select('users.id as user_id', 'users.profile_img', 'users.alias')
+        .select('users.id as id', 'users.profile_img', 'users.alias')
         .first()
 
       const all_group_members = group_owner ? all_usergroup_members.concat(group_owner) : all_usergroup_members
@@ -704,14 +704,14 @@ class UsergroupController {
         .where('usergroups.group_id', '=', request.input('group_id'))
         .andWhere('users.alias', 'like', '%' + request.input('alias') + '%')
         .whereNot('usergroups.permission_level', 42)
-        .select('users.id as user_id', 'users.profile_img', 'users.alias')
+        .select('users.id as id', 'users.profile_img', 'users.alias')
         .limit(24)
 
       const group_owner = await Database.from('groups')
         .innerJoin('users', 'users.id', 'groups.user_id')
         .where('groups.id', '=', request.input('group_id'))
         .andWhere('users.alias', 'like', '%' + request.input('alias') + '%')
-        .select('users.id as user_id', 'users.profile_img', 'users.alias')
+        .select('users.id as id', 'users.profile_img', 'users.alias')
         .first()
 
       const all_group_members = group_owner ? all_usergroup_members.concat(group_owner) : all_usergroup_members
