@@ -256,6 +256,9 @@ class ClashRoyaleController {
   async storePlayerDetails({ auth, request, response }) {
     if (auth.user) {
       try {
+        const strClanTag = request.input('player_tag')
+        const clanTag = strClanTag.replace(/#/g, '').trim()
+
         // const clanTag = '2R9PCGC'
         // const getPlayerURL = 'players/' + '%23' + clanTag
 
@@ -275,7 +278,7 @@ class ClashRoyaleController {
 
         const get_player = await Database.from('clash_royale_players')
           .where({
-            player_tag: request.input('player_tag'),
+            player_tag: clanTag,
             group_id: request.input('group_id')
           })
           .first()
@@ -298,7 +301,7 @@ class ClashRoyaleController {
         const cr_trans_id = await ClashRoyalePlayers.create({
           group_id: request.input('group_id'),
           clan_tag: request.input('clanTag'),
-          player_tag: request.input('player_tag'),
+          player_tag: clanTag,
           user_id: request.input('user_id'),
           player_locked: request.input('player_locked')
         })
