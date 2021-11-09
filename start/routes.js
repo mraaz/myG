@@ -331,6 +331,8 @@ Route.delete('/api/usergroup/delete_member/:group_id/:usergrp_id', 'UsergroupCon
 Route.get('/api/usergroup/promote_member_cycle/:group_id/:usergrp_id', 'UsergroupController.promote_member_cycle')
 
 Route.post('/api/usergroup/usergroupSearchResults/', 'UsergroupController.usergroupSearchResults')
+Route.post('/api/usergroup/usergroupSearchResults_withOwner/', 'UsergroupController.usergroupSearchResults_withOwner')
+Route.post('/api/usergroup/usergroupSearch_top_ishUsers/', 'UsergroupController.usergroupSearch_top_ishUsers')
 
 Route.get('/api/usergroup/current_member/:group_id', 'UsergroupController.current_member')
 
