@@ -60,6 +60,7 @@ class AliasModal extends Component {
         group_id: this.props.group_id
       })
       const parsedData = parsePlayersToSelectData(all_group_members)
+      console.log("parsedData  ",parsedData);
       return parsedData
     } catch (error) {
       logToElasticsearch('error', 'AliasModal.js', 'Failed onPlayersSuggestionFetch:' + ' ' + error)
@@ -67,15 +68,9 @@ class AliasModal extends Component {
   }
 
   handleClose = (e) => {
-    this.setState({
-      lockPlayerEnabled:false,
-      alias:{},
-      reminderTime:{},
-      reminder:0
-    },()=> {
         this.props.handleModalToggle()
-      }
-    )
+      
+    
   }
 
   handleDelete = async (e) => {
@@ -142,15 +137,8 @@ class AliasModal extends Component {
         reminder_two:reminderTime['reminderTime_two'] ? moment(reminderTime['reminderTime_two']).format('HH:mm'):'',
         reminder_three:reminderTime['reminderTime_three'] ? moment(reminderTime['reminderTime_three']).format('HH:mm'):''
       })
-      this.setState({
-        lockPlayerEnabled:false,
-        alias:{},
-        reminderTime:{},
-        reminder:0
-      },()=> {
-          this.props.handleModalToggle()
-        }
-      )
+      this.props.handleModalToggle()
+      
     } else {
       notifyToast('Oops ! Please select a user first!')
     }
@@ -237,10 +225,10 @@ class AliasModal extends Component {
               <div className='title'>
                   <FormattedMessage 
                     id='stats.player.reminderTimeLabel' 
-                    defaultMessage={`"Please select when you want the reminder to be sent out. Currently using GMT : ${gmtHours} timezone" You can update this on the user's @${this.state.alias.username}`} 
+                    defaultMessage={`"Please select when you want the reminder to be sent out. Currently using GMT : ${gmtHours} timezone" You can update this on the user's @${this.state.alias?.name}`} 
                     values={{
                       timezone: gmtHours,
-                      username:this.state.alias.username
+                      username:this.state.alias?.name
                     }}
                   />
                 </div>

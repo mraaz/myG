@@ -144,7 +144,7 @@ export default class NewTabe extends React.Component {
         {this.state.showLoginModal && this.props.guest && <SignUpModal handleGuestModal={() => this.setState({ showLoginModal: false })} />}
         {this.props.guest && <GuestBanner handleGuestModal={() => this.setState({ showLoginModal: true })} />}
         {!this.props.guest && <Fragment><SortTableHeader  saveHeaderOrder={this.saveHeaderOrder} isOpen ={isOpen} items={header} handleModalToggle={this.handleModalToggle}/>
-        <AliasModal {...this.props} player_tag ={player_tag} isOpen ={isAliasModal}  handleModalToggle={this.handleAliasModal}/>
+        {isAliasModal && <AliasModal {...this.props} player_tag ={player_tag} isOpen ={isAliasModal}  handleModalToggle={this.handleAliasModal}/>}
         <span className="csv__download-button " onClick={e=>this.handleModalToggle()} style={{marginRight:"10px"}}>Edit Sort Header </span>
         {(rows && rows.length ) ? <CSVLink data={rows} headers={header} filename={`download.csv`}>
             <span className="csv__download-button">Download CSV </span>
