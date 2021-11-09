@@ -76,8 +76,15 @@ class AliasModal extends Component {
     )
   }
 
-  handleDelete = (e) => {
+  handleDelete = async (e) => {
+    const {clash_royale_player_id = ''} = this.state;
+    if(clash_royale_player_id){
+      const tmp = await axios.delete(`/api/clashroyale/deletePlayerDetails/${clash_royale_player_id}`)
     this.props.handleModalToggle()
+    } else {
+      notifyToast('Oops ! you can not delete this as this was not saved for this user earlier.')
+    }
+    
   }
 
   togglelockPlayerEnabled = (e) => {
