@@ -54,5 +54,5 @@
   "stats.player.title":"War reminders will be sent only if battles are remaining.",
   "stats.player.alias":"MyG Alias",
   "stats.player.clanSwitch":"Lock player in this clan",
-  "stats.player.reminderTimeLabel":"Please select when you want the reminder to be sent out. Currently using GMT : {timezone} timezone You can update this on the user's @{username}"
+  "stats.player.reminderTimeLabel":"Please select when you want the reminder to be sent out. Currently using {timezone} timezone You can update this on the user's @{username}"
 }

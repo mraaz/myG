@@ -27,26 +27,50 @@ class AliasModal extends Component {
     reminderTime: {},
     reminder: 0,
     userList: '',
-    alert: null
+    alert: null,
+    timeZone:''
   }
 
   async componentDidMount() {
     try {
-      const tmp = await axios.post('/api/clashroyale/getPlayerDetails/', {
-        group_id: this.props.group_id,
-        player_tag: this.props.player_tag
+      this.setState({loading:true}, async ()=>{
+        const tmp = await axios.post('/api/clashroyale/getPlayerDetails/', {
+          group_id: this.props.group_id,
+          player_tag: this.props.player_tag
+        })
+        const {data = {}} = tmp;
+        console.log("data   ",data);
+        const {id = '',timeZone='',reminder_time_1='',reminder_time_2='',reminder_time_3='',player_locked=''} = data;
+        let reminder = 0;
+        const reminderTime = {};
+        if(id){
+          const _curDate = moment().format('YYYY-MM-DD')
+          if(reminder_time_1){
+            reminder = 1
+            reminderTime['reminderTime_one'] = moment(_curDate+"T"+reminder_time_1+":00");
+          }
+          if(reminder_time_2){
+            reminder = 2
+            reminderTime['reminderTime_two'] = moment(_curDate+"T"+reminder_time_1+":00");
+          }
+          if(reminder_time_3){
+            reminder = 3
+            reminderTime['reminderTime_three'] = moment(_curDate+"T"+reminder_time_1+":00");
+          }
+          this.setState({
+            clash_royale_player_id:id,
+            reminder,
+            reminderTime,
+            timeZone,
+            lockPlayerEnabled:player_locked,
+            loading:false
+          })
+        }
+
       })
-      console.log('getPlayerDetails >>>>> ', tmp)
-
-      // const {
-      //   data: { getInitialUser_Data }
-      // } = await axios.post(`/api/usergroup/usergroupSearch_top_ishUsers`, {
-      //   group_id: this.props.group_id
-      // })
-
-      // const parsedData = parsePlayersToSelectData(getInitialUser_Data)
-      // this.setState({ userList: parsedData })
+      
     } catch (error) {
+      this.setState({loading:false})
       logToElasticsearch('error', 'AliasModal.js', 'Failed componentDidMount:' + ' ' + error)
     }
   }
@@ -122,9 +146,10 @@ class AliasModal extends Component {
   }
 
   handleSave = async (e) => {
-    const { reminderTime = {} } = this.state
+    const { reminderTime = {},clash_royale_player_id='' } = this.state
     if (this.state.alias.id) {
       const tmp = await axios.post('/api/clashroyale/storePlayerDetails/', {
+        clash_royale_player_id,
         group_id: this.props.group_id,
         player_tag: this.props.player_tag,
         clanTag: this.props.clanTag,
@@ -169,12 +194,11 @@ class AliasModal extends Component {
   }
 
   render() {
-    const { isOpen = false, handleModalToggle } = this.props
-    const { reminder, reminderTime, lockPlayerEnabled, alias } = this.state
-    const d = new Date()
-    const gmtHours = -d.getTimezoneOffset() / 60
+    const { handleModalToggle } = this.props
+    const { reminder, reminderTime, lockPlayerEnabled, alias,timeZone,loading } = this.state;
+    if(loading) return null
     return (
-      <MyGModal isOpen={isOpen} ariaHideApp={false}>
+      <MyGModal isOpen ariaHideApp={false}>
         <div className='modal-container sortable-Container__container'>
           {this.state.alert}
           <div className='modal-wrap'>
@@ -221,10 +245,10 @@ class AliasModal extends Component {
                 <div className='title'>
                   <FormattedMessage
                     id='stats.player.reminderTimeLabel'
-                    defaultMessage={`"Please select when you want the reminder to be sent out. Currently using GMT : ${gmtHours} timezone" You can update this on the user's @${this.state.alias?.name}`}
+                    defaultMessage={`"Please select when you want the reminder to be sent out. Currently using ${timeZone} timezone" You can update this on the user's @${this.props.player_name}`}
                     values={{
-                      timezone: gmtHours,
-                      username: this.state.alias?.name
+                      timezone: timeZone,
+                      username: this.props.player_name
                     }}
                   />
                 </div>
