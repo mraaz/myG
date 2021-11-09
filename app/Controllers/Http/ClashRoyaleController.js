@@ -341,11 +341,14 @@ class ClashRoyaleController {
   }
   async getPlayerDetails({ request }) {
     try {
+      const strClanTag = request.input('player_tag')
+      const clanTag = strClanTag.replace(/#/g, '').trim()
+
       const playerDetails = await Database.from('clash_royale_players')
         .leftJoin('clash_royale_reminders', 'clash_royale_reminders.clash_royale_players_id', 'clash_royale_players.id')
         .innerJoin('users', 'users.id', 'clash_royale_players.user_id')
         .where('clash_royale_players.group_id', '=', request.input('group_id'))
-        .andWhere('clash_royale_players.player_tag', '=', request.input('player_tag'))
+        .andWhere('clash_royale_players.player_tag', '=', clanTag)
         .select('clash_royale_players.*', 'clash_royale_reminders.reminder_time', 'users.timeZone')
       //.options({ nestTables: true })
 
