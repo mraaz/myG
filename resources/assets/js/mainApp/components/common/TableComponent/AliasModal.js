@@ -5,7 +5,7 @@
  */
 import React, { Component } from 'react'
 import { FormattedMessage, injectIntl } from 'react-intl'
-import { MyGModal, MyGAsyncSelect, MyGButton, MyGDatePicker } from '../../common'
+import { MyGModal, MyGAsyncSelect, MyGButton, MyGDatePicker,MyGSweetAlert } from '../../common'
 import { parsePlayersToSelectData } from '../../../utils/InvitePlayersUtils'
 import notifyToast from '../../../../common/toast'
 import { logToElasticsearch } from '../../../../integration/http/logger'
@@ -25,7 +25,8 @@ class AliasModal extends Component {
     alias: {},
     reminderTime: {},
     reminder: 0,
-    userList: ''
+    userList: '',
+    alert: null,
   }
 
   async componentDidMount() {
@@ -85,6 +86,42 @@ class AliasModal extends Component {
       notifyToast('Oops ! you can not delete this as this was not saved for this user earlier.')
     }
     
+  }
+  showAlert() {
+    const getAlert = () => (
+      <MyGSweetAlert
+        danger
+        showCancel
+        title='Are you sure you wish to delete this?'
+        confirmBtnText='Make it so!'
+        focusCancelBtn={true}
+        focusConfirmBtn={false}
+        showCloseButton={false}
+        btnSize='lg'
+        style={{
+          display: 'flex',
+          whiteSpace: 'pre',
+          width: '41%'
+        }}
+        onConfirm={() => this.hideAlert('true')}
+        onCancel={() => this.hideAlert('false')}
+      >
+        You will not be able to recover this entry!
+      </MyGSweetAlert>
+    )
+
+    this.setState({
+      alert: getAlert()
+    })
+  }
+
+  hideAlert = (text) => {
+    this.setState({
+      alert: null,
+    })
+    if (text == 'true') {
+      this.handleDelete()
+    }
   }
 
   togglelockPlayerEnabled = (e) => {
@@ -152,6 +189,7 @@ class AliasModal extends Component {
     return (
       <MyGModal isOpen={isOpen} ariaHideApp={false}>
         <div className='modal-container sortable-Container__container'>
+        {this.state.alert}
           <div className='modal-wrap'>
             <div className='modal__header'>
               <FormattedMessage id='stats.player.title' defaultMessage='War reminders will be sent only if battles are remaining.' />
@@ -246,7 +284,7 @@ class AliasModal extends Component {
               />
               <MyGButton
                 customStyles={{ color: '#fff', border: '2px solid #fff', background: '#fa3e3f' }}
-                onClick={() => this.handleDelete()}
+                onClick={() => this.showAlert()}
                 text='Delete'
               />
               <button type='button' disabled={reminder == 0} onClick={() => this.handleSave(true)}>
