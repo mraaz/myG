@@ -283,7 +283,14 @@ class ClashRoyaleController {
           })
           .first()
 
-        if (get_player != undefined) return
+        if (get_player != undefined) {
+          await Database.table('clash_royale_players')
+            .where({
+              player_tag: clanTag,
+              group_id: request.input('group_id')
+            })
+            .delete()
+        }
 
         const commonController = new CommonController()
         const current_user_permission = await commonController.get_permission({ auth }, request.input('group_id'))
@@ -306,7 +313,7 @@ class ClashRoyaleController {
           player_locked: request.input('player_locked')
         })
 
-        if (request.input('reminder_one') != undefined) {
+        if (request.input('reminder_one') != undefined && request.input('reminder_one').trim().length > 0) {
           await ClashRoyaleReminder.create({
             clash_royale_players_id: cr_trans_id.id,
             user_id: request.input('user_id'),
@@ -314,7 +321,7 @@ class ClashRoyaleController {
           })
         }
 
-        if (request.input('reminder_two') != undefined) {
+        if (request.input('reminder_two') != undefined && request.input('reminder_two').trim().length > 0) {
           await ClashRoyaleReminder.create({
             clash_royale_players_id: cr_trans_id.id,
             user_id: request.input('user_id'),
@@ -322,7 +329,7 @@ class ClashRoyaleController {
           })
         }
 
-        if (request.input('reminder_three') != undefined) {
+        if (request.input('reminder_three') != undefined && request.input('reminder_three').trim().length > 0) {
           await ClashRoyaleReminder.create({
             clash_royale_players_id: cr_trans_id.id,
             user_id: request.input('user_id'),
@@ -352,6 +359,7 @@ class ClashRoyaleController {
         .innerJoin('users', 'users.id', 'clash_royale_players.user_id')
         .where('clash_royale_players.group_id', '=', request.input('group_id'))
         .andWhere('clash_royale_players.player_tag', '=', clanTag)
+        .whereNotNull('clash_royale_reminders.reminder_time')
         .select('clash_royale_players.*', 'clash_royale_reminders.reminder_time', 'users.timeZone')
       //.options({ nestTables: true })
 
@@ -406,9 +414,10 @@ class ClashRoyaleController {
       if (playerDetails.length) return playerDetails[0]
       else return playerDetails
     } catch (error) {
-      if (error.response.data.reason == 'notFound') {
-        return 'Clan not found'
-      }
+      console.log(error)
+      // if (error.response.data.reason == 'notFound') {
+      //   return 'Clan not found'
+      // }
       LoggingRepository.log({
         environment: process.env.NODE_ENV,
         type: 'error',
@@ -447,7 +456,10 @@ class ClashRoyaleController {
     }
   }
 
-  async converttoUTCHours(reminder_time_hours, time_zone) {
+  async converttoUTCHours(reminder_time, time_zone) {
+    const splity = reminder_time.split(':')
+    reminder_time = parseInt(splity[0])
+
     try {
       let new_date = new Date()
       if (time_zone != 'GMT') new_date.toLocaleString('en-US', { timeZone: time_zone })
@@ -478,7 +490,7 @@ class ClashRoyaleController {
         source: 'backend',
         context: __filename,
         message: (error && error.message) || error,
-        method: 'converttoUTCHours'
+        method: 'converttoLocalHours'
       })
     }
   }

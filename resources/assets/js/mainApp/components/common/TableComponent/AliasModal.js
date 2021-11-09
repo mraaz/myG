@@ -5,20 +5,20 @@
  */
 import React, { Component } from 'react'
 import { FormattedMessage, injectIntl } from 'react-intl'
-import { MyGModal, MyGAsyncSelect, MyGButton, MyGDatePicker,MyGSweetAlert } from '../../common'
+import { MyGModal, MyGAsyncSelect, MyGButton, MyGDatePicker, MyGSweetAlert } from '../../common'
 import { parsePlayersToSelectData } from '../../../utils/InvitePlayersUtils'
 import notifyToast from '../../../../common/toast'
 import { logToElasticsearch } from '../../../../integration/http/logger'
 
 const nm = {
-  1:"one",
-  2:"two",
-  3:"three"
+  1: 'one',
+  2: 'two',
+  3: 'three'
 }
 
 import axios from 'axios'
 import moment from 'moment'
-import momentTimeZone  from 'moment-timezone';
+
 class AliasModal extends Component {
   state = {
     items: '',
@@ -27,7 +27,7 @@ class AliasModal extends Component {
     reminderTime: {},
     reminder: 0,
     userList: '',
-    alert: null,
+    alert: null
   }
 
   async componentDidMount() {
@@ -60,7 +60,7 @@ class AliasModal extends Component {
         group_id: this.props.group_id
       })
       const parsedData = parsePlayersToSelectData(all_group_members)
-      console.log("parsedData  ",parsedData);
+      console.log('parsedData  ', parsedData)
       return parsedData
     } catch (error) {
       logToElasticsearch('error', 'AliasModal.js', 'Failed onPlayersSuggestionFetch:' + ' ' + error)
@@ -68,20 +68,17 @@ class AliasModal extends Component {
   }
 
   handleClose = (e) => {
-        this.props.handleModalToggle()
-      
-    
+    this.props.handleModalToggle()
   }
 
   handleDelete = async (e) => {
-    const {clash_royale_player_id = ''} = this.state;
-    if(clash_royale_player_id){
+    const { clash_royale_player_id = '' } = this.state
+    if (clash_royale_player_id) {
       const tmp = await axios.delete(`/api/clashroyale/deletePlayerDetails/${clash_royale_player_id}`)
-    this.props.handleModalToggle()
+      this.props.handleModalToggle()
     } else {
       notifyToast('Oops ! you can not delete this as this was not saved for this user earlier.')
     }
-    
   }
   showAlert() {
     const getAlert = () => (
@@ -113,7 +110,7 @@ class AliasModal extends Component {
 
   hideAlert = (text) => {
     this.setState({
-      alert: null,
+      alert: null
     })
     if (text == 'true') {
       this.handleDelete()
@@ -125,7 +122,7 @@ class AliasModal extends Component {
   }
 
   handleSave = async (e) => {
-    const {reminderTime ={}} = this.state;
+    const { reminderTime = {} } = this.state
     if (this.state.alias.id) {
       const tmp = await axios.post('/api/clashroyale/storePlayerDetails/', {
         group_id: this.props.group_id,
@@ -133,12 +130,11 @@ class AliasModal extends Component {
         clanTag: this.props.clanTag,
         user_id: this.state.alias.id,
         player_locked: this.state.lockPlayerEnabled,
-        reminder_one:reminderTime['reminderTime_one'] ? moment(reminderTime['reminderTime_one']).format('HH:mm') :'',
-        reminder_two:reminderTime['reminderTime_two'] ? moment(reminderTime['reminderTime_two']).format('HH:mm'):'',
-        reminder_three:reminderTime['reminderTime_three'] ? moment(reminderTime['reminderTime_three']).format('HH:mm'):''
+        reminder_one: reminderTime['reminderTime_one'] ? moment(reminderTime['reminderTime_one']).format('HH:mm') : '',
+        reminder_two: reminderTime['reminderTime_two'] ? moment(reminderTime['reminderTime_two']).format('HH:mm') : '',
+        reminder_three: reminderTime['reminderTime_three'] ? moment(reminderTime['reminderTime_three']).format('HH:mm') : ''
       })
       this.props.handleModalToggle()
-      
     } else {
       notifyToast('Oops ! Please select a user first!')
     }
@@ -176,11 +172,11 @@ class AliasModal extends Component {
     const { isOpen = false, handleModalToggle } = this.props
     const { reminder, reminderTime, lockPlayerEnabled, alias } = this.state
     const d = new Date()
-    const gmtHours = -d.getTimezoneOffset()/60;
+    const gmtHours = -d.getTimezoneOffset() / 60
     return (
       <MyGModal isOpen={isOpen} ariaHideApp={false}>
         <div className='modal-container sortable-Container__container'>
-        {this.state.alert}
+          {this.state.alert}
           <div className='modal-wrap'>
             <div className='modal__header'>
               <FormattedMessage id='stats.player.title' defaultMessage='War reminders will be sent only if battles are remaining.' />
@@ -222,13 +218,13 @@ class AliasModal extends Component {
                 </div>
               </div>
               <div className='reminderTime_section'>
-              <div className='title'>
-                  <FormattedMessage 
-                    id='stats.player.reminderTimeLabel' 
-                    defaultMessage={`"Please select when you want the reminder to be sent out. Currently using GMT : ${gmtHours} timezone" You can update this on the user's @${this.state.alias?.name}`} 
+                <div className='title'>
+                  <FormattedMessage
+                    id='stats.player.reminderTimeLabel'
+                    defaultMessage={`"Please select when you want the reminder to be sent out. Currently using GMT : ${gmtHours} timezone" You can update this on the user's @${this.state.alias?.name}`}
                     values={{
                       timezone: gmtHours,
-                      username:this.state.alias?.name
+                      username: this.state.alias?.name
                     }}
                   />
                 </div>
