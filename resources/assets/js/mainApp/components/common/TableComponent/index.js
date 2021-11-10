@@ -71,13 +71,20 @@ export default class NewTabe extends React.Component {
 
   renderColumns = (header) => {
     const isMobile = detectMob()
+    let w = 100
+    if(header.length){
+      const c  = header.length*100;
+      if(c <= 1350){
+        w= 1350/header.length
+      }
+    }
       return (
         header.map(head=>{
             if(head.fixed && !isMobile){
                 return {
                     Header: head.label,
                     accessor: head.key,
-                    width: 100,
+                    width: w,
                     fixed: "left",
                     Cell: row => {
                       if(head.key=="name" || head.key=="myG_alias"){
@@ -99,7 +106,7 @@ export default class NewTabe extends React.Component {
               return {
                   Header: head.label,
                   accessor: head.key,
-                  width: 100,
+                  width: w,
                   fixed: "left",
                   Cell: row => {
                     return (
@@ -117,7 +124,7 @@ export default class NewTabe extends React.Component {
                 return {
                     Header: head.label,
                     accessor: head.key,
-                    width: 100,
+                    width: w,
                     Cell: row => (
                       <div title={row.value}>{moment(row.value).format('MM/DD/YYYY')}</div>
                     )
@@ -126,7 +133,7 @@ export default class NewTabe extends React.Component {
                 return {
                     Header: head.label,
                     accessor: head.key,
-                    width: 100,
+                    width: w,
                     Cell: row => (
                       <div title={row.value}>{row.value}</div>
                     )
