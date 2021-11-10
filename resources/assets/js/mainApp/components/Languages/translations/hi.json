@@ -48,12 +48,12 @@
   "myg.select.hint": "चुनें...",
   "myg.team-select.hint": "चुनें कि कौन सी टीम यह मैच खेलेगी",
   "myg.post.gameHeader": "गेम द्वारा पोस्ट फ़िल्टर करें",
-  "achievements.headers.Badges":"बैज",
-  "achievements.headers.Daily":"दैनिक",
-  "achievements.headers.Weekly":"साप्ताहिक",
-  "achievements.headers.Monthly":"मासिक",
-  "stats.player.title":"युद्ध के रिमाइंडर तभी भेजे जाएंगे जब लड़ाई बाकी हो।",
-  "stats.player.alias":"MyG उपनाम",
-  "stats.player.clanSwitch":"इस कबीले में खिलाड़ी को लॉक करें",
-  "stats.player.reminderTimeLabel":"कृपया चुनें कि आप कब रिमाइंडर भेजना चाहते हैं। वर्तमान में उपयोग कर रहा है {timezone} टाइमज़ोन आप इसे उपयोगकर्ता के पर अपडेट कर सकते हैं @{username}"
+  "achievements.headers.Badges": "बैज",
+  "achievements.headers.Daily": "दैनिक",
+  "achievements.headers.Weekly": "साप्ताहिक",
+  "achievements.headers.Monthly": "मासिक",
+  "stats.player.title": "युद्ध के रिमाइंडर तभी भेजे जाएंगे जब लड़ाई बाकी हो।",
+  "stats.player.alias": "myG उपनाम",
+  "stats.player.clanSwitch": "इस कबीले में खिलाड़ी को लॉक करें",
+  "stats.player.reminderTimeLabel": "कृपया चुनें कि आप कब रिमाइंडर भेजना चाहते हैं। वर्तमान में उपयोग कर रहा है {timezone} टाइमज़ोन आप इसे उपयोगकर्ता के पर अपडेट कर सकते हैं @{username}"
 }
