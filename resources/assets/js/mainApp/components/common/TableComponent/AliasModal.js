@@ -23,7 +23,7 @@ class AliasModal extends Component {
   state = {
     items: '',
     lockPlayerEnabled: false,
-    alias: {},
+    alias: null,
     reminderTime: {},
     reminder: 0,
     userList: '',
@@ -158,7 +158,7 @@ class AliasModal extends Component {
 
   handleSave = async (e) => {
     const { reminderTime = {}, clash_royale_player_id = '' } = this.state
-    if (this.state.alias.id) {
+    if (this.state.alias?.id) {
       const tmp = await axios.post('/api/clashroyale/storePlayerDetails/', {
         clash_royale_player_id,
         group_id: this.props.group_id,
@@ -263,7 +263,8 @@ class AliasModal extends Component {
                     defaultMessage={`"Please select when you want the reminder to be sent out. Currently using ${timeZone} timezone" You can update this on the user's @${this.props.player_name}`}
                     values={{
                       timezone: timeZone,
-                      username: this.props.player_name
+                      username: this.props.player_name,
+                      link: <a href={`/profile/${this.props.player_name}`}>@{this.props.player_name}</a>
                     }}
                   />
                 </div>

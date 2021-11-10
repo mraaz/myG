@@ -62,10 +62,10 @@ export default class NewTabe extends React.Component {
       this.setState({showLoginModal:true})
       return
     }
-    if(this.props.current_user_permission == 1 || this.props.current_user_permission == 2){
+    // if(this.props.current_user_permission == 1 || this.props.current_user_permission == 2){
       const { isAliasModal } = this.state
       this.setState({isAliasModal:!isAliasModal,player_tag:rowData.tag,player_name:rowData.name})
-    }
+    // }
   }
 
 
