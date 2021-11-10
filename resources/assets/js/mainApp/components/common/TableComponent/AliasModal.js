@@ -28,49 +28,58 @@ class AliasModal extends Component {
     reminder: 0,
     userList: '',
     alert: null,
-    timeZone:''
+    timeZone: ''
   }
 
   async componentDidMount() {
     try {
-      this.setState({loading:true}, async ()=>{
+      this.setState({ loading: true }, async () => {
         const tmp = await axios.post('/api/clashroyale/getPlayerDetails/', {
           group_id: this.props.group_id,
           player_tag: this.props.player_tag
         })
-        const {data = {}} = tmp;
-        console.log("data   ",data);
-        const {id = '',timeZone='',reminder_time_1='',reminder_time_2='',reminder_time_3='',player_locked=''} = data;
-        let reminder = 0;
-        const reminderTime = {};
-        if(id){
+        const { data = {} } = tmp
+        console.log('data   ', data)
+        const { id = '', timeZone = '', reminder_time_1 = '', reminder_time_2 = '', reminder_time_3 = '', player_locked = '' } = data
+        let reminder = 0
+        const reminderTime = {}
+        if (id) {
           const _curDate = moment().format('YYYY-MM-DD')
-          if(reminder_time_1){
+          if (reminder_time_1) {
             reminder = 1
-            reminderTime['reminderTime_one'] = moment(_curDate+"T"+reminder_time_1+":00");
+            reminderTime['reminderTime_one'] = moment(_curDate + 'T' + reminder_time_1 + ':00')
           }
-          if(reminder_time_2){
+          if (reminder_time_2) {
             reminder = 2
-            reminderTime['reminderTime_two'] = moment(_curDate+"T"+reminder_time_1+":00");
+            reminderTime['reminderTime_two'] = moment(_curDate + 'T' + reminder_time_1 + ':00')
           }
-          if(reminder_time_3){
+          if (reminder_time_3) {
             reminder = 3
-            reminderTime['reminderTime_three'] = moment(_curDate+"T"+reminder_time_1+":00");
+            reminderTime['reminderTime_three'] = moment(_curDate + 'T' + reminder_time_1 + ':00')
           }
           this.setState({
-            clash_royale_player_id:id,
+            clash_royale_player_id: id,
             reminder,
             reminderTime,
             timeZone,
-            lockPlayerEnabled:player_locked,
-            loading:false
+            lockPlayerEnabled: player_locked,
+            loading: false
           })
         }
 
+        const all_group_members = await axios.post(`/api/usergroup/usergroupSearch_top_ishUsers`, {
+          group_id: this.props.group_id
+        })
+
+        const parsedData = parsePlayersToSelectData(all_group_members.data.all_usergroup_members)
+        console.log(parsedData, '<<ghf')
+        this.setState({
+          userList: parsedData,
+          loading: false
+        })
       })
-      
     } catch (error) {
-      this.setState({loading:false})
+      this.setState({ loading: false })
       logToElasticsearch('error', 'AliasModal.js', 'Failed componentDidMount:' + ' ' + error)
     }
   }
@@ -84,7 +93,6 @@ class AliasModal extends Component {
         group_id: this.props.group_id
       })
       const parsedData = parsePlayersToSelectData(all_group_members)
-      console.log('parsedData  ', parsedData)
       return parsedData
     } catch (error) {
       logToElasticsearch('error', 'AliasModal.js', 'Failed onPlayersSuggestionFetch:' + ' ' + error)
@@ -149,7 +157,7 @@ class AliasModal extends Component {
   }
 
   handleSave = async (e) => {
-    const { reminderTime = {},clash_royale_player_id='' } = this.state
+    const { reminderTime = {}, clash_royale_player_id = '' } = this.state
     if (this.state.alias.id) {
       const tmp = await axios.post('/api/clashroyale/storePlayerDetails/', {
         clash_royale_player_id,
@@ -214,7 +222,7 @@ class AliasModal extends Component {
             </div>
             <div className='modal__body'>
               <div className='field-title'>
-                <FormattedMessage id='stats.player.alias' defaultMessage='MyG Alias' />
+                <FormattedMessage id='stats.player.alias' defaultMessage='myG Alias' />
               </div>
               <MyGAsyncSelect
                 isClearable

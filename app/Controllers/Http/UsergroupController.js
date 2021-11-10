@@ -693,31 +693,26 @@ class UsergroupController {
       //get a list of alreaqdy done players
       //search all player in group not in this set
       //return
+      //console.log('HERE!!')
 
-      const get_player = await Database.from('clash_royale_players').where({
-        player_tag: request.input('player_tag'),
-        group_id: request.input('group_id')
-      })
+      const get_all_players = Database.from('clash_royale_players')
+        .where({
+          group_id: request.input('group_id')
+        })
+        .select('user_id')
 
       const all_usergroup_members = await Database.from('usergroups')
         .innerJoin('users', 'users.id', 'usergroups.user_id')
         .where('usergroups.group_id', '=', request.input('group_id'))
-        .andWhere('users.alias', 'like', '%' + request.input('alias') + '%')
         .whereNot('usergroups.permission_level', 42)
+        .whereNotIn('user_id', get_all_players)
         .select('users.id as id', 'users.profile_img', 'users.alias')
         .limit(24)
 
-      const group_owner = await Database.from('groups')
-        .innerJoin('users', 'users.id', 'groups.user_id')
-        .where('groups.id', '=', request.input('group_id'))
-        .andWhere('users.alias', 'like', '%' + request.input('alias') + '%')
-        .select('users.id as id', 'users.profile_img', 'users.alias')
-        .first()
-
-      const all_group_members = group_owner ? all_usergroup_members.concat(group_owner) : all_usergroup_members
+      //console.log(all_usergroup_members)
 
       return {
-        all_group_members
+        all_usergroup_members
       }
     } catch (error) {
       LoggingRepository.log({
