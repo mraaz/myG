@@ -57,7 +57,7 @@ export default class NewTabe extends React.Component {
     window.localStorage.setItem("statsHeaderOrder",JSON.stringify(data))
   }
 
-  handleAliasModal = (data,key,rowData) =>{
+  handleAliasModal = (close=false,data,key,rowData={}) =>{
     if(this.props.guest){
       this.setState({showLoginModal:true})
       return
@@ -84,7 +84,7 @@ export default class NewTabe extends React.Component {
                         return (
                               <div 
                               className={(head.key=="name" || head.key=="myG_alias")  ? "stats_hyperlink" : ''}  
-                              onClick={e=>this.handleAliasModal(row.value,head.key,row.original)}
+                              onClick={e=>this.handleAliasModal(false,row.value,head.key,row.original)}
                               title={row.value}
                               >
                               {row.value}
@@ -105,7 +105,7 @@ export default class NewTabe extends React.Component {
                     return (
                           <div 
                           className={'stats_hyperlink'}  
-                          onClick={e=>this.handleAliasModal(row.value,head.key,row.original)}
+                          onClick={e=>this.handleAliasModal(false,row.value,head.key,row.original)}
                           title={row.value}
                           >
                           {row.value}

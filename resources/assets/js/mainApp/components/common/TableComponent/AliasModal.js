@@ -92,14 +92,17 @@ class AliasModal extends Component {
   }
 
   handleClose = (e) => {
-    this.props.handleModalToggle()
+    this.props.handleModalToggle(true)
   }
 
   handleDelete = async (e) => {
     const { clash_royale_player_id = '' } = this.state
     if (clash_royale_player_id) {
       const tmp = await axios.delete(`/api/clashroyale/deletePlayerDetails/${clash_royale_player_id}`)
-      this.props.handleModalToggle()
+      if(tmp){
+        notifyToast('Yeah ! Data deleted successfully!')
+        this.props.handleModalToggle(true)
+      }
     } else {
       notifyToast('Oops ! you can not delete this as this was not saved for this user earlier.')
     }
@@ -159,7 +162,11 @@ class AliasModal extends Component {
         reminder_two: reminderTime['reminderTime_two'] ? moment(reminderTime['reminderTime_two']).format('HH:mm') : '',
         reminder_three: reminderTime['reminderTime_three'] ? moment(reminderTime['reminderTime_three']).format('HH:mm') : ''
       })
-      this.props.handleModalToggle()
+      if(tmp){
+        notifyToast('Yeah ! Data saved successfully!')
+        this.props.handleModalToggle(true)
+      }
+     
     } else {
       notifyToast('Oops ! Please select a user first!')
     }
@@ -196,7 +203,7 @@ class AliasModal extends Component {
   render() {
     const { handleModalToggle } = this.props
     const { reminder, reminderTime, lockPlayerEnabled, alias,timeZone,loading } = this.state;
-    if(loading) return null
+    // if(loading) return null
     return (
       <MyGModal isOpen ariaHideApp={false}>
         <div className='modal-container sortable-Container__container'>
@@ -312,7 +319,7 @@ class AliasModal extends Component {
                 Save
               </button>
             </div>
-            <div className='modal__close' onClick={handleModalToggle}>
+            <div className='modal__close' onClick={e=>handleModalToggle(true)}>
               <img src='https://myG.gg/platform_images/Dashboard/X_icon.svg' />
             </div>
           </div>
