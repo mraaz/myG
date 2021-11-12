@@ -40,7 +40,15 @@ class AliasModal extends Component {
           player_tag: this.props.player_tag
         })
         const { data = {} } = tmp
-        const { id = '', timeZone = '', reminder_time_1 = '', reminder_time_2 = '', reminder_time_3 = '', player_locked = '' } = data
+        const {
+          id = '',
+          timeZone = '',
+          reminder_time_1 = '',
+          reminder_time_2 = '',
+          reminder_time_3 = '',
+          player_locked = '',
+          alias = ''
+        } = data
         let reminder = 0
         const reminderTime = {}
         if (id) {
@@ -63,7 +71,8 @@ class AliasModal extends Component {
             reminderTime,
             timeZone,
             lockPlayerEnabled: player_locked,
-            loading: false
+            loading: false,
+            alias
           })
         }
 
@@ -107,7 +116,7 @@ class AliasModal extends Component {
     const { clash_royale_player_id = '' } = this.state
     if (clash_royale_player_id) {
       const tmp = await axios.delete(`/api/clashroyale/deletePlayerDetails/${clash_royale_player_id}`)
-      if(tmp){
+      if (tmp) {
         notifyToast('Yeah ! Data deleted successfully!')
         this.props.handleModalToggle(true)
       }
@@ -170,11 +179,10 @@ class AliasModal extends Component {
         reminder_two: reminderTime['reminderTime_two'] ? moment(reminderTime['reminderTime_two']).format('HH:mm') : '',
         reminder_three: reminderTime['reminderTime_three'] ? moment(reminderTime['reminderTime_three']).format('HH:mm') : ''
       })
-      if(tmp){
+      if (tmp) {
         notifyToast('Yeah ! Data saved successfully!')
         this.props.handleModalToggle(true)
       }
-     
     } else {
       notifyToast('Oops ! Please select a user first!')
     }
@@ -219,7 +227,13 @@ class AliasModal extends Component {
           {this.state.alert}
           <div className='modal-wrap'>
             <div className='modal__header'>
-              <FormattedMessage id='stats.player.title' defaultMessage='War reminders will be sent only if battles are remaining.' />
+              <FormattedMessage
+                id='stats.player.title'
+                defaultMessage={`War reminders for ${this.props.player_name} will be sent only if battles are remaining.`}
+                values={{
+                  profile: this.props.player_name
+                }}
+              />
             </div>
             <div className='modal__body'>
               <div className='field-title'>
@@ -261,10 +275,9 @@ class AliasModal extends Component {
                 <div className='title'>
                   <FormattedMessage
                     id='stats.player.reminderTimeLabel'
-                    defaultMessage={`"Please select when you want the reminder to be sent out. Currently using ${timeZone} timezone" You can update this on the user's @${this.props.player_name}`}
+                    defaultMessage={`"Please select when you want the reminder to be sent out. Currently using ${timeZone} timezone. Player's can update their timezone in the profile screen."`}
                     values={{
                       timezone: timeZone,
-                      username: this.props.player_name,
                       link: <a href={`/profile/${this.props.player_name}`}>@{this.props.player_name}</a>
                     }}
                   />
@@ -284,7 +297,7 @@ class AliasModal extends Component {
                       />
                       <div>
                         <MyGButton
-                          customStyles={{ color: '#fff', border: '2px solid #fff', background: '#fa3e3f', maxWidth: '150px' }}
+                          customStyles={{ color: '#fff', border: '2px solid #fff', background: '#993833', width: '150px' }}
                           onClick={() => this.handleRemoveReminderTime(index)}
                           text={`${isMobile ? "-": "- Remove"}`}
                         />
@@ -308,7 +321,7 @@ class AliasModal extends Component {
                 text='Cancel'
               />
               <MyGButton
-                customStyles={{ color: '#fff', border: '2px solid #fff', background: '#fa3e3f' }}
+                customStyles={{ color: '#fff', border: '2px solid #fff', background: '#993833' }}
                 onClick={() => this.showAlert()}
                 text='Delete'
               />
@@ -316,7 +329,7 @@ class AliasModal extends Component {
                 Save
               </button>
             </div>
-            <div className='modal__close' onClick={e=>handleModalToggle(true)}>
+            <div className='modal__close' onClick={(e) => handleModalToggle(true)}>
               <img src='https://myG.gg/platform_images/Dashboard/X_icon.svg' />
             </div>
           </div>

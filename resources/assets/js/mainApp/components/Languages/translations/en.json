@@ -51,8 +51,8 @@
   "achievements.headers.Daily": "Daily",
   "achievements.headers.Weekly": "Weekly",
   "achievements.headers.Monthly": "Monthly",
-  "stats.player.title": "War reminders will be sent only if battles are remaining.",
+  "stats.player.title": "War reminders for {profile} will be sent only if battles are remaining.",
   "stats.player.alias": "myG Alias",
   "stats.player.clanSwitch": "Lock player in this clan",
-  "stats.player.reminderTimeLabel": "Please select when you want the reminder to be sent out. Currently using {timezone} timezone You can update this on the user's {link}"
+  "stats.player.reminderTimeLabel": "Please select when you want the reminder to be sent out. Currently using {timezone} timezone. Player's can update their timezone in the profile screen."
 }
