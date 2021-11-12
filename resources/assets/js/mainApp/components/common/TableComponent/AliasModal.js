@@ -107,7 +107,7 @@ class AliasModal extends Component {
     const { clash_royale_player_id = '' } = this.state
     if (clash_royale_player_id) {
       const tmp = await axios.delete(`/api/clashroyale/deletePlayerDetails/${clash_royale_player_id}`)
-      if(tmp){
+      if (tmp) {
         notifyToast('Yeah ! Data deleted successfully!')
         this.props.handleModalToggle(true)
       }
@@ -170,11 +170,10 @@ class AliasModal extends Component {
         reminder_two: reminderTime['reminderTime_two'] ? moment(reminderTime['reminderTime_two']).format('HH:mm') : '',
         reminder_three: reminderTime['reminderTime_three'] ? moment(reminderTime['reminderTime_three']).format('HH:mm') : ''
       })
-      if(tmp){
+      if (tmp) {
         notifyToast('Yeah ! Data saved successfully!')
         this.props.handleModalToggle(true)
       }
-     
     } else {
       notifyToast('Oops ! Please select a user first!')
     }
@@ -210,7 +209,7 @@ class AliasModal extends Component {
 
   render() {
     const { handleModalToggle } = this.props
-    const { reminder, reminderTime, lockPlayerEnabled, alias,timeZone,loading } = this.state;
+    const { reminder, reminderTime, lockPlayerEnabled, alias, timeZone, loading } = this.state
     // if(loading) return null
     return (
       <MyGModal isOpen ariaHideApp={false}>
@@ -320,7 +319,7 @@ class AliasModal extends Component {
                 text='Cancel'
               />
               <MyGButton
-                customStyles={{ color: '#fff', border: '2px solid #fff', background: '#fa3e3f' }}
+                customStyles={{ color: '#fff', border: '2px solid #fff', background: '#993833' }}
                 onClick={() => this.showAlert()}
                 text='Delete'
               />
@@ -328,7 +327,7 @@ class AliasModal extends Component {
                 Save
               </button>
             </div>
-            <div className='modal__close' onClick={e=>handleModalToggle(true)}>
+            <div className='modal__close' onClick={(e) => handleModalToggle(true)}>
               <img src='https://myG.gg/platform_images/Dashboard/X_icon.svg' />
             </div>
           </div>
