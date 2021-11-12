@@ -231,10 +231,6 @@ const AddCommunityContainer = ({ level }) => {
       </div>
     </div>
   )
-  if (level < 10) return locked('level 10', 'one community')
-  if (level < 15 && communities.length >= 1) return locked('level 15', 'two communities')
-  if (level < 20 && communities.length >= 2) return locked('level 20', 'three communities')
-  if (level < 25 && communities.length >= 3) return locked('level 25', 'four communities')
 
   return (
     <div className={styles.container} ref={contentAreaRef}>
