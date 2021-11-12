@@ -226,7 +226,13 @@ class AliasModal extends Component {
           {this.state.alert}
           <div className='modal-wrap'>
             <div className='modal__header'>
-              <FormattedMessage id='stats.player.title' defaultMessage='War reminders will be sent only if battles are remaining.' />
+              <FormattedMessage
+                id='stats.player.title'
+                defaultMessage={`War reminders for ${this.props.player_name} will be sent only if battles are remaining.`}
+                values={{
+                  profile: this.props.player_name
+                }}
+              />
             </div>
             <div className='modal__body'>
               <div className='field-title'>
@@ -268,10 +274,9 @@ class AliasModal extends Component {
                 <div className='title'>
                   <FormattedMessage
                     id='stats.player.reminderTimeLabel'
-                    defaultMessage={`"Please select when you want the reminder to be sent out. Currently using ${timeZone} timezone" You can update this on the user's @${this.props.player_name}`}
+                    defaultMessage={`"Please select when you want the reminder to be sent out. Currently using ${timeZone} timezone. Player's can update their timezone in the profile screen."`}
                     values={{
                       timezone: timeZone,
-                      username: this.props.player_name,
                       link: <a href={`/profile/${this.props.player_name}`}>@{this.props.player_name}</a>
                     }}
                   />

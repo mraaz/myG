@@ -47,7 +47,7 @@
   "myg.create": "Crear",
   "myg.select.hint": "Seleccionar ...",
   "myg.team-select.hint": "Selecciona qué equipo jugará este partido",
-  "stats.player.title": "Los recordatorios de guerra se enviarán solo si quedan batallas.",
+  "stats.player.title": "Los recordatorios de guerra {profile} se enviarán solo si quedan batallas.",
   "stats.player.alias": "myG Alias",
   "stats.player.clanSwitch": "Bloquear jugador en este clan",
   "stats.player.reminderTimeLabel": "Bloquear jugador en este clan"
