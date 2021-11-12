@@ -40,7 +40,15 @@ class AliasModal extends Component {
         })
         const { data = {} } = tmp
         console.log('data   ', data)
-        const { id = '', timeZone = '', reminder_time_1 = '', reminder_time_2 = '', reminder_time_3 = '', player_locked = '' } = data
+        const {
+          id = '',
+          timeZone = '',
+          reminder_time_1 = '',
+          reminder_time_2 = '',
+          reminder_time_3 = '',
+          player_locked = '',
+          alias = ''
+        } = data
         let reminder = 0
         const reminderTime = {}
         if (id) {
@@ -63,7 +71,8 @@ class AliasModal extends Component {
             reminderTime,
             timeZone,
             lockPlayerEnabled: player_locked,
-            loading: false
+            loading: false,
+            alias
           })
         }
 
@@ -295,7 +304,7 @@ class AliasModal extends Component {
                                     />  */}
                       <div>
                         <MyGButton
-                          customStyles={{ color: '#fff', border: '2px solid #fff', background: '#fa3e3f', width: '150px' }}
+                          customStyles={{ color: '#fff', border: '2px solid #fff', background: '#993833', width: '150px' }}
                           onClick={() => this.handleRemoveReminderTime(index)}
                           text='- Remove'
                         />

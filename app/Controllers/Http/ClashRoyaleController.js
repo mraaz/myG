@@ -360,7 +360,7 @@ class ClashRoyaleController {
         .where('clash_royale_players.group_id', '=', request.input('group_id'))
         .andWhere('clash_royale_players.player_tag', '=', clanTag)
         .whereNotNull('clash_royale_reminders.reminder_time')
-        .select('clash_royale_players.*', 'clash_royale_reminders.reminder_time', 'users.timeZone')
+        .select('clash_royale_players.*', 'clash_royale_reminders.reminder_time', 'users.timeZone', 'users.alias')
       //.options({ nestTables: true })
 
       switch (playerDetails && playerDetails.length) {
