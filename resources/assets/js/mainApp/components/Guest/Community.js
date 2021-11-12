@@ -7,8 +7,7 @@ import SignUpModal from './SignUpModal'
 import Group_IndividualPost from '../CommunityView/Group_IndividualPost'
 import { copyToClipboard } from '../../../common/clipboard'
 import { createShortLink } from '../../../integration/http/links'
-import NewTable from '../common/TableComponent/newTable'
-import TableComponent from '../common/TableComponent/table'
+import TableComponent from '../common/TableComponent'
 import { logToElasticsearch } from '../../../integration/http/logger'
 
 
@@ -36,7 +35,8 @@ export default class GuestCommunity extends React.Component {
     loading: true,
     community: null,
     showModal: false,
-    activeTab:'All'
+    activeTab:'All',
+    community:{}
   }
 
   componentDidMount() {
@@ -111,7 +111,7 @@ export default class GuestCommunity extends React.Component {
       default:
         return (
           <div className="stats_section__container">
-                    <NewTable guest={true} data={clanTagData}/>
+                    <TableComponent guest={true} data={clanTagData}/>
                   </div>
         )
     }
@@ -121,13 +121,15 @@ export default class GuestCommunity extends React.Component {
     const { activeTab,
       clanTagDataFetching=false,
       clanTagData='',
+      community={}
      } = this.state
+     const {stats_header = ''} = community;
     if (this.state.loading || !this.state.community) return null
     return (
       <div id='community' className='guest-page' style={{ backgroundColor: '#000' }}>
         {this.state.showModal && <SignUpModal handleGuestModal={() => this.setState({ showModal: false })} />}
         <GuestBanner handleGuestModal={() => this.setState({ showModal: true })} />
-        <div className='gamePost__tab'>
+        {stats_header && <div className='gamePost__tab'>
           <span className={activeTab == 'All' ? 'active' : ''} onClick={(e) => this.handleTabOption('All')}>
             All
           </span>
@@ -135,6 +137,7 @@ export default class GuestCommunity extends React.Component {
             Stats
           </span>
         </div>
+        }
         <div id='guest-content' className='communityName__container'>
           <div className='guest-community-image' style={{ backgroundImage: `url(${this.state.community.group_img})` }} />
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>

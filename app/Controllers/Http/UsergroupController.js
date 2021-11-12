@@ -51,7 +51,8 @@ class UsergroupController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error
+          message: (error && error.message) || error,
+          method: 'store'
         })
       }
     }
@@ -86,7 +87,8 @@ class UsergroupController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error
+        message: (error && error.message) || error,
+        method: 'myshow'
       })
     }
   }
@@ -106,7 +108,8 @@ class UsergroupController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error
+        message: (error && error.message) || error,
+        method: 'show'
       })
     }
   }
@@ -127,7 +130,8 @@ class UsergroupController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error
+        message: (error && error.message) || error,
+        method: 'mygroup_details'
       })
     }
   }
@@ -199,7 +203,8 @@ class UsergroupController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error
+        message: (error && error.message) || error,
+        method: 'get_all_my_group_approvals'
       })
     }
   }
@@ -279,7 +284,8 @@ class UsergroupController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error
+          message: (error && error.message) || error,
+          method: 'set_group_approval'
         })
       }
     }
@@ -328,7 +334,7 @@ class UsergroupController {
         }
 
         if (access_granted) {
-          const deleteRegistration = await Database.table('usergroups')
+          await Database.table('usergroups')
             .where({
               id: request.params.usergrp_id
             })
@@ -341,7 +347,8 @@ class UsergroupController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error
+          message: (error && error.message) || error,
+          method: 'remove_group_approval'
         })
       }
     }
@@ -411,7 +418,8 @@ class UsergroupController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error
+          message: (error && error.message) || error,
+          method: 'delete_member'
         })
       }
     }
@@ -420,7 +428,7 @@ class UsergroupController {
   async destroy({ auth, request }) {
     if (auth.user) {
       try {
-        const deleteMember = await Database.table('usergroups')
+        await Database.table('usergroups')
           .where({
             user_id: auth.user.id,
             group_id: request.params.group_id
@@ -440,7 +448,8 @@ class UsergroupController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error
+          message: (error && error.message) || error,
+          method: 'destroy'
         })
       }
     }
@@ -552,7 +561,8 @@ class UsergroupController {
           type: 'error',
           source: 'backend',
           context: __filename,
-          message: (error && error.message) || error
+          message: (error && error.message) || error,
+          method: 'promote_member_cycle'
         })
 
         return false
@@ -591,7 +601,8 @@ class UsergroupController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error
+        message: (error && error.message) || error,
+        method: 'member_lists'
       })
     }
   }
@@ -611,7 +622,8 @@ class UsergroupController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error
+        message: (error && error.message) || error,
+        method: 'current_member'
       })
     }
   }
@@ -636,7 +648,80 @@ class UsergroupController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error
+        message: (error && error.message) || error,
+        method: 'usergroupSearchResults'
+      })
+    }
+  }
+
+  async usergroupSearchResults_withOwner({ request }) {
+    try {
+      const all_usergroup_members = await Database.from('usergroups')
+        .innerJoin('users', 'users.id', 'usergroups.user_id')
+        .where('usergroups.group_id', '=', request.input('group_id'))
+        .andWhere('users.alias', 'like', '%' + request.input('alias') + '%')
+        .whereNot('usergroups.permission_level', 42)
+        .select('users.id as id', 'users.profile_img', 'users.alias')
+        .limit(24)
+
+      const group_owner = await Database.from('groups')
+        .innerJoin('users', 'users.id', 'groups.user_id')
+        .where('groups.id', '=', request.input('group_id'))
+        .andWhere('users.alias', 'like', '%' + request.input('alias') + '%')
+        .select('users.id as id', 'users.profile_img', 'users.alias')
+        .first()
+
+      const all_group_members = group_owner ? all_usergroup_members.concat(group_owner) : all_usergroup_members
+
+      return {
+        all_group_members
+      }
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+        method: 'usergroupSearchResults_withOwner'
+      })
+    }
+  }
+
+  async usergroupSearch_top_ishUsers({ request }) {
+    try {
+      //get a list of alreaqdy done players
+      //search all player in group not in this set
+      //return
+      //console.log('HERE!!')
+
+      const get_all_players = Database.from('clash_royale_players')
+        .where({
+          group_id: request.input('group_id')
+        })
+        .select('user_id')
+
+      const all_usergroup_members = await Database.from('usergroups')
+        .innerJoin('users', 'users.id', 'usergroups.user_id')
+        .where('usergroups.group_id', '=', request.input('group_id'))
+        .whereNot('usergroups.permission_level', 42)
+        .whereNotIn('user_id', get_all_players)
+        .select('users.id as id', 'users.profile_img', 'users.alias')
+        .limit(24)
+
+      //console.log(all_usergroup_members)
+
+      return {
+        all_usergroup_members
+      }
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+        method: 'usergroupSearch_top_ishUsers'
       })
     }
   }
@@ -672,7 +757,8 @@ class UsergroupController {
         type: 'error',
         source: 'backend',
         context: __filename,
-        message: (error && error.message) || error
+        message: (error && error.message) || error,
+        method: 'autoApproveOfficialCommunities'
       })
     }
   }
