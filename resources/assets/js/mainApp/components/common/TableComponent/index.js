@@ -71,13 +71,7 @@ export default class NewTabe extends React.Component {
 
   renderColumns = (header) => {
     const isMobile = detectMob()
-    let w = 100
-    if(header.length){
-      const c  = header.length*100;
-      if(c <= 1350){
-        w= 1350/header.length
-      }
-    }
+    let w = isMobile ? 100 : 200
       return (
         header.map(head=>{
             if(head.fixed && !isMobile){
@@ -147,7 +141,7 @@ export default class NewTabe extends React.Component {
     const {rows=[],isOpen,header=[],isAliasModal,player_tag='',player_name=''} = this.state;
     const columns = this.renderColumns(header);
     return (
-      <div>
+      <div >
         {this.state.showLoginModal && this.props.guest && <SignUpModal handleGuestModal={() => this.setState({ showLoginModal: false })} />}
         {this.props.guest && <GuestBanner handleGuestModal={() => this.setState({ showLoginModal: true })} />}
         {!this.props.guest && <Fragment><SortTableHeader  saveHeaderOrder={this.saveHeaderOrder} isOpen ={isOpen} items={header} handleModalToggle={this.handleModalToggle}/>
