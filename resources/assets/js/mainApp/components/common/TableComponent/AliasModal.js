@@ -9,6 +9,7 @@ import { MyGModal, MyGAsyncSelect, MyGButton, MyGDatePicker, MyGSweetAlert } fro
 import { parsePlayersToSelectData } from '../../../utils/InvitePlayersUtils'
 import notifyToast from '../../../../common/toast'
 import { logToElasticsearch } from '../../../../integration/http/logger'
+import { detectMob } from '../../../utils/utils'
 
 const nm = {
   1: 'one',
@@ -39,7 +40,6 @@ class AliasModal extends Component {
           player_tag: this.props.player_tag
         })
         const { data = {} } = tmp
-        console.log('data   ', data)
         const {
           id = '',
           timeZone = '',
@@ -47,7 +47,8 @@ class AliasModal extends Component {
           reminder_time_2 = '',
           reminder_time_3 = '',
           player_locked = '',
-          alias = ''
+          alias = '',
+          user_id = ''
         } = data
         let reminder = 0
         const reminderTime = {}
@@ -72,7 +73,16 @@ class AliasModal extends Component {
             timeZone,
             lockPlayerEnabled: player_locked,
             loading: false,
-            alias
+            alias:{
+              id:user_id,
+              name:alias,
+              value:user_id,
+              label: (
+                <div style={{ display: 'flex', alignItems: 'center', backgroundColor: '#1d2326', }}>
+                  <div style={{ display: 'inline', color: '#fff' }}>{alias}</div>
+                </div>
+              ),
+            }
           })
         }
 
@@ -166,14 +176,13 @@ class AliasModal extends Component {
   }
 
   handleSave = async (e) => {
-    const { reminderTime = {}, clash_royale_player_id = '' } = this.state
-    if (this.state.alias?.id) {
+    const { reminderTime = {}, clash_royale_player_id = '',alias={} } = this.state
       const tmp = await axios.post('/api/clashroyale/storePlayerDetails/', {
         clash_royale_player_id,
         group_id: this.props.group_id,
         player_tag: this.props.player_tag,
         clanTag: this.props.clanTag,
-        user_id: this.state.alias.id,
+        user_id: alias.id,
         player_locked: this.state.lockPlayerEnabled,
         reminder_one: reminderTime['reminderTime_one'] ? moment(reminderTime['reminderTime_one']).format('HH:mm') : '',
         reminder_two: reminderTime['reminderTime_two'] ? moment(reminderTime['reminderTime_two']).format('HH:mm') : '',
@@ -183,9 +192,6 @@ class AliasModal extends Component {
         notifyToast('Yeah ! Data saved successfully!')
         this.props.handleModalToggle(true)
       }
-    } else {
-      notifyToast('Oops ! Please select a user first!')
-    }
   }
   handleAliasOnChange = (alias) => {
     this.setState({ alias })
@@ -218,8 +224,10 @@ class AliasModal extends Component {
 
   render() {
     const { handleModalToggle } = this.props
-    const { reminder, reminderTime, lockPlayerEnabled, alias, timeZone, loading } = this.state
+    const { reminder, reminderTime, lockPlayerEnabled, alias,timeZone,loading } = this.state;
+    const isMobile = detectMob()
     // if(loading) return null
+    // console.log("alias   ",alias);
     return (
       <MyGModal isOpen ariaHideApp={false}>
         <div className='modal-container sortable-Container__container'>
@@ -294,24 +302,11 @@ class AliasModal extends Component {
                         onChange={(e) => this.handleDateChange(e, index)}
                         selected={reminderTime[`reminderTime_${nm[index + 1]}`]}
                       />
-                      {/* <MyGSelect
-                                      isClearable
-                                      isValidNewOption={() => {
-                                        return
-                                      }}
-                                      options={[]}//this.createOption()}
-                                      onChange={(value) => {
-                                        console.log("value ",value);
-                                      }}
-                                      value={''}
-                                      placeholder='Enter your option' 
-                                      className='test'
-                                    />  */}
                       <div>
                         <MyGButton
-                          customStyles={{ color: '#fff', border: '2px solid #fff', background: '#993833', width: '150px' }}
+                          customStyles={{ color: '#fff', border: '2px solid #fff', background: '#993833', width: `${isMobile ? "35px": "150px"}` }}
                           onClick={() => this.handleRemoveReminderTime(index)}
-                          text='- Remove'
+                          text={`${isMobile ? "-": "- Remove"}`}
                         />
                       </div>
                     </div>
@@ -319,7 +314,7 @@ class AliasModal extends Component {
                 })}
                 {alias && Object.keys(alias).length > 0 && reminder < 3 && (
                   <MyGButton
-                    customStyles={{ color: '#000', background: '#e5c746', width: '220px', marginTop: '10px' }}
+                    customStyles={{ color: '#000', background: '#e5c746', maxWidth: '220px', marginTop: '10px' }}
                     onClick={() => this.handleAddReminderTime()}
                     text='+ Add Reminder Time'
                   />
@@ -337,7 +332,7 @@ class AliasModal extends Component {
                 onClick={() => this.showAlert()}
                 text='Delete'
               />
-              <button type='button' disabled={reminder == 0} onClick={() => this.handleSave(true)}>
+              <button type='button' onClick={() => this.handleSave(true)}>
                 Save
               </button>
             </div>
