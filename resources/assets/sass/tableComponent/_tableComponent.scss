@@ -145,6 +145,26 @@
       }
     }
 }
+.help {
+  z-index: 1;
+  width: 24px;
+  height: 24px;
+  color: #171a1c;
+  background-color: #2d363a;
+  padding: 12px;
+  border-radius: 1000px;
+  font-size: 16px;
+  font-weight: bold;
+  font-family: 'Montserrat' !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  margin-bottom: 10px;
+  .clickable{
+    cursor: pointer;
+  }
+}
    
 }
 
