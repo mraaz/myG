@@ -5,7 +5,7 @@
  */
 import React, { Component } from 'react'
 import { FormattedMessage, injectIntl } from 'react-intl'
-import { MyGModal } from '../../common'
+import { MyGModal,MyGTextarea,MyGButton } from '../../common'
 import { logToElasticsearch } from '../../../../integration/http/logger'
 
 class PlayerHistroyModal extends Component {
