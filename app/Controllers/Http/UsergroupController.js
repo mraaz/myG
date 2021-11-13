@@ -709,8 +709,6 @@ class UsergroupController {
         .select('users.id as id', 'users.profile_img', 'users.alias')
         .limit(24)
 
-      //console.log(all_usergroup_members)
-
       return {
         all_usergroup_members
       }

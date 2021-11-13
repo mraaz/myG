@@ -359,18 +359,19 @@ class ClashRoyaleController {
         .innerJoin('users', 'users.id', 'clash_royale_players.user_id')
         .where('clash_royale_players.group_id', '=', request.input('group_id'))
         .andWhere('clash_royale_players.player_tag', '=', clanTag)
-        .whereNotNull('clash_royale_reminders.reminder_time')
         .select('clash_royale_players.*', 'clash_royale_reminders.reminder_time', 'users.timeZone', 'users.alias')
       //.options({ nestTables: true })
 
       switch (playerDetails && playerDetails.length) {
         case 1:
-          playerDetails[0].reminder_time_1 = await this.converttoLocalHours(
-            playerDetails[0].reminder_time.substr(playerDetails[0].reminder_time.length - 2),
-            playerDetails[0].timeZone
-          )
+          if (playerDetails[0].reminder_time) {
+            playerDetails[0].reminder_time_1 = await this.converttoLocalHours(
+              playerDetails[0].reminder_time.substr(playerDetails[0].reminder_time.length - 2),
+              playerDetails[0].timeZone
+            )
+            delete playerDetails[0].reminder_time
+          }
           playerDetails[0].regional = await EncryptionRepository.decryptField(playerDetails[0].regional)
-          delete playerDetails[0].reminder_time
           break
         case 2:
           playerDetails[0].reminder_time_1 = await this.converttoLocalHours(
