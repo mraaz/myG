@@ -8,6 +8,7 @@ import { CSVLink } from "react-csv";
 import SortTableHeader from "./SortTableHeader";
 import AliasModal from "./AliasModal";
 import HelpModal from "./HelpModal";
+import PlayerHistroyModal from "./PlayerHistroyModal";
 import moment from 'moment'
 import GuestBanner from './../../Guest/Banner'
 import SignUpModal from './../../Guest/SignUpModal'
@@ -36,6 +37,7 @@ export default class NewTabe extends React.Component {
         isAliasModal:false,
         showLoginModal:false,
         showHelpModal:false,
+        showPlayerHistoryModal:false,
       };
   }
 
@@ -64,12 +66,14 @@ export default class NewTabe extends React.Component {
       this.setState({showLoginModal:true})
       return
     }
-    // if(this.props.current_user_permission == 1 || this.props.current_user_permission == 2){
+    if(key=="myG_alias"){
+      const { showPlayerHistoryModal } = this.state
+      this.setState({showPlayerHistoryModal:!showPlayerHistoryModal,player_tag:rowData.tag,player_name:rowData.name})
+    } else if(this.props.current_user_permission == 1 || this.props.current_user_permission == 2){
       const { isAliasModal } = this.state
       this.setState({isAliasModal:!isAliasModal,player_tag:rowData.tag,player_name:rowData.name})
-    // }
+    }
   }
-
 
   renderColumns = (header) => {
     const isMobile = detectMob()
@@ -147,7 +151,8 @@ export default class NewTabe extends React.Component {
         isAliasModal,
         player_tag='',
         player_name='',
-        showHelpModal
+        showHelpModal,
+        showPlayerHistoryModal
       } = this.state;
     const columns = this.renderColumns(header);
     return (
@@ -158,6 +163,7 @@ export default class NewTabe extends React.Component {
         {this.props.guest && <GuestBanner handleGuestModal={() => this.setState({ showLoginModal: true })} />}
         {!this.props.guest && <Fragment><SortTableHeader  saveHeaderOrder={this.saveHeaderOrder} isOpen ={isOpen} items={header} handleModalToggle={this.handleModalToggle}/>
         {showHelpModal && <HelpModal isOpen ={showHelpModal}  handleModalToggle={() => this.setState({ showHelpModal: false })}/>}
+        {showPlayerHistoryModal && <PlayerHistroyModal isOpen ={showPlayerHistoryModal}  player_tag ={player_tag} player_name={player_name} handleModalToggle={() => this.setState({ showPlayerHistoryModal: false })}/>}
         {isAliasModal && <AliasModal {...this.props} player_tag ={player_tag} player_name={player_name} isOpen ={isAliasModal}  handleModalToggle={this.handleAliasModal}/>}
         <span className="csv__download-button " onClick={e=>this.handleModalToggle()} style={{marginRight:"10px"}}>Edit Sort Header </span>
         {(rows && rows.length ) ? <CSVLink data={rows} headers={header} filename={`download.csv`}>

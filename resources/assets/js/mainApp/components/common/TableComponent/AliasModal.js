@@ -176,14 +176,13 @@ class AliasModal extends Component {
   }
 
   handleSave = async (e) => {
-    const { reminderTime = {}, clash_royale_player_id = '' } = this.state
-    if (this.state.alias?.id) {
+    const { reminderTime = {}, clash_royale_player_id = '',alias={} } = this.state
       const tmp = await axios.post('/api/clashroyale/storePlayerDetails/', {
         clash_royale_player_id,
         group_id: this.props.group_id,
         player_tag: this.props.player_tag,
         clanTag: this.props.clanTag,
-        user_id: this.state.alias.id,
+        user_id: alias.id,
         player_locked: this.state.lockPlayerEnabled,
         reminder_one: reminderTime['reminderTime_one'] ? moment(reminderTime['reminderTime_one']).format('HH:mm') : '',
         reminder_two: reminderTime['reminderTime_two'] ? moment(reminderTime['reminderTime_two']).format('HH:mm') : '',
@@ -193,9 +192,6 @@ class AliasModal extends Component {
         notifyToast('Yeah ! Data saved successfully!')
         this.props.handleModalToggle(true)
       }
-    } else {
-      notifyToast('Oops ! Please select a user first!')
-    }
   }
   handleAliasOnChange = (alias) => {
     this.setState({ alias })
@@ -308,7 +304,7 @@ class AliasModal extends Component {
                       />
                       <div>
                         <MyGButton
-                          customStyles={{ color: '#fff', border: '2px solid #fff', background: '#993833', width: '150px' }}
+                          customStyles={{ color: '#fff', border: '2px solid #fff', background: '#993833', width: `${isMobile ? "35px": "150px"}` }}
                           onClick={() => this.handleRemoveReminderTime(index)}
                           text={`${isMobile ? "-": "- Remove"}`}
                         />
