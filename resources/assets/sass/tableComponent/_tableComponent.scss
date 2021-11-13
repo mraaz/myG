@@ -351,6 +351,14 @@
     max-height: unset;
   }
 }
+.playerHistory{
+  .modal__header{
+    padding: 0 50px;
+    .header__left{
+      margin-right: auto;
+    }
+  }
+}
 
 .Table {
     border-spacing: 0px;
