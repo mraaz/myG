@@ -6,14 +6,27 @@
 import React, { Component } from 'react'
 import { FormattedMessage, injectIntl } from 'react-intl'
 import { MyGModal } from '../../common'
+import ImageGallery from '../../common/ImageGallery/ImageGallery'
 import { logToElasticsearch } from '../../../../integration/http/logger'
 
 class HelpModal extends Component {
   state = {
     items: [
-      'https://myg.gg/platform_images/clash_royale/pt-copy.jpg',
-      'https://myg.gg/platform_images/clash_royale/pt-home.jpg',
-      'https://myg.gg/platform_images/clash_royale/pt-profile.jpg'
+      {
+        original: 'https://myg.gg/platform_images/clash_royale/pt-copy.jpg',
+        src: 'https://myg.gg/platform_images/clash_royale/pt-copy.jpg',
+        thumbnail: 'https://myg.gg/platform_images/clash_royale/pt-copy.jpg',
+      },
+      {
+        original: 'https://myg.gg/platform_images/clash_royale/pt-home.jpg',
+        src: 'https://myg.gg/platform_images/clash_royale/pt-home.jpg',
+        thumbnail: 'https://myg.gg/platform_images/clash_royale/pt-home.jpg',
+      },
+      {
+        original: 'https://myg.gg/platform_images/clash_royale/pt-profile.jpg',
+        src: 'https://myg.gg/platform_images/clash_royale/pt-profile.jpg',
+        thumbnail: 'https://myg.gg/platform_images/clash_royale/pt-profile.jpg',
+      },
     ],
   }
 
@@ -28,9 +41,10 @@ class HelpModal extends Component {
 
   render() {
     const { handleModalToggle } = this.props;
+    const { items } = this.state;
     return (
       <MyGModal isOpen ariaHideApp={false}>
-        <div className='modal-container sortable-Container__container'>
+        <div className='modal-container sortable-Container__container helpModal'>
           <div className='modal-wrap'>
             <div className='modal__header'>
               <FormattedMessage
@@ -39,7 +53,12 @@ class HelpModal extends Component {
               />
             </div>
             <div className='modal__body'>
-              ddd
+            <ImageGallery 
+              items={[...items]} 
+              showFullscreenButton={true}
+              showBullets={true}
+              showGalleryFullscreenButton={true}
+            />
             </div>
             <div className='modal__close' onClick={(e) => handleModalToggle(true)}>
               <img src='https://myG.gg/platform_images/Dashboard/X_icon.svg' />

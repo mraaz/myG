@@ -346,6 +346,11 @@
   }
   }
 }
+.helpModal{
+  .modal__body{
+    max-height: unset;
+  }
+}
 
 .Table {
     border-spacing: 0px;
