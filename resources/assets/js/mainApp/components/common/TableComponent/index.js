@@ -69,7 +69,8 @@ export default class NewTabe extends React.Component {
     if(key=="myG_alias"){
       const { showPlayerHistoryModal } = this.state
       this.setState({showPlayerHistoryModal:!showPlayerHistoryModal,player_tag:rowData.tag,player_name:rowData.name})
-    } else if(this.props.current_user_permission == 1 || this.props.current_user_permission == 2){
+    } 
+    else if(this.props.current_user_permission == 1 || this.props.current_user_permission == 2){
       const { isAliasModal } = this.state
       this.setState({isAliasModal:!isAliasModal,player_tag:rowData.tag,player_name:rowData.name})
     }
