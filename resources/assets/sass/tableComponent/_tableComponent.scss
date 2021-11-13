@@ -5,11 +5,15 @@
     transition: all 1s ease-in-out;
     overflow-x: auto;
     margin: 0 auto;
-    @media screen and (max-width: 1200px) {
-      max-width: 1080px !important;
-    }
     width: 80%!important;
     margin: auto!important;
+    // max-width: 1080px !important;
+    @media (min-width: 320px) and (max-width: 1400px) {
+      max-width: 1080px !important;
+    }
+    @media (min-width: 1401px)  {
+      max-width: 1200px !important;
+    }
     &.guest{
       max-width: 100%;
     }
