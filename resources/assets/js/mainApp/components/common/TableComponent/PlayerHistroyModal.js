@@ -5,19 +5,23 @@
  */
 import React, { Component } from 'react'
 import { FormattedMessage, injectIntl } from 'react-intl'
+import axios from 'axios'
 import { MyGModal,MyGTextarea,MyGButton } from '../../common'
 import { logToElasticsearch } from '../../../../integration/http/logger'
+import notifyToast from '../../../../common/toast'
 
 class PlayerHistroyModal extends Component {
   state = {
-    items: ''
+    items: '',
+    player_details:{},
+    history_details:[]
   }
 
   async componentDidMount() {
     try {
       const tmp = await axios.post('/api/clashroyale/cr_player_manager_show/', {
-        user_id: 1,
-        group_id: 1
+        user_id: this.props.player_id,
+        group_id: this.props.group_id,
       })
     } catch (error) {
       this.setState({ loading: false })
@@ -25,10 +29,30 @@ class PlayerHistroyModal extends Component {
     }
   }
 
+  onTextAreaChange = (e) => {
+    const { player_details = {} } = this.state;
+    const value = e.target.value;
+    player_details['notes'] = value;
+    this.setState({player_details})
+  }
+
+  handleSave = async () =>{
+    const {player_details = {} } = this.state;
+    const tmp = await axios.post('/api/clashroyale/cr_player_manager_update/', {
+      player_details_id: this.props.player_id,
+      group_id: this.props.group_id,
+      notes: player_details.notes
+    })
+    if(tmp){
+      notifyToast('Yeah ! Notes Saved successfully!')
+      this.props.handleModalToggle()
+    }
+  }
+
 
   render() {
     const { handleModalToggle,player_name='',player_tag='' } = this.props;
-    const { items } = this.state;
+    const { items,player_details } = this.state;
     return (
       <MyGModal isOpen ariaHideApp={false}>
         <div className='modal-container sortable-Container__container playerHistory'>
@@ -42,10 +66,8 @@ class PlayerHistroyModal extends Component {
               <div className='description-text-area'>
                 <div>
                   <MyGTextarea
-                    onChange={(event) => {
-                    console.log("event.target.value  ",event.target.value);
-                    }}
-                    value={''}
+                    onChange={this.onTextAreaChange}
+                    value={player_details.notes}
                     placeholder='Enter Note'
                     maxLength={250}
                   />
@@ -58,7 +80,7 @@ class PlayerHistroyModal extends Component {
                 // onClick={() => this.handleClose()}
                 text='Cancel'
               />
-              <button type='button'>
+              <button type='button' onClick={this.handleSave}>
                 Save
               </button>
             </div>

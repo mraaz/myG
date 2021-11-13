@@ -62,6 +62,7 @@ export default class NewTabe extends React.Component {
   }
 
   handleAliasModal = (close=false,data,key,rowData={}) =>{
+  console.log("rowData  ",rowData)
     if(this.props.guest){
       this.setState({showLoginModal:true})
       return
@@ -69,7 +70,11 @@ export default class NewTabe extends React.Component {
     // if(key=="myG_alias" && (this.props.current_user_permission == 1 || this.props.current_user_permission == 2)){
     if(key=="myG_alias"){
       const { showPlayerHistoryModal } = this.state
-      this.setState({showPlayerHistoryModal:!showPlayerHistoryModal,player_tag:rowData.tag,player_name:rowData.name})
+      this.setState({
+          showPlayerHistoryModal:!showPlayerHistoryModal,
+          player_tag:rowData.tag,player_name:rowData.name,
+          player_id:rowData.myG_user_id
+        })
       return
     } else if(this.props.current_user_permission == 1 || this.props.current_user_permission == 2){
       const { isAliasModal } = this.state
@@ -153,6 +158,7 @@ export default class NewTabe extends React.Component {
         isAliasModal,
         player_tag='',
         player_name='',
+        player_id='',
         showHelpModal,
         showPlayerHistoryModal
       } = this.state;
@@ -165,7 +171,7 @@ export default class NewTabe extends React.Component {
         {this.props.guest && <GuestBanner handleGuestModal={() => this.setState({ showLoginModal: true })} />}
         {!this.props.guest && <Fragment><SortTableHeader  saveHeaderOrder={this.saveHeaderOrder} isOpen ={isOpen} items={header} handleModalToggle={this.handleModalToggle}/>
         {showHelpModal && <HelpModal isOpen ={showHelpModal}  handleModalToggle={() => this.setState({ showHelpModal: false })}/>}
-        {showPlayerHistoryModal && <PlayerHistroyModal isOpen ={showPlayerHistoryModal}  player_tag ={player_tag} player_name={player_name} handleModalToggle={() => this.setState({ showPlayerHistoryModal: false })}/>}
+        {showPlayerHistoryModal && <PlayerHistroyModal {...this.props} isOpen ={showPlayerHistoryModal}  player_tag ={player_tag} player_name={player_name} player_id={player_id} handleModalToggle={() => this.setState({ showPlayerHistoryModal: false })}/>}
         {isAliasModal && <AliasModal {...this.props} player_tag ={player_tag} player_name={player_name} isOpen ={isAliasModal}  handleModalToggle={this.handleAliasModal}/>}
         <span className="csv__download-button " onClick={e=>this.handleModalToggle()} style={{marginRight:"10px"}}>Edit Sort Header </span>
         {(rows && rows.length ) ? <CSVLink data={rows} headers={header} filename={`download.csv`}>
