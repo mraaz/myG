@@ -47,7 +47,8 @@ class AliasModal extends Component {
           reminder_time_2 = '',
           reminder_time_3 = '',
           player_locked = '',
-          alias = ''
+          alias = '',
+          user_id = ''
         } = data
         let reminder = 0
         const reminderTime = {}
@@ -72,7 +73,16 @@ class AliasModal extends Component {
             timeZone,
             lockPlayerEnabled: player_locked,
             loading: false,
-            alias
+            alias:{
+              id:user_id,
+              name:alias,
+              value:user_id,
+              label: (
+                <div style={{ display: 'flex', alignItems: 'center', backgroundColor: '#1d2326', }}>
+                  <div style={{ display: 'inline', color: '#fff' }}>{alias}</div>
+                </div>
+              ),
+            }
           })
         }
 
@@ -221,6 +231,7 @@ class AliasModal extends Component {
     const { reminder, reminderTime, lockPlayerEnabled, alias,timeZone,loading } = this.state;
     const isMobile = detectMob()
     // if(loading) return null
+    // console.log("alias   ",alias);
     return (
       <MyGModal isOpen ariaHideApp={false}>
         <div className='modal-container sortable-Container__container'>
