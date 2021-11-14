@@ -118,6 +118,7 @@ class AliasModal extends Component {
       logToElasticsearch('error', 'AliasModal.js', 'Failed onPlayersSuggestionFetch:' + ' ' + error)
     }
   }
+  
 
   handleClose = (e) => {
     this.props.handleModalToggle(true)

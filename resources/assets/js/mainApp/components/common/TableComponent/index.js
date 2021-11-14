@@ -43,12 +43,16 @@ export default class NewTabe extends React.Component {
 
 
   componentDidMount() {
+    const url_string = window.location.href;
+    const url = new URL(url_string);
+    const showPlayerHistoryModal = url.searchParams.get("showPlayerHistoryModal");
+    const player_id = url.searchParams.get("player_id");
     const {data={}} = this.props;
     const HeaderItem =  window.localStorage.getItem("statsHeaderOrder");
     if(HeaderItem){
         this.setState({rows:data.items,header:JSON.parse(HeaderItem)})
     } else {
-      this.setState({rows:data.items,header:data.header})
+      this.setState({rows:data.items,header:data.header,showPlayerHistoryModal,player_id})
     }
   }
 
