@@ -351,6 +351,14 @@
     max-height: unset;
   }
 }
+.playerHistory{
+  .modal__header{
+    padding: 0 50px;
+    .header__left{
+      margin-right: auto;
+    }
+  }
+}
 
 .Table {
     border-spacing: 0px;
@@ -436,6 +444,43 @@
       color: #e5c745;
       text-decoration: underline;
     }
+    .ReactTable{
+      margin-top: 10px;
+      ::-webkit-scrollbar {
+        width: 5px !important;
+        height: 8px!important;
+        background: #2d363a;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #e5c745;
+      }
+    }
+    .rt-thead{
+      height: 90px;
+    }
+    .ReactTable .rt-thead .rt-th, .ReactTable .rt-thead .rt-td{
+      background: #1d2326;
+      border: 1px solid #181a1c;
+    }
+    .ReactTable .rt-tbody.rt-th, .ReactTable .rt-tbody .rt-td{
+      background: #1d2326;
+      border: 1px solid #181a1c;
+    }
+    .rthfc .rt-tr.-odd .rt-td{
+      background: #1d2326;
+    }
+    .rthfc .rt-tr.-even .rt-td{
+      background: #1d2326;
+    }
+    .rt-td,.rt-th{
+      text-align: center  !important;;
+    }
+    .rt-th{
+      padding: 30px 5px  !important;
+    }
+  }
+  
+  .ReactModalPortal{
     .ReactTable{
       margin-top: 10px;
       ::-webkit-scrollbar {
