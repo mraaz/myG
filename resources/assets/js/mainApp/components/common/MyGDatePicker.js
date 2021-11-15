@@ -17,7 +17,9 @@ const MyGDatePicker = ({
   shouldCloseOnSelect,
   children,
   minDate,
-  maxDate
+  maxDate,
+  style=true,
+  ...props
 }) => {
   const styles = {
     container: {
@@ -28,7 +30,7 @@ const MyGDatePicker = ({
   }
 
   return (
-    <div style={styles.container}>
+    <div style={style ? styles.container : {}}>
       <DatePicker
         selected={selected}
         onChange={onChange}
@@ -42,6 +44,7 @@ const MyGDatePicker = ({
         shouldCloseOnSelect={shouldCloseOnSelect}
         minDate={minDate}
         maxDate={maxDate}
+        {...props}
       />
       {children}
     </div>

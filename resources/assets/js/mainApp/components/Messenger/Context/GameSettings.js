@@ -60,7 +60,7 @@ export default class GameSettings extends React.Component {
           <input
             className='messenger-settings-game-input-field'
             type='text'
-            autocomplete='off'
+            autoComplete='off'
             placeholder='Search for Games...'
             value={this.state.favoriteGameInput}
             onChange={(event) => this.setState({ favoriteGameInput: event.target.value })}

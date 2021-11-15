@@ -14,6 +14,7 @@ import MyGGameSelect from './MyGGameSelect';
 import MyGTagSelect from './MyGTagSelect';
 import MyGTeamSelect from './MyGTeamSelect';
 import MyGFriendSelect from './MyGFriendSelect';
+import MyGSweetAlert from './MyGSweetAlert';
 
 export {
     PageHeader,
@@ -32,4 +33,5 @@ export {
     MyGTagSelect,
     MyGTeamSelect,
     MyGFriendSelect,
+    MyGSweetAlert,
 };

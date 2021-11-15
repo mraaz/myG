@@ -253,14 +253,14 @@ const JoinStatus = (props) => {
               <h1>Select your role</h1>
               <p>Please, insert your current info and what you wish to apply for</p>
               {/* <input
-                type='text' autocomplete='off'
+                type='text' autoComplete='off'
                 className='viewGame__name__input'
                 onChange={handleInGameUsername}
                 value={inGameUsername}
                 placeholder='In-game username'
               />
               <input
-                type='text' autocomplete='off'
+                type='text' autoComplete='off'
                 className='viewGame__name__input'
                 onChange={handleOtherInfoPlaceholder}
                 value={otherInfoPlaceholder}

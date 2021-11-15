@@ -51,8 +51,10 @@ class ChatRepository {
       .leftJoin('chats', 'user_chats.chat_id', 'chats.id')
       .leftJoin('chat_last_reads', function () { this.on('chat_last_reads.chat_id', 'user_chats.chat_id').andOn('chat_last_reads.user_id', 'user_chats.user_id') })
       .leftJoin('chat_last_cleareds', function () { this.on('chat_last_cleareds.chat_id', 'user_chats.chat_id').andOn('chat_last_cleareds.user_id', 'user_chats.user_id') })
-      .where('user_chats.user_id', requestingUserId);
-    if (onlyGroups) chatsQuery.andWhere('chats.isGroup', true);
+      .where('user_chats.user_id', requestingUserId)    
+      .where((builder) => {
+        if (onlyGroups) builder.andWhere('chats.isGroup', true)      
+      })
     const chats = await chatsQuery.map(chat => new ChatSchema({
       chatId: chat.chat_id,
       muted: chat.muted,

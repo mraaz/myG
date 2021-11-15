@@ -1,5 +1,4 @@
 import React from 'react'
-import styles from './progress.module.css'
 import { CircularProgressbarWithChildren, buildStyles } from 'react-circular-progressbar'
 import 'react-circular-progressbar/dist/styles.css'
 

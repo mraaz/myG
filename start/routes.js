@@ -258,6 +258,9 @@ Route.post('/api/clashroyale/storePlayerDetails/', 'ClashRoyaleController.storeP
 Route.post('/api/clashroyale/getPlayerDetails/', 'ClashRoyaleController.getPlayerDetails')
 Route.delete('/api/clashroyale/deletePlayerDetails/:clash_royale_player_id', 'ClashRoyaleController.deletePlayerDetails')
 Route.get('/api/clashroyale/kick_non_clashRoyale_players/:group_id', 'ClashRoyaleController.kick_non_clashRoyale_players')
+Route.post('/api/clashroyale/cr_player_manager_create/', 'ClashRoyaleController.cr_player_manager_create')
+Route.post('/api/clashroyale/cr_player_manager_show/', 'ClashRoyaleController.cr_player_manager_show')
+Route.post('/api/clashroyale/cr_player_manager_update/', 'ClashRoyaleController.cr_player_manager_update')
 
 Route.post('/api/commendations', 'CommendationController.store')
 Route.get('/api/commendations/user/:id', 'CommendationController.showUser')
@@ -328,6 +331,8 @@ Route.delete('/api/usergroup/delete_member/:group_id/:usergrp_id', 'UsergroupCon
 Route.get('/api/usergroup/promote_member_cycle/:group_id/:usergrp_id', 'UsergroupController.promote_member_cycle')
 
 Route.post('/api/usergroup/usergroupSearchResults/', 'UsergroupController.usergroupSearchResults')
+Route.post('/api/usergroup/usergroupSearchResults_withOwner/', 'UsergroupController.usergroupSearchResults_withOwner')
+Route.post('/api/usergroup/usergroupSearch_top_ishUsers/', 'UsergroupController.usergroupSearch_top_ishUsers')
 
 Route.get('/api/usergroup/current_member/:group_id', 'UsergroupController.current_member')
 
