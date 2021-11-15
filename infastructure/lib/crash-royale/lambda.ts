@@ -4,9 +4,11 @@ import * as lambda from '@aws-cdk/aws-lambda'
 import { AwsIntegration } from '@aws-cdk/aws-apigateway'
 import { Duration } from '@aws-cdk/core'
 import { RestApi } from '@aws-cdk/aws-apigateway'
-import { IVpc, ISecurityGroup } from '@aws-cdk/aws-ec2'
+import { IVpc, ISecurityGroup, SubnetType } from '@aws-cdk/aws-ec2'
+import * as iam from '@aws-cdk/aws-iam'
 import { ClashRoyaleStack } from './crash-royale-stack'
 import * as path from 'path'
+import { getPrivateVpcSubnet } from './vpc'
 
 export function integrateLambdaFunction(
   stack: ClashRoyaleStack,
@@ -24,14 +26,17 @@ export function integrateLambdaFunction(
     proxy: true,
     service: 'lambda',
     path: `2015-03-31/functions/${lambdaFn.functionArn}/invocations`,
-    integrationHttpMethod: 'POST'
+    integrationHttpMethod: 'GET'
+
+    // options: {
+    //   credentialsRole: iam.Role.fromRoleArn(stack, 'imported-role-integration', 'arn:aws:iam::457469627332:role/apig-aws-proxy-role', {
+    //     mutable: false
+    //   })
+    // }
   })
   apiResource.addCorsPreflight({
     allowCredentials: false,
-    // allowOrigins: process.env.ALLOW_ORIGINS?.split(',') || ['*']
     allowOrigins: ['*']
-    // allowHeaders,
-    // allowMethods,
   })
   apiResource.addMethod(method, integration)
 }
@@ -52,13 +57,18 @@ export function getOrCreateLambda(
   const newLambdaFn = new lambda.Function(stack, `lambda-${functionName}`, {
     functionName,
     runtime: lambda.Runtime.NODEJS_12_X,
-    handler: `${handler}.handler`,
+    handler: `${handler}.main`,
     timeout: Duration.minutes(15),
     memorySize: 128,
-    code: lambda.Code.fromAsset('lib/crash-royale/resources'),
+    code: lambda.Code.fromAsset(path.join(__dirname, '../../../services/clash-royale/build')),
     retryAttempts: 0,
     vpc,
-    securityGroups
+    securityGroups,
+    allowPublicSubnet: true,
+    role: iam.Role.fromRoleArn(stack, 'imported-role-lambda', 'arn:aws:iam::457469627332:role/lambda-ex', { mutable: false }),
+    environment: {
+      TOKEN: process.env.TOKEN || 'UNKOWN_TOKEN'
+    }
   })
   return newLambdaFn
 }

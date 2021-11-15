@@ -14,6 +14,6 @@ export class ClashRoyaleStack extends Stack {
     const restApi = getOrCreateRestApi(this, 'clash-royale')
 
     // Lambda Functions
-    integrateLambdaFunction(this, 'clash-royale', 'crash-royale', restApi, '/clash-royale', 'POST', vpc, securityGroups)
+    integrateLambdaFunction(this, 'clash-royale', 'index', restApi, '/clash-royale', 'GET', vpc, securityGroups)
   }
 }

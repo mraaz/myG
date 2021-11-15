@@ -10,21 +10,20 @@ import { Construct } from '@aws-cdk/core'
 
 export const getVPC = (scope: Construct): IVpc => {
   return Vpc.fromLookup(scope, 'lambda-vpc', {
-    vpcName: process.env.VPC_NAME,
-    isDefault: false,
-    subnetGroupNameTag: process.env.VPC_SUBNET_GROUP_NAME_TAG
+    vpcId: 'vpc-0870ce2d0cbc33b54'
   })
 }
 
-export const getPrivateVpcSubnet = (vpc: Vpc): SelectedSubnets => {
+export const getPrivateVpcSubnet = (vpc: IVpc): SelectedSubnets => {
   const subnets = vpc.selectSubnets({
     subnets: vpc.privateSubnets.filter((subnet) => {
-      return subnetGroupNameFromConstructId(subnet).toLowerCase() === SubnetType.PRIVATE.toLowerCase()
+      console.log(subnet)
+      return subnetGroupNameFromConstructId(subnet).toLowerCase()
     })
   })
   return subnets
 }
 
 export const getSecurityGroups = (scope: Construct, id: string): ISecurityGroup[] => {
-  return [SecurityGroup.fromSecurityGroupId(scope, id, process.env.SECURITY_GROUP_ID || 'MISSING SECURITY GROUP ID')]
+  return [SecurityGroup.fromSecurityGroupId(scope, id, 'sg-0409ccec48fe5ba39')]
 }

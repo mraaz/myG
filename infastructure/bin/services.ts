@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 import 'source-map-support/register'
+require('dotenv').config()
 import { App } from '@aws-cdk/core'
 import { ClashRoyaleStack } from '../lib/crash-royale/crash-royale-stack'
 
 const env = { account: '457469627332', region: 'us-east-1' }
 const app = new App()
 new ClashRoyaleStack(app, 'ServicesStack', {
-  stackName: `crash-royale-stack-${process.env.environment}`,
+  stackName: `crash-royale-stack-${process.env.ENVIRONMENT}`,
   description: 'Crash Royale API proxy stack.',
   env
   /* If you don't specify 'env', this stack will be environment-agnostic.
