@@ -515,4 +515,12 @@
     .rt-th{
       padding: 30px 5px  !important;
     }
+    .image-gallery-content .image-gallery-slide .image-gallery-image{
+      max-height: 336px;
+    }
+    .image-gallery-content .image-gallery-swipe{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
   }
