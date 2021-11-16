@@ -16,16 +16,19 @@ class HelpModal extends Component {
         original: 'https://myg.gg/platform_images/clash_royale/pt-copy.jpg',
         src: 'https://myg.gg/platform_images/clash_royale/pt-copy.jpg',
         thumbnail: 'https://myg.gg/platform_images/clash_royale/pt-copy.jpg',
+        description:"1. Select player name [pt-home.jpg]"
       },
       {
         original: 'https://myg.gg/platform_images/clash_royale/pt-home.jpg',
         src: 'https://myg.gg/platform_images/clash_royale/pt-home.jpg',
         thumbnail: 'https://myg.gg/platform_images/clash_royale/pt-home.jpg',
+        description:"2. Select player tag [pt-profile.jpg]"
       },
       {
         original: 'https://myg.gg/platform_images/clash_royale/pt-profile.jpg',
         src: 'https://myg.gg/platform_images/clash_royale/pt-profile.jpg',
         thumbnail: 'https://myg.gg/platform_images/clash_royale/pt-profile.jpg',
+        description:"3. Copy Tag [pt-copy.jpg]"
       },
     ],
   }
