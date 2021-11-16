@@ -117,6 +117,7 @@ class PlayerHistroyModal extends Component {
                   height: '100vh'
                 }}
               />
+              
             </div>
             <div className='modal__footer'>
               <MyGButton
