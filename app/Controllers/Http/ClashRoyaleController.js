@@ -857,15 +857,24 @@ class ClashRoyaleController {
           })
           .first()
 
+        const strPlayerTag = request.input('player_tag')
+        const playerTag = strPlayerTag.replace(/#/g, '').trim()
+
+        const get_player_info = await Database.from('clash_royale_player_bases')
+          .where({
+            player_tag: playerTag
+          })
+          .first()
+
         let get_history = null
-        if (get_player_record != undefined) {
-          get_history = await Database.from('player_game_activity_trans')
-            .where('player_game_activity_trans.player_game_activity_id', '=', get_player_record.id)
+        if (get_player_info != undefined) {
+          get_history = await Database.from('cr_player_base_trans')
+            .where('cr_player_base_trans.clash_royale_player_base_id', '=', get_player_info.id)
             .limit(50)
-        } else get_player_record = null
+        }
 
         return {
-          player_details: get_player_record,
+          player_details: get_player_record ? get_player_record : null,
           history_details: get_history
         }
       } catch (error) {
