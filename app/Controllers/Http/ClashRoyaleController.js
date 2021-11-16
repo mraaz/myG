@@ -866,16 +866,27 @@ class ClashRoyaleController {
           })
           .first()
 
-        let get_history = null
+        let history_details = null
         if (get_player_info != undefined) {
-          get_history = await Database.from('cr_player_base_trans')
+          history_details = await Database.from('cr_player_base_trans')
             .where('cr_player_base_trans.clash_royale_player_base_id', '=', get_player_info.id)
             .limit(50)
         }
 
+        let headerStruct = {}
+
+        headerStruct = [
+          { label: 'Clan Tag', key: 'clan_tag', type: 'text' },
+          { label: 'Activity', key: 'activity', type: 'text' }
+        ]
+
+        let header = []
+        header.push(headerStruct)
+
         return {
           player_details: get_player_record ? get_player_record : null,
-          history_details: get_history
+          history_details: history_details,
+          header: header[0]
         }
       } catch (error) {
         LoggingRepository.log({
