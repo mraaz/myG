@@ -26,12 +26,12 @@ class PlayerHistroyModal extends Component {
     items: '',
     player_details: {},
     history_details: [],
-    header:[]
+    header: []
   }
 
   async componentDidMount() {
     try {
-      const {data ={}} = await axios.post('/api/clashroyale/cr_player_manager_show/', {
+      const { data = {} } = await axios.post('/api/clashroyale/cr_player_manager_show/', {
         user_id: this.props.player_id,
         group_id: this.props.group_id,
         player_tag: this.props.player_tag
@@ -60,14 +60,18 @@ class PlayerHistroyModal extends Component {
 
   handleSave = async () => {
     const { player_details = {} } = this.state
-    const tmp = await axios.post('/api/clashroyale/cr_player_manager_update/', {
-      player_details_id: this.props.player_id,
-      group_id: this.props.group_id,
-      notes: player_details.notes
-    })
-    if (tmp) {
-      notifyToast('Yeah ! Notes Saved successfully!')
-      this.props.handleModalToggle()
+
+    if (Object.keys(player_details).length === 0 && player_details.constructor === Object) {
+      const tmp = await axios.post('/api/clashroyale/cr_player_manager_create/', {
+        user_id: this.props.player_id,
+        group_id: this.props.group_id,
+        notes: player_details.notes
+      })
+
+      if (tmp) {
+        notifyToast('Yeah ! Notes Saved successfully!')
+        this.props.handleModalToggle()
+      }
     }
   }
 
@@ -85,11 +89,11 @@ class PlayerHistroyModal extends Component {
 
   render() {
     const { handleModalToggle, player_name = '', player_tag = '' } = this.props
-    const { history_details, player_details,header } = this.state
+    const { history_details, player_details, header } = this.state
     const columns = this.renderColumns(header)
-    console.log("history_details  ",history_details);
-    console.log("player_details  ",player_details);
-    console.log("header  ",header);
+    console.log('history_details  ', history_details)
+    console.log('player_details  ', player_details)
+    console.log('header  ', header)
     return (
       <MyGModal isOpen ariaHideApp={false}>
         <div className='modal-container sortable-Container__container playerHistory'>
@@ -117,7 +121,6 @@ class PlayerHistroyModal extends Component {
                   height: '100vh'
                 }}
               />
-              
             </div>
             <div className='modal__footer'>
               <MyGButton
