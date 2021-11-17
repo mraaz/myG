@@ -49,7 +49,7 @@ class HelpModal extends Component {
               <FormattedMessage id='stats.help.title' defaultMessage={`How to find your player tag`} />
             </div>
             <div className='modal__body'>
-              <ImageGallery items={[...items]} showFullscreenButton={true} showBullets={false} showGalleryFullscreenButton={true} />
+              <ImageGallery items={[...items]} showFullscreenButton={false} showBullets={false} showGalleryFullscreenButton={true} />
             </div>
             <div className='modal__close' onClick={(e) => handleModalToggle(true)}>
               <img src='https://myG.gg/platform_images/Dashboard/X_icon.svg' />
