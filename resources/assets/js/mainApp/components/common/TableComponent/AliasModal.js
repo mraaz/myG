@@ -89,10 +89,8 @@ class AliasModal extends Component {
         const all_group_members = await axios.post(`/api/usergroup/usergroupSearch_top_ishUsers`, {
           group_id: this.props.group_id
         })
-        console.log(all_group_members, '<<never')
 
         const parsedData = parsePlayersToSelectData(all_group_members.data.all_usergroup_members)
-        //console.log(parsedData, '<<ghf')
         this.setState({
           userList: parsedData,
           loading: false
@@ -118,7 +116,6 @@ class AliasModal extends Component {
       logToElasticsearch('error', 'AliasModal.js', 'Failed onPlayersSuggestionFetch:' + ' ' + error)
     }
   }
-  
 
   handleClose = (e) => {
     this.props.handleModalToggle(true)

@@ -13,24 +13,21 @@ class HelpModal extends Component {
   state = {
     items: [
       {
-        original: 'https://myg.gg/platform_images/clash_royale/pt-copy.jpg',
-        src: 'https://myg.gg/platform_images/clash_royale/pt-copy.jpg',
-        thumbnail: 'https://myg.gg/platform_images/clash_royale/pt-copy.jpg',
-        description:"1. Select player name [pt-home.jpg]"
+        original: 'https://myg.gg/platform_images/clash_royale/select_player_cr.png',
+        src: 'https://myg.gg/platform_images/clash_royale/select_player_cr.png',
+        thumbnail: 'https://myg.gg/platform_images/clash_royale/select_player_cr.png'
       },
       {
-        original: 'https://myg.gg/platform_images/clash_royale/pt-home.jpg',
-        src: 'https://myg.gg/platform_images/clash_royale/pt-home.jpg',
-        thumbnail: 'https://myg.gg/platform_images/clash_royale/pt-home.jpg',
-        description:"2. Select player tag [pt-profile.jpg]"
+        original: 'https://myg.gg/platform_images/clash_royale/select_player_tag_cr.png',
+        src: 'https://myg.gg/platform_images/clash_royale/select_player_tag_cr.png',
+        thumbnail: 'https://myg.gg/platform_images/clash_royale/select_player_tag_cr.png'
       },
       {
-        original: 'https://myg.gg/platform_images/clash_royale/pt-profile.jpg',
-        src: 'https://myg.gg/platform_images/clash_royale/pt-profile.jpg',
-        thumbnail: 'https://myg.gg/platform_images/clash_royale/pt-profile.jpg',
-        description:"3. Copy Tag [pt-copy.jpg]"
-      },
-    ],
+        original: 'https://myg.gg/platform_images/clash_royale/copy_tag_cr.png',
+        src: 'https://myg.gg/platform_images/clash_royale/copy_tag_cr.png',
+        thumbnail: 'https://myg.gg/platform_images/clash_royale/copy_tag_cr.png'
+      }
+    ]
   }
 
   async componentDidMount() {
@@ -41,27 +38,18 @@ class HelpModal extends Component {
     }
   }
 
-
   render() {
-    const { handleModalToggle } = this.props;
-    const { items } = this.state;
+    const { handleModalToggle } = this.props
+    const { items } = this.state
     return (
       <MyGModal isOpen ariaHideApp={false}>
         <div className='modal-container sortable-Container__container helpModal'>
           <div className='modal-wrap'>
             <div className='modal__header'>
-              <FormattedMessage
-                id='stats.help.title'
-                defaultMessage={`How to find your player tag`}
-              />
+              <FormattedMessage id='stats.help.title' defaultMessage={`How to find your player tag`} />
             </div>
             <div className='modal__body'>
-            <ImageGallery 
-              items={[...items]} 
-              showFullscreenButton={true}
-              showBullets={true}
-              showGalleryFullscreenButton={true}
-            />
+              <ImageGallery items={[...items]} showFullscreenButton={true} showBullets={false} showGalleryFullscreenButton={true} />
             </div>
             <div className='modal__close' onClick={(e) => handleModalToggle(true)}>
               <img src='https://myG.gg/platform_images/Dashboard/X_icon.svg' />

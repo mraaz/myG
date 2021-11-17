@@ -876,8 +876,8 @@ class ClashRoyaleController {
         let headerStruct = {}
 
         headerStruct = [
-          { label: 'Clan Tag', key: 'clan_tag', type: 'text' },
-          { label: 'Activity', key: 'activity', type: 'text' }
+          { label: 'Activity', key: 'activity', type: 'text' },
+          { label: 'Date & Time', key: 'created_at', type: 'date' }
         ]
 
         let header = []
