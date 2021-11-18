@@ -137,7 +137,7 @@ export default class NewTabe extends React.Component {
                     accessor: head.key,
                     width: w,
                     Cell: row => (
-                      <div title={row.value}>{moment(row.value).format('MM/DD/YYYY')}</div>
+                      <div title={row.value}>{moment(row.value).format('LLL')}</div>
                     )
                   }
             } else{

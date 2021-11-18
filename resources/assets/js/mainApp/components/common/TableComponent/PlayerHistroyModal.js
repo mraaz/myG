@@ -61,6 +61,7 @@ class PlayerHistroyModal extends Component {
   handleSave = async () => {
     const { player_details = {} } = this.state
     const tmp = await axios.post('/api/clashroyale/cr_player_manager_update/', {
+      ...player_details,
       player_details_id: this.props.player_id,
       group_id: this.props.group_id,
       notes: player_details.notes
