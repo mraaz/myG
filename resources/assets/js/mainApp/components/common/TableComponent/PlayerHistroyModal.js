@@ -6,6 +6,7 @@
 import React, { Component } from 'react'
 import { FormattedMessage, injectIntl } from 'react-intl'
 import axios from 'axios'
+import { connect } from 'react-redux'
 
 // Import React Table
 import ReactTable from 'react-table-6'
@@ -13,6 +14,7 @@ import 'react-table-6/react-table.css'
 
 // Import React Table HOC Fixed columns
 import withFixedColumns from 'react-table-hoc-fixed-columns'
+import { Link } from 'react-router-dom'
 import 'react-table-hoc-fixed-columns/lib/styles.css'
 
 import { MyGModal, MyGTextarea, MyGButton } from '../../common'
@@ -85,7 +87,7 @@ class PlayerHistroyModal extends Component {
   }
 
   render() {
-    const { handleModalToggle, player_name = '', player_tag = '' } = this.props
+    const { handleModalToggle, player_name = '', player_tag = '',profile_img='',alias='' } = this.props
     const { history_details, player_details, header } = this.state
     const columns = this.renderColumns(header)
     console.log('history_details  ', history_details)
@@ -97,7 +99,17 @@ class PlayerHistroyModal extends Component {
           <div className='modal-wrap'>
             <div className='modal__header'>
               <div className='header__left'>
-                <a href={`/profile/${player_name}`}>@{player_name}</a>
+                <Link to={`/profile/${alias}`} className='user-img'>
+                  <div
+                    className='profile__image'
+                    style={{
+                      backgroundImage: `url('${profile_img}'), url('https://myG.gg/default_user/new-user-profile-picture.png')`,
+                      backgroundSize: 'cover'
+                    }}
+                  >
+                  </div>
+                </Link>
+                <a href={`/profile/${alias}`}>@{alias}</a>
               </div>
               <div className='header__right'>{player_tag}</div>
             </div>
@@ -139,4 +151,14 @@ class PlayerHistroyModal extends Component {
   }
 }
 
-export default injectIntl(PlayerHistroyModal)
+
+
+function mapStateToProps(state) {
+  return {
+    profile_img: state.user.profile_img,
+    alias: state.user.alias,
+  }
+}
+
+
+export default connect(mapStateToProps, null)(injectIntl(PlayerHistroyModal))
