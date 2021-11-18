@@ -62,9 +62,9 @@ class PlayerHistroyModal extends Component {
 
   handleSave = async () => {
     const { player_details = {} } = this.state
-    if(player_details == null){
+    if(!player_details.id){
       const tmp = await axios.post('/api/clashroyale/cr_player_manager_create/', {
-        user_id: this.props.user_id,
+        user_id: this.props.player_id,
         group_id: this.props.group_id,
         notes: player_details.notes
         })
@@ -74,8 +74,7 @@ class PlayerHistroyModal extends Component {
         }
     } else {
       const tmp = await axios.post('/api/clashroyale/cr_player_manager_update/', {
-        ...player_details,
-        player_details_id: this.props.player_id,
+        player_details_id: player_details_id.id,
         group_id: this.props.group_id,
         notes: player_details.notes
       })
