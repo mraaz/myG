@@ -302,8 +302,10 @@ class ClashRoyaleController {
 
         const get_player_deets = await Database.from('users')
           .where({ id: request.input('user_id') })
-          .select('users.timeZone')
+          .select('users.timeZone', 'users.id', 'users.profile_img', 'users.alias')
           .first()
+
+        if (get_player_deets == undefined) return
 
         const cr_trans_id = await ClashRoyalePlayers.create({
           group_id: request.input('group_id'),
@@ -336,7 +338,7 @@ class ClashRoyaleController {
             reminder_time: this.converttoUTCHours(request.input('reminder_three'), get_player_deets.timeZone)
           })
         }
-        return 'Saved successfully'
+        return get_player_deets
       } catch (error) {
         LoggingRepository.log({
           environment: process.env.NODE_ENV,
