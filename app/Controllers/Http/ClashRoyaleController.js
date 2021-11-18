@@ -816,11 +816,12 @@ class ClashRoyaleController {
         // if (current_user_permission != 0 && current_user_permission != 1) {
         //   await Database.table('clash_royale_players').where({ user_id: auth.user.id }).delete()
         // }
+        const strTmp = request.input('notes')
 
         const cr_pm_id = await PlayerGameActivity.create({
           user_id: request.input('user_id'),
           group_id: request.input('group_id'),
-          notes: request.input('notes').trim()
+          notes: strTmp.trim()
         })
 
         return 'Saved successfully'
@@ -876,8 +877,8 @@ class ClashRoyaleController {
         let headerStruct = {}
 
         headerStruct = [
-          { label: 'Clan Tag', key: 'clan_tag', type: 'text' },
-          { label: 'Activity', key: 'activity', type: 'text' }
+          { label: 'Activity', key: 'activity', type: 'text' },
+          { label: 'Date & Time', key: 'created_at', type: 'date' }
         ]
 
         let header = []
