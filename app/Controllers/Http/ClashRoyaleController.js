@@ -860,12 +860,9 @@ class ClashRoyaleController {
           })
           .first()
 
-        const strPlayerTag = request.input('player_tag')
-        const playerTag = strPlayerTag.replace(/#/g, '').trim()
-
         const get_player_info = await Database.from('clash_royale_player_bases')
           .where({
-            player_tag: playerTag
+            player_tag: request.input('player_tag')
           })
           .first()
 
