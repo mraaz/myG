@@ -46,7 +46,6 @@ class PlayerHistroyModal extends Component {
         player_details,
         history_details
       })
-      console.log(data, '<<<DATAS')
     } catch (error) {
       this.setState({ loading: false })
       logToElasticsearch('error', 'HelpModal.js', 'Failed componentDidMount:' + ' ' + error)
@@ -110,29 +109,26 @@ class PlayerHistroyModal extends Component {
   }
 
   render() {
-    const { handleModalToggle, player_name = '', player_tag = '',profile_img='',alias='' } = this.props
+    const { handleModalToggle, player_name = '', player_tag = '',player_img='' } = this.props
     const { history_details, player_details, header } = this.state
     const columns = this.renderColumns(header)
-    console.log('history_details  ', history_details)
-    console.log('player_details  ', player_details)
-    console.log('header  ', header)
     return (
       <MyGModal isOpen ariaHideApp={false}>
         <div className='modal-container sortable-Container__container playerHistory'>
           <div className='modal-wrap'>
             <div className='modal__header'>
               <div className='header__left'>
-                <Link to={`/profile/${alias}`} className='user-img'>
+                <Link to={`/profile/${player_name}`} className='user-img'>
                   <div
                     className='profile__image'
                     style={{
-                      backgroundImage: `url('${profile_img}'), url('https://myG.gg/default_user/new-user-profile-picture.png')`,
+                      backgroundImage: `url('${player_img}'), url('https://myG.gg/default_user/new-user-profile-picture.png')`,
                       backgroundSize: 'cover'
                     }}
                   >
                   </div>
                 </Link>
-                <a href={`/profile/${alias}`}>@{alias}</a>
+                <a href={`/profile/${player_name}`}>@{player_name}</a>
               </div>
               <div className='header__right'>{player_tag}</div>
             </div>
