@@ -61,11 +61,10 @@ export default class GuestCommunity extends React.Component {
         })
         const {stats_header = ''} = this.state.community
         const clanTag = stats_header;
-        // const response = await axios.get(`/api/clashroyale/show/${clanTag}`)
-        // console.log("response   ",response);
+        const response = await axios.get(`/api/clashroyale/show/${clanTag}`)
         this.setState({
           clanTagDataFetching:false,
-          clanTagData:data//response.data ? response.data : ''
+          clanTagData:response.data ? response.data : ''
         })
       } catch (error) {
         logToElasticsearch('error', 'Clan Tag Game Stats for guest', 'Failed at Clan Tag Game Stats for guest' + ' ' + error)
