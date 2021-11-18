@@ -62,27 +62,51 @@ class PlayerHistroyModal extends Component {
 
   handleSave = async () => {
     const { player_details = {} } = this.state
-    const tmp = await axios.post('/api/clashroyale/cr_player_manager_update/', {
-      ...player_details,
-      player_details_id: this.props.player_id,
-      group_id: this.props.group_id,
-      notes: player_details.notes
-    })
-    if (tmp) {
-      notifyToast('Yeah ! Notes Saved successfully!')
-      this.props.handleModalToggle()
+    if(player_details == null){
+      const tmp = await axios.post('/api/clashroyale/cr_player_manager_create/', {
+        user_id: this.props.user_id,
+        group_id: this.props.group_id,
+        notes: player_details.notes
+        })
+        if (tmp) {
+          notifyToast('Yeah ! Notes Saved successfully!')
+          this.props.handleModalToggle()
+        }
+    } else {
+      const tmp = await axios.post('/api/clashroyale/cr_player_manager_update/', {
+        ...player_details,
+        player_details_id: this.props.player_id,
+        group_id: this.props.group_id,
+        notes: player_details.notes
+      })
+      if (tmp) {
+        notifyToast('Yeah ! Notes Saved successfully!')
+        this.props.handleModalToggle()
+      }
     }
   }
 
   renderColumns = (header) => {
     let w = '50%'
     return header.map((head) => {
+     if(head.type == "date"){
+      return {
+        Header: head.label,
+        accessor: head.key,
+        width: w,
+        Cell: row => (
+          <div title={row.value}>{moment(row.value).format('LLL')}</div>
+        )
+      }
+     } else {
       return {
         Header: head.label,
         accessor: head.key,
         width: w,
         Cell: (row) => <div title={row.value}>{row.value}</div>
       }
+     }
+      
     })
   }
 
@@ -157,6 +181,7 @@ function mapStateToProps(state) {
   return {
     profile_img: state.user.profile_img,
     alias: state.user.alias,
+    user_id: state.user.user_id,
   }
 }
 
