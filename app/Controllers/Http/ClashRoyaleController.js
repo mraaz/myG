@@ -22,7 +22,7 @@ const axios = use('axios')
 
 //Decided to leave token in code, as each token is restricted to an IP
 const TOKEN =
-  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6IjBmNDhiZjZkLWYyY2MtNDI0Ni1hNTI1LWRmMzM5MGIyZDhkMCIsImlhdCI6MTYzNTk2MjI4MSwic3ViIjoiZGV2ZWxvcGVyL2I5OWJkYTY4LTdhYjktNTE0OS0wYTVkLWExYTdkZWNkYTg2MiIsInNjb3BlcyI6WyJyb3lhbGUiXSwibGltaXRzIjpbeyJ0aWVyIjoiZGV2ZWxvcGVyL3NpbHZlciIsInR5cGUiOiJ0aHJvdHRsaW5nIn0seyJjaWRycyI6WyI0NS4xMjcuMTM3LjEzNyJdLCJ0eXBlIjoiY2xpZW50In1dfQ.y_4YXs4PMRxa8zYvuP-vDeUImMoHJTqBJIKowI1glCsZl-Q-2jcbguAh_prWh2ObaT4RVBLqttS3KoSgBAq3jw'
+  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6IjZhYmNjYzhkLWQzZGQtNDMxOS1iMzVkLTE3N2JiOWU0NjI3YSIsImlhdCI6MTYzNzI0MDAxMSwic3ViIjoiZGV2ZWxvcGVyL2U0ZjA1ZjI4LWJmOGMtNDJmNS0yY2I1LTU0ZTZlNjA2N2QxMiIsInNjb3BlcyI6WyJyb3lhbGUiXSwibGltaXRzIjpbeyJ0aWVyIjoiZGV2ZWxvcGVyL3NpbHZlciIsInR5cGUiOiJ0aHJvdHRsaW5nIn0seyJjaWRycyI6WyIxMjAuMjMuNzYuMjE2Il0sInR5cGUiOiJjbGllbnQifV19.EAH8j2FrWXiZmaP-KjYGIG8qkFl6htoMwB1Bh2tn0R56mw8w_LVIbFAGa96d6xyzDTxQ9KNUlU6knw6PxAM-iQ'
 
 const CONFIG = {
   headers: { Authorization: `Bearer ${TOKEN}` }
@@ -131,7 +131,7 @@ class ClashRoyaleController {
 
         if (get_player_info == undefined) {
           await CrPlayerBaseTran.create({
-            cr_player_base_id: cr_player_base_id.id,
+            clash_royale_player_base_id: cr_player_base_id.id,
             clan_tag: clanTag,
             activity: 'Joined Clan'
           })
@@ -145,14 +145,14 @@ class ClashRoyaleController {
 
             if (!get_player_info.clan_tag) {
               await CrPlayerBaseTran.create({
-                cr_player_base_id: cr_player_base_id.id,
+                clash_royale_player_base_id: cr_player_base_id.id,
                 clan_tag: get_player_info.clan_tag,
                 activity: 'Left Clan'
               })
             }
 
             await CrPlayerBaseTran.create({
-              cr_player_base_id: cr_player_base_id.id,
+              clash_royale_player_base_id: cr_player_base_id.id,
               clan_tag: clanTag,
               activity: 'Joined Clan'
             })
@@ -193,7 +193,7 @@ class ClashRoyaleController {
 
       for (let index = 0; index < lost_players.length; index++) {
         await CrPlayerBaseTran.create({
-          cr_player_base_id: lost_players[index].id,
+          clash_royale_player_base_id: lost_players[index].id,
           clan_tag: clanTag,
           activity: 'Left Clan'
         })
