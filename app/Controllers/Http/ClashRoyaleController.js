@@ -124,12 +124,12 @@ class ClashRoyaleController {
           })
           .first()
 
-        if (get_player_info == undefined) {
-          const cr_player_base_id = await ClashRoyalePlayerBase.create({
-            player_tag: getClanInfo.data.items[index].tag,
-            clan_tag: clanTag
-          })
+        const cr_player_base_id = await ClashRoyalePlayerBase.create({
+          player_tag: getClanInfo.data.items[index].tag,
+          clan_tag: clanTag
+        })
 
+        if (get_player_info == undefined) {
           await CrPlayerBaseTran.create({
             cr_player_base_id: cr_player_base_id.id,
             clan_tag: clanTag,
