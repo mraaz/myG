@@ -140,7 +140,7 @@ class PlayerHistroyModal extends Component {
                 </div>
               </div>
               <div className='field-title'>History Logs</div>
-              <ReactTableFixedColumns
+              {(history_details && history_details.length) ? <ReactTableFixedColumns
                 showPaginationBottom={false}
                 data={history_details}
                 defaultPageSize={10}
@@ -148,7 +148,7 @@ class PlayerHistroyModal extends Component {
                 style={{
                   height: '100vh'
                 }}
-              />
+              /> : <div>No History Logs Available.</div>}
             </div>
             <div className='modal__footer'>
               <MyGButton
