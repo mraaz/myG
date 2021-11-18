@@ -123,7 +123,7 @@ class PlayerHistroyModal extends Component {
             <div className='modal__footer'>
               <MyGButton
                 customStyles={{ color: '#fff', border: '2px solid #fff', background: '#000' }}
-                // onClick={() => this.handleClose()}
+                onClick={(e) => handleModalToggle(true)}
                 text='Cancel'
               />
               <button type='button' onClick={this.handleSave}>
