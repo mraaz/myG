@@ -124,19 +124,19 @@ class ClashRoyaleController {
           })
           .first()
 
-        const cr_player_base_id = await ClashRoyalePlayerBase.create({
-          player_tag: getClanInfo.data.items[index].tag,
-          clan_tag: clanTag
-        })
-
         if (get_player_info == undefined) {
           await CrPlayerBaseTran.create({
             clash_royale_player_base_id: cr_player_base_id.id,
             clan_tag: clanTag,
             activity: 'Joined Clan'
           })
+
+          const cr_player_base_id = await ClashRoyalePlayerBase.create({
+            player_tag: getClanInfo.data.items[index].tag,
+            clan_tag: clanTag
+          })
         } else {
-          list_of_players.push(cr_player_base_id.id)
+          list_of_players.push(get_player_info.id)
 
           if (get_player_info.clan_tag != clanTag) {
             await ClashRoyalePlayerBase.query().where('id', get_player_info.id).update({
@@ -145,14 +145,14 @@ class ClashRoyaleController {
 
             if (!get_player_info.clan_tag) {
               await CrPlayerBaseTran.create({
-                clash_royale_player_base_id: cr_player_base_id.id,
+                clash_royale_player_base_id: get_player_info.id,
                 clan_tag: get_player_info.clan_tag,
                 activity: 'Left Clan'
               })
             }
 
             await CrPlayerBaseTran.create({
-              clash_royale_player_base_id: cr_player_base_id.id,
+              clash_royale_player_base_id: get_player_info.id,
               clan_tag: clanTag,
               activity: 'Joined Clan'
             })
