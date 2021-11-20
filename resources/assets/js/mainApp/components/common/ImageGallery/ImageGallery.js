@@ -56,7 +56,7 @@ export default class CustomImageGallery extends React.Component {
           renderItem: this._renderVideo.bind(this)
         }
       } else {
-        return { original: data.src, original: data.src, thumbnail: data.src }
+        return { original: data.src, original: data.src, thumbnail: data.src,description: data.description }
       }
     })
   }
