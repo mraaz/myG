@@ -7,6 +7,7 @@ import React, { Component } from 'react'
 import { FormattedMessage, injectIntl } from 'react-intl'
 import axios from 'axios'
 import { connect } from 'react-redux'
+import moment from 'moment'
 
 // Import React Table
 import ReactTable from 'react-table-6'
@@ -61,16 +62,16 @@ class PlayerHistroyModal extends Component {
 
   handleSave = async () => {
     const { player_details = {} } = this.state
-    if(!player_details.id){
+    if (!player_details.id) {
       const tmp = await axios.post('/api/clashroyale/cr_player_manager_create/', {
         user_id: this.props.player_id,
         group_id: this.props.group_id,
         notes: player_details.notes
-        })
-        if (tmp) {
-          notifyToast('Yeah ! Notes Saved successfully!')
-          this.props.handleModalToggle()
-        }
+      })
+      if (tmp) {
+        notifyToast('Yeah ! Notes Saved successfully!')
+        this.props.handleModalToggle()
+      }
     } else {
       const tmp = await axios.post('/api/clashroyale/cr_player_manager_update/', {
         player_details_id: player_details.id,
@@ -87,29 +88,26 @@ class PlayerHistroyModal extends Component {
   renderColumns = (header) => {
     let w = '50%'
     return header.map((head) => {
-     if(head.type == "date"){
-      return {
-        Header: head.label,
-        accessor: head.key,
-        width: w,
-        Cell: row => (
-          <div title={row.value}>{moment(row.value).format('LLL')}</div>
-        )
+      if (head.type == 'date') {
+        return {
+          Header: head.label,
+          accessor: head.key,
+          width: w,
+          Cell: (row) => <div title={row.value}>{moment(row.value).format('LLL')}</div>
+        }
+      } else {
+        return {
+          Header: head.label,
+          accessor: head.key,
+          width: w,
+          Cell: (row) => <div title={row.value}>{row.value}</div>
+        }
       }
-     } else {
-      return {
-        Header: head.label,
-        accessor: head.key,
-        width: w,
-        Cell: (row) => <div title={row.value}>{row.value}</div>
-      }
-     }
-      
     })
   }
 
   render() {
-    const { handleModalToggle, player_name = '', player_tag = '',player_img='' } = this.props
+    const { handleModalToggle, player_name = '', player_tag = '', player_img = '' } = this.props
     const { history_details, player_details, header } = this.state
     const columns = this.renderColumns(header)
     return (
@@ -125,8 +123,7 @@ class PlayerHistroyModal extends Component {
                       backgroundImage: `url('${player_img}'), url('https://myG.gg/default_user/new-user-profile-picture.png')`,
                       backgroundSize: 'cover'
                     }}
-                  >
-                  </div>
+                  ></div>
                 </Link>
                 <a href={`/profile/${player_name}`}>@{player_name}</a>
               </div>
@@ -140,15 +137,19 @@ class PlayerHistroyModal extends Component {
                 </div>
               </div>
               <div className='field-title'>History Logs</div>
-              {(history_details && history_details.length) ? <ReactTableFixedColumns
-                showPaginationBottom={false}
-                data={history_details}
-                defaultPageSize={10}
-                columns={columns}
-                style={{
-                  height: '100vh'
-                }}
-              /> : <div>No History Logs Available.</div>}
+              {history_details && history_details.length ? (
+                <ReactTableFixedColumns
+                  showPaginationBottom={false}
+                  data={history_details}
+                  defaultPageSize={10}
+                  columns={columns}
+                  style={{
+                    height: '100vh'
+                  }}
+                />
+              ) : (
+                <div>No History Logs Available.</div>
+              )}
             </div>
             <div className='modal__footer'>
               <MyGButton
@@ -170,15 +171,12 @@ class PlayerHistroyModal extends Component {
   }
 }
 
-
-
 function mapStateToProps(state) {
   return {
     profile_img: state.user.profile_img,
     alias: state.user.alias,
-    user_id: state.user.user_id,
+    user_id: state.user.user_id
   }
 }
-
 
 export default connect(mapStateToProps, null)(injectIntl(PlayerHistroyModal))

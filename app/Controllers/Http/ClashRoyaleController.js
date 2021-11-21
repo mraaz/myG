@@ -124,19 +124,19 @@ class ClashRoyaleController {
           })
           .first()
 
-        const cr_player_base_id = await ClashRoyalePlayerBase.create({
-          player_tag: getClanInfo.data.items[index].tag,
-          clan_tag: clanTag
-        })
-
         if (get_player_info == undefined) {
           await CrPlayerBaseTran.create({
             clash_royale_player_base_id: cr_player_base_id.id,
             clan_tag: clanTag,
             activity: 'Joined Clan'
           })
+
+          const cr_player_base_id = await ClashRoyalePlayerBase.create({
+            player_tag: getClanInfo.data.items[index].tag,
+            clan_tag: clanTag
+          })
         } else {
-          list_of_players.push(cr_player_base_id.id)
+          list_of_players.push(get_player_info.id)
 
           if (get_player_info.clan_tag != clanTag) {
             await ClashRoyalePlayerBase.query().where('id', get_player_info.id).update({
@@ -145,14 +145,14 @@ class ClashRoyaleController {
 
             if (!get_player_info.clan_tag) {
               await CrPlayerBaseTran.create({
-                clash_royale_player_base_id: cr_player_base_id.id,
+                clash_royale_player_base_id: get_player_info.id,
                 clan_tag: get_player_info.clan_tag,
                 activity: 'Left Clan'
               })
             }
 
             await CrPlayerBaseTran.create({
-              clash_royale_player_base_id: cr_player_base_id.id,
+              clash_royale_player_base_id: get_player_info.id,
               clan_tag: clanTag,
               activity: 'Joined Clan'
             })
@@ -302,8 +302,10 @@ class ClashRoyaleController {
 
         const get_player_deets = await Database.from('users')
           .where({ id: request.input('user_id') })
-          .select('users.timeZone')
+          .select('users.timeZone', 'users.id', 'users.profile_img', 'users.alias')
           .first()
+
+        if (get_player_deets == undefined) return
 
         const cr_trans_id = await ClashRoyalePlayers.create({
           group_id: request.input('group_id'),
@@ -336,7 +338,7 @@ class ClashRoyaleController {
             reminder_time: this.converttoUTCHours(request.input('reminder_three'), get_player_deets.timeZone)
           })
         }
-        return 'Saved successfully'
+        return get_player_deets
       } catch (error) {
         LoggingRepository.log({
           environment: process.env.NODE_ENV,
@@ -858,12 +860,9 @@ class ClashRoyaleController {
           })
           .first()
 
-        const strPlayerTag = request.input('player_tag')
-        const playerTag = strPlayerTag.replace(/#/g, '').trim()
-
         const get_player_info = await Database.from('clash_royale_player_bases')
           .where({
-            player_tag: playerTag
+            player_tag: request.input('player_tag')
           })
           .first()
 
