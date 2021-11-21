@@ -190,10 +190,10 @@ class AliasModal extends Component {
         reminder_two: reminderTime['reminderTime_two'] ? moment(reminderTime['reminderTime_two']).format('HH:mm') : '',
         reminder_three: reminderTime['reminderTime_three'] ? moment(reminderTime['reminderTime_three']).format('HH:mm') : ''
       })
-
+      console.log("tmp  ",tmp);
       if (tmp) {
         notifyToast('Yeah ! Data saved successfully!')
-        this.props.handleModalToggle(true)
+        this.props.handleModalToggle("tableUpdate",tmp)
       }
     }
   }

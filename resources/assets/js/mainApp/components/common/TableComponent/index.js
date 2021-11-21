@@ -56,8 +56,11 @@ export default class NewTabe extends React.Component {
     }
   }
 
-  handleModalToggle = () =>{
-    const {isOpen} = this.state
+  handleModalToggle = (flag,data) =>{
+    const {isOpen,rows} = this.state
+    if(flag =="tableUpdate"){
+      this.setState({rows:rows})
+    }
     this.setState({isOpen:!isOpen})
   }
   
