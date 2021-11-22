@@ -57,10 +57,7 @@ export default class NewTabe extends React.Component {
   }
 
   handleModalToggle = (flag,data) =>{
-    const {isOpen,rows} = this.state
-    if(flag =="tableUpdate"){
-      this.setState({rows:rows})
-    }
+    
     this.setState({isOpen:!isOpen})
   }
   
@@ -69,6 +66,23 @@ export default class NewTabe extends React.Component {
   }
 
   handleAliasModal = (close=false,data,key,rowData={}) =>{
+    const {rows,isAliasModal} = this.state
+    if(close =="tableUpdate"){
+      const mappedRow = rows.map(item=>{
+        console.log("item",item);
+        if(data.playerName == item.name){
+          return {
+              ...item,
+              myG_alias:data.alias,
+              myG_profile_img:data.profile_img,
+              myG_user_id:data.id
+            }
+        }
+        return item
+      })
+      this.setState({rows:mappedRow,isAliasModal:!isAliasModal})
+      return
+    }
     if(this.props.guest){
       this.setState({showLoginModal:true})
       return
@@ -85,7 +99,6 @@ export default class NewTabe extends React.Component {
         })
       return
     } else if(this.props.current_user_permission == 0 || this.props.current_user_permission == 1 || this.props.current_user_permission == 2){
-      const { isAliasModal } = this.state
       this.setState({isAliasModal:!isAliasModal,player_tag:rowData.tag,player_name:rowData.name})
     }
   }
