@@ -80,7 +80,7 @@ class GroupController {
           type: request.input('type'),
           all_accept: request.input('all_accept'),
           grp_description: request.input('grp_description'),
-          stats_header: request.input('stats_header')
+          stats_header: request.input('stats_header').toUpperCase()
         })
 
         if (request.input('aws_key_id') != undefined && request.input('aws_key_id') != null) {
