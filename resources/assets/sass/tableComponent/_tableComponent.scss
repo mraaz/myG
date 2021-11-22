@@ -356,7 +356,24 @@
     padding: 0 50px;
     .header__left{
       margin-right: auto;
+      display: flex;
+      align-items: center;
+      .user-img{
+        margin-right: 5px;
+      }
+      .profile__image{
+        background: #f0f;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-repeat: no-repeat;
+        background-position: center;
+        cursor: pointer;
+      }
     }
+  }
+  .modal__body{
+    max-height: 480px !important;
   }
 }
 
@@ -514,5 +531,13 @@
     }
     .rt-th{
       padding: 30px 5px  !important;
+    }
+    .image-gallery-content .image-gallery-slide .image-gallery-image{
+      max-height: 336px;
+    }
+    .image-gallery-content .image-gallery-swipe{
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
   }

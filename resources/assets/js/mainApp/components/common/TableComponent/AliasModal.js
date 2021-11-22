@@ -60,11 +60,11 @@ class AliasModal extends Component {
           }
           if (reminder_time_2) {
             reminder = 2
-            reminderTime['reminderTime_two'] = moment(_curDate + 'T' + reminder_time_1 + ':00')
+            reminderTime['reminderTime_two'] = moment(_curDate + 'T' + reminder_time_2 + ':00')
           }
           if (reminder_time_3) {
             reminder = 3
-            reminderTime['reminderTime_three'] = moment(_curDate + 'T' + reminder_time_1 + ':00')
+            reminderTime['reminderTime_three'] = moment(_curDate + 'T' + reminder_time_3 + ':00')
           }
           this.setState({
             clash_royale_player_id: id,
@@ -89,10 +89,8 @@ class AliasModal extends Component {
         const all_group_members = await axios.post(`/api/usergroup/usergroupSearch_top_ishUsers`, {
           group_id: this.props.group_id
         })
-        //console.log(all_group_members, '<<never')
 
         const parsedData = parsePlayersToSelectData(all_group_members.data.all_usergroup_members)
-        //console.log(parsedData, '<<ghf')
         this.setState({
           userList: parsedData,
           loading: false
@@ -118,7 +116,6 @@ class AliasModal extends Component {
       logToElasticsearch('error', 'AliasModal.js', 'Failed onPlayersSuggestionFetch:' + ' ' + error)
     }
   }
-  
 
   handleClose = (e) => {
     this.props.handleModalToggle(true)
@@ -262,6 +259,7 @@ class AliasModal extends Component {
                 onChange={(value) => {
                   this.handleAliasOnChange(value)
                 }}
+                defaultOptions={this.state.userList}
                 options={this.state.userList}
                 value={alias}
                 placeholder='Enter your alias'
