@@ -40,13 +40,13 @@ class ClashRoyaleController {
         return 'Invalid Clan Tag'
       }
 
-      const strClanTag = request.params.clanTag
+      const strClanTag = request.params.clanTag.toUpperCase()
       const clanTag = strClanTag.replace(/#/g, '').trim()
 
       const getClanURL = 'clans/' + '%23' + clanTag + '/members'
       //const getClanURL = 'clans/' + '%23' + 'QG8UQCV0' + '/members'
       //const getRiverRaceLogURL = 'clans/' + '%23' + clanTag + '/riverracelog'
-      const getCurrentriverraceURL = 'clans/' + '%23' + clanTag + '/currentriverrace'
+      const getCurrentriverraceURL = 'clans/' + '%23' + clanTag.toUpperCase() + '/currentriverrace'
 
       const getClanInfo = await axios.get(`https://api.clashroyale.com/v1/${getClanURL}`, CONFIG)
       const getCurrentriverraceInfo = this.getRiverLog(getCurrentriverraceURL)
@@ -125,15 +125,15 @@ class ClashRoyaleController {
           .first()
 
         if (get_player_info == undefined) {
+          const cr_player_base_id = await ClashRoyalePlayerBase.create({
+            player_tag: getClanInfo.data.items[index].tag,
+            clan_tag: clanTag
+          })
+
           await CrPlayerBaseTran.create({
             clash_royale_player_base_id: cr_player_base_id.id,
             clan_tag: clanTag,
             activity: 'Joined Clan'
-          })
-
-          const cr_player_base_id = await ClashRoyalePlayerBase.create({
-            player_tag: getClanInfo.data.items[index].tag,
-            clan_tag: clanTag
           })
         } else {
           list_of_players.push(get_player_info.id)
@@ -327,7 +327,7 @@ class ClashRoyaleController {
           await ClashRoyaleReminder.create({
             clash_royale_players_id: cr_trans_id.id,
             user_id: request.input('user_id'),
-            reminder_time: this.converttoUTCHours(request.input('reminder_two'), get_player_deets.timeZone)
+            reminder_time: await this.converttoUTCHours(request.input('reminder_two'), get_player_deets.timeZone)
           })
         }
 
@@ -335,7 +335,7 @@ class ClashRoyaleController {
           await ClashRoyaleReminder.create({
             clash_royale_players_id: cr_trans_id.id,
             user_id: request.input('user_id'),
-            reminder_time: this.converttoUTCHours(request.input('reminder_three'), get_player_deets.timeZone)
+            reminder_time: await this.converttoUTCHours(request.input('reminder_three'), get_player_deets.timeZone)
           })
         }
         return get_player_deets

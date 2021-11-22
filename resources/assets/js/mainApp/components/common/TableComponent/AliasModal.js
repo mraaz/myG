@@ -60,11 +60,11 @@ class AliasModal extends Component {
           }
           if (reminder_time_2) {
             reminder = 2
-            reminderTime['reminderTime_two'] = moment(_curDate + 'T' + reminder_time_1 + ':00')
+            reminderTime['reminderTime_two'] = moment(_curDate + 'T' + reminder_time_2 + ':00')
           }
           if (reminder_time_3) {
             reminder = 3
-            reminderTime['reminderTime_three'] = moment(_curDate + 'T' + reminder_time_1 + ':00')
+            reminderTime['reminderTime_three'] = moment(_curDate + 'T' + reminder_time_3 + ':00')
           }
           this.setState({
             clash_royale_player_id: id,
