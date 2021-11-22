@@ -1,0 +1,49 @@
+pipeline {
+  environment {
+
+  }
+  tools {
+    nodejs "default"
+  }
+  agent any
+  stages {
+    stage('Setup environment') {
+      steps {
+        stage('Setup environment variables') {
+          steps {
+           sh(script: 'env')
+          }
+        }
+        stage('Code Checkout') {
+          when {
+            expression {
+              return env.GIT_BRANCH == "origin/lambda/clash-royale"
+            }
+          }
+          steps {
+            git branch: 'lambda/clash-royale',
+                credentialsId: 'git-private-key',
+                url: 'https://github.com/mraaz/myG'
+          }
+        }
+        stage('Build and Package') {
+          when {
+            expression {
+              return env.GIT_BRANCH == "origin/lambda/clash-royale"
+            }
+          }
+          steps {
+            dir('services/clash-royale') {
+              withNPM(npmrcConfig: 'ee91dee8-05da-4b62-88ba-174a08a3fba4') {
+                sh "npm ci --only=production"
+                sh "npm run build"
+              }
+              sh './scripts/package.sh'
+            }
+          }
+        }
+        
+      }
+    }
+  }
+}

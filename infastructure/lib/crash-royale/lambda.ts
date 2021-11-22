@@ -57,17 +57,18 @@ export function getOrCreateLambda(
   const newLambdaFn = new lambda.Function(stack, `lambda-${functionName}`, {
     functionName,
     runtime: lambda.Runtime.NODEJS_12_X,
-    handler: `${handler}.main`,
+    handler: `build/${handler}.handler`,
     timeout: Duration.minutes(15),
     memorySize: 128,
-    code: lambda.Code.fromAsset(path.join(__dirname, '../../../services/clash-royale/build')),
+    code: lambda.Code.fromAsset(path.join(__dirname, '../../../services/clash-royale/dist')),
     retryAttempts: 0,
     vpc,
     securityGroups,
     allowPublicSubnet: true,
     role: iam.Role.fromRoleArn(stack, 'imported-role-lambda', 'arn:aws:iam::457469627332:role/lambda-ex', { mutable: false }),
     environment: {
-      TOKEN: process.env.TOKEN || 'UNKOWN_TOKEN'
+      TOKEN: process.env.TOKEN || 'UNKOWN_TOKEN',
+      ENDPOINT: 'https://api.clashroyale.com/v1'
     }
   })
   return newLambdaFn
