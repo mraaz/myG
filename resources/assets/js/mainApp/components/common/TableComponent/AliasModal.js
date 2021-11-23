@@ -179,7 +179,7 @@ class AliasModal extends Component {
     if (!alias) {
       this.handleDelete()
     } else {
-      const tmp = await axios.post('/api/clashroyale/storePlayerDetails/', {
+      const {data=''} = await axios.post('/api/clashroyale/storePlayerDetails/', {
         clash_royale_player_id,
         group_id: this.props.group_id,
         player_tag: this.props.player_tag,
@@ -190,10 +190,9 @@ class AliasModal extends Component {
         reminder_two: reminderTime['reminderTime_two'] ? moment(reminderTime['reminderTime_two']).format('HH:mm') : '',
         reminder_three: reminderTime['reminderTime_three'] ? moment(reminderTime['reminderTime_three']).format('HH:mm') : ''
       })
-
-      if (tmp) {
+      if (data) {
         notifyToast('Yeah ! Data saved successfully!')
-        this.props.handleModalToggle(true)
+        this.props.handleModalToggle("tableUpdate",{...data,playerName:this.props.player_name})
       }
     }
   }
