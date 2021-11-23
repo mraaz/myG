@@ -124,11 +124,12 @@ class AliasModal extends Component {
   handleDelete = async (e) => {
     const { clash_royale_player_id = '' } = this.state
     if (clash_royale_player_id) {
-      const tmp = await axios.delete(`/api/clashroyale/deletePlayerDetails/${clash_royale_player_id}`)
-      if (tmp) {
+      const {data =''} = await axios.delete(`/api/clashroyale/deletePlayerDetails/${clash_royale_player_id}`)
+
+      // if (data) {
         notifyToast('Yeah ! Data deleted successfully!')
-        this.props.handleModalToggle(true)
-      }
+        this.props.handleModalToggle("tableDelete",{...data,playerName:this.props.player_name})
+      // }
     } else {
       notifyToast('Oops ! You can not... I have nothing to do..... ')
     }
