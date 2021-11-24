@@ -124,11 +124,12 @@ class AliasModal extends Component {
   handleDelete = async (e) => {
     const { clash_royale_player_id = '' } = this.state
     if (clash_royale_player_id) {
-      const tmp = await axios.delete(`/api/clashroyale/deletePlayerDetails/${clash_royale_player_id}`)
-      if (tmp) {
+      const {data =''} = await axios.delete(`/api/clashroyale/deletePlayerDetails/${clash_royale_player_id}`)
+
+      // if (data) {
         notifyToast('Yeah ! Data deleted successfully!')
-        this.props.handleModalToggle(true)
-      }
+        this.props.handleModalToggle("tableDelete",{...data,playerName:this.props.player_name})
+      // }
     } else {
       notifyToast('Oops ! You can not... I have nothing to do..... ')
     }
@@ -179,7 +180,7 @@ class AliasModal extends Component {
     if (!alias) {
       this.handleDelete()
     } else {
-      const tmp = await axios.post('/api/clashroyale/storePlayerDetails/', {
+      const {data=''} = await axios.post('/api/clashroyale/storePlayerDetails/', {
         clash_royale_player_id,
         group_id: this.props.group_id,
         player_tag: this.props.player_tag,
@@ -190,10 +191,9 @@ class AliasModal extends Component {
         reminder_two: reminderTime['reminderTime_two'] ? moment(reminderTime['reminderTime_two']).format('HH:mm') : '',
         reminder_three: reminderTime['reminderTime_three'] ? moment(reminderTime['reminderTime_three']).format('HH:mm') : ''
       })
-
-      if (tmp) {
+      if (data) {
         notifyToast('Yeah ! Data saved successfully!')
-        this.props.handleModalToggle(true)
+        this.props.handleModalToggle("tableUpdate",{...data,playerName:this.props.player_name})
       }
     }
   }
