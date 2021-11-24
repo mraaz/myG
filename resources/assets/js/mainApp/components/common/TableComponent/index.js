@@ -83,6 +83,21 @@ export default class NewTabe extends React.Component {
       this.setState({rows:mappedRow,isAliasModal:!isAliasModal})
       return
     }
+    if(close =="tableDelete"){
+      const mappedRow = rows.map(item=>{
+        if(data.playerName == item.name){
+          return {
+              ...item,
+              myG_alias:'',
+              myG_profile_img:'',
+              myG_user_id:''
+            }
+        }
+        return item
+      })
+      this.setState({rows:mappedRow,isAliasModal:!isAliasModal})
+      return
+    }
     if(this.props.guest){
       this.setState({showLoginModal:true})
       return
