@@ -38,6 +38,8 @@ export default class NewTabe extends React.Component {
         showLoginModal:false,
         showHelpModal:false,
         showPlayerHistoryModal:false,
+        clanName: '',
+        warStatus: ''
       };
   }
 
@@ -48,6 +50,7 @@ export default class NewTabe extends React.Component {
     const showPlayerHistoryModal = url.searchParams.get("showPlayerHistoryModal");
     const player_id = url.searchParams.get("player_id");
     const {data={}} = this.props;
+    this.setState({clanName:data.name, warStatus:data.status })
     const HeaderItem =  window.localStorage.getItem("statsHeaderOrder");
     if(HeaderItem){
         this.setState({rows:data.items,header:JSON.parse(HeaderItem)})
@@ -166,7 +169,9 @@ export default class NewTabe extends React.Component {
         player_id='',
         player_img='',
         showHelpModal,
-        showPlayerHistoryModal
+        showPlayerHistoryModal,
+        clanName='',
+        warStatus=''
       } = this.state;
     const columns = this.renderColumns(header);
     return (
@@ -179,6 +184,8 @@ export default class NewTabe extends React.Component {
         {showHelpModal && <HelpModal isOpen ={showHelpModal}  handleModalToggle={() => this.setState({ showHelpModal: false })}/>}
         {showPlayerHistoryModal && <PlayerHistroyModal {...this.props} isOpen ={showPlayerHistoryModal}  player_tag ={player_tag} player_name={player_name} player_id={player_id} player_img={player_img} handleModalToggle={() => this.setState({ showPlayerHistoryModal: false })}/>}
         {isAliasModal && <AliasModal {...this.props} player_tag ={player_tag} player_name={player_name} isOpen ={isAliasModal}  handleModalToggle={this.handleAliasModal}/>}
+        <span className="clanMetaInfo_1" style={{marginLeft:"100px"}}>Clan Name: {clanName} </span>
+        <span className="clanMetaInfo_2" style={{marginLeft:"100px"}}>War Status: {warStatus} </span>
         <span className="csv__download-button " onClick={e=>this.handleModalToggle()} style={{marginRight:"10px"}}>Edit Sort Header </span>
         {(rows && rows.length ) ? <CSVLink data={rows} headers={header} filename={`download.csv`}>
             <span className="csv__download-button">Download CSV </span>
