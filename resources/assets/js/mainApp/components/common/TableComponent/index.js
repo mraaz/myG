@@ -184,8 +184,8 @@ export default class NewTabe extends React.Component {
         {showHelpModal && <HelpModal isOpen ={showHelpModal}  handleModalToggle={() => this.setState({ showHelpModal: false })}/>}
         {showPlayerHistoryModal && <PlayerHistroyModal {...this.props} isOpen ={showPlayerHistoryModal}  player_tag ={player_tag} player_name={player_name} player_id={player_id} player_img={player_img} handleModalToggle={() => this.setState({ showPlayerHistoryModal: false })}/>}
         {isAliasModal && <AliasModal {...this.props} player_tag ={player_tag} player_name={player_name} isOpen ={isAliasModal}  handleModalToggle={this.handleAliasModal}/>}
-        <span className="clanMetaInfo_1" style={{marginLeft:"100px"}}>Clan Name: {clanName} </span>
-        <span className="clanMetaInfo_2" style={{marginLeft:"100px"}}>War Status: {warStatus} </span>
+        <span className="clanMetaInfo" style={{marginLeft:"100px"}}>Clan Name: {clanName} </span>
+        <span className="clanMetaInfo" style={{marginLeft:"100px"}}>War Status: {warStatus} </span>
         <span className="csv__download-button " onClick={e=>this.handleModalToggle()} style={{marginRight:"10px"}}>Edit Sort Header </span>
         {(rows && rows.length ) ? <CSVLink data={rows} headers={header} filename={`download.csv`}>
             <span className="csv__download-button">Download CSV </span>
