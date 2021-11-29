@@ -9,7 +9,7 @@ import { PageHeader, MyGButton, MyGModal, MyGInput } from '../common'
 import { styles } from '../../static/AddCommunity'
 import '../../styles/Community/AddCommunityStyles.scss'
 import AddCommunity from './AddCommunity'
-import { Toast_style, Convert_to_comma_delimited_value } from '../Utility_Function'
+import { Toast_style } from '../Utility_Function'
 import { SubmitDataFunction } from './AddCommunity_Submit_Data'
 import InvitePlayers from './InvitePlayers'
 import { Link } from 'react-router-dom'
@@ -24,6 +24,9 @@ const AddCommunityContainer = ({ level }) => {
   const [isInviteModalOpen, updateIsInviteModalOpen] = useState(false)
   const [isInvitesSentsModalOpen, updateIsInvitesSentsModalOpen] = useState(false)
   const [isSubmitting, updateIsSubmitting] = useState(false)
+
+  const [oneShot, updateoneShot] = useState(false)
+
   const [advancedSettingsState, updateAdvancedSettingsState] = useState({
     coHosts: null,
     description: '',
@@ -38,7 +41,8 @@ const AddCommunityContainer = ({ level }) => {
     autoAccept: true,
     community_name: '',
     community_id: '',
-    community_Clan_Tag: ''
+    community_Clan_Tag: '',
+    community_Clan_War_endTime: ''
   })
 
   const contentAreaRef = useRef()
@@ -88,6 +92,14 @@ const AddCommunityContainer = ({ level }) => {
       toast.success(<Toast_style text={'Hmmmm, Invalid community name. Keep trying, you must'} />)
       updateIsSubmitting(false)
       return
+    }
+
+    if (mainSettingsState.community_Clan_Tag != '') {
+      if (mainSettingsState.community_Clan_War_endTime.trim() == '' && !oneShot) {
+        toast.success(<Toast_style text={'Hmmmm, are you SURE you do not want to add and War endtime? Enter time or just click create'} />)
+        updateoneShot(true)
+        return
+      }
     }
 
     // if (advancedSettingsState.tags.length >= MAX_GAME_TAGS) {
@@ -200,37 +212,42 @@ const AddCommunityContainer = ({ level }) => {
     )
   }
 
-  const locked = (reason, amount) => (
-    <div className={styles.container}>
-      <PageHeader headerText='Create Community' />
-      <div className='locked-create-community'>
-        <div className='locked-image'>
-          <img src='https://myG.gg/platform_images/Dashboard/Lock_Icon_Mobile.svg' className='img-locked' />
-        </div>
-        <span>Create Community is locked</span>
-        <span>
-          Reach{' '}
-          <span style={{ color: '#E6C846' }}>
-            {' '}
-            <strong>{reason}</strong>
-          </span>{' '}
-          to unlock {amount}.
-        </span>
-        <div className='rectangle'>
-          <img src='https://myG.gg/platform_images/Dashboard/btn_Network.svg' className='img-network' />
-          <div className='body-of-text'>
-            <p>
-              Go to{' '}
-              <Link to={'/achievements/badges'}>
-                &nbsp;<strong> Achievements</strong>{' '}
-              </Link>
-            </p>
-            <p>to learn how to progress</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
+  // const locked = (reason, amount) => (
+  //   <div className={styles.container}>
+  //     <PageHeader headerText='Create Community' />
+  //     <div className='locked-create-community'>
+  //       <div className='locked-image'>
+  //         <img src='https://myG.gg/platform_images/Dashboard/Lock_Icon_Mobile.svg' className='img-locked' />
+  //       </div>
+  //       <span>Create Community is locked</span>
+  //       <span>
+  //         Reach{' '}
+  //         <span style={{ color: '#E6C846' }}>
+  //           {' '}
+  //           <strong>{reason}</strong>
+  //         </span>{' '}
+  //         to unlock {amount}.
+  //       </span>
+  //       <div className='rectangle'>
+  //         <img src='https://myG.gg/platform_images/Dashboard/btn_Network.svg' className='img-network' />
+  //         <div className='body-of-text'>
+  //           <p>
+  //             Go to{' '}
+  //             <Link to={'/achievements/badges'}>
+  //               &nbsp;<strong> Achievements</strong>{' '}
+  //             </Link>
+  //           </p>
+  //           <p>to learn how to progress</p>
+  //         </div>
+  //       </div>
+  //     </div>
+  //   </div>
+  // )
+
+  // if (level < 10) return locked('level 10', 'one community')
+  // if (level < 15 && communities.length >= 1) return locked('level 15', 'two communities')
+  // if (level < 20 && communities.length >= 2) return locked('level 20', 'three communities')
+  // if (level < 25 && communities.length >= 3) return locked('level 25', 'four communities')
 
   return (
     <div className={styles.container} ref={contentAreaRef}>

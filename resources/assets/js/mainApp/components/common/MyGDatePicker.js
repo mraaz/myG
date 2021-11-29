@@ -5,6 +5,8 @@ import '../../styles/common/MyGDatePickerStyles.scss'
 import moment from 'moment'
 
 const MyGDatePicker = ({
+  containerStyles,
+  inputStyles,
   selected,
   onChange,
   showTimeSelect,
@@ -18,7 +20,7 @@ const MyGDatePicker = ({
   children,
   minDate,
   maxDate,
-  style=true,
+  style = true,
   ...props
 }) => {
   const styles = {
@@ -30,8 +32,9 @@ const MyGDatePicker = ({
   }
 
   return (
-    <div style={style ? styles.container : {}}>
+    <div style={{ ...styles.container, ...containerStyles }}>
       <DatePicker
+        style={{ ...styles.inputContainer, ...inputStyles }}
         selected={selected}
         onChange={onChange}
         showTimeSelect={showTimeSelect}
@@ -60,7 +63,9 @@ MyGDatePicker.defaultProps = {
   className: 'start-date-box',
   todayButton: 'Today',
   shouldCloseOnSelect: true,
-  minDate: moment()
+  minDate: moment(),
+  containerStyles: {},
+  inputStyles: {}
 }
 
 export default MyGDatePicker

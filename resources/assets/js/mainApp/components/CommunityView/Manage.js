@@ -3,7 +3,7 @@ import axios from 'axios'
 import { toast } from 'react-toastify'
 
 import { Toast_style, Convert_to_comma_delimited_value } from '../Utility_Function'
-import { MyGTextarea, MyGAsyncSelect } from '../common'
+import { MyGDatePicker, MyGTextarea, MyGAsyncSelect } from '../common'
 
 import { parsePlayersToSelectData } from '../../utils/InvitePlayersUtils'
 
@@ -20,7 +20,8 @@ export default class Manage extends React.Component {
       approval: 'true',
       description: '',
       coHosts: null,
-      stats_header: ''
+      stats_header: '',
+      clashWarTime: ''
     }
   }
 
@@ -150,6 +151,10 @@ export default class Manage extends React.Component {
     })
   }
 
+  updateWarTime = (clashWarTime) => {
+    this.setState({ clashWarTime })
+  }
+
   render() {
     const { communityName, isunique, stats_header } = this.state
     const { current_user_permission, community_game_names_id } = this.props
@@ -160,10 +165,10 @@ export default class Manage extends React.Component {
       <div className='setting__container'>
         {[0, 1].includes(current_user_permission) && (
           <Fragment>
-              <div className='communityName__section row'>
-                  <div className='community___label col-sm-4'>Change Community Name</div>
-                  <div className='community___input col-sm-6'>
-                    <input
+            <div className='communityName__section row'>
+              <div className='community___label col-sm-4'>Change Community Name</div>
+              <div className='community___input col-sm-6'>
+                <input
                   type='text'
                   autoComplete='off'
                   value={communityName}
@@ -175,23 +180,35 @@ export default class Manage extends React.Component {
               <button disabled={isunique} className='community___button col-sm-2' onClick={this.handleCommunityNameSave}>
                 Save
               </button>
-          </div>
-          <div className='communityName__section clanTag row'>
-            {isthisClash && (
-              <Fragment>
-                <div className='community___label col-sm-4'>Clan Tag Name</div>
-                <div className='community___input col-sm-6'>
-                  <input
-                    type='text'
-                    autoComplete='off'
-                    value={stats_header}
-                    onChange={this.handleCommunityClanTagChange}
-                    placeholder='Change Clan Tag Name'
-                  />
-                </div>
-              </Fragment>
-            )}
-          </div>
+            </div>
+            <div className='communityName__section clanTag row'>
+              {isthisClash && (
+                <Fragment>
+                  <div className='community___label col-sm-4'>Clan Tag Name</div>
+                  <div className='community___input col-sm-6'>
+                    <input
+                      type='text'
+                      autoComplete='off'
+                      value={stats_header}
+                      onChange={this.handleCommunityClanTagChange}
+                      placeholder='Change Clan Tag Name'
+                    />
+                  </div>
+                  <div className='community___label col-sm-4'>Current Clan War End Time (As shown in game)</div>
+                  <div className='community___input col-sm-6'>
+                    <MyGDatePicker
+                      showTimeSelect
+                      showTimeSelectOnly
+                      dateFormat='HH:mm'
+                      timeIntervals={1}
+                      containerStyles={{ width: '50%' }}
+                      onChange={this.updateWarTime}
+                      selected={this.state.clashWarTime}
+                    />
+                  </div>
+                </Fragment>
+              )}
+            </div>
           </Fragment>
         )}
         <div className='group__privacy row'>

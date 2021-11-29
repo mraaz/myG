@@ -11,7 +11,7 @@ import '../../styles/Community/AddCommunityStyles.scss'
 
 import { styles } from '../../static/AddCommunity'
 
-import { MyGCheckbox, MyGTextarea, MyGAsyncSelect, MyGCreateableSelect, MyGInput, MyGSelect } from '../common'
+import { MyGDatePicker, MyGCheckbox, MyGTextarea, MyGAsyncSelect, MyGCreateableSelect, MyGInput } from '../common'
 import { Game_name_values, Disable_keys } from '../Utility_Function'
 import { Upload_to_S3, Remove_file } from '../AWS_utilities'
 import { parsePlayersToSelectData } from '../../utils/InvitePlayersUtils'
@@ -373,11 +373,27 @@ const AddCommunity = ({
                   className={'community-input'}
                   minLength={3}
                   onKeyDown={Disable_keys}
-                  containerStyles={{ width: '100%' }}
+                  containerStyles={{ width: '50%' }}
                   onChange={(value) => {
                     updateMainSettings({ community_Clan_Tag: value.target.value })
                   }}
                 ></MyGInput>
+              </div>
+              <div className='field-title'>
+                <p>Current Clan War End Time (As shown in game)</p>
+              </div>
+              <div className='game-title-select'>
+                <MyGDatePicker
+                  showTimeSelect
+                  showTimeSelectOnly
+                  dateFormat='HH:mm'
+                  timeIntervals={1}
+                  containerStyles={{ width: '15%' }}
+                  onChange={(value) => {
+                    updateMainSettings({ community_Clan_War_endTime: value })
+                  }}
+                  selected={mainSettingsState.community_Clan_War_endTime}
+                />
               </div>
             </Fragment>
           )}
