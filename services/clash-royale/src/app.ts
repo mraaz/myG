@@ -8,29 +8,33 @@ export const app = express();
 const port = 3000;
 
 app.get('/*', async (req: Request, res: Response, next) => {
-  try {
-    const endpoint = getEndpoint();
-    const token = getTokens();
-    const path = req.path;
+  console.log('hi')
+      res.send({
+        data: 'hello',
+      });
+  // try {
+  //   const endpoint = getEndpoint();
+  //   const token = getTokens();
+  //   const path = req.path;
 
-    if (token === Token.NoToken) {
-      throw new Error(Token.NoToken);
-    }
+  //   if (token === Token.NoToken) {
+  //     throw new Error(Token.NoToken);
+  //   }
 
-    if (endpoint === Token.NoEndpoint) {
-      throw new Error(Token.NoEndpoint);
-    }
+  //   if (endpoint === Token.NoEndpoint) {
+  //     throw new Error(Token.NoEndpoint);
+  //   }
 
-    const config = constructClashConfig(token);
+  //   const config = constructClashConfig(token);
 
-    const response = await axios.get(`${endpoint}${path}`, config);
+  //   const response = await axios.get(`${endpoint}${path}`, config);
 
-    res.send({
-      data: response.data,
-    });
-  } catch (err) {
-    errorHandler(err, req, res, next);
-  }
+  //   res.send({
+  //     data: response.data,
+  //   });
+  // } catch (err) {
+  //   errorHandler(err, req, res, next);
+  // }
 });
 
 app.listen(port, () => {

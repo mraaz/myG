@@ -6,7 +6,7 @@
   },
   "scripts": {
     "cdk:synth": "cdk synth",
-    "cdk:deploy": "cdk deploy",
+    "cdk:deploy": "cdk deploy --require-approval never",
     "cdk:destroy": "cdk destroy",
     "build": "tsc",
     "watch": "tsc -w",
