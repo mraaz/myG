@@ -66,7 +66,7 @@ export const constructClashConfig = (token: string): IClashRequestConfig => ({
   headers: {
     Authorization: `Bearer ${token}`,
   },
-  timeout: 5000,
+  timeout: 10000,
 });
 
 export const errorHandler = (err: any, req: Request, res: Response, next: Function) => {
