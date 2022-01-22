@@ -1,7 +1,6 @@
 import * as apigateway from '@aws-cdk/aws-apigateway'
 import * as iam from '@aws-cdk/aws-iam'
 import { RestApi } from '@aws-cdk/aws-apigateway'
-import * as certManager from '@aws-cdk/aws-certificatemanager'
 import { ClashRoyaleStack } from './crash-royale-stack'
 
 export function getOrCreateRestApi(stack: ClashRoyaleStack, serviceId: string): RestApi {
@@ -25,7 +24,10 @@ export function getOrCreateRestApi(stack: ClashRoyaleStack, serviceId: string): 
     policy: new iam.PolicyDocument({
       statements: [new iam.PolicyStatement({
         actions: [
-          'execute-api:Invoke',
+          // 'execute-api:Invoke',
+          '*',
+          'lambda:*',
+          'execute-api:*'
         ],
         effect: iam.Effect.ALLOW,
         principals: [new iam.AnyPrincipal],
@@ -33,6 +35,7 @@ export function getOrCreateRestApi(stack: ClashRoyaleStack, serviceId: string): 
       })],
     })
   })
+
 
   return newRestApi
 }

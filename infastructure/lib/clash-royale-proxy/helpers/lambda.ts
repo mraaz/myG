@@ -5,11 +5,13 @@ import { Function, Runtime, Code } from '@aws-cdk/aws-lambda'
 import { Role } from '@aws-cdk/aws-iam'
 import { IVpc, ISecurityGroup, SubnetType } from '@aws-cdk/aws-ec2'
 
-import { ClashRoyaleStack } from './crash-royale-stack'
+import { ClashRoyaleProxyStack } from '../clash-royale-proxy-stack'
+import { AppConfig } from '../../../common'
 
 
 export function getOrCreateLambda(
-    stack: ClashRoyaleStack,
+    stack: ClashRoyaleProxyStack,
+    appConfig: AppConfig,
     functionName: string,
     handler: string,
     vpc: IVpc,
@@ -27,16 +29,16 @@ export function getOrCreateLambda(
       handler: `build/${handler}.handler`,
       timeout: Duration.minutes(15),
       memorySize: 128,
-      code: Code.fromAsset(path.join(__dirname, '../../../services/clash-royale/dist')),
+      code: Code.fromAsset(path.join(__dirname, '../../../../services/clash-royale-proxy/dist')),
       retryAttempts: 0,
       vpc,
       securityGroups,
       allowPublicSubnet: true,
       role: Role.fromRoleArn(stack, 'imported-role-lambda', 'arn:aws:iam::457469627332:role/lambda-ex', { mutable: false }),
       environment: {
-        TOKEN: process.env.TOKEN || 'UNKOWN_TOKEN',
+        TOKEN: appConfig.TOKEN,
         ENDPOINT: 'https://api.clashroyale.com/v1',
-        SECRET: process.env.SECRET || 'NO_SECRET'
+        SECRET: appConfig.SECRET
       }
     })
     return newLambdaFn

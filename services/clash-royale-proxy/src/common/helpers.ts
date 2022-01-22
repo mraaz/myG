@@ -79,20 +79,3 @@ export const errorHandler = (err: any, req: Request, res: Response, next: Functi
     error: err,
   });
 };
-
-// {
-//   "compilerOptions": {
-//     "module": "commonjs",
-//     "noImplicitAny": true,
-//     "removeComments": true,
-//     "preserveConstEnums": true,
-//     "sourceMap": true,
-//     "allowJs": true,
-//     "target": "es5",
-//     "outDir": "./build",
-//     "rootDir": "./",
-//     "types": []
-//   },
-//   "exclude": ["node_modules"],
-//   "include": ["src/**/*"]
-// }

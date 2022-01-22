@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { constructClashConfig, getTokens, getEndpoint, Token, errorHandler } from './common';
+import { constructClashConfig, getTokens, getEndpoint, Token, errorHandler, authenticateToken } from './common';
 import axios from 'axios';
 
 require('dotenv').config();
@@ -7,7 +7,7 @@ require('dotenv').config();
 export const app = express();
 const port = 3000;
 
-app.get('/*', async (req: Request, res: Response, next) => {
+app.get('/*', authenticateToken, async (req: Request, res: Response, next) => {
   try {
     const endpoint = getEndpoint();
     const token = getTokens();

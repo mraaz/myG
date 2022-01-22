@@ -7,7 +7,7 @@
   "scripts": {
     "cdk:synth": "cdk synth",
     "cdk:deploy": "cdk deploy --require-approval never",
-    "cdk:destroy": "cdk destroy",
+    "cdk:destroy": "cdk destroy --force",
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",

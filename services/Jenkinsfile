@@ -1,48 +1,69 @@
 pipeline {
-  environment {
-
-  }
+  agent any
+  
   tools {
     nodejs "default"
   }
-  agent any
+
+  parameters {
+    choice(name: 'Branch', defaultValue: 'lambda/clash-royale', choices: ['master', 'lambda/clash-royale'], description: 'A temp option to select which branch to deploy. Use Git Paarameter Plugin to do this in future.')
+    choice(name: 'Environment', defaultValue: 'development', choices: ['development', 'production'], description: 'Which environment did you want to deploy to?')
+    choice(name: 'Service', choices: ['clash-royale-proxy', 'jwt-service'])
+  }
+  
+  environment {
+    TOKEN       = credentials('clash-royale-token')
+    SECRET      = credentials('jwt-secret')
+    ENVIRONMENT = ${params.Environment}
+    SERVICE     = ${params.Service}
+    ACCOUNT     = '457469627332'
+    REGION      = 'us-east-1'
+  }
+
   stages {
-    stage('Setup environment') {
+    stage('Checkout') {
       steps {
-        stage('Setup environment variables') {
-          steps {
-           sh(script: 'env')
+        git branch: ${params.Branch},
+            credentialsId: 'git-private-key',
+            url: 'https://github.com/mraaz/myG'
+      }
+    }
+
+    stage('Install dependencies') {
+      steps {
+        withNPM(npmrcConfig: 'ee91dee8-05da-4b62-88ba-174a08a3fba4') {
+          sh "npm run helpers:install -- -s ${env.SERVICE}"
+        }
+      }
+    }
+
+    // stage('Unit Test') {
+
+    // }
+
+    stage('Build') {
+      steps {
+        withNPM(npmrcConfig: 'ee91dee8-05da-4b62-88ba-174a08a3fba4') {
+          sh "npm run helpers:build -- -s ${env.SERVICE} -e ${env.ENVIRONMENT}"
+        }
+      }
+    }
+
+    stage('Package') {
+      steps {
+        withNPM(npmrcConfig: 'ee91dee8-05da-4b62-88ba-174a08a3fba4') {
+          sh "npm run helpers:package -- -s ${env.SERVICE} -e ${env.ENVIRONMENT}"
+        }
+      }
+    }
+
+    stage('Deploy') {
+      steps {
+        withNPM(npmrcConfig: 'ee91dee8-05da-4b62-88ba-174a08a3fba4') {
+          withAWS(credentials: "aws-microservices-service-account") {
+            sh "npm run helpers:deploy -- -s ${env.SERVICE} -e ${env.ENVIRONMENT} -a ${env.ACCOUNT} -r ${REGION} -S ${env.SECRET} -t ${env.TOKEN}"
           }
         }
-        stage('Code Checkout') {
-          when {
-            expression {
-              return env.GIT_BRANCH == "origin/lambda/clash-royale"
-            }
-          }
-          steps {
-            git branch: 'lambda/clash-royale',
-                credentialsId: 'git-private-key',
-                url: 'https://github.com/mraaz/myG'
-          }
-        }
-        stage('Build and Package') {
-          when {
-            expression {
-              return env.GIT_BRANCH == "origin/lambda/clash-royale"
-            }
-          }
-          steps {
-            dir('services/clash-royale') {
-              withNPM(npmrcConfig: 'ee91dee8-05da-4b62-88ba-174a08a3fba4') {
-                sh "npm ci --only=production"
-                sh "npm run build"
-              }
-              sh './scripts/package.sh'
-            }
-          }
-        }
-        
       }
     }
   }

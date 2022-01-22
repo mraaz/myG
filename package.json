@@ -25,7 +25,12 @@
     "build": "npm run sass && npm run js",
     "sonar": "node sonarqube-scanner.js",
     "pretty": "prettier --write \"./**/*.{js,jsx,json}\"",
-    "helpers:buildService": "ts-node --project tsconfig.script.json scripts/build-service.ts"
+    "helpers:deploy": "ts-node --project tsconfig.script.json scripts/ts-node/deploy.ts",
+    "helpers:destroy": "ts-node --project tsconfig.script.json scripts/destroy-service.ts",
+    "helpers:synth": "ts-node --project tsconfig.script.json scripts/cdk-synth.ts",
+    "helpers:build": "ts-node --project tsconfig.script.json scripts/ts-node/build.ts",
+    "helpers:package": "ts-node --project tsconfig.script.json scripts/ts-node/package.ts",
+    "helpers:install": "ts-node --project tsconfig.script.json scripts/ts-node/setup.ts"
   },
   "keywords": [
     "adonisjs",
@@ -149,6 +154,7 @@
     "async-shelljs": "^0.1.4",
     "babel-loader": "^8.2.2",
     "chalk": "^2.4.2",
+    "command-line-args": "^5.2.0",
     "compression-webpack-plugin": "^7.1.2",
     "gulp": "^4.0.2",
     "gulp-autoprefixer": "^7.0.1",
