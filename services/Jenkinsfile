@@ -14,8 +14,8 @@ pipeline {
   environment {
     TOKEN       = credentials('clash-royale-token')
     SECRET      = credentials('jwt-secret')
-    ENVIRONMENT = ${params.Environment}
-    SERVICE     = ${params.Service}
+    ENVIRONMENT = "${params.Environment}"
+    SERVICE     = "${params.Service}"
     ACCOUNT     = '457469627332'
     REGION      = 'us-east-1'
   }
@@ -23,7 +23,7 @@ pipeline {
   stages {
     stage('Checkout') {
       steps {
-        git branch: ${params.Branch},
+        git branch: "${params.Branch}",
             credentialsId: 'git-private-key',
             url: 'https://github.com/mraaz/myG'
       }
