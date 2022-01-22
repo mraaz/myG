@@ -1,6 +1,4 @@
 pipeline {
-  agent any
-  
   tools {
     nodejs "default"
   }
@@ -21,6 +19,12 @@ pipeline {
   }
 
   stages {
+    stage('Setup environment variables') {
+      steps {
+        sh(script: 'env')
+      }
+    }
+
     stage('Checkout') {
       steps {
         git branch: "${params.Branch}",
