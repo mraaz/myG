@@ -32,7 +32,7 @@ pipeline {
     stage('Install dependencies') {
       steps {
         withNPM(npmrcConfig: 'ee91dee8-05da-4b62-88ba-174a08a3fba4') {
-          sh "npm install -g ts-node"
+          sh "npm install"
           sh "npm run helpers:install -- -s ${env.SERVICE}"
         }
       }
