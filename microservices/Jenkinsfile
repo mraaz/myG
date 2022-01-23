@@ -75,13 +75,11 @@ pipeline {
 
     stage('Deploy') {
       steps {
-        // withAWS(credentials: "aws-microservices-service-account") {
         withNPM(npmrcConfig: 'ee91dee8-05da-4b62-88ba-174a08a3fba4') {
           dir('./microservices') {
             sh "npm run deploy -- -s ${env.SERVICE} -e ${env.ENVIRONMENT}"
           }
         }
-        // }
       }
     }
   }

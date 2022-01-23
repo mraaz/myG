@@ -24,7 +24,7 @@ const optionDefinitions = [
 /**
  * Deploys the specified service, along with the common stack. Takes all environment variables and resets them for the runtime. Does this so that if any commandLineArgs are set they override the set EnvVars.
  */
-const destroyViaCdk = async (
+const deployViaCdk = async (
   environment: string,
   service: string,
   account: string,
@@ -33,8 +33,8 @@ const destroyViaCdk = async (
   token: string
 ) => {
   await shell.cd(`./infastructure`)
-  await shell.asyncExec('ls')
-  await shell.asyncExec(`npm run cdk -- deploy ClashRoyaleProxyCommon ${service} --require-approval never`, {
+  await shell.asyncExec(`pwd`)
+  await shell.asyncExec(`npm cdk -- deploy ClashRoyaleProxyCommon ${service} --require-approval never`, {
     env: {
       ENVIRONMENT: environment,
       ACCOUNT: account,
@@ -60,7 +60,7 @@ const run = async () => {
   const secret = options.secret ? options.secret as string : env.SECRET
   const token = options.token ? options.token as string : env.TOKEN
 
-  await destroyViaCdk(environment, service, account, region, secret, token)
+  await deployViaCdk(environment, service, account, region, secret, token)
 }
 
 if (!module.parent) {
