@@ -42,8 +42,11 @@ pipeline {
     stage('Install dependencies') {
       steps {
         withNPM(npmrcConfig: 'ee91dee8-05da-4b62-88ba-174a08a3fba4') {
-          sh "ls"
-          dir('myG/microservices') {
+          dir('./myG') {
+            sh "ls"
+          }
+          dir('./myG/microservices') {
+            sh "ls"
             sh "pwd"
             sh "npm install"
           }
