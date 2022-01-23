@@ -1,4 +1,4 @@
-currentBuild.displayName = "# ${BUILD_NUMBER} | ${ENVIRONMENT} - ${SERVICE} | ${params.Branch}"
+currentBuild.displayName = "# ${BUILD_NUMBER} | ${ENVIRONMENT} - ${SERVICE}"
 currentBuild.description = "Building ${SERVICE} microservice in ${ENVIRONMENT} from branch ${params.Branch}."
 
 pipeline {
