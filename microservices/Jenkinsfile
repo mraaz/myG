@@ -78,7 +78,6 @@ pipeline {
         withNPM(npmrcConfig: 'ee91dee8-05da-4b62-88ba-174a08a3fba4') {
           withAWS(credentials: "aws-microservices-service-account") {
             dir('./microservices') {
-              sh "ls"
               sh "npm run deploy -- -s ${env.SERVICE} -e ${env.ENVIRONMENT}"
             }
           }
