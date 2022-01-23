@@ -33,7 +33,7 @@ const deployViaCdk = async (
   token: string
 ) => {
   await shell.cd(`./infastructure`)
-  await shell.asyncExec(`npm run cdk -- deploy ClashRoyaleProxyCommon ${service} --require-approval never`, {
+  await shell.asyncExec(`npm run cdk -- synth`, {
     env: {
       ENVIRONMENT: environment,
       ACCOUNT: account,
@@ -43,6 +43,16 @@ const deployViaCdk = async (
       TOKEN: token
     }
   })
+  // await shell.asyncExec(`npm run cdk -- deploy ClashRoyaleProxyCommon ${service} --require-approval never`, {
+  //   env: {
+  //     ENVIRONMENT: environment,
+  //     ACCOUNT: account,
+  //     REGION: region,
+  //     STAGE: environment,
+  //     SECRET: secret,
+  //     TOKEN: token
+  //   }
+  // })
   await shell.cd('..')
 }
 
