@@ -33,6 +33,7 @@ const deployViaCdk = async (
   token: string
 ) => {
   await shell.cd(`./infastructure`)
+  await shell.asyncExec('npm install')
   await shell.asyncExec(`npm run cdk -- synth`, {
     env: {
       ENVIRONMENT: environment,
