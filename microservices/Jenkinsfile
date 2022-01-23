@@ -1,0 +1,83 @@
+pipeline {
+  agent any
+
+  tools {
+    nodejs "default"
+  }
+
+  parameters {
+    // choice(name: 'Branch', choices: ['lambda/clash-royale', 'master'], description: 'A temp option to select which branch to deploy. Use Git Paarameter Plugin to do this in future.')
+    gitParameter branchFilter: 'origin/(.*)', defaultValue: 'master', name: 'Branch', type: 'PT_BRANCH'
+    choice(name: 'Environment', choices: ['development', 'production'], description: 'Which environment did you want to deploy to?')
+    choice(name: 'Service', choices: ['clash-royale-proxy', 'jwt-service'])
+  }
+  
+  environment {
+    ENVIRONMENT = "${params.Environment}"
+    SERVICE     = "${params.Service}"
+    TOKEN       = credentials('clash-royale-token')
+    SECRET      = credentials('jwt-secret')
+    ACCOUNT     = '457469627332'
+    REGION      = 'us-east-1'
+  }
+
+  stages {
+    stage('Setup environment variables') {
+      steps {
+        sh(script: 'env')
+      }
+    }
+
+    stage('Checkout') {
+      steps {
+        git branch: "${params.Branch}",
+            credentialsId: 'git-private-key',
+            url: 'https://github.com/mraaz/myG'
+      }
+    }
+
+    stage('Install dependencies') {
+      steps {
+        withNPM(npmrcConfig: 'ee91dee8-05da-4b62-88ba-174a08a3fba4') {
+          sh "npm install"
+        }
+
+        dir('microservices') {
+          withNPM(npmrcConfig: 'ee91dee8-05da-4b62-88ba-174a08a3fba4') {
+            sh "npm install"
+          }
+        }
+      }
+    }
+
+    // stage('Unit Test') {
+
+    // }
+
+    stage('Build') {
+      steps {
+        withNPM(npmrcConfig: 'ee91dee8-05da-4b62-88ba-174a08a3fba4') {
+          sh "npm run helpers:build -- -s ${env.SERVICE} -e ${env.ENVIRONMENT}"
+        }
+      }
+    }
+
+    stage('Package') {
+      steps {
+        withNPM(npmrcConfig: 'ee91dee8-05da-4b62-88ba-174a08a3fba4') {
+          sh "npm run helpers:package -- -s ${env.SERVICE} -e ${env.ENVIRONMENT}"
+        }
+      }
+    }
+
+    stage('Deploy') {
+      steps {
+        withNPM(npmrcConfig: 'ee91dee8-05da-4b62-88ba-174a08a3fba4') {
+          withAWS(credentials: "aws-microservices-service-account") {
+            sh "npm run helpers:deploy -- -s ${env.SERVICE} -e ${env.ENVIRONMENT}"
+          }
+        }
+      }
+    }
+  }
+}
