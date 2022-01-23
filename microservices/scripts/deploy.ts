@@ -33,7 +33,7 @@ const destroyViaCdk = async (
   token: string
 ) => {
   await shell.cd(`./infastructure`)
-  await shell.ls()
+  await shell.asyncExec('ls')
   await shell.asyncExec(`npm run cdk -- deploy ClashRoyaleProxyCommon ${service} --require-approval never`, {
     env: {
       ENVIRONMENT: environment,
