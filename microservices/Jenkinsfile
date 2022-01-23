@@ -13,6 +13,7 @@ pipeline {
     gitParameter branchFilter: 'origin/(.*)', defaultValue: 'master', name: 'Branch', type: 'PT_BRANCH'
     choice(name: 'Environment', choices: ['development', 'production'], description: 'Which environment did you want to deploy to?')
     choice(name: 'Service', choices: ['clash-royale-proxy', 'jwt-service'])
+    choice(name: 'Stack', choices: ['ClashRoyaleProxy'])
   }
   
   environment {
@@ -78,7 +79,7 @@ pipeline {
         withAWS(credentials: "aws-microservices-service-account") {
           withNPM(npmrcConfig: 'ee91dee8-05da-4b62-88ba-174a08a3fba4') {
             dir('./microservices') {
-              sh "npm run deploy -- -s ${env.SERVICE} -e ${env.ENVIRONMENT}"
+              sh "npm run deploy -- -s ${params.Stack} -e ${env.ENVIRONMENT}"
             }
           }
         }
