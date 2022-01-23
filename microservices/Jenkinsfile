@@ -1,3 +1,6 @@
+currentBuild.displayName = "# ${BUILD_NUMBER} | ${ENVIRONMENT} - ${SERVICE} | ${params.Branch}"
+currentBuild.description = "Building ${SERVICE} microservice in ${ENVIRONMENT} from branch ${params.Branch}."
+
 pipeline {
   agent any
 
@@ -19,11 +22,6 @@ pipeline {
     SECRET      = credentials('jwt-secret')
     ACCOUNT     = '457469627332'
     REGION      = 'us-east-1'
-  }
-
-  node {
-    currentBuild.displayName = "# ${BUILD_NUMBER} | ${params.Environment} - ${params.Service} | ${params.Branch}"
-    currentBuild.description = "Building ${params.Service} microservice in ${params.Environment} from branch ${params.Branch}."
   }
 
   stages {
