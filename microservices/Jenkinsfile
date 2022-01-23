@@ -42,13 +42,7 @@ pipeline {
     stage('Install dependencies') {
       steps {
         withNPM(npmrcConfig: 'ee91dee8-05da-4b62-88ba-174a08a3fba4') {
-          sh "ls"
-          dir('./myG') {
-            sh "ls"
-          }
-          dir('./myG/microservices') {
-            sh "ls"
-            sh "pwd"
+          dir('./microservices') {
             sh "npm install"
           }
         }
@@ -62,7 +56,7 @@ pipeline {
     stage('Build') {
       steps {
         withNPM(npmrcConfig: 'ee91dee8-05da-4b62-88ba-174a08a3fba4') {
-          dir('myG/microservices') {
+          dir('./microservices') {
             sh "npm run build -- -s ${env.SERVICE} -e ${env.ENVIRONMENT}"
           }
         }
@@ -72,7 +66,7 @@ pipeline {
     stage('Package') {
       steps {
         withNPM(npmrcConfig: 'ee91dee8-05da-4b62-88ba-174a08a3fba4') {
-          dir('myG/microservices') {
+          dir('./microservices') {
             sh "npm run package -- -s ${env.SERVICE} -e ${env.ENVIRONMENT}"
           }
         }
@@ -82,7 +76,7 @@ pipeline {
     stage('Deploy') {
       steps {
         withNPM(npmrcConfig: 'ee91dee8-05da-4b62-88ba-174a08a3fba4') {
-          dir('myG/microservices') {
+          dir('./microservices') {
             withAWS(credentials: "aws-microservices-service-account") {
               sh "npm run deploy -- -s ${env.SERVICE} -e ${env.ENVIRONMENT}"
             }
