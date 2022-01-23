@@ -14,8 +14,8 @@ tmp
 public/css/*
 public/js/*
 
-services/*/dist
-services/*/build
+microservices/**/dist
+microservices/**/build
 
 # The development sqlite file
 database/development.sqlite
