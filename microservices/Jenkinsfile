@@ -47,6 +47,8 @@ pipeline {
 
         withNPM(npmrcConfig: 'ee91dee8-05da-4b62-88ba-174a08a3fba4') {
           dir('myG/microservices') {
+            sh "ls"
+            sh "pwd"
             sh "npm install"
           }
         }
