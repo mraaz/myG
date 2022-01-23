@@ -21,6 +21,11 @@ pipeline {
     REGION      = 'us-east-1'
   }
 
+  node {
+    currentBuild.displayName = "# ${BUILD_NUMBER} | ${params.Environment} - ${params.Service} | ${params.Branch}"
+    currentBuild.description = "Building ${params.Service} microservice in ${params.Environment} from branch ${params.Branch}."
+  }
+
   stages {
     stage('Setup environment variables') {
       steps {
@@ -33,8 +38,6 @@ pipeline {
         git branch: "${params.Branch}",
             credentialsId: 'git-private-key',
             url: 'https://github.com/mraaz/myG'
-        currentBuild.displayName = "# ${BUILD_NUMBER} | ${params.Environment} - ${params.Service} | ${params.Branch}"
-        currentBuild.description = "Building ${params.Service} microservice in ${params.Environment} from branch ${params.Branch}."
       }
     }
 
