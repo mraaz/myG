@@ -34,16 +34,7 @@ const deployViaCdk = async (
 ) => {
   await shell.cd(`./infastructure`)
   await shell.asyncExec('npm install')
-  await shell.asyncExec(`npm run cdk -- synth`, {
-    env: {
-      ENVIRONMENT: environment,
-      ACCOUNT: account,
-      REGION: region,
-      STAGE: environment,
-      SECRET: secret,
-      TOKEN: token
-    }
-  })
+  await shell.asyncExec(`npm run cdk -- synth`)
   // await shell.asyncExec(`npm run cdk -- deploy ClashRoyaleProxyCommon ${service} --require-approval never`, {
   //   env: {
   //     ENVIRONMENT: environment,
