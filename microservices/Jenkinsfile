@@ -56,25 +56,31 @@ pipeline {
 
     stage('Build') {
       steps {
-        withNPM(npmrcConfig: 'ee91dee8-05da-4b62-88ba-174a08a3fba4') {
-          sh "npm run helpers:build -- -s ${env.SERVICE} -e ${env.ENVIRONMENT}"
+        dir('microservices') {
+          withNPM(npmrcConfig: 'ee91dee8-05da-4b62-88ba-174a08a3fba4') {
+            sh "npm run helpers:build -- -s ${env.SERVICE} -e ${env.ENVIRONMENT}"
+          }
         }
       }
     }
 
     stage('Package') {
       steps {
-        withNPM(npmrcConfig: 'ee91dee8-05da-4b62-88ba-174a08a3fba4') {
-          sh "npm run helpers:package -- -s ${env.SERVICE} -e ${env.ENVIRONMENT}"
+        dir('microservices') {
+          withNPM(npmrcConfig: 'ee91dee8-05da-4b62-88ba-174a08a3fba4') {
+            sh "npm run helpers:package -- -s ${env.SERVICE} -e ${env.ENVIRONMENT}"
+          }
         }
       }
     }
 
     stage('Deploy') {
       steps {
-        withNPM(npmrcConfig: 'ee91dee8-05da-4b62-88ba-174a08a3fba4') {
-          withAWS(credentials: "aws-microservices-service-account") {
-            sh "npm run helpers:deploy -- -s ${env.SERVICE} -e ${env.ENVIRONMENT}"
+        dir('microservices') {
+          withNPM(npmrcConfig: 'ee91dee8-05da-4b62-88ba-174a08a3fba4') {
+            withAWS(credentials: "aws-microservices-service-account") {
+              sh "npm run helpers:deploy -- -s ${env.SERVICE} -e ${env.ENVIRONMENT}"
+            }
           }
         }
       }
