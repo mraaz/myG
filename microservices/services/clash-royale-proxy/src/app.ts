@@ -43,7 +43,7 @@ app.get('/*', authenticateToken, async (req: Request, res: Response, next) => {
     }
 
     res.send({
-      data: response.data,
+      ...response.data,
     });
   } catch (err) {
     errorHandler(err, req, res, next);
