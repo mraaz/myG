@@ -26,10 +26,9 @@ const TOKEN = process.env.CLASH_FRONTEND_TOKEN
 const CONFIG = {
   headers: { Authorization: `Bearer ${TOKEN}` }
 }
+const clashProxyUrl = process.env.CLASH_API
 
 class ClashRoyaleController {
-  clashProxyUrl = process.env.CLASH_API
-
   async show({ auth, request, response }) {
     // periodType: "training"
     // periodType: "warDay"
@@ -49,10 +48,10 @@ class ClashRoyaleController {
       //const getRiverRaceLogURL = 'clans/' + '%23' + clanTag + '/riverracelog'
       const getCurrentriverraceURL = 'clans/' + '%23' + clanTag.toUpperCase() + '/currentriverrace'
 
-      const getClanInfo = await axios.get(`${this.clashproxyurl}/${getClanURL}`, CONFIG)
+      const getClanInfo = await axios.get(`${clashProxyUrl}/${getClanURL}`, CONFIG)
       const getCurrentriverraceInfo = await this.getRiverLog(getCurrentriverraceURL)
 
-      //const getRiverRaceLogInfo = await axios.get(`${this.clashproxyurl}/${getRiverRaceLogURL}`, CONFIG)
+      //const getRiverRaceLogInfo = await axios.get(`${clashProxyUrl}/${getRiverRaceLogURL}`, CONFIG)
 
       const isData = getCurrentriverraceInfo.data ? true : false
       const status = isData ? getCurrentriverraceInfo.data.periodType : false
@@ -234,7 +233,7 @@ class ClashRoyaleController {
 
   async getRiverLog(getCurrentriverraceURL) {
     try {
-      const getCurrentriverraceInfo = await axios.get(`${this.clashproxyurl}/${getCurrentriverraceURL}`, CONFIG)
+      const getCurrentriverraceInfo = await axios.get(`${clashProxyUrl}/${getCurrentriverraceURL}`, CONFIG)
       return getCurrentriverraceInfo
     } catch (error) {
       if (error.message == 'Request failed with status code 404') {
@@ -260,7 +259,7 @@ class ClashRoyaleController {
         // const clanTag = '2R9PCGC'
         // const getPlayerURL = 'players/' + '%23' + clanTag
 
-        // const getPlayerInfo = await axios.get(`${this.clashproxyurl}/${getPlayerURL}`, CONFIG)
+        // const getPlayerInfo = await axios.get(`${clashProxyUrl}/${getPlayerURL}`, CONFIG)
 
         if (request.input('clash_royale_players_id') != undefined) {
           await Database.table('clash_royale_players')
@@ -526,7 +525,7 @@ class ClashRoyaleController {
         curClanTag = reminderClans[index].clan_tag
         const getCurrentriverraceURL = 'clans/' + '%23' + curClanTag + '/currentriverrace'
         try {
-          const getCurrentriverraceInfo = await axios.get(`${this.clashproxyurl}/${getCurrentriverraceURL}`, CONFIG)
+          const getCurrentriverraceInfo = await axios.get(`${clashProxyUrl}/${getCurrentriverraceURL}`, CONFIG)
 
           const reminderPlayers = await Database.from('clash_royale_players')
             .innerJoin('clash_royale_reminders', 'clash_royale_reminders.clash_royale_players_id', 'clash_royale_players.id')
@@ -754,7 +753,7 @@ class ClashRoyaleController {
 
         const getClanURL = 'clans/' + '%23' + allPlayers[0].clan_tag + '/members'
 
-        const getClanInfo = await axios.get(`${this.clashproxyurl}/${getClanURL}`, CONFIG)
+        const getClanInfo = await axios.get(`${clashProxyUrl}/${getClanURL}`, CONFIG)
 
         let clanStruct = {}
         for (let index = 0; index < getClanInfo.data.items.length; index++) {
