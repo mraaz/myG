@@ -20,15 +20,16 @@ const EncryptionRepository = require('../../Repositories/Encryption')
 
 const axios = use('axios')
 
-//Decided to leave token in code, as each token is restricted to an IP
-const TOKEN =
-  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6IjE2MmExYWMyLTk0N2EtNGFlMS1hMTdhLTY1NDBhZGVhOTUwYSIsImlhdCI6MTYzNzI0MDgwMSwic3ViIjoiZGV2ZWxvcGVyL2I5OWJkYTY4LTdhYjktNTE0OS0wYTVkLWExYTdkZWNkYTg2MiIsInNjb3BlcyI6WyJyb3lhbGUiXSwibGltaXRzIjpbeyJ0aWVyIjoiZGV2ZWxvcGVyL3NpbHZlciIsInR5cGUiOiJ0aHJvdHRsaW5nIn0seyJjaWRycyI6WyI0NS4xMjcuMTM3LjEzNyJdLCJ0eXBlIjoiY2xpZW50In1dfQ.WiTb4PfD63j811qBm-rA95Wr_QqZFHmePAVS8imAyWHyLG3W29r3Czfvts7JiZFjjWcnP54LNJ1Cr0hLtGfvJw'
+// This token is for talking to the clash proxy service. It should be cycled as needed.
+const TOKEN = process.env.CLASH_FRONTEND_TOKEN
 
 const CONFIG = {
   headers: { Authorization: `Bearer ${TOKEN}` }
 }
 
 class ClashRoyaleController {
+  clashProxyUrl = process.env.CLASH_API
+
   async show({ auth, request, response }) {
     // periodType: "training"
     // periodType: "warDay"
@@ -48,10 +49,10 @@ class ClashRoyaleController {
       //const getRiverRaceLogURL = 'clans/' + '%23' + clanTag + '/riverracelog'
       const getCurrentriverraceURL = 'clans/' + '%23' + clanTag.toUpperCase() + '/currentriverrace'
 
-      const getClanInfo = await axios.get(`https://api.clashroyale.com/v1/${getClanURL}`, CONFIG)
+      const getClanInfo = await axios.get(`${this.clashproxyurl}/${getClanURL}`, CONFIG)
       const getCurrentriverraceInfo = await this.getRiverLog(getCurrentriverraceURL)
 
-      //const getRiverRaceLogInfo = await axios.get(`https://api.clashroyale.com/v1/${getRiverRaceLogURL}`, CONFIG)
+      //const getRiverRaceLogInfo = await axios.get(`${this.clashproxyurl}/${getRiverRaceLogURL}`, CONFIG)
 
       const isData = getCurrentriverraceInfo.data ? true : false
       const status = isData ? getCurrentriverraceInfo.data.periodType : false
@@ -233,7 +234,7 @@ class ClashRoyaleController {
 
   async getRiverLog(getCurrentriverraceURL) {
     try {
-      const getCurrentriverraceInfo = await axios.get(`https://api.clashroyale.com/v1/${getCurrentriverraceURL}`, CONFIG)
+      const getCurrentriverraceInfo = await axios.get(`${this.clashproxyurl}/${getCurrentriverraceURL}`, CONFIG)
       return getCurrentriverraceInfo
     } catch (error) {
       if (error.message == 'Request failed with status code 404') {
@@ -259,7 +260,7 @@ class ClashRoyaleController {
         // const clanTag = '2R9PCGC'
         // const getPlayerURL = 'players/' + '%23' + clanTag
 
-        // const getPlayerInfo = await axios.get(`https://api.clashroyale.com/v1/${getPlayerURL}`, CONFIG)
+        // const getPlayerInfo = await axios.get(`${this.clashproxyurl}/${getPlayerURL}`, CONFIG)
 
         if (request.input('clash_royale_players_id') != undefined) {
           await Database.table('clash_royale_players')
@@ -525,7 +526,7 @@ class ClashRoyaleController {
         curClanTag = reminderClans[index].clan_tag
         const getCurrentriverraceURL = 'clans/' + '%23' + curClanTag + '/currentriverrace'
         try {
-          const getCurrentriverraceInfo = await axios.get(`https://api.clashroyale.com/v1/${getCurrentriverraceURL}`, CONFIG)
+          const getCurrentriverraceInfo = await axios.get(`${this.clashproxyurl}/${getCurrentriverraceURL}`, CONFIG)
 
           const reminderPlayers = await Database.from('clash_royale_players')
             .innerJoin('clash_royale_reminders', 'clash_royale_reminders.clash_royale_players_id', 'clash_royale_players.id')
@@ -753,7 +754,7 @@ class ClashRoyaleController {
 
         const getClanURL = 'clans/' + '%23' + allPlayers[0].clan_tag + '/members'
 
-        const getClanInfo = await axios.get(`https://api.clashroyale.com/v1/${getClanURL}`, CONFIG)
+        const getClanInfo = await axios.get(`${this.clashproxyurl}/${getClanURL}`, CONFIG)
 
         let clanStruct = {}
         for (let index = 0; index < getClanInfo.data.items.length; index++) {
