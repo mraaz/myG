@@ -53,6 +53,6 @@ app.get('/*', authenticateToken, async (req: Request, res: Response, next) => {
 
 app.listen(port, () => {
   console.log(
-    `Clash Royale Proxy is running on port ${port} in ${env.ENVIRONMENT === 'development' ? `${'Local '}Development` : 'Production'}...`
+    `<<Clash Royale Proxy is running on port ${port} in ${env.ENVIRONMENT === 'development' ? `${'Local '}Development` : 'Production'}...`
   );
 });
