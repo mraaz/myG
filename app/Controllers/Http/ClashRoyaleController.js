@@ -5,6 +5,7 @@ const ClashRoyalePlayers = use('App/Models/ClashRoyalePlayers')
 const PlayerGameActivity = use('App/Models/PlayerGameActivity')
 const ClashRoyalePlayerBase = use('App/Models/ClashRoyalePlayerBase')
 const CrPlayerBaseTran = use('App/Models/CrPlayerBaseTran')
+const Env = use('Env')
 
 //const PlayerGameActivityTran = use('App/Models/PlayerGameActivityTran')
 
@@ -21,12 +22,12 @@ const EncryptionRepository = require('../../Repositories/Encryption')
 const axios = use('axios')
 
 // This token is for talking to the clash proxy service. It should be cycled as needed.
-const TOKEN = process.env.CLASH_FRONTEND_TOKEN
+const TOKEN = Env.get('CLASH_FRONTEND_TOKEN')
 
 const CONFIG = {
   headers: { Authorization: `Bearer ${TOKEN}` }
 }
-const clashProxyUrl = process.env.CLASH_API
+const clashProxyUrl = Env.get('CLASH_API')
 
 class ClashRoyaleController {
   async show({ auth, request, response }) {
