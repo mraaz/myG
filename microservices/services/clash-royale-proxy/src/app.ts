@@ -4,7 +4,6 @@ import axios from 'axios';
 import { constructClashConfig, errorHandler, authenticateToken, getRuntimeEnvironmentVariables } from './common';
 
 enum RequiredEnvVars {
-  ENVIRONMENT,
   ENDPOINT,
   TOKEN,
 }
@@ -52,7 +51,5 @@ app.get('/*', authenticateToken, async (req: Request, res: Response, next) => {
 });
 
 app.listen(port, () => {
-  console.log(
-    `<<Clash Royale Proxy is running on port ${port} in ${env.ENVIRONMENT === 'development' ? `${'Local '}Development` : 'Production'}...`
-  );
+  console.log(`<<Clash Royale Proxy is running on port ${port}...`);
 });
