@@ -14,6 +14,9 @@ tmp
 public/css/*
 public/js/*
 
+microservices/**/dist
+microservices/**/build
+
 # The development sqlite file
 database/development.sqlite
 scripts/dummy_data
