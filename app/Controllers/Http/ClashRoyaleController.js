@@ -22,7 +22,7 @@ const EncryptionRepository = require('../../Repositories/Encryption')
 const axios = use('axios')
 
 // This token is for talking to the clash proxy service. It should be cycled as needed.
-const TOKEN = Env.get('CLASH_FRONTEND_TOKEN')
+const TOKEN = Env.get('SECRET')
 
 const CONFIG = {
   headers: { Authorization: `Bearer ${TOKEN}` }

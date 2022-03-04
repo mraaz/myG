@@ -12,7 +12,7 @@ pipeline {
     // choice(name: 'Branch', choices: ['lambda/clash-royale', 'master'], description: 'A temp option to select which branch to deploy. Use Git Paarameter Plugin to do this in future.')
     gitParameter branchFilter: 'origin/(.*)', defaultValue: 'master', name: 'Branch', type: 'PT_BRANCH'
     choice(name: 'Environment', choices: ['development', 'production'], description: 'Which environment did you want to deploy to?')
-    choice(name: 'Service', choices: ['clash-royale-proxy', 'jwt-service'])
+    choice(name: 'Service', choices: ['clash-royale-proxy'])
     choice(name: 'Stack', choices: ['ClashRoyaleProxy'])
   }
   
